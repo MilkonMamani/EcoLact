@@ -1,0 +1,25 @@
+site_name: Documentación Técnica - EcoLact
+site_description: Sistema de gestión para el acopio de lácteos
+site_author: Equipo EcoLact
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+nav:
+  - Inicio: index.md
+  - Dominio:
+      - Modelo de Dominio: modelo-dominio.md
+
+markdown_extensions:
+  - tables
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
