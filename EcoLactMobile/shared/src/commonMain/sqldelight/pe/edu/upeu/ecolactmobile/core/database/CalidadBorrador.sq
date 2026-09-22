@@ -1,0 +1,18 @@
+-- Borrador local de un análisis todavía no confirmado (calidad.txt sección 25: "confirmar" y
+-- "sincronizar" son conceptos distintos). Mientras el analista edita valores/observación, nada
+-- de esto toca la cola de sincronización — solo al confirmar se encola como una sola operación.
+CREATE TABLE calidad_borrador (
+    entrega_id INTEGER NOT NULL PRIMARY KEY,
+    valores_json TEXT NOT NULL,
+    observacion TEXT,
+    updated_at TEXT NOT NULL
+);
+
+upsertBorrador:
+INSERT OR REPLACE INTO calidad_borrador(entrega_id, valores_json, observacion, updated_at) VALUES (?, ?, ?, ?);
+
+selectBorrador:
+SELECT * FROM calidad_borrador WHERE entrega_id = ?;
+
+deleteBorrador:
+DELETE FROM calidad_borrador WHERE entrega_id = ?;

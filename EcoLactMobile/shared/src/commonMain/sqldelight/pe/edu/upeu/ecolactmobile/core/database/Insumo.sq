@@ -1,0 +1,30 @@
+import kotlin.Boolean;
+
+-- Catálogo local de insumos (encargado-planta.md sección 5). Permite ver stock y alertas de
+-- mínimo sin conexión; los movimientos van en InsumoMovimiento.sq.
+CREATE TABLE insumo (
+    id INTEGER NOT NULL PRIMARY KEY,
+    nombre TEXT NOT NULL,
+    unidad_medida TEXT,
+    stock_actual REAL NOT NULL,
+    stock_minimo REAL,
+    estado TEXT,
+    esta_bajo_minimo INTEGER AS Boolean NOT NULL DEFAULT 0,
+    synced_at TEXT NOT NULL
+);
+
+upsertInsumo:
+INSERT OR REPLACE INTO insumo(id, nombre, unidad_medida, stock_actual, stock_minimo, estado, esta_bajo_minimo, synced_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM insumo ORDER BY nombre ASC;
+
+selectById:
+SELECT * FROM insumo WHERE id = ?;
+
+selectBajoMinimo:
+SELECT * FROM insumo WHERE esta_bajo_minimo = 1 ORDER BY nombre ASC;
+
+deleteAll:
+DELETE FROM insumo;

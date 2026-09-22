@@ -1,0 +1,29 @@
+-- Histórico local de movimientos de insumo (entradas/salidas, incluye consumo automático de
+-- producción). Sin id propio reutilizable como clave estable entre re-sincronizaciones distintas
+-- no es un problema: el servidor sí expone `id` real aquí (encargado-planta.md sección 5), a
+-- diferencia de analisis_calidad_detalle.
+CREATE TABLE insumo_movimiento (
+    id INTEGER NOT NULL PRIMARY KEY,
+    insumo_id INTEGER NOT NULL,
+    insumo_nombre TEXT,
+    tipo TEXT NOT NULL,
+    motivo TEXT,
+    cantidad REAL NOT NULL,
+    fecha TEXT NOT NULL,
+    observacion TEXT
+);
+
+CREATE INDEX idx_insumo_movimiento_insumo ON insumo_movimiento(insumo_id);
+
+upsertMovimiento:
+INSERT OR REPLACE INTO insumo_movimiento(id, insumo_id, insumo_nombre, tipo, motivo, cantidad, fecha, observacion)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM insumo_movimiento ORDER BY fecha DESC;
+
+selectByInsumo:
+SELECT * FROM insumo_movimiento WHERE insumo_id = ? ORDER BY fecha DESC;
+
+deleteAll:
+DELETE FROM insumo_movimiento;

@@ -1,0 +1,20 @@
+CREATE TABLE session (
+    id INTEGER NOT NULL PRIMARY KEY DEFAULT 0,
+    token TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    username TEXT NOT NULL,
+    role TEXT NOT NULL,
+    estado TEXT NOT NULL,
+    debe_cambiar_password INTEGER NOT NULL,
+    ultimo_acceso TEXT
+);
+
+selectSession:
+SELECT * FROM session WHERE id = 0;
+
+upsertSession:
+INSERT OR REPLACE INTO session (id, token, user_id, username, role, estado, debe_cambiar_password, ultimo_acceso)
+VALUES (0, ?, ?, ?, ?, ?, ?, ?);
+
+clearSession:
+DELETE FROM session WHERE id = 0;

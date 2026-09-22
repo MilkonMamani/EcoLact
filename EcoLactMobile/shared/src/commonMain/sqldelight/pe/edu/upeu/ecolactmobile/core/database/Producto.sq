@@ -1,0 +1,27 @@
+import kotlin.Boolean;
+
+-- Catálogo local de productos, solo lectura para ENCARGADO_PLANTA (encargado-planta.md
+-- sección 5 "Productos (solo lectura)"). El ajuste de inventario de productos es de VENTAS,
+-- fuera del alcance de la app móvil.
+CREATE TABLE producto (
+    id INTEGER NOT NULL PRIMARY KEY,
+    nombre TEXT NOT NULL,
+    unidad_medida TEXT,
+    cantidad_actual REAL NOT NULL,
+    sin_stock INTEGER AS Boolean NOT NULL DEFAULT 0,
+    estado TEXT,
+    synced_at TEXT NOT NULL
+);
+
+upsertProducto:
+INSERT OR REPLACE INTO producto(id, nombre, unidad_medida, cantidad_actual, sin_stock, estado, synced_at)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM producto ORDER BY nombre ASC;
+
+selectById:
+SELECT * FROM producto WHERE id = ?;
+
+deleteAll:
+DELETE FROM producto;

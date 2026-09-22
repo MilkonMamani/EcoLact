@@ -1,0 +1,151 @@
+site_name: Documentación Técnica - EcoLact
+site_description: Documentación técnica del sistema EcoLact
+site_author: Equipo EcoLact
+site_url: https://TU_USUARIO.github.io/TU_REPOSITORIO/
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Cambiar a modo oscuro
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Cambiar a modo claro
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - footnotes
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - toc:
+      permalink: true
+
+nav:
+  - Inicio: index.md
+
+  - Visión del Producto:
+      - Visión general: producto/vision-general.md
+      - Problema de negocio: producto/problema-negocio.md
+      - Propuesta de solución: producto/propuesta-solucion.md
+      - Alcance: producto/alcance.md
+      - Objetivos: producto/objetivos.md
+      - Actores del sistema: producto/actores-sistema.md
+
+  - Arquitectura del Sistema:
+      - Arquitectura general: arquitectura/arquitectura-general.md
+      - Módulos del sistema: arquitectura/modulos-sistema.md
+      - Flujo de acopio: arquitectura/flujo-acopio.md
+      - Comunicación entre módulos: arquitectura/comunicacion-modulos.md
+      - Patrones aplicados: arquitectura/patrones-aplicados.md
+      - Decisiones técnicas: arquitectura/decisiones-tecnicas.md
+
+  - Modelo de Dominio:
+      - Modelo de dominio: dominio/modelo-dominio.md
+      - Entidades: dominio/entidades.md
+      - Objetos de valor: dominio/objetos-valor.md
+      - Enumeraciones: dominio/enumeraciones.md
+      - Reglas de negocio: dominio/reglas-negocio.md
+      - Diagramas: dominio/diagramas.md
+
+  - Módulos del Sistema:
+      - Acopio:
+          - Descripción: modulos/acopio/descripcion.md
+          - Entregas de leche: modulos/acopio/entregas-leche.md
+          - Validaciones: modulos/acopio/validaciones.md
+      - Calidad:
+          - Descripción: modulos/calidad/descripcion.md
+          - Análisis de calidad: modulos/calidad/analisis-calidad.md
+          - Reglas de calidad: modulos/calidad/reglas-calidad.md
+      - Proveedores:
+          - Descripción: modulos/proveedores/descripcion.md
+          - Gestión de proveedores: modulos/proveedores/gestion-proveedores.md
+      - Producción:
+          - Descripción: modulos/produccion/descripcion.md
+          - Lotes de producción: modulos/produccion/lotes-produccion.md
+      - Liquidación:
+          - Descripción: modulos/liquidacion/descripcion.md
+          - Pagos a proveedores: modulos/liquidacion/pagos-proveedores.md
+          - Reglas de pago: modulos/liquidacion/reglas-pago.md
+      - Administración:
+          - Usuarios: modulos/administracion/usuarios.md
+          - Roles y permisos: modulos/administracion/roles-permisos.md
+          - Parámetros: modulos/administracion/parametros.md
+
+  - Base de Datos:
+      - Modelo general: base-datos/modelo-general.md
+      - Tablas principales: base-datos/tablas-principales.md
+      - Relaciones: base-datos/relaciones.md
+      - Migraciones: base-datos/migraciones.md
+      - Datos iniciales: base-datos/datos-iniciales.md
+
+  - Seguridad:
+      - Modelo de seguridad: seguridad/modelo-seguridad.md
+      - Autenticación: seguridad/autenticacion.md
+      - Autorización: seguridad/autorizacion.md
+      - Roles y permisos: seguridad/roles-permisos.md
+      - Sesiones: seguridad/sesiones.md
+      - Protección de rutas: seguridad/proteccion-rutas.md
+
+  - APIs y Endpoints:
+      - Convenciones: api/convenciones.md
+      - Autenticación: api/autenticacion.md
+      - Acopio: api/acopio.md
+      - Calidad: api/calidad.md
+      - Proveedores: api/proveedores.md
+      - Producción: api/produccion.md
+      - Liquidación: api/liquidacion.md
+      - Usuarios: api/usuarios.md
+
+  - Manual de Instalación:
+      - Requisitos previos: instalacion/requisitos-previos.md
+      - Variables de entorno: instalacion/variables-entorno.md
+      - Configuración local: instalacion/configuracion-local.md
+      - Base de datos: instalacion/base-datos.md
+      - Ejecución: instalacion/ejecucion.md
+      - Verificación: instalacion/verificacion.md
+
+  - Operación y Monitoreo:
+      - Monitoreo: operacion/monitoreo.md
+      - Logs: operacion/logs.md
+      - Manejo de errores: operacion/manejo-errores.md
+      - Tareas programadas: operacion/tareas-programadas.md
+      - Mantenimiento: operacion/mantenimiento.md
+
+  - Pruebas:
+      - Estrategia de pruebas: pruebas/estrategia-pruebas.md
+      - Pruebas unitarias: pruebas/pruebas-unitarias.md
+      - Pruebas de integración: pruebas/pruebas-integracion.md
+      - Pruebas funcionales: pruebas/pruebas-funcionales.md
+      - Evidencias: pruebas/evidencias.md
+      - Errores frecuentes: pruebas/errores-frecuentes.md
+
+  - Entrega:
+      - Estructura del código: entrega/estructura-codigo.md
+      - Repositorio: entrega/repositorio.md
+      - Participación del equipo: entrega/participacion-equipo.md
+      - Evidencias finales: entrega/evidencias-finales.md
+      - Mejoras futuras: entrega/mejoras-futuras.md
+      - Conclusiones: entrega/conclusiones.md

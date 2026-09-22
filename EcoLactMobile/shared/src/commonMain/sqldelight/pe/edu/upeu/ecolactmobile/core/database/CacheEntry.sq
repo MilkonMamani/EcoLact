@@ -1,0 +1,17 @@
+CREATE TABLE cache_entry (
+    cache_key TEXT NOT NULL PRIMARY KEY,
+    payload_json TEXT NOT NULL,
+    cached_at TEXT NOT NULL
+);
+
+upsertCache:
+INSERT OR REPLACE INTO cache_entry(cache_key, payload_json, cached_at) VALUES (?, ?, ?);
+
+selectCache:
+SELECT * FROM cache_entry WHERE cache_key = ?;
+
+deleteCache:
+DELETE FROM cache_entry WHERE cache_key = ?;
+
+clearAllCache:
+DELETE FROM cache_entry;

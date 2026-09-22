@@ -1,0 +1,29 @@
+import kotlin.Boolean;
+
+-- Compartida por ACOPIADOR, CALIDAD y PROVEEDOR (cada uno pega a su propio endpoint pero el
+-- shape es el mismo). `leido` solo lo expone proveedor.md — queda NULL para los otros roles.
+CREATE TABLE comunicado (
+    id INTEGER NOT NULL PRIMARY KEY,
+    titulo TEXT NOT NULL,
+    contenido TEXT,
+    tipo TEXT NOT NULL,
+    alcance TEXT,
+    fecha_publicacion TEXT NOT NULL,
+    fecha_evento TEXT,
+    estado TEXT,
+    leido INTEGER AS Boolean,
+    synced_at TEXT NOT NULL
+);
+
+upsertComunicado:
+INSERT OR REPLACE INTO comunicado(id, titulo, contenido, tipo, alcance, fecha_publicacion, fecha_evento, estado, leido, synced_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM comunicado ORDER BY fecha_publicacion DESC;
+
+selectById:
+SELECT * FROM comunicado WHERE id = ?;
+
+deleteAll:
+DELETE FROM comunicado;

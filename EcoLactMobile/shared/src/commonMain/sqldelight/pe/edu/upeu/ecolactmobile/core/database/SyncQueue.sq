@@ -1,0 +1,54 @@
+CREATE TABLE sync_queue (
+    id TEXT NOT NULL PRIMARY KEY,
+    operation_type TEXT NOT NULL,
+    payload_json TEXT NOT NULL,
+    status TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    server_id INTEGER,
+    error_message TEXT,
+    attempt_count INTEGER NOT NULL DEFAULT 0
+);
+
+insertOperation:
+INSERT INTO sync_queue(id, operation_type, payload_json, status, created_at, updated_at, server_id, error_message, attempt_count)
+VALUES (?, ?, ?, 'PENDING', ?, ?, NULL, NULL, 0);
+
+selectPending:
+SELECT * FROM sync_queue WHERE status = 'PENDING' ORDER BY created_at ASC;
+
+selectAll:
+SELECT * FROM sync_queue ORDER BY created_at DESC;
+
+selectNeedsReview:
+SELECT * FROM sync_queue WHERE status = 'NEEDS_REVIEW' ORDER BY created_at ASC;
+
+selectByOperationType:
+SELECT * FROM sync_queue WHERE operation_type = ? ORDER BY created_at DESC;
+
+selectById:
+SELECT * FROM sync_queue WHERE id = ?;
+
+markSyncing:
+UPDATE sync_queue SET status = 'SYNCING', updated_at = ?, attempt_count = attempt_count + 1 WHERE id = ?;
+
+markSynced:
+UPDATE sync_queue SET status = 'SYNCED', server_id = ?, updated_at = ? WHERE id = ?;
+
+markPending:
+UPDATE sync_queue SET status = 'PENDING', updated_at = ? WHERE id = ?;
+
+updatePayload:
+UPDATE sync_queue SET payload_json = ?, updated_at = ? WHERE id = ? AND status = 'PENDING';
+
+retryFromReview:
+UPDATE sync_queue SET payload_json = ?, status = 'PENDING', error_message = NULL, updated_at = ? WHERE id = ? AND status = 'NEEDS_REVIEW';
+
+markNeedsReview:
+UPDATE sync_queue SET status = 'NEEDS_REVIEW', error_message = ?, updated_at = ? WHERE id = ?;
+
+deleteOperation:
+DELETE FROM sync_queue WHERE id = ?;
+
+countPending:
+SELECT COUNT(*) FROM sync_queue WHERE status = 'PENDING' OR status = 'SYNCING';

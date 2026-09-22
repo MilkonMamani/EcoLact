@@ -1,0 +1,36 @@
+-- Copia local de lotes de producción (encargado-planta.md sección 4). `insumos_utilizados_json`
+-- / `productos_obtenidos_json` se guardan como JSON crudo (no tablas propias): son el detalle de
+-- UN lote, de solo lectura, sin necesidad real de filtrar/buscar por sus campos internos —
+-- normalizarlos en más tablas no agregaría capacidad offline real, solo más código.
+CREATE TABLE lote_produccion (
+    id INTEGER NOT NULL PRIMARY KEY,
+    codigo TEXT NOT NULL,
+    estado TEXT NOT NULL,
+    fecha_hora_inicio TEXT,
+    fecha_hora_fin TEXT,
+    litros_leche_utilizados REAL NOT NULL,
+    observacion TEXT,
+    insumos_utilizados_json TEXT,
+    productos_obtenidos_json TEXT,
+    synced_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_lote_produccion_estado ON lote_produccion(estado);
+
+upsertLote:
+INSERT OR REPLACE INTO lote_produccion(
+    id, codigo, estado, fecha_hora_inicio, fecha_hora_fin, litros_leche_utilizados,
+    observacion, insumos_utilizados_json, productos_obtenidos_json, synced_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM lote_produccion ORDER BY fecha_hora_inicio DESC;
+
+selectById:
+SELECT * FROM lote_produccion WHERE id = ?;
+
+selectByEstado:
+SELECT * FROM lote_produccion WHERE estado = ? ORDER BY fecha_hora_inicio DESC;
+
+deleteAll:
+DELETE FROM lote_produccion;

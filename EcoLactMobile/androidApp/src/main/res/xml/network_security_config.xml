@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  El backend Laravel de desarrollo corre en HTTP plano (no HTTPS). Desde API 28, Android bloquea
+  tráfico "cleartext" por defecto — esto lo permite explícitamente solo para el host del emulador
+  (10.0.2.2, que reenvía a 127.0.0.1 de la máquina anfitriona) y para direcciones de red local
+  típicas, en caso de que se pruebe desde un dispositivo físico en la misma red en vez del emulador.
+  Antes de publicar la app de verdad, el backend debería servirse por HTTPS y este archivo debería
+  eliminarse o acotarse al dominio real.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">172.20.30.40</domain>
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

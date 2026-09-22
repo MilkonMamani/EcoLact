@@ -1,0 +1,59 @@
+import kotlin.Boolean;
+
+-- Copia local de análisis de calidad ya confirmados (calidad.md "historial") y sus detalles
+-- por parámetro. El borrador EN EDICIÓN sigue viviendo aparte, en calidad_borrador — esta
+-- tabla es solo para lo que el servidor ya confirmó, útil para consultar resultados offline.
+CREATE TABLE analisis_calidad (
+    id INTEGER NOT NULL PRIMARY KEY,
+    entrega_id INTEGER NOT NULL,
+    imagen_path TEXT,
+    estado TEXT NOT NULL,
+    resultado TEXT,
+    fecha_analisis TEXT,
+    confirmado_por_user_id INTEGER,
+    observacion TEXT,
+    synced_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_analisis_entrega ON analisis_calidad(entrega_id);
+
+-- Sin id propio del servidor (AnalisisDetalleParametro no lo expone) — autogenerado local.
+CREATE TABLE analisis_calidad_detalle (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    analisis_id INTEGER NOT NULL,
+    parametro_id INTEGER NOT NULL,
+    parametro_codigo TEXT NOT NULL,
+    parametro_nombre TEXT NOT NULL,
+    unidad TEXT,
+    valor REAL NOT NULL,
+    origen TEXT NOT NULL,
+    cumple INTEGER AS Boolean
+);
+
+CREATE INDEX idx_analisis_detalle_analisis ON analisis_calidad_detalle(analisis_id);
+
+upsertAnalisis:
+INSERT OR REPLACE INTO analisis_calidad(id, entrega_id, imagen_path, estado, resultado, fecha_analisis, confirmado_por_user_id, observacion, synced_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAnalisisById:
+SELECT * FROM analisis_calidad WHERE id = ?;
+
+selectAnalisisByEntrega:
+SELECT * FROM analisis_calidad WHERE entrega_id = ?;
+
+selectAnalisisAll:
+SELECT * FROM analisis_calidad ORDER BY fecha_analisis DESC;
+
+deleteAnalisisAll:
+DELETE FROM analisis_calidad;
+
+deleteDetallesByAnalisis:
+DELETE FROM analisis_calidad_detalle WHERE analisis_id = ?;
+
+insertDetalle:
+INSERT INTO analisis_calidad_detalle(analisis_id, parametro_id, parametro_codigo, parametro_nombre, unidad, valor, origen, cumple)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+selectDetallesByAnalisis:
+SELECT * FROM analisis_calidad_detalle WHERE analisis_id = ?;

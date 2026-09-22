@@ -1,0 +1,27 @@
+import kotlin.Boolean;
+
+-- Compartida por los 6 roles (administrador.md sección 7 / NotificacionesApi).
+CREATE TABLE notificacion (
+    id INTEGER NOT NULL PRIMARY KEY,
+    tipo TEXT NOT NULL,
+    titulo TEXT NOT NULL,
+    mensaje TEXT NOT NULL,
+    referencia_tipo TEXT,
+    referencia_id INTEGER,
+    leido INTEGER AS Boolean NOT NULL DEFAULT 0,
+    fecha_lectura TEXT,
+    synced_at TEXT NOT NULL
+);
+
+upsertNotificacion:
+INSERT OR REPLACE INTO notificacion(id, tipo, titulo, mensaje, referencia_tipo, referencia_id, leido, fecha_lectura, synced_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM notificacion ORDER BY id DESC;
+
+markLeida:
+UPDATE notificacion SET leido = 1, fecha_lectura = ? WHERE id = ?;
+
+deleteAll:
+DELETE FROM notificacion;

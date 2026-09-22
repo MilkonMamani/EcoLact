@@ -1,0 +1,38 @@
+-- Copia local de proveedores ya vistos (acopiador.md/calidad.md "Proveedores de mi zona" +
+-- proveedor.md "Mi perfil"). Permite buscar por DNI/nombre sin conexión, algo que el cache
+-- genérico (JSON por combinación de filtros) no podía resolver si el usuario buscaba con un
+-- filtro que no estaba exactamente cacheado.
+CREATE TABLE proveedor (
+    id INTEGER NOT NULL PRIMARY KEY,
+    dni TEXT NOT NULL,
+    nombres TEXT NOT NULL,
+    apellidos TEXT NOT NULL,
+    nombre_completo TEXT NOT NULL,
+    telefono TEXT,
+    zona_id INTEGER,
+    zona_nombre TEXT,
+    estado TEXT NOT NULL,
+    qr_token TEXT,
+    synced_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_proveedor_dni ON proveedor(dni);
+
+upsertProveedor:
+INSERT OR REPLACE INTO proveedor(id, dni, nombres, apellidos, nombre_completo, telefono, zona_id, zona_nombre, estado, qr_token, synced_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM proveedor ORDER BY nombre_completo ASC;
+
+selectById:
+SELECT * FROM proveedor WHERE id = ?;
+
+selectByDni:
+SELECT * FROM proveedor WHERE dni = ?;
+
+searchByNombreOrDni:
+SELECT * FROM proveedor WHERE nombre_completo LIKE '%' || ? || '%' OR dni LIKE '%' || ? || '%' ORDER BY nombre_completo ASC;
+
+deleteAll:
+DELETE FROM proveedor;

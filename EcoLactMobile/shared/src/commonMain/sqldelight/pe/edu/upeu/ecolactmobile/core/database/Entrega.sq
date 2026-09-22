@@ -1,0 +1,49 @@
+-- Copia local de entregas (acopiador.md sección 5, calidad.md "pendientes/historial",
+-- proveedor.md sección 4). Los campos de nombre (proveedor_nombre, zona_nombre,
+-- acopiador_nombre) son denormalizados a propósito: cada endpoint los entrega ya resueltos
+-- y no hay catálogo local de zonas/proveedores completo en todos los roles, así que se
+-- guardan tal cual vienen en vez de forzar un JOIN que no siempre se puede resolver offline.
+CREATE TABLE entrega (
+    id INTEGER NOT NULL PRIMARY KEY,
+    proveedor_id INTEGER NOT NULL,
+    proveedor_nombre TEXT,
+    proveedor_dni TEXT,
+    acopiador_id INTEGER,
+    acopiador_nombre TEXT,
+    zona_id INTEGER,
+    zona_nombre TEXT,
+    registrado_por_user_id INTEGER,
+    fecha_hora TEXT NOT NULL,
+    litros REAL NOT NULL,
+    metodo_identificacion TEXT NOT NULL,
+    estado TEXT NOT NULL,
+    observacion TEXT,
+    resultado TEXT,
+    synced_at TEXT NOT NULL
+);
+
+CREATE INDEX idx_entrega_proveedor ON entrega(proveedor_id);
+CREATE INDEX idx_entrega_estado ON entrega(estado);
+CREATE INDEX idx_entrega_fecha ON entrega(fecha_hora);
+
+upsertEntrega:
+INSERT OR REPLACE INTO entrega(
+    id, proveedor_id, proveedor_nombre, proveedor_dni, acopiador_id, acopiador_nombre,
+    zona_id, zona_nombre, registrado_por_user_id, fecha_hora, litros, metodo_identificacion,
+    estado, observacion, resultado, synced_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAll:
+SELECT * FROM entrega ORDER BY fecha_hora DESC;
+
+selectById:
+SELECT * FROM entrega WHERE id = ?;
+
+selectByEstado:
+SELECT * FROM entrega WHERE estado = ? ORDER BY fecha_hora DESC;
+
+selectByProveedor:
+SELECT * FROM entrega WHERE proveedor_id = ? ORDER BY fecha_hora DESC;
+
+deleteAll:
+DELETE FROM entrega;
