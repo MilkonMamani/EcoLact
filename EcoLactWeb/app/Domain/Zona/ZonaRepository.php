@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Domain\Zona;
+
+interface ZonaRepository
+{
+    public function guardar(Zona $zona): Zona;
+
+    public function actualizar(Zona $zona): Zona;
+
+    public function buscarPorId(int $id): ?Zona;
+
+    public function eliminar(int $id): void;
+
+    /**
+     * Cuántos registros de cada tipo dependen de la zona (rutas,
+     * proveedores, acopiadores, historiales, entregas, comunicados),
+     * indexado por etiqueta legible. Una zona solo puede eliminarse si
+     * todos los conteos son 0.
+     *
+     * @return array<string, int>
+     */
+    public function contarDependencias(int $id): array;
+
+    public function buscarPorNombre(string $nombre): ?Zona;
+
+    /**
+     * @return Zona[]
+     */
+    public function listar(): array;
+
+    /**
+     * @return Zona[]
+     */
+    public function listarActivas(): array;
+}

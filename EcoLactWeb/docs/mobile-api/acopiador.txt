@@ -1,0 +1,857 @@
+Sí. Para el **ACOPIADOR** el diseño debe ser mucho más operativo que el de Administrador o Proveedor. Este usuario estará en campo, probablemente con conectividad irregular, por lo que la app debe permitirle hacer su trabajo con **muy pocos pasos**.
+
+Su misión principal es:
+
+**identificar proveedor → registrar litros → confirmar entrega → continuar con el siguiente proveedor.**
+
+Todo lo demás es secundario.
+
+# Estructura principal — ACOPIADOR
+
+La navegación inferior la dejaría con solo cuatro opciones:
+
+```text
+INICIO · REGISTRAR · ENTREGAS · MÁS
+```
+
+`REGISTRAR` sería visualmente la acción principal, incluso podría tener un botón central más destacado.
+
+```text
+┌────────┬────────────┬──────────┬──────┐
+│ Inicio │ + Registrar│ Entregas │ Más  │
+└────────┴────────────┴──────────┴──────┘
+```
+
+Globalmente:
+
+```text
+● Online / Offline
+↻ Sincronización
+🔔 Notificaciones
+👤 Perfil
+```
+
+---
+
+# 1. INICIO
+
+La pregunta que debe responder esta pantalla es:
+
+> **“¿Cómo va mi jornada de acopio?”**
+
+No necesita KPIs administrativos ni gráficos complicados.
+
+### Cabecera
+
+```text
+Buenos días, Carlos
+
+Acopiador · Zona Huata
+
+● En línea                       🔔
+```
+
+Cuando esté sin cobertura:
+
+```text
+● Sin conexión · 3 pendientes
+
+Tus registros se guardarán
+en este dispositivo.
+```
+
+Esto es importante: **estar sin internet no debe parecer un error**.
+
+---
+
+## Resumen de la jornada
+
+Solo tres datos:
+
+```text
+HOY
+
+┌────────────────┐ ┌────────────────┐
+│ 🥛 428.5 L     │ │ 🚚 14         │
+│ Recolectados   │ │ Entregas       │
+└────────────────┘ └────────────────┘
+
+┌─────────────────────────────────┐
+│ ↻ 3 registros pendientes        │
+│ de sincronización               │
+└─────────────────────────────────┘
+```
+
+No mostraría información que no tenga relación directa con su jornada.
+
+---
+
+## Acción principal
+
+Muy visible:
+
+```text
+┌─────────────────────────────────┐
+│                                 │
+│        ＋ REGISTRAR ENTREGA      │
+│                                 │
+│   QR o DNI del proveedor        │
+│                                 │
+└─────────────────────────────────┘
+```
+
+Esa debería ser prácticamente la acción dominante de la aplicación.
+
+---
+
+## Últimas entregas
+
+```text
+ÚLTIMAS ENTREGAS
+
+Juan Quispe
+32.5 L · 10:42 a. m.
+✓ Sincronizada                           >
+
+María Mamani
+28.0 L · 10:31 a. m.
+↻ Pendiente                             >
+
+Pedro Condori
+35.0 L · 10:18 a. m.
+✓ Sincronizada                           >
+```
+
+No necesitamos otra sección de “actividad reciente”.
+
+Esto ya cumple esa función.
+
+---
+
+# 2. REGISTRAR ENTREGA
+
+Esta es **la pantalla más importante de todo el rol Acopiador**.
+
+Debe ser extremadamente rápida.
+
+Yo la convertiría en un flujo de **3 pasos**.
+
+```text
+Identificar → Cantidad → Confirmar
+```
+
+Nada más.
+
+---
+
+# PASO 1 — Identificar proveedor
+
+La primera pantalla:
+
+```text
+REGISTRAR ENTREGA
+
+Identifique al proveedor
+
+┌─────────────────────────────────┐
+│                                 │
+│          📷 Escanear QR         │
+│                                 │
+└─────────────────────────────────┘
+
+               o
+
+┌─────────────────────────────────┐
+│ 🔍 Ingresar DNI                 │
+└─────────────────────────────────┘
+```
+
+No debería pedir:
+
+* zona;
+* nombre;
+* código;
+* dirección;
+
+manualmente.
+
+La aplicación ya sabe la zona del Acopiador y obtiene los datos del proveedor.
+
+---
+
+## Escaneo QR
+
+Al tocar:
+
+```text
+ESCANEAR QR
+
+┌──────────────────────────────┐
+│                              │
+│        [ CÁMARA QR ]         │
+│                              │
+│     Coloque el código        │
+│      dentro del marco        │
+│                              │
+└──────────────────────────────┘
+
+También puede ingresar DNI
+```
+
+Si el QR está en la base local funciona incluso sin internet.
+
+---
+
+## Identificación por DNI
+
+```text
+BUSCAR PROVEEDOR
+
+DNI
+
+[ 74218965                ]
+
+            Buscar
+```
+
+Resultado:
+
+```text
+✓ Proveedor encontrado
+
+Juan Quispe Mamani
+
+DNI
+74218965
+
+Zona
+Huata
+
+Estado
+● Activo
+
+             Continuar →
+```
+
+---
+
+## Proveedor fuera de su zona
+
+Aquí no debemos complicar la interfaz.
+
+```text
+⚠ Proveedor fuera de su zona
+
+Este proveedor pertenece a
+Zona Coata.
+
+No puede registrar una entrega
+desde su zona asignada.
+
+              Entendido
+```
+
+---
+
+# PASO 2 — Registrar cantidad
+
+Después de identificarlo:
+
+```text
+← Registrar entrega
+
+Juan Quispe Mamani
+Zona Huata
+
+CANTIDAD DE LECHE
+
+        [ 32.5 ]
+
+          Litros
+```
+
+El campo de litros debe ser enorme porque es el dato principal.
+
+Después:
+
+```text
+Observación
+Opcional
+
+[ Escriba una observación... ]
+```
+
+Nada más.
+
+Datos como:
+
+* fecha;
+* hora;
+* acopiador;
+* zona;
+
+los registra automáticamente el sistema.
+
+Esto elimina errores y pasos innecesarios.
+
+---
+
+# PASO 3 — Confirmación
+
+Antes de guardar:
+
+```text
+CONFIRMAR ENTREGA
+
+Proveedor
+Juan Quispe Mamani
+
+Cantidad
+32.5 L
+
+Zona
+Huata
+
+Fecha
+13 Sep · 10:42 a. m.
+
+Registrado por
+Carlos Mamani
+```
+
+Botón principal:
+
+```text
+[ CONFIRMAR ENTREGA ]
+```
+
+Secundario:
+
+```text
+Corregir
+```
+
+---
+
+# 3. ENTREGA REGISTRADA
+
+Después de confirmar no debería mandar al usuario a otra pantalla compleja.
+
+Debe aparecer:
+
+```text
+✓ ENTREGA REGISTRADA
+
+32.5 L
+
+Juan Quispe Mamani
+
+Guardada correctamente.
+
+● Sin conexión
+Se sincronizará automáticamente
+cuando vuelva la conexión.
+```
+
+Y dos opciones:
+
+```text
+[ + Registrar otra entrega ]
+
+      Ver detalle
+```
+
+La principal es:
+
+**Registrar otra entrega.**
+
+Porque probablemente hay más proveedores esperando.
+
+---
+
+# 4. ENTREGA PENDIENTE DE SINCRONIZACIÓN
+
+Si no hay internet:
+
+```text
+Juan Quispe
+32.5 L
+
+🟡 Guardada en el dispositivo
+
+Pendiente de sincronización
+```
+
+Cuando haya conexión:
+
+```text
+↻ Sincronizando...
+```
+
+Y finalmente:
+
+```text
+✓ Sincronizada
+```
+
+El acopiador **no debería tener que volver a registrar nada**.
+
+---
+
+# 5. ENTREGAS
+
+Tercer módulo principal.
+
+```text
+MIS ENTREGAS
+
+Hoy · 14 entregas · 428.5 L
+
+[ Hoy ] [ 7 días ] [ 30 días ]
+
+🔍 Buscar proveedor
+```
+
+Tarjetas:
+
+```text
+10:42 a. m.
+
+Juan Quispe Mamani
+32.5 L
+
+✓ Sincronizada                           >
+```
+
+Otra:
+
+```text
+10:31 a. m.
+
+María Mamani
+28.0 L
+
+↻ Pendiente de sincronización           >
+```
+
+Otra:
+
+```text
+09:46 a. m.
+
+Pedro Condori
+35.0 L
+
+✓ Sincronizada
+
+Calidad: 🟢 Aceptada                     >
+```
+
+Aquí sí puede ver eventualmente el resultado de calidad, pero solamente como **información posterior**.
+
+El Acopiador no realiza el análisis.
+
+---
+
+# 6. DETALLE DE ENTREGA
+
+```text
+← Detalle
+
+ENTREGA #1048
+
+32.5 L
+
+Proveedor
+Juan Quispe Mamani
+
+DNI
+7421****
+
+Zona
+Huata
+
+Fecha
+13 Sep · 10:42 a. m.
+
+Estado
+✓ Sincronizada
+```
+
+Después:
+
+```text
+CALIDAD
+
+🟢 ACEPTADA
+
+Analizado
+11:24 a. m.
+```
+
+No necesitamos mostrar todos los parámetros técnicos al Acopiador salvo que exista una razón operacional.
+
+Puede existir simplemente:
+
+**Ver resultado completo →**
+
+si posteriormente lo consideras necesario.
+
+---
+
+# 7. ¿Puede editar una entrega?
+
+Aquí aplicaría una regla importante.
+
+### Mientras esté pendiente localmente
+
+Si todavía **no se sincronizó**:
+
+```text
+🟡 Pendiente de sincronización
+
+Editar entrega
+Eliminar registro
+```
+
+Esto permite corregir un error inmediatamente.
+
+Por ejemplo:
+
+```text
+32.5 L
+```
+
+cuando realmente eran:
+
+```text
+35.2 L
+```
+
+---
+
+### Una vez sincronizada
+
+Ya no ofrecería:
+
+**Editar**
+
+directamente.
+
+Mostraría:
+
+```text
+✓ Sincronizada
+
+Esta entrega ya fue enviada al sistema.
+```
+
+Si posteriormente necesitas manejar correcciones, debería existir un proceso controlado y auditable, no sobrescribir silenciosamente una entrega.
+
+---
+
+# 8. PROVEEDORES
+
+No pondría `Proveedores` en la navegación inferior.
+
+El Acopiador ya encuentra proveedores cuando registra una entrega.
+
+Pero puede existir en:
+
+```text
+Más → Proveedores de mi zona
+```
+
+Pantalla:
+
+```text
+PROVEEDORES · HUATA
+
+🔍 Buscar por nombre o DNI
+
+Juan Quispe Mamani
+DNI 7421****
+● Activo                                  >
+
+María Condori
+DNI 7182****
+● Activa                                  >
+```
+
+Solo los proveedores pertenecientes a su zona.
+
+---
+
+# 9. DETALLE DEL PROVEEDOR
+
+Información necesaria para identificarlo:
+
+```text
+Juan Quispe Mamani
+
+Proveedor
+
+DNI
+7421****
+
+Zona
+Huata
+
+Teléfono
+987 *** ***
+
+Estado
+● Activo
+```
+
+Luego:
+
+```text
+RESUMEN
+
+Esta semana
+4 entregas
+
+Litros
+128.5 L
+
+Última entrega
+Hoy · 32.5 L
+```
+
+Y acción:
+
+```text
+[ Registrar entrega ]
+```
+
+No debería poder:
+
+* editar proveedor;
+* cambiar zona;
+* activar/desactivar;
+* crear usuarios.
+
+Eso corresponde al Administrador.
+
+---
+
+# 10. MÁS
+
+Quedaría bastante pequeño:
+
+```text
+MÁS
+
+👥 Proveedores de mi zona             >
+📢 Comunicados                        >
+🔔 Notificaciones                     >
+
+────────────────────
+
+↻ Sincronización                      >
+👤 Mi perfil                          >
+⚙ Preferencias                        >
+```
+
+Nada más.
+
+---
+
+# 11. SINCRONIZACIÓN
+
+Para este rol sí es una pantalla muy importante.
+
+```text
+SINCRONIZACIÓN
+
+● Sin conexión
+
+3 operaciones pendientes
+
+Última sincronización
+09:48 a. m.
+```
+
+Lista:
+
+```text
+PENDIENTES
+
+Juan Quispe
+32.5 L · 10:42
+Pendiente
+
+María Mamani
+28 L · 10:31
+Pendiente
+
+Pedro Condori
+35 L · 10:18
+Pendiente
+```
+
+Cuando vuelva internet:
+
+```text
+↻ Sincronizando
+
+2 de 3 registros
+```
+
+Botón:
+
+```text
+[ Sincronizar ahora ]
+```
+
+Aunque la sincronización también debe iniciarse automáticamente.
+
+---
+
+# 12. Error de sincronización
+
+No debería decir simplemente:
+
+> ERROR 500
+
+El usuario necesita saber qué hacer.
+
+Por ejemplo:
+
+```text
+⚠ No se pudo sincronizar
+
+Entrega
+Juan Quispe · 32.5 L
+
+El registro continúa guardado
+en este dispositivo.
+
+[ Reintentar ]
+```
+
+Nunca perder el registro local.
+
+---
+
+# 13. COMUNICADOS
+
+Solo lectura:
+
+```text
+COMUNICADOS
+
+📢 Nuevo horario de recepción
+12 Sep                                  >
+
+📢 Capacitación mensual
+10 Sep                                  >
+```
+
+No necesita administrar comunicaciones.
+
+---
+
+# 14. NOTIFICACIONES
+
+Priorizaría eventos relacionados con su operación.
+
+```text
+NOTIFICACIONES
+
+✓ 3 entregas sincronizadas
+Hace 2 min
+
+⚠ Entrega observada
+Juan Quispe · 32.5 L
+Hace 35 min
+
+📢 Nuevo comunicado
+Hace 1 h
+```
+
+---
+
+# 15. PERFIL
+
+Muy sencillo.
+
+```text
+MI PERFIL
+
+Carlos Mamani
+
+Acopiador
+
+Zona asignada
+Huata
+
+DNI
+7218****
+
+Teléfono
+987 *** ***
+
+Estado
+● Activo
+```
+
+La **zona asignada debe estar siempre visible**, porque determina con qué proveedores puede trabajar.
+
+---
+
+# Estructura definitiva del ACOPIADOR
+
+Yo dejaría oficialmente este mapa:
+
+```text
+ACOPIADOR
+│
+├── INICIO
+│   ├── Resumen de jornada
+│   ├── Litros del día
+│   ├── Entregas del día
+│   ├── Pendientes de sincronización
+│   └── Últimas entregas
+│
+├── REGISTRAR
+│   ├── Identificar proveedor
+│   │   ├── QR
+│   │   └── DNI
+│   │
+│   ├── Registrar litros
+│   ├── Observación opcional
+│   ├── Confirmar
+│   └── Guardar / sincronizar
+│
+├── ENTREGAS
+│   ├── Mis entregas
+│   ├── Filtros
+│   └── Detalle de entrega
+│
+└── MÁS
+    ├── Proveedores de mi zona
+    ├── Comunicados
+    ├── Notificaciones
+    ├── Sincronización
+    └── Mi perfil
+```
+
+### Navegación inferior
+
+```text
+┌────────┬────────────┬──────────┬───────┐
+│ Inicio │ + Registrar│ Entregas │  Más  │
+└────────┴────────────┴──────────┴───────┘
+```
+
+Para este rol hay una regla de UX especialmente importante: **el Acopiador no debería perder tiempo administrando datos**. La app debe conseguir que pueda registrar una entrega correctamente en segundos, incluso sin internet, y continuar inmediatamente con el siguiente proveedor.
+
+Ese sería el diseño base oficial del **rol ACOPIADOR**.
+
+---
+NOTA DE LA IMPLEMENTACIÓN REAL (ver acopiador.md en esta misma carpeta):
+- "Editar entrega mientras esté pendiente" (sección 7) es un concepto 100% local en SQLite: el backend no tiene PATCH/DELETE de entregas para este rol. Una vez sincronizada, no hay forma de editarla desde la app — coincide con lo que ya proponía este mismo diseño.
+- El escaneo QR resuelve directamente contra el backend (no hay un paso de "búsqueda" separado): identificación + registro es una sola llamada. Ver acopiador.md para el contrato exacto.
+- No hay clave de idempotencia en el backend para evitar duplicados si se reintenta un envío — ver la advertencia de offline en acopiador.md antes de diseñar la cola de sincronización.

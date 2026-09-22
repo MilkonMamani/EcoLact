@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Application\Recorrido;
+
+use App\Domain\Recorrido\RecorridoAcopio;
+use App\Domain\Recorrido\RecorridoAcopioRepository;
+use App\Domain\Shared\Enums\EstadoRecorrido;
+use DateTimeImmutable;
+use DomainException;
+
+final class IniciarRecorrido
+{
+    public function __construct(
+        private readonly RecorridoAcopioRepository $recorridos,
+    ) {}
+
+    public function execute(int $recorridoId, int $acopiadorId): RecorridoAcopio
+    {
+        $recorrido = $this->recorridos->buscarPorId($recorridoId);
+
+        if ($recorrido === null) {
+            throw new DomainException('El recorrido indicado no existe.');
+        }
+
+        if ($recorrido->acopiadorId() !== $acopiadorId) {
+            throw new DomainException('No tienes permiso para iniciar este recorrido.');
+        }
+
+        if ($recorrido->estado() !== EstadoRecorrido::PENDIENTE) {
+            return $recorrido;
+        }
+
+        return $this->recorridos->actualizar(new RecorridoAcopio(
+            id: $recorrido->id(),
+            rutaId: $recorrido->rutaId(),
+            acopiadorId: $recorrido->acopiadorId(),
+            fechaOperativa: $recorrido->fechaOperativa(),
+            estado: EstadoRecorrido::EN_PROGRESO,
+            iniciadoEn: new DateTimeImmutable,
+            finalizadoEn: $recorrido->finalizadoEn(),
+        ));
+    }
+}

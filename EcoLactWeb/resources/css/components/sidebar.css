@@ -1,0 +1,45 @@
+.ecolact-sidebar {
+    width: 264px;
+    flex-shrink: 0;
+    isolation: isolate;
+    overflow: hidden;
+    background: #1d1006;
+    border-right: 1px solid #b9986338;
+    color: #f8f4ed;
+}
+.ecolact-sidebar-scroll { display: flex; flex: 1; min-height: 0; flex-direction: column; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #a77a4860 transparent; }
+.ecolact-sidebar-brand { display: flex; flex-shrink: 0; align-items: center; gap: 13px; padding: 20px 18px 18px; text-decoration: none; }
+.ecolact-sidebar-brand img { width: 48px; height: 61px; }
+.ecolact-sidebar-brand strong { display: block; font-size: 29px; font-weight: 600; line-height: 1.15; letter-spacing: -.03em; }
+.ecolact-sidebar-brand small { display: block; margin-top: 5px; font-size: 10px; color: #e1d4c3; }
+.ecolact-sidebar-nav { position: relative; z-index: 1; padding: 0 11px; }
+.ecolact-sidebar-heading { margin: 18px 0 5px; padding: 0 2px; color: #66bbc4; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .025em; }
+.ecolact-sidebar-link, .ecolact-sidebar-group > summary { display: flex; align-items: center; gap: 13px; min-height: 38px; padding: 8px 10px; border-radius: 6px; font-size: 13px; line-height: 1.4; color: #f0e8df; text-decoration: none; transition: background-color .15s, color .15s; }
+.ecolact-nav-icon { width: 20px; height: 20px; flex-shrink: 0; }
+.ecolact-sidebar-link:hover, .ecolact-sidebar-group > summary:hover { background: #ffffff0b; color: white; }
+.ecolact-sidebar-link.is-active { background: linear-gradient(100deg, #0a8390, #1098a4); color: white; box-shadow: 0 2px 6px #0002; }
+.ecolact-sidebar-link.is-disabled { color: #b7aa9a; cursor: not-allowed; }
+.ecolact-sidebar-group > summary { list-style: none; cursor: pointer; }
+.ecolact-sidebar-group > summary::-webkit-details-marker, .ecolact-sidebar-account > summary::-webkit-details-marker { display: none; }
+.ecolact-sidebar-group.is-active > summary { background: #ffffff12; color: white; }
+.ecolact-group-chevron { margin-left: auto; width: 12px; height: 12px; color: #c4b39d; transition: transform .15s; }
+.ecolact-sidebar-group[open] > summary .ecolact-group-chevron { transform: rotate(90deg); }
+.ecolact-sidebar-submenu { margin: 3px 0 6px 20px; padding-left: 12px; border-left: 1px solid #a77a4860; }
+.ecolact-sidebar-submenu .ecolact-sidebar-link { font-size: 12px; min-height: 34px; padding-left: 10px; }
+.ecolact-sidebar-landscape { flex: 1 0 175px; min-height: 175px; background: url('../../../public/images/ecolact-sidebar-landscape.svg') center bottom / 100% auto no-repeat; margin-top: 14px; pointer-events: none; }
+.ecolact-sidebar-account { position: relative; z-index: 3; flex-shrink: 0; border-top: 1px solid #a77a4840; padding: 17px 14px 24px; background: #1b1008; }
+.ecolact-sidebar-account > summary { display: flex; align-items: center; gap: 11px; list-style: none; cursor: pointer; border-radius: 6px; }
+.ecolact-sidebar-avatar { display: flex; width: 39px; height: 39px; flex-shrink: 0; align-items: center; justify-content: center; border: 2px solid #d8c7a6; border-radius: 50%; background: #0b6670; color: white; font-size: 18px; }
+.ecolact-sidebar-identity { flex: 1; min-width: 0; }
+.ecolact-sidebar-identity strong { display: block; overflow: hidden; text-overflow: ellipsis; font-size: 12px; font-weight: 400; white-space: nowrap; }
+.ecolact-sidebar-identity small { display: block; margin-top: 3px; color: #d3c2aa; font-size: 10px; }
+.ecolact-sidebar-account > summary > svg { width: 13px; height: 13px; }
+.ecolact-sidebar-account[open] > summary > svg { transform: rotate(-90deg); }
+.ecolact-sidebar-menu { position: absolute; bottom: calc(100% + 8px); left: 12px; right: 12px; display: flex; flex-direction: column; gap: 2px; border: 1px solid #a77a4850; border-radius: 8px; padding: 5px; background: #302014; box-shadow: 0 8px 20px #0004; }
+.ecolact-sidebar-menu a, .ecolact-sidebar-menu button { display: flex; width: 100%; align-items: center; gap: 12px; padding: 10px; border-radius: 5px; color: #f8f4ed; font-size: 13px; cursor: pointer; text-decoration: none; }
+.ecolact-sidebar-menu a:hover, .ecolact-sidebar-menu button:hover { background: #ffffff12; }
+.ecolact-sidebar :focus-visible { outline: 2px solid #6ed7dc; outline-offset: 2px; }
+@media (max-width: 1023px) { .ecolact-sidebar { height: 100dvh; max-width: calc(100vw - 48px); } }
+@media (prefers-reduced-motion: reduce) { .ecolact-sidebar * { transition: none; } }
+
+

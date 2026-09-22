@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@import './components/sidebar.css';
+@import './components/misc.css';
+@import './components/pago-semanal.css';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-primary: #0f7c86;
+    --color-primary-dark: #0b5961;
+    --color-primary-soft: #e1f2f1;
+
+    --color-accent: #a77a48;
+    --color-accent-soft: #f2e7d8;
+
+    --color-background: #f7f4ee;
+    --color-surface: #ffffff;
+
+    --color-text: #1f2d33;
+    --color-text-muted: #68777d;
+
+    --color-success: #279b75;
+    --color-warning: #e6a23c;
+    --color-danger: #d94c4c;
+    --color-info: #4f8fcb;
+
+    /* Fondos suaves para iconos, badges y franjas informativas (Configuración de pagos y Pagos). */
+    --color-info-soft: #eaf5ff;
+    --color-success-soft: #e8f8ef;
+    --color-warning-soft: #fff4df;
+    --color-danger-soft: #fdecec;
+    --color-label: #64748b;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-background);
+        color: var(--color-text);
+    }
+
+    ::selection {
+        background-color: var(--color-primary-soft);
+        color: var(--color-primary-dark);
+    }
+
+    *:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+}

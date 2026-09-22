@@ -1,0 +1,1065 @@
+Sí. Para **CALIDAD** conviene que la app esté todavía más enfocada que la del Encargado de Planta. Este rol tiene un proceso principal muy claro:
+
+**detectar entregas pendientes → analizar → registrar parámetros → revisar resultado → confirmar → cerrar análisis.**
+
+No debería perder tiempo navegando por módulos administrativos.
+
+# Estructura principal — CALIDAD
+
+La navegación inferior la dejaría así:
+
+```text
+INICIO · PENDIENTES · HISTORIAL · MÁS
+```
+
+Y globalmente:
+
+```text
+● Online / Offline
+↻ Sincronización
+🔔 Notificaciones
+👤 Perfil
+```
+
+La pantalla más importante será **Pendientes**, porque de ahí nace prácticamente todo el trabajo del analista.
+
+---
+
+# 1. INICIO
+
+Esta pantalla debe responder:
+
+> **“¿Qué análisis tengo pendientes y qué casos requieren mi atención?”**
+
+### Cabecera
+
+```text
+Buenos días, Ana
+
+Analista de Calidad
+
+● En línea                       🔔
+```
+
+Sin conexión:
+
+```text
+● Sin conexión · 2 análisis pendientes
+
+Puedes continuar trabajando
+con los datos guardados en el dispositivo.
+```
+
+---
+
+## Resumen del día
+
+No pondría demasiados KPI.
+
+Solo:
+
+```text
+HOY
+
+┌────────────────┐ ┌────────────────┐
+│ 🧪 6          │ │ ✅ 18         │
+│ Pendientes     │ │ Analizadas    │
+└────────────────┘ └────────────────┘
+
+┌────────────────┐ ┌────────────────┐
+│ 🟠 3          │ │ 🔴 1          │
+│ Observadas     │ │ Rechazada     │
+└────────────────┘ └────────────────┘
+```
+
+---
+
+# 2. Acción principal
+
+Muy visible:
+
+```text
+┌─────────────────────────────────┐
+│                                 │
+│       🧪 ANALIZAR ENTREGA       │
+│                                 │
+│        6 pendientes             │
+│                                 │
+└─────────────────────────────────┘
+```
+
+Al tocarlo lleva directamente a **Pendientes**.
+
+No abriría primero un menú de “Análisis de calidad”.
+
+Eso sería un paso innecesario.
+
+---
+
+# 3. Atención requerida
+
+Debajo:
+
+```text
+ATENCIÓN REQUERIDA
+
+🔴 Resultado rechazado
+Juan Quispe · 32.5 L
+Densidad fuera de rango                  >
+
+🟠 Resultado observado
+María Condori · 28 L
+Revisar parámetros                       >
+
+🟡 Análisis iniciado
+Pedro Mamani · 31 L
+Pendiente de confirmar                   >
+```
+
+Aquí aparecen casos que requieren seguimiento.
+
+---
+
+# 4. PENDIENTES
+
+Esta es la pantalla operativa principal.
+
+```text
+ANÁLISIS PENDIENTES
+
+6 entregas
+
+🔍 Buscar proveedor
+
+[ Todas ] [ Hoy ] [ Análisis iniciados ]
+```
+
+Cada entrega como tarjeta:
+
+```text
+Juan Quispe Mamani
+
+32.5 L
+Huata
+
+Entrega
+Hoy · 08:42 a. m.
+
+Registrado por
+Carlos Mamani
+
+🟡 PENDIENTE DE ANÁLISIS
+
+                            Analizar >
+```
+
+Otra:
+
+```text
+María Condori
+
+28 L
+Coata
+
+🧪 ANÁLISIS INICIADO
+
+Guardado localmente
+
+                           Continuar >
+```
+
+Aquí ya estamos eliminando otra redundancia:
+
+**Pendientes + análisis iniciados** pueden coexistir en la misma pantalla.
+
+---
+
+# 5. Detalle previo de la entrega
+
+Antes de analizar debe poder verificar que está trabajando sobre la entrega correcta.
+
+```text
+← Entrega
+
+Juan Quispe Mamani
+
+32.5 L
+
+Zona
+Huata
+
+Fecha
+13 Sep · 08:42 a. m.
+
+Acopiador
+Carlos Mamani
+
+Estado
+Pendiente de análisis
+```
+
+Acción:
+
+```text
+[ INICIAR ANÁLISIS ]
+```
+
+El rol Calidad solamente consulta estos datos.
+
+No debería aparecer:
+
+* Editar litros
+* Cambiar proveedor
+* Cambiar zona
+* Eliminar entrega
+
+porque no corresponde a sus funciones.
+
+---
+
+# 6. Flujo de análisis
+
+Aquí es donde debemos hacer una UX especialmente buena.
+
+No haría un formulario gigantesco.
+
+Lo dividiría en:
+
+```text
+Evidencia → Parámetros → Resultado → Confirmar
+```
+
+Solo **4 pasos**.
+
+---
+
+# 7. Paso 1 — Evidencia
+
+Como tu sistema contempla imagen y OCR:
+
+```text
+ANÁLISIS DE CALIDAD
+
+Juan Quispe
+32.5 L
+
+1 de 4 · Evidencia
+```
+
+Acción principal:
+
+```text
+┌─────────────────────────────────┐
+│            📷                   │
+│                                 │
+│       Tomar fotografía          │
+│       del resultado             │
+│                                 │
+└─────────────────────────────────┘
+```
+
+También:
+
+```text
+Seleccionar imagen
+```
+
+Después de capturar:
+
+```text
+✓ Evidencia registrada
+
+[ imagen ]
+
+               Continuar →
+```
+
+---
+
+# 8. OCR
+
+El OCR debería ayudar, no complicar el proceso.
+
+Después de tomar la foto:
+
+```text
+Leyendo resultados...
+
+pH
+6.72
+
+Densidad
+1.029
+
+Temperatura
+5.4 °C
+```
+
+La app puede marcar:
+
+```text
+✓ Lectura confiable
+
+⚠ Revisar valor
+```
+
+Pero hay una regla importante:
+
+**el analista siempre debe revisar antes de confirmar.**
+
+No convertiría el OCR automáticamente en resultado definitivo.
+
+---
+
+# 9. Trabajo offline
+
+Tampoco haría que el OCR bloquee todo el proceso.
+
+Si no puede ejecutarse offline:
+
+```text
+● Sin conexión
+
+La imagen quedó guardada.
+
+Puede ingresar los valores
+manualmente y continuar.
+```
+
+Botón:
+
+```text
+[ INGRESAR MANUALMENTE ]
+```
+
+De esta forma el trabajo de campo no se detiene por falta de internet.
+
+---
+
+# 10. Paso 2 — Parámetros
+
+Esta debe ser probablemente la pantalla más cuidada.
+
+```text
+2 de 4 · Parámetros
+
+pH
+
+[ 6.72 ]
+
+Rango permitido
+6.60 — 6.80
+
+🟢 Dentro del rango
+```
+
+Después:
+
+```text
+DENSIDAD
+
+[ 1.029 ]
+
+Rango permitido
+1.028 — 1.034
+
+🟢 Dentro del rango
+```
+
+Por ejemplo:
+
+```text
+TEMPERATURA
+
+[ 9.2 ] °C
+
+Máximo permitido
+8 °C
+
+🔴 Fuera del rango
+```
+
+Así el analista no tiene que memorizar límites.
+
+---
+
+# 11. No mostrar reglas inexistentes
+
+Aquí hay algo importante para EcoLact.
+
+La aplicación debe mostrar únicamente los **parámetros y reglas de calidad realmente configurados** en el sistema.
+
+Si todavía no existe una regla oficial para determinado parámetro:
+
+```text
+Acidez
+6.5
+
+Sin regla configurada
+```
+
+No deberíamos inventar:
+
+```text
+✓ Aceptado
+```
+
+si el backend no tiene una regla válida para evaluarlo.
+
+---
+
+# 12. Origen del dato
+
+Internamente puede registrarse:
+
+```text
+Valor: 6.72
+Origen: OCR
+Confianza: 94%
+```
+
+o:
+
+```text
+Valor: 6.70
+Origen: Manual
+```
+
+Pero al usuario no le mostraría toda esa información permanentemente.
+
+Algo más simple:
+
+```text
+6.72
+Detectado por imagen ✨
+```
+
+o
+
+```text
+6.70
+Ingresado manualmente
+```
+
+---
+
+# 13. Paso 3 — Resultado
+
+Después de los parámetros:
+
+```text
+3 de 4 · Resultado
+
+RESULTADO PRELIMINAR
+
+🟠 OBSERVADA
+```
+
+Y explicar el motivo:
+
+```text
+1 parámetro requiere atención
+
+Temperatura
+9.2 °C
+
+Máximo permitido
+8 °C
+```
+
+Esto es mejor que solamente mostrar:
+
+> OBSERVADA
+
+porque el analista necesita entender por qué.
+
+---
+
+# 14. Resultado final
+
+Los estados que ya estás manejando son:
+
+```text
+🟢 ACEPTADA
+🟠 OBSERVADA
+🔴 RECHAZADA
+```
+
+La interfaz podría mostrar:
+
+```text
+RESULTADO
+
+🟠 OBSERVADA
+
+Motivo
+Temperatura fuera del rango
+
+Observación
+[ _________________________ ]
+```
+
+La observación puede ser opcional o requerida dependiendo del resultado que definamos posteriormente.
+
+---
+
+# 15. Paso 4 — Confirmación
+
+Esta pantalla es muy importante porque una vez confirmado, el análisis queda bloqueado.
+
+```text
+4 de 4 · Confirmar
+
+REVISAR ANÁLISIS
+
+Proveedor
+Juan Quispe
+
+Entrega
+32.5 L
+
+────────────────────
+
+pH
+6.72                     ✓
+
+Densidad
+1.029                    ✓
+
+Temperatura
+9.2 °C                   ⚠
+
+────────────────────
+
+RESULTADO
+
+🟠 OBSERVADA
+```
+
+Abajo:
+
+```text
+⚠ Una vez confirmado,
+el análisis no podrá editarse.
+```
+
+Botón:
+
+```text
+[ CONFIRMAR ANÁLISIS ]
+```
+
+Y secundario:
+
+```text
+Revisar valores
+```
+
+---
+
+# 16. Análisis confirmado
+
+Después:
+
+```text
+✓ ANÁLISIS CONFIRMADO
+
+Juan Quispe
+32.5 L
+
+Resultado
+
+🟠 OBSERVADA
+
+El análisis fue registrado correctamente.
+```
+
+Acciones:
+
+```text
+[ ANALIZAR SIGUIENTE ]
+
+Ver detalle
+```
+
+Otra vez, la acción dominante es:
+
+**Analizar siguiente.**
+
+Porque probablemente tiene más muestras esperando.
+
+---
+
+# 17. HISTORIAL
+
+Aquí agrupamos todo lo ya analizado.
+
+No necesitamos:
+
+* Entregas analizadas
+* Análisis realizados
+* Historial de calidad
+
+como tres módulos diferentes.
+
+Una sola pantalla:
+
+```text
+HISTORIAL
+
+[ Hoy ] [ 7 días ] [ 30 días ]
+
+[ Todas ] [ Aceptadas ] [ Observadas ] [ Rechazadas ]
+
+🔍 Buscar proveedor
+```
+
+Tarjetas:
+
+```text
+Juan Quispe
+
+32.5 L · Huata
+13 Sep · 10:18
+
+🟢 ACEPTADA                              >
+```
+
+```text
+María Condori
+
+28 L · Coata
+13 Sep · 09:52
+
+🟠 OBSERVADA                             >
+```
+
+---
+
+# 18. Detalle del análisis
+
+Aquí sí mostramos toda la trazabilidad.
+
+```text
+← Análisis
+
+Juan Quispe Mamani
+
+Entrega
+32.5 L
+
+Huata
+13 Sep · 08:42
+```
+
+Después:
+
+```text
+RESULTADO
+
+🟢 ACEPTADA
+```
+
+---
+
+### Parámetros
+
+```text
+PARÁMETROS
+
+pH
+6.72
+✓ Dentro del rango
+
+Densidad
+1.029
+✓ Dentro del rango
+
+Temperatura
+5.4 °C
+✓ Dentro del rango
+```
+
+---
+
+### Evidencia
+
+```text
+EVIDENCIA
+
+[ Fotografía ]
+
+OCR
+94% confianza
+```
+
+---
+
+### Responsable
+
+```text
+Analizado por
+Ana Flores
+
+Fecha
+13 Sep · 10:18 a. m.
+```
+
+No existe:
+
+```text
+Editar análisis
+```
+
+porque ya está confirmado.
+
+---
+
+# 19. PROVEEDORES
+
+No lo pondría en la barra inferior.
+
+Puede estar en:
+
+```text
+Más → Proveedores
+```
+
+La función aquí es **consulta**, no administración.
+
+```text
+PROVEEDORES
+
+🔍 Nombre o DNI
+
+Juan Quispe Mamani
+Huata
+
+Última calidad
+🟢 Aceptada                              >
+```
+
+---
+
+# 20. Historial del proveedor
+
+Aquí sí puede ser útil para Calidad detectar patrones.
+
+```text
+Juan Quispe Mamani
+
+ÚLTIMOS ANÁLISIS
+
+13 Sep      🟢 Aceptada
+10 Sep      🟢 Aceptada
+08 Sep      🟠 Observada
+05 Sep      🟢 Aceptada
+```
+
+Incluso un pequeño resumen:
+
+```text
+Últimos 30 días
+
+12 aceptadas
+2 observadas
+1 rechazada
+```
+
+Eso sí aporta información real al analista.
+
+---
+
+# 21. MÁS
+
+La pantalla secundaria:
+
+```text
+MÁS
+
+👥 Proveedores                        >
+📢 Comunicados                        >
+🔔 Notificaciones                     >
+
+────────────────────
+
+↻ Sincronización                      >
+👤 Mi perfil                          >
+⚙ Preferencias                        >
+```
+
+Nada de:
+
+* pagos;
+* liquidaciones;
+* producción;
+* ventas;
+* usuarios.
+
+No pertenecen al trabajo de Calidad.
+
+---
+
+# 22. SINCRONIZACIÓN
+
+En Calidad es especialmente importante.
+
+```text
+SINCRONIZACIÓN
+
+● Sin conexión
+
+2 análisis pendientes
+```
+
+Por ejemplo:
+
+```text
+María Condori
+28 L
+
+🟡 Análisis completo
+Pendiente de sincronización
+
+────────────────────
+
+Pedro Mamani
+31 L
+
+🟡 Análisis iniciado
+Guardado localmente
+```
+
+Cuando vuelve la conexión:
+
+```text
+↻ Sincronizando
+
+1 de 2 análisis
+```
+
+Después:
+
+```text
+✓ Todo sincronizado
+```
+
+---
+
+# 23. Una operación lógica completa
+
+Igual que hicimos con Producción, el análisis debería tratarse como una sola operación:
+
+```text
+ANÁLISIS
+│
+├── imagen
+├── datos OCR
+├── parámetros
+├── resultado
+├── observación
+└── confirmación
+```
+
+No queremos que ocurra algo como:
+
+```text
+✓ Se sincronizó el análisis
+✗ No se sincronizaron los parámetros
+✓ Se sincronizó la imagen
+```
+
+y termine existiendo un análisis incompleto en el servidor.
+
+---
+
+# 24. Caso offline importante
+
+Hay una limitación que debemos conservar en el diseño.
+
+Supongamos:
+
+```text
+ACOPIADOR
+Teléfono A
+SIN INTERNET
+
+registra una nueva entrega
+```
+
+y al mismo tiempo:
+
+```text
+CALIDAD
+Teléfono B
+SIN INTERNET
+```
+
+El teléfono B **no puede conocer mágicamente esa nueva entrega**, porque todavía existe solamente en SQLite del teléfono A.
+
+Por eso, para nuestra primera versión:
+
+> Calidad podrá trabajar offline sobre entregas que ya hayan sido sincronizadas anteriormente y descargadas en su dispositivo.
+
+El flujo sería:
+
+```text
+ACOPIADOR
+registra entrega
+      ↓
+Laravel recibe entrega
+      ↓
+CALIDAD sincroniza
+      ↓
+entrega queda disponible
+      ↓
+puede analizarla offline posteriormente
+```
+
+Esto nos evita crear una sincronización directa entre celulares, que aumentaría bastante la complejidad.
+
+---
+
+# 25. Análisis iniciado offline
+
+Mientras todavía no esté confirmado:
+
+```text
+🟡 BORRADOR LOCAL
+
+Puede continuar editando
+los parámetros.
+```
+
+Por ejemplo:
+
+```text
+Editar valores
+Cambiar fotografía
+Eliminar borrador
+```
+
+Pero después de:
+
+```text
+CONFIRMAR ANÁLISIS
+```
+
+queda:
+
+```text
+🔒 Confirmado
+```
+
+Aunque todavía esté pendiente de enviarse al servidor.
+
+Es decir, **confirmar** y **sincronizar** son conceptos diferentes.
+
+Eso es muy importante.
+
+---
+
+# 26. Estado visual
+
+Yo usaría claramente:
+
+```text
+○ Pendiente
+```
+
+```text
+🧪 En análisis
+```
+
+```text
+🟡 Guardado localmente
+```
+
+```text
+↻ Sincronizando
+```
+
+```text
+✓ Sincronizado
+```
+
+Y para resultado:
+
+```text
+🟢 Aceptada
+🟠 Observada
+🔴 Rechazada
+```
+
+No mezclaría el **estado de sincronización** con el **resultado de calidad**.
+
+Por ejemplo, esto es perfectamente válido:
+
+```text
+🟠 OBSERVADA
+
+🟡 Pendiente de sincronización
+```
+
+Son dos cosas distintas.
+
+---
+
+# Estructura definitiva — CALIDAD
+
+Yo dejaría oficialmente:
+
+```text
+CALIDAD
+│
+├── INICIO
+│   ├── Resumen del día
+│   ├── Pendientes
+│   ├── Atención requerida
+│   └── Últimos análisis
+│
+├── PENDIENTES
+│   ├── Entregas pendientes
+│   ├── Análisis iniciados
+│   │
+│   └── Analizar
+│       ├── Evidencia
+│       ├── OCR / ingreso manual
+│       ├── Parámetros
+│       ├── Resultado
+│       └── Confirmación
+│
+├── HISTORIAL
+│   ├── Todos los análisis
+│   ├── Aceptadas
+│   ├── Observadas
+│   ├── Rechazadas
+│   └── Detalle del análisis
+│
+└── MÁS
+    ├── Proveedores
+    ├── Comunicados
+    ├── Notificaciones
+    ├── Sincronización
+    └── Mi perfil
+```
+
+### Navegación inferior definitiva
+
+```text
+┌────────┬────────────┬───────────┬───────┐
+│ Inicio │ Pendientes │ Historial │  Más  │
+└────────┴────────────┴───────────┴───────┘
+```
+
+Y la regla central para este rol sería:
+
+**Calidad no administra entregas; toma una entrega existente, realiza su evaluación técnica, confirma un resultado final y deja una trazabilidad que ya no se modifica.**
+
+Eso mantiene la app de Calidad muy enfocada y evita mezclar responsabilidades con Acopiador o Administrador.
+
+---
+NOTA DE LA IMPLEMENTACIÓN REAL (ver calidad.md en esta misma carpeta):
+- El OCR (secciones 8, 12, 18) NO está implementado en el backend — nunca se ejecuta lectura automática de la foto, todo valor se guarda con origen "MANUAL". Si quieren OCR real, tiene que correr en el propio celular (ej. Google ML Kit Text Recognition, on-device y offline), y el backend necesita un pequeño ajuste para aceptar el origen/confianza real por valor en vez de forzarlo — está pendiente de decidir.
+- Los pasos "Evidencia → Parámetros → Resultado" (sección 6-14) en el backend son en realidad UN SOLO endpoint que puede llamarse varias veces mientras el análisis siga en borrador — no hay 3 llamadas separadas.
+- "valores" se manda indexado por el código del parámetro (ej. "DENSIDAD", "PH"), no por su id.

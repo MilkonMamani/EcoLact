@@ -1,0 +1,1126 @@
+Sí. Para **VENTAS** la app debe estar centrada en un flujo muy concreto:
+
+**seleccionar comprador → agregar productos → validar stock y precio → confirmar venta → descontar stock automáticamente → continuar con la siguiente venta.**
+
+No debería convertirse en un mini-ERP con demasiadas pantallas.
+
+# Estructura principal — VENTAS
+
+La navegación inferior la dejaría así:
+
+```text
+INICIO · VENDER · VENTAS · MÁS
+```
+
+Y globalmente:
+
+```text
+● Online / Offline
+↻ Sincronización
+🔔 Notificaciones
+👤 Perfil
+```
+
+`VENDER` sería la acción principal del rol, igual que `Registrar` para Acopiador.
+
+---
+
+# 1. INICIO
+
+La pantalla debe responder:
+
+> **“¿Cómo van las ventas de hoy y hay algo que deba atender?”**
+
+### Cabecera
+
+```text
+Buenos días, Rosa
+
+Personal de Ventas
+
+● En línea                       🔔
+```
+
+Sin conexión:
+
+```text
+● Sin conexión · 2 ventas pendientes
+
+Puedes seguir registrando ventas.
+Se sincronizarán después.
+```
+
+---
+
+## Resumen del día
+
+No pondría demasiados KPI.
+
+```text
+HOY
+
+┌────────────────┐ ┌────────────────┐
+│ 💰 S/ 1,840    │ │ 🧾 23         │
+│ Vendido        │ │ Ventas        │
+└────────────────┘ └────────────────┘
+
+┌────────────────┐ ┌────────────────┐
+│ 📦 87          │ │ ⚠ 2          │
+│ Productos      │ │ Stock bajo    │
+└────────────────┘ └────────────────┘
+```
+
+La cifra de ventas y cantidad de productos ya son suficientes para operación diaria.
+
+---
+
+# 2. Acción principal
+
+Muy visible:
+
+```text
+┌─────────────────────────────────┐
+│                                 │
+│         🛒 NUEVA VENTA          │
+│                                 │
+│   Registrar una operación       │
+│                                 │
+└─────────────────────────────────┘
+```
+
+No haría que el usuario tenga que entrar primero a:
+
+`Ventas → Registrar venta`
+
+Eso agrega navegación sin beneficio.
+
+---
+
+# 3. Atención requerida
+
+```text
+ATENCIÓN REQUERIDA
+
+🔴 Yogurt Natural
+8 unidades disponibles                    >
+
+🟠 Queso Fresco
+12 unidades disponibles                   >
+
+↻ 2 ventas
+Pendientes de sincronización              >
+```
+
+Así el personal puede saber rápidamente si hay riesgo de vender productos agotados.
+
+---
+
+# 4. Últimas ventas
+
+```text
+ÚLTIMAS VENTAS
+
+10:42 a. m.
+Tienda San José
+S/ 84.00
+✓ Sincronizada                            >
+
+10:28 a. m.
+María Flores
+S/ 42.50
+↻ Pendiente                               >
+
+09:51 a. m.
+Bodega Central
+S/ 126.00
+✓ Sincronizada                            >
+```
+
+No necesitamos una sección independiente de “actividad reciente”.
+
+---
+
+# 5. VENDER
+
+Este es el proceso central.
+
+Yo lo dividiría en solo:
+
+```text
+Comprador → Productos → Resumen → Confirmar
+```
+
+Cuatro pasos.
+
+---
+
+# 6. Paso 1 — Comprador
+
+```text
+NUEVA VENTA
+
+1 de 4 · Comprador
+
+🔍 Buscar comprador
+
+[ Nombre / DNI / RUC ]
+```
+
+Resultados:
+
+```text
+Bodega San José
+
+Tipo
+Mayorista
+
+Documento
+RUC ***********
+
+                              Seleccionar >
+```
+
+También:
+
+```text
+María Flores
+
+Tipo
+Minorista
+
+DNI
+72******
+
+                              Seleccionar >
+```
+
+No tendría que escribir nuevamente dirección, teléfono, tipo de comprador, etc.
+
+La app recupera esos datos.
+
+---
+
+# 7. ¿Comprador nuevo?
+
+Si Ventas tiene autorización para registrar compradores, colocaría discretamente:
+
+```text
+¿No está registrado?
+
++ Nuevo comprador
+```
+
+Pero no lo haría protagonista de la pantalla.
+
+Formulario breve:
+
+```text
+NUEVO COMPRADOR
+
+Tipo
+[ Persona ▼ ]
+
+Nombre
+[ __________________ ]
+
+Documento
+[ __________________ ]
+
+Teléfono
+[ __________________ ]
+```
+
+Solo campos realmente obligatorios.
+
+Nada de formularios administrativos enormes.
+
+---
+
+# 8. Paso 2 — Productos
+
+Esta debería sentirse como un pequeño carrito.
+
+```text
+2 de 4 · Productos
+
+🔍 Buscar producto
+```
+
+Tarjetas:
+
+```text
+QUESO FRESCO
+
+Stock
+128 und.
+
+Precio
+S/ 8.50
+
+              [-]  2  [+]
+
+Subtotal
+S/ 17.00
+```
+
+Otro:
+
+```text
+YOGURT NATURAL 1 L
+
+Stock
+42 und.
+
+Precio
+S/ 6.00
+
+              [-]  3  [+]
+
+Subtotal
+S/ 18.00
+```
+
+---
+
+# 9. Precio automático
+
+Esto es importante.
+
+El usuario **no debería escribir el precio manualmente en cada venta**.
+
+El sistema obtiene el precio vigente según el producto y, si aplica, según el tipo de comprador.
+
+Por ejemplo:
+
+```text
+Queso Fresco
+
+Precio aplicado
+S/ 8.00
+
+Precio mayorista
+```
+
+Si el comprador fuera minorista:
+
+```text
+Precio aplicado
+S/ 8.50
+
+Precio minorista
+```
+
+Esto reduce errores.
+
+---
+
+# 10. Stock disponible
+
+Mientras agrega productos:
+
+```text
+Stock disponible
+42
+```
+
+Si intenta:
+
+```text
+Cantidad
+50
+```
+
+mostrar:
+
+```text
+⚠ Stock insuficiente
+
+Disponible
+42
+
+Solicitado
+50
+```
+
+y no permitir continuar con una cantidad imposible.
+
+---
+
+# 11. Carrito
+
+Mientras selecciona:
+
+```text
+CARRITO · 5 productos
+
+Queso Fresco
+2 × S/ 8.50
+S/ 17.00
+
+Yogurt Natural
+3 × S/ 6.00
+S/ 18.00
+
+─────────────────
+
+Subtotal
+S/ 35.00
+```
+
+Botón:
+
+```text
+[ REVISAR VENTA ]
+```
+
+---
+
+# 12. Paso 3 — Resumen
+
+Aquí mostramos toda la operación antes de confirmar.
+
+```text
+3 de 4 · Resumen
+
+COMPRADOR
+
+Bodega San José
+Mayorista
+
+──────────────────
+
+PRODUCTOS
+
+Queso Fresco
+5 × S/ 8.00
+S/ 40.00
+
+Yogurt Natural
+10 × S/ 5.50
+S/ 55.00
+
+──────────────────
+
+TOTAL
+S/ 95.00
+```
+
+Si corresponde:
+
+```text
+Observación
+Opcional
+```
+
+---
+
+# 13. Paso 4 — Confirmación
+
+```text
+4 de 4 · Confirmar
+
+TOTAL DE VENTA
+
+S/ 95.00
+
+Comprador
+Bodega San José
+
+15 productos
+```
+
+Botón principal:
+
+```text
+[ CONFIRMAR VENTA ]
+```
+
+Secundario:
+
+```text
+Revisar productos
+```
+
+---
+
+# 14. Venta confirmada
+
+Después:
+
+```text
+✓ VENTA REGISTRADA
+
+S/ 95.00
+
+Bodega San José
+
+15 productos
+
+✓ Stock actualizado
+```
+
+Si está offline:
+
+```text
+🟡 Guardada en el dispositivo
+
+Se sincronizará automáticamente
+cuando vuelva la conexión.
+```
+
+Acciones:
+
+```text
+[ + NUEVA VENTA ]
+
+Ver detalle
+```
+
+La acción dominante debe ser **Nueva venta**.
+
+---
+
+# 15. Actualización automática del stock
+
+Esta parte debe quedar muy clara.
+
+Cuando se confirma:
+
+```text
+VENTA
+  ↓
+productos vendidos
+  ↓
+movimiento de salida
+  ↓
+stock actualizado
+```
+
+El usuario no debería registrar luego manualmente:
+
+`Salida de producto`
+
+porque sería redundante.
+
+Una venta debe generar automáticamente su movimiento de inventario.
+
+---
+
+# 16. VENTAS
+
+Esta será la tercera opción principal.
+
+```text
+MIS VENTAS
+
+Hoy
+23 ventas · S/ 1,840
+
+[ Hoy ] [ 7 días ] [ 30 días ]
+
+🔍 Buscar comprador
+```
+
+Tarjetas:
+
+```text
+10:42 a. m.
+
+Bodega San José
+
+15 productos
+
+S/ 95.00
+
+✓ Sincronizada                            >
+```
+
+Otra:
+
+```text
+10:28 a. m.
+
+María Flores
+
+6 productos
+
+S/ 42.50
+
+↻ Pendiente                               >
+```
+
+No necesitamos otra pantalla principal llamada `Historial de ventas`.
+
+Esta misma pantalla lo resuelve con filtros.
+
+---
+
+# 17. Detalle de venta
+
+```text
+← Venta #V-0084
+
+S/ 95.00
+
+✓ Registrada
+```
+
+Después:
+
+```text
+COMPRADOR
+
+Bodega San José
+Mayorista
+RUC ***********
+```
+
+Productos:
+
+```text
+PRODUCTOS
+
+Queso Fresco
+5 × S/ 8.00
+S/ 40.00
+
+Yogurt Natural
+10 × S/ 5.50
+S/ 55.00
+```
+
+Y:
+
+```text
+Registrado por
+Rosa Mamani
+
+Fecha
+13 Sep · 10:42 a. m.
+```
+
+Estado de sincronización:
+
+```text
+✓ Sincronizada
+```
+
+---
+
+# 18. PRODUCTOS
+
+No lo pondría como opción inferior independiente.
+
+Estaría en:
+
+```text
+Más → Productos
+```
+
+porque en Ventas los productos sirven principalmente para:
+
+**consultar stock y precio.**
+
+Pantalla:
+
+```text
+PRODUCTOS
+
+🔍 Buscar producto
+
+Queso Fresco
+
+Stock
+128 und.
+
+Precio minorista
+S/ 8.50
+
+Precio mayorista
+S/ 8.00
+
+🟢 Disponible                            >
+```
+
+Otro:
+
+```text
+Yogurt Natural
+
+Stock
+8 und.
+
+🔴 STOCK BAJO                            >
+```
+
+---
+
+# 19. Detalle de producto
+
+```text
+QUESO FRESCO
+
+Stock actual
+128 unidades
+```
+
+Precios:
+
+```text
+PRECIOS VIGENTES
+
+Minorista
+S/ 8.50
+
+Mayorista
+S/ 8.00
+```
+
+Actividad reciente:
+
+```text
+MOVIMIENTOS RECIENTES
+
+-5
+Venta V-0084
+10:42
+
++126
+Producción LP-045
+08:30
+```
+
+El usuario Ventas puede consultar estos movimientos, pero no debería modificar manualmente el stock.
+
+---
+
+# 20. PRECIOS
+
+Yo no pondría `Precios` como módulo principal.
+
+Puede estar integrado directamente en Productos.
+
+Eso elimina:
+
+```text
+Productos
+Precios
+Stock
+```
+
+como tres pantallas separadas.
+
+El vendedor realmente necesita:
+
+> “¿Cuánto cuesta y cuánto tengo disponible?”
+
+Ambas cosas pueden aparecer juntas.
+
+---
+
+# 21. COMPRADORES
+
+En:
+
+```text
+Más → Compradores
+```
+
+Pantalla:
+
+```text
+COMPRADORES
+
+🔍 Nombre / documento
+
+Bodega San José
+Mayorista
+
+Última compra
+Hoy · S/ 95.00                         >
+
+María Flores
+Minorista
+
+Última compra
+12 Sep · S/ 42.50                      >
+```
+
+---
+
+# 22. Detalle del comprador
+
+```text
+BODEGA SAN JOSÉ
+
+Mayorista
+
+Documento
+RUC ***********
+
+Teléfono
+987 *** ***
+```
+
+Resumen útil:
+
+```text
+COMPRAS
+
+Este mes
+S/ 1,280
+
+Última compra
+Hoy · S/ 95
+```
+
+Después:
+
+```text
+ÚLTIMAS VENTAS
+
+Hoy            S/ 95.00
+10 Sep         S/ 184.00
+06 Sep         S/ 120.00
+```
+
+Acción:
+
+```text
+[ Registrar venta ]
+```
+
+---
+
+# 23. MÁS
+
+Yo lo dejaría:
+
+```text
+MÁS
+
+📦 Productos                           >
+👥 Compradores                         >
+🔔 Notificaciones                     >
+📢 Comunicados                        >
+
+────────────────────
+
+↻ Sincronización                      >
+👤 Mi perfil                          >
+```
+
+Nada de producción, proveedores, calidad, pagos o usuarios.
+
+---
+
+# 24. NOTIFICACIONES
+
+Deben estar relacionadas con venta e inventario:
+
+```text
+NOTIFICACIONES
+
+🔴 Stock crítico
+Yogurt Natural · 8 unidades
+Hace 10 min
+
+✓ Venta sincronizada
+V-0084 · S/ 95.00
+Hace 20 min
+
+📦 Stock actualizado
+Queso Fresco · +126
+Hace 1 h
+```
+
+---
+
+# 25. Ventas offline
+
+El rol Ventas sí debería poder registrar ventas offline, pero aquí hay un punto más delicado que con Acopio:
+
+**el stock puede cambiar en otros dispositivos.**
+
+La app utilizará el último stock sincronizado disponible.
+
+Ejemplo:
+
+```text
+● Sin conexión
+
+Stock local
+Queso Fresco: 20 und.
+```
+
+El vendedor registra:
+
+```text
+-5 und.
+```
+
+La app local queda:
+
+```text
+15 und. disponibles localmente
+```
+
+Pero en el servidor podría haber ocurrido otra venta.
+
+Por eso tenemos que manejar conflictos al sincronizar.
+
+---
+
+# 26. Estado offline
+
+La app debería decir claramente:
+
+```text
+● Sin conexión
+
+Los precios y el stock corresponden
+a la última sincronización.
+
+Hoy · 09:42 a. m.
+```
+
+Así no engañamos al vendedor haciéndole creer que son datos en tiempo real.
+
+---
+
+# 27. Venta pendiente
+
+```text
+Bodega San José
+
+S/ 95.00
+
+🟡 Guardada localmente
+Pendiente de sincronización
+```
+
+Mientras no se haya sincronizado, puede permitirse:
+
+```text
+Editar venta
+Cancelar venta
+```
+
+según las reglas que definamos.
+
+---
+
+# 28. Venta sincronizada
+
+Una vez sincronizada:
+
+```text
+✓ Sincronizada
+```
+
+No pondría un simple:
+
+```text
+Editar venta
+```
+
+porque ya tuvo efecto sobre inventario.
+
+Una corrección posterior debería manejarse mediante una anulación o ajuste controlado.
+
+---
+
+# 29. SINCRONIZACIÓN
+
+```text
+SINCRONIZACIÓN
+
+● Sin conexión
+
+2 ventas pendientes
+```
+
+Listado:
+
+```text
+Bodega San José
+S/ 95.00
+15 productos
+
+🟡 Pendiente
+
+──────────────────
+
+María Flores
+S/ 42.50
+6 productos
+
+🟡 Pendiente
+```
+
+Cuando vuelva internet:
+
+```text
+↻ Sincronizando
+
+1 de 2 ventas
+```
+
+---
+
+# 30. Una venta debe sincronizarse como una sola operación
+
+Muy importante:
+
+```text
+VENTA
+│
+├── comprador
+├── detalle productos
+├── precios aplicados
+├── total
+└── movimientos de stock
+```
+
+Desde la perspectiva del negocio debe ser una transacción.
+
+No queremos:
+
+```text
+✓ venta registrada
+✓ Queso descontado
+✗ Yogurt no descontado
+```
+
+Eso dejaría inventario inconsistente.
+
+---
+
+# 31. Conflicto de stock
+
+Ejemplo:
+
+La app guardó offline:
+
+```text
+Queso Fresco
+Stock conocido: 5
+
+Venta local:
+5 unidades
+```
+
+Pero al sincronizar el servidor dice:
+
+```text
+Stock real:
+3
+```
+
+La app no debería simplemente convertir el stock en negativo sin control.
+
+Mostraría:
+
+```text
+⚠ VENTA REQUIERE REVISIÓN
+
+Venta #V-0084
+
+Queso Fresco
+
+Solicitado
+5
+
+Disponible en servidor
+3
+
+La venta no pudo confirmarse
+automáticamente.
+```
+
+Esto iría a una cola de incidencias.
+
+Es especialmente importante en Ventas porque varios vendedores podrían trabajar simultáneamente.
+
+---
+
+# 32. PERFIL
+
+Muy sencillo:
+
+```text
+MI PERFIL
+
+Rosa Mamani
+
+Ventas
+
+Estado
+● Activa
+
+Última sincronización
+Hoy · 10:42 a. m.
+```
+
+Nada de cambiar roles, permisos o configuraciones administrativas.
+
+---
+
+# Estructura definitiva — VENTAS
+
+Yo la dejaría oficialmente así:
+
+```text
+VENTAS
+│
+├── INICIO
+│   ├── Ventas del día
+│   ├── Operaciones
+│   ├── Productos vendidos
+│   ├── Alertas de stock
+│   └── Últimas ventas
+│
+├── VENDER
+│   ├── Seleccionar comprador
+│   ├── Seleccionar productos
+│   ├── Precio automático
+│   ├── Validar stock
+│   ├── Revisar venta
+│   └── Confirmar
+│
+├── VENTAS
+│   ├── Mis ventas
+│   ├── Filtros
+│   └── Detalle de venta
+│
+└── MÁS
+    ├── Productos
+    ├── Compradores
+    ├── Comunicados
+    ├── Notificaciones
+    ├── Sincronización
+    └── Mi perfil
+```
+
+### Navegación inferior definitiva
+
+```text
+┌────────┬──────────┬────────┬───────┐
+│ Inicio │ + Vender │ Ventas │  Más  │
+└────────┴──────────┴────────┴───────┘
+```
+
+La regla central para este rol sería:
+
+**Ventas registra una sola vez la operación comercial; el sistema obtiene el precio vigente, valida el stock y genera automáticamente la salida de inventario.**
+
+Eso mantiene la app rápida, evita registros duplicados y separa correctamente las responsabilidades entre **Ventas** y **Encargado de Planta**.
+
+---
+NOTA DE LA IMPLEMENTACIÓN REAL (ver ventas.md en esta misma carpeta):
+- El "CARRITO · 5 productos" (secciones 8-14) NO es una sola operación atómica en el backend: cada producto se registra con una llamada independiente. Hay que rediseñar el carrito como N llamadas agrupadas en el cliente, sin garantía de todo-o-nada.
+- Falta un campo "forma de pago" (CONTADO o DESCUENTO_PLANILLA) en el paso Resumen/Confirmar — el backend lo exige siempre y este diseño nunca lo pide.
+- "Minorista" (secciones 6, 19, 20) en el backend real se llama "PUBLICO".
+- El comprador del paso 1 puede ser también un proveedor (pagando con cargo a su próxima liquidación) — agregar esa fuente de búsqueda, no solo compradores externos.
+- "🔴 STOCK BAJO" (secciones 3, 18, 19, 24) NO tiene umbral guardado en el backend — no existe stock_minimo para productos. Lo único real y disponible es "agotado" (stock = 0), que es distinto: rotúlalo así, no como "stock bajo".
+- "Comunicados" (sección 23) NO tiene endpoint para este rol — ni siquiera el panel web se lo da a Ventas.

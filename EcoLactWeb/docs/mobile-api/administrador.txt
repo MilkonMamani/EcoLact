@@ -1,0 +1,974 @@
+Inicio · Operación · Negocio · Gestión
+
+Exactamente. Para la **app móvil del Administrador** no debemos copiar los 15 módulos del panel web. El administrador móvil debe funcionar como un **centro de control**: entrar, entender qué está pasando, detectar problemas y actuar solo cuando realmente corresponde.
+
+## Estructura móvil que propongo
+
+La navegación inferior tendría solamente **4 opciones**:
+
+**Inicio · Operación · Negocio · Gestión**
+
+Las **notificaciones**, el estado **Online/Offline** y la **sincronización** irían en la cabecera, por lo que no gastamos una opción del menú inferior en ellas.
+
+Sí. Comencemos con la primera pantalla oficial del rol **ADMINISTRADOR**.
+
+## 01. INICIO — DASHBOARD DEL ADMINISTRADOR
+
+Esta debe ser la pantalla más importante de la app. Su función no es mostrar todo, sino responder rápidamente:
+
+**¿Qué está pasando hoy y qué requiere mi atención?**
+
+### 1. Cabecera
+
+En la parte superior:
+
+```text
+Buenos días,
+Administrador
+
+Domingo, 13 de septiembre
+
+                         🔔
+● En línea
+```
+
+El nombre del usuario puede aparecer debajo de “Administrador” si quieres personalizarlo.
+
+El indicador de conexión debe ser pequeño, pero siempre visible.
+
+Estados:
+
+```text
+● En línea
+```
+
+```text
+● Sin conexión
+Datos guardados localmente
+```
+
+```text
+↻ Sincronizando...
+```
+
+Si existen operaciones pendientes:
+
+```text
+● Sin conexión · 3 pendientes
+```
+
+Al tocarlo se abre el **Centro de sincronización**.
+
+---
+
+## 2. Resumen de hoy
+
+No pondremos demasiados indicadores.
+
+Solo los cuatro más importantes:
+
+```text
+RESUMEN DE HOY
+
+┌─────────────────┐
+│ 🥛 1,245 L      │
+│ Leche acopiada  │
+└─────────────────┘
+
+┌─────────────────┐
+│ 🚚 38           │
+│ Entregas        │
+└─────────────────┘
+
+┌─────────────────┐
+│ 🧪 6            │
+│ Pendientes      │
+│ de análisis     │
+└─────────────────┘
+
+┌─────────────────┐
+│ ⚠ 3             │
+│ Requieren       │
+│ atención        │
+└─────────────────┘
+```
+
+### Comportamiento
+
+Cada tarjeta debe ser presionable.
+
+**Leche acopiada → Acopio**
+
+**Entregas → listado de entregas de hoy**
+
+**Pendientes → Calidad**
+
+**Requieren atención → Alertas**
+
+No ponemos un botón adicional como “Ver más” si tocar la tarjeta ya realiza esa acción.
+
+Así evitamos redundancia.
+
+---
+
+# 3. Atención requerida
+
+Esta debe aparecer inmediatamente después de los KPI.
+
+Es más importante que cualquier gráfico.
+
+```text
+ATENCIÓN REQUERIDA                  Ver todo
+
+🔴 Análisis rechazado
+Juan Quispe
+32.5 L · Zona Huata
+Densidad fuera del rango
+Hace 18 min                              >
+
+─────────────────────────
+
+🟠 Análisis pendientes
+3 entregas llevan más de 2 horas
+Zona Coata
+Hace 35 min                              >
+
+─────────────────────────
+
+🟡 Stock bajo
+Queso Fresco
+12 unidades disponibles                  >
+```
+
+Aquí el sistema reúne eventos de:
+
+* calidad;
+* acopio;
+* producción;
+* inventario;
+* ventas;
+* pagos;
+
+pero **solo cuando realmente requieren intervención**.
+
+No mostraríamos eventos normales como:
+
+> “Entrega registrada correctamente”.
+
+Eso genera ruido y no es una alerta administrativa.
+
+---
+
+# 4. Operación de hoy
+
+Después de los problemas, mostramos cómo marcha el acopio.
+
+```text
+OPERACIÓN DE HOY
+
+Huata
+480 L
+14 entregas
+● Normal                                  >
+
+Coata
+355 L
+11 entregas
+🟠 2 pendientes de análisis              >
+
+Capachica
+280 L
+8 entregas
+● Normal                                  >
+
+                                      Ver operación
+```
+
+Aquí tampoco pondría gráficos innecesarios.
+
+Para móvil resulta más útil poder leer rápidamente:
+
+**zona + litros + entregas + situación**.
+
+---
+
+# 5. Resumen del negocio
+
+El administrador necesita conocer rápidamente el estado general de las otras áreas, pero sin convertir Inicio en cuatro dashboards adicionales.
+
+```text
+RESUMEN DEL NEGOCIO
+
+💰 Finanzas
+S/ 8,640 liquidados esta semana
+S/ 1,280 pendientes                       >
+
+🏭 Producción
+3 lotes activos
+1 próximo a finalizar                     >
+
+📦 Inventario
+2 productos con stock bajo                >
+
+🛒 Ventas
+S/ 1,840 vendidos hoy
+23 operaciones                            >
+```
+
+Cada bloque abre su área correspondiente dentro de **Negocio**.
+
+---
+
+# 6. Actividad reciente
+
+Al final de Inicio sí incluiría una pequeña actividad operacional.
+
+No una auditoría completa.
+
+```text
+ACTIVIDAD RECIENTE
+
+10:42 a. m.
+Carlos Mamani registró
+32.5 L de Juan Quispe
+
+10:31 a. m.
+Ana Flores confirmó un análisis
+Resultado: ACEPTADA
+
+09:58 a. m.
+Se finalizó el lote LP-044
+
+09:32 a. m.
+Se registró una venta de S/ 184
+```
+
+Botón:
+
+```text
+Ver actividad completa
+```
+
+Eso puede llevar a Auditoría o a un historial operativo simplificado.
+
+---
+
+# 7. Qué NO debería aparecer aquí
+
+Para mantener esta pantalla limpia, evitaría completamente:
+
+**Registrar entrega**
+
+**Registrar análisis**
+
+**Registrar producción**
+
+**Registrar venta**
+
+**Crear proveedor**
+
+**Crear usuario**
+
+**Crear zona**
+
+**Configurar calidad**
+
+**Cambiar precios**
+
+**Auditoría completa**
+
+Porque Inicio debe ser de **supervisión**, no un menú de accesos rápidos a todo el sistema.
+
+---
+
+# 8. Orden visual final
+
+La pantalla completa quedaría conceptualmente así:
+
+```text
+┌──────────────────────────────────┐
+│ Buenos días, Administrador    🔔 │
+│ Domingo, 13 Sep                  │
+│ ● En línea                       │
+├──────────────────────────────────┤
+│                                  │
+│ RESUMEN DE HOY                   │
+│                                  │
+│ 🥛 1,245 L     🚚 38            │
+│ Acopiado       Entregas          │
+│                                  │
+│ 🧪 6           ⚠ 3              │
+│ Pendientes     Atención          │
+│                                  │
+├──────────────────────────────────┤
+│ ATENCIÓN REQUERIDA               │
+│                                  │
+│ 🔴 Análisis rechazado          > │
+│ Juan Quispe · Huata              │
+│                                  │
+│ 🟠 3 análisis pendientes       > │
+│ Coata                            │
+│                                  │
+│ 🟡 Stock bajo                  > │
+│ Queso Fresco                     │
+├──────────────────────────────────┤
+│ OPERACIÓN DE HOY                 │
+│                                  │
+│ Huata                            │
+│ 480 L · 14 entregas            > │
+│                                  │
+│ Coata                            │
+│ 355 L · 11 entregas            > │
+│                                  │
+│ Capachica                        │
+│ 280 L · 8 entregas             > │
+│                                  │
+│ Ver operación                    │
+├──────────────────────────────────┤
+│ RESUMEN DEL NEGOCIO              │
+│                                  │
+│ 💰 Finanzas                    > │
+│ 🏭 Producción                  > │
+│ 📦 Inventario                  > │
+│ 🛒 Ventas                      > │
+├──────────────────────────────────┤
+│ ACTIVIDAD RECIENTE               │
+│                                  │
+│ 10:42 Nueva entrega              │
+│ 10:31 Análisis confirmado        │
+│ 09:58 Lote finalizado            │
+│                                  │
+│ Ver actividad                    │
+├──────────────────────────────────┤
+│                                  │
+│ 🏠 Inicio  🥛 Operación          │
+│ 💼 Negocio  ⚙ Gestión           │
+└──────────────────────────────────┘
+```
+
+## Regla UX de esta pantalla
+
+Todo lo que aparezca en **Inicio** debe cumplir por lo menos una de estas tres condiciones:
+
+**necesito saberlo ahora**, **requiere mi atención**, o **me permite tomar una decisión**.
+
+Si no cumple ninguna, no debería estar en el Dashboard.
+
+Con esto podemos considerar definida la **Pantalla 01 — Inicio/Dashboard del Administrador**.
+
+La siguiente pantalla lógica sería **02. Operación**, donde diseñamos cómo el administrador supervisará **Acopio + Calidad** sin repetir lo que ya mostramos aquí.
+
+
+# 2. OPERACIÓN
+
+Esta pantalla concentra:
+
+**Acopio + Calidad**
+
+No haría dos opciones diferentes en la barra inferior porque ambas pertenecen al mismo flujo:
+
+**Proveedor → entrega leche → análisis de calidad**
+
+La parte superior puede tener:
+
+```text
+OPERACIÓN
+
+[ Hoy ] [ 7 días ] [ 30 días ]
+
+1,245 L
+38 entregas
+6 pendientes de análisis
+3 incidencias
+```
+
+Luego dos bloques.
+
+### Acopio
+
+```text
+ACOPIO
+
+🥛 1,245 L recibidos
+🚚 38 entregas
+👥 31 proveedores
+📍 4 zonas activas
+
+                         Ver acopio >
+```
+
+### Calidad
+
+```text
+CALIDAD
+
+🧪 6 pendientes
+✅ 27 aceptadas
+🟠 3 observadas
+🔴 2 rechazadas
+
+                         Ver calidad >
+```
+
+Esto evita mostrar nuevamente todas las estadísticas del dashboard.
+
+---
+
+# 3. Pantalla ACOPIO
+
+El administrador **supervisa**, no debería tener como acción principal:
+
+`+ Registrar entrega`
+
+Esa es tarea del **Acopiador**.
+
+Su pantalla sería:
+
+```text
+← Acopio
+
+Hoy                         🔍  ⚙ filtros
+
+1,245 L
+38 entregas
+
+ZONAS
+────────────────────────────
+
+Huata
+480 L · 14 entregas
+1 incidencia                              >
+
+Coata
+355 L · 11 entregas
+Sin incidencias                           >
+
+Capachica
+280 L · 8 entregas
+2 pendientes                              >
+```
+
+Debajo:
+
+```text
+ENTREGAS RECIENTES
+
+María Quispe
+32.5 L
+Huata · 10:42 a. m.
+● Registrada                                >
+
+Pedro Mamani
+28 L
+Coata · 10:31 a. m.
+● Analizada                                 >
+```
+
+No necesitamos una pantalla independiente llamada **Historial**.
+
+El historial simplemente se obtiene mediante:
+
+**fecha + zona + estado + proveedor**
+
+en esta misma pantalla.
+
+---
+
+# 4. Detalle de una entrega
+
+Aquí reunimos toda la información relacionada.
+
+```text
+← Detalle de entrega
+
+ENTREGA #ENT-1048
+
+● Analizada
+
+Proveedor
+Juan Quispe
+
+Zona
+Huata
+
+Cantidad
+32.5 L
+
+Registrada por
+Carlos Mamani · Acopiador
+
+Hora de entrega
+10:42 a. m.
+```
+
+Después:
+
+```text
+CALIDAD
+
+Resultado
+🟢 ACEPTADA
+
+pH                 6.7
+Densidad           1.029
+Temperatura        5.2 °C
+
+Analizado por
+Ana Flores
+```
+
+Y finalmente:
+
+```text
+Historial
+
+10:42   Entrega registrada
+11:08   Análisis iniciado
+11:14   Análisis confirmado
+```
+
+No necesitamos:
+
+* una pantalla para proveedor,
+* otra para entrega,
+* otra para calidad,
+* otra para historial,
+
+cuando el administrador está revisando **una sola operación**.
+
+Todo el contexto debe estar unido.
+
+---
+
+# 5. Pantalla CALIDAD
+
+Aquí la prioridad no es registrar análisis.
+
+Eso corresponde al rol **CALIDAD**.
+
+El administrador necesita identificar problemas.
+
+```text
+← Calidad
+
+[ Pendientes 6 ] [ Observadas 3 ] [ Rechazadas 2 ]
+```
+
+Cada elemento:
+
+```text
+┌─────────────────────────────────┐
+│ María Quispe                    │
+│ 31.5 L · Huata                  │
+│                                 │
+│ 🔴 RECHAZADA                    │
+│ Densidad fuera del rango        │
+│                                 │
+│ Analizado 11:14 a. m.           │
+│                              >  │
+└─────────────────────────────────┘
+```
+
+Al abrirlo:
+
+**entrega + análisis + parámetros + evidencia + responsable + observación**
+
+en una sola pantalla.
+
+---
+
+# 6. NEGOCIO
+
+Aquí agrupamos cuatro áreas que para el administrador son principalmente de **supervisión**:
+
+```text
+NEGOCIO
+
+[ Finanzas ]
+[ Producción ]
+[ Inventario ]
+[ Ventas ]
+```
+
+Pero no son cuatro módulos gigantes como en web.
+
+---
+
+## Finanzas
+
+La pantalla inicial mostraría:
+
+```text
+FINANZAS
+
+Semana 07 - 13 Sep
+
+S/ 8,640
+Monto liquidado
+
+42
+Proveedores liquidados
+
+S/ 1,280
+Pendiente de pago
+
+────────────────────────
+
+Liquidaciones pendientes                4 >
+Pagos pendientes                        7 >
+Últimos pagos                              >
+```
+
+No pondría:
+
+**Liquidaciones / Historial de liquidaciones / Registrar liquidación / Pagos / Historial de pagos**
+
+como cinco pantallas visibles permanentemente.
+
+El contexto determina lo que aparece.
+
+---
+
+# 7. Producción e inventario
+
+Para administrador:
+
+```text
+PRODUCCIÓN
+
+🏭 3 lotes activos
+🥛 680 L utilizados hoy
+📦 145 unidades producidas
+⚠ 2 alertas de insumos
+```
+
+Después:
+
+```text
+LOTES ACTIVOS
+
+LP-045
+Queso fresco
+● En producción                         >
+
+LP-044
+Yogurt natural
+● Finalizando                           >
+```
+
+Y:
+
+```text
+STOCK CRÍTICO
+
+Cuajo
+18% disponible                           >
+
+Envase 1 L
+12% disponible                           >
+```
+
+El administrador **no necesita tener “Registrar producción” como botón gigante**.
+
+Para eso existe **ENCARGADO_PLANTA**.
+
+---
+
+# 8. Ventas
+
+Misma filosofía.
+
+```text
+VENTAS
+
+Hoy
+S/ 1,840
+
+23 ventas
+87 productos vendidos
+
+────────────────────────
+
+PRODUCTOS MÁS VENDIDOS
+
+Queso Fresco           32
+Yogurt Natural         27
+Leche Pasteurizada     18
+```
+
+Después:
+
+```text
+ALERTAS
+
+⚠ Queso Fresco
+12 unidades disponibles
+
+⚠ Yogurt 1 L
+8 unidades disponibles
+```
+
+Y:
+
+**Ver historial de ventas →**
+
+El administrador no necesita como acción principal:
+
+**Registrar venta**.
+
+Eso pertenece a **VENTAS**.
+
+---
+
+# 9. GESTIÓN
+
+Aquí sí colocaría las funciones administrativas.
+
+```text
+GESTIÓN
+
+PERSONAL
+👥 Usuarios                              >
+🛡 Roles                                 >
+
+COMUNICACIÓN
+📢 Comunicados                           >
+
+
+SISTEMA
+⚙ Configuración                          >
+```
+
+Pero incluso aquí debemos simplificar.
+
+---
+
+# 10. Usuarios
+
+Una única pantalla:
+
+```text
+Usuarios
+
+🔍 Buscar usuario
+
+[ Todos ] [ Activos ] [ Inactivos ]
+
+Carlos Mamani
+Acopiador
+Huata
+● Activo                                  >
+
+Ana Flores
+Calidad
+● Activa                                  >
+
+Diana Quispe
+Proveedor
+● Activa                                  >
+```
+
+Al entrar:
+
+```text
+Carlos Mamani
+
+Acopiador
+Zona Huata
+
+Estado
+● Activo
+
+Último acceso
+Hoy · 08:34 a. m.
+
+────────────────────
+
+Cambiar zona
+Restablecer contraseña
+Desactivar cuenta
+```
+
+Las acciones peligrosas van al final y necesitan confirmación.
+
+---
+
+# 11. Roles
+
+Aquí haría una diferencia importante.
+
+Como actualmente tienes los seis roles:
+
+```text
+Administrador
+Acopiador
+Proveedor
+Calidad
+Encargado de planta
+Ventas
+```
+
+en móvil **no crearía un constructor de roles y permisos** todavía.
+
+Simplemente:
+
+```text
+ROLES DEL SISTEMA
+
+Administrador            2 usuarios >
+Acopiador                 8 usuarios >
+Proveedor               126 usuarios >
+Calidad                    3 usuarios >
+Encargado de planta        2 usuarios >
+Ventas                     4 usuarios >
+```
+
+Y entrando:
+
+**ver usuarios asociados + descripción del rol**.
+
+Nada más.
+
+---
+
+# 12. Comunicados
+
+El administrador sí necesita una acción clara:
+
+```text
+Comunicados
+
+                         + Nuevo
+
+Últimos comunicados
+
+Capacitación de calidad
+Enviado a: Proveedores · Huata
+126 destinatarios
+12 Sep                                    >
+
+Mantenimiento de planta
+Encargados de planta
+10 Sep                                    >
+```
+
+Crear comunicado puede hacerse mediante una pantalla sencilla de tres pasos:
+
+**Destinatarios → Mensaje → Confirmar**
+
+No un formulario enorme.
+
+---
+
+
+# 14. Centro de sincronización
+
+No debe ser una sección grande de navegación.
+
+Se accede tocando:
+
+```text
+● En línea
+```
+
+o
+
+```text
+● Sin conexión · 2 pendientes
+```
+
+Pantalla:
+
+```text
+SINCRONIZACIÓN
+
+● En línea
+
+Última sincronización
+10:52 a. m.
+
+Datos locales
+Actualizados
+
+────────────────────
+
+Sin operaciones pendientes
+
+        [ Sincronizar ahora ]
+```
+
+En Administrador probablemente será principalmente **lectura cacheada**, porque las operaciones críticas deberían depender del servidor.
+
+Por ejemplo, estando offline yo permitiría consultar información almacenada, pero no realizaría silenciosamente cosas como:
+
+* aprobar pagos,
+* desactivar usuarios,
+* modificar reglas,
+* cambiar precios.
+
+Estas acciones necesitan estado autoritativo del servidor.
+
+---
+
+# Navegación definitiva del Administrador
+
+Quedaría así:
+
+```text
+                 ADMINISTRADOR
+                       │
+     ┌─────────────────┼───────────────────┐
+     │                 │                   │
+   INICIO           OPERACIÓN           NEGOCIO
+     │                 │                   │
+ Dashboard          Acopio              Finanzas
+ Alertas            Calidad             Producción
+ Estado zonas       Incidencias         Inventario
+ Resumen negocio                        Ventas
+
+                       │
+                    GESTIÓN
+                       │
+              ┌────────┼─────────┐
+              │        │         │
+           Usuarios Comunicados Auditoría
+              │
+             Roles
+              │
+         Configuración
+```
+
+Y en la parte superior, disponibles globalmente:
+
+```text
+🔔 Notificaciones
+● Online / Offline
+↻ Sincronización
+👤 Perfil
+```
+
+## Lo más importante de este rediseño
+
+Hay varias cosas que **deliberadamente eliminaría de la app del Administrador**:
+
+* ❌ Registrar entrega → **Acopiador**
+* ❌ Realizar análisis → **Calidad**
+* ❌ Registrar producción → **Encargado de planta**
+* ❌ Registrar venta → **Ventas**
+* ❌ Mostrar el mismo KPI en tres pantallas diferentes
+* ❌ Crear una pantalla distinta para cada “historial”
+* ❌ Copiar las tablas del escritorio al celular
+* ❌ 15 módulos en el menú inferior
+* ❌ Formularios administrativos que casi nunca se usan
+
+El administrador móvil queda orientado a:
+
+**Supervisar → detectar → revisar → decidir → gestionar excepciones.**
+
+Ese debe ser el criterio para todo el diseño móvil del rol Administrador.
+
+---
+NOTA DE LA IMPLEMENTACIÓN REAL (ver administrador.md en esta misma carpeta):
+- Auditoría (punto 14 del árbol de Gestión) NO existe en el backend — ni tabla poblada ni lógica. No la implementes.
+- "Stock bajo" de producto terminado (Inventario, Ventas, Resumen del negocio) NO tiene respaldo: no existe stock_minimo para productos, solo para insumos. No diseñes esa alerta para productos.
+- El resto de este documento sí está soportado por la API; administrador.md tiene el contrato exacto de cada endpoint.

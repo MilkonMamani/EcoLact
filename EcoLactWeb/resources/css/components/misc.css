@@ -1,0 +1,115 @@
+.ecolact-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.ecolact-skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    background: var(--color-surface);
+    color: var(--color-primary-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 0 0 0.5rem 0;
+}
+
+.ecolact-skip-link:focus {
+    left: 0;
+}
+
+[data-modal] {
+    display: none;
+}
+
+[data-modal].is-open {
+    display: flex;
+}
+
+[data-dropdown-menu] {
+    display: none;
+}
+
+[data-dropdown-menu].is-open {
+    display: block;
+}
+
+@media (max-width: 1023px) {
+    [data-sidebar] {
+        transform: translateX(-100%);
+        transition: transform 0.2s ease;
+    }
+
+    [data-sidebar].is-open {
+        transform: translateX(0);
+    }
+
+    [data-sidebar-backdrop] {
+        display: none;
+    }
+
+    [data-sidebar-backdrop].is-open {
+        display: block;
+    }
+}
+
+/* Tablas que en móvil se apilan como tarjetas (una fila = una tarjeta). Cada
+   <td> lleva data-label con el nombre de su columna. */
+@media (max-width: 767px) {
+    .ecolact-table-cards {
+        min-width: 0 !important;
+    }
+
+    .ecolact-table-cards thead {
+        display: none;
+    }
+
+    .ecolact-table-cards tbody,
+    .ecolact-table-cards tr,
+    .ecolact-table-cards td {
+        display: block;
+        width: 100%;
+    }
+
+    .ecolact-table-cards tr {
+        margin-bottom: 0.75rem;
+        border: 1px solid color-mix(in srgb, var(--color-text-muted) 15%, transparent);
+        border-radius: 0.75rem;
+        background: var(--color-surface);
+        padding: 0.5rem 1rem;
+    }
+
+    .ecolact-table-cards tr[hidden] {
+        display: none;
+    }
+
+    .ecolact-table-cards td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        border: 0 !important;
+        padding: 0.4rem 0 !important;
+        text-align: right;
+    }
+
+    .ecolact-table-cards td::before {
+        content: attr(data-label);
+        flex-shrink: 0;
+        text-align: left;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+
+    .ecolact-table-cards td[data-full]::before {
+        display: none;
+    }
+
+    .ecolact-table-cards td[data-full] {
+        display: block;
+        text-align: left;
+    }
+}

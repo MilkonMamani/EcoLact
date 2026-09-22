@@ -1,0 +1,849 @@
+Sí. Para **ENCARGADO DE PLANTA** la lógica cambia otra vez: este rol no está enfocado en proveedores ni pagos, sino en **transformar la leche recibida en productos**, controlar insumos y vigilar el stock resultante.
+
+Su flujo principal debería ser:
+
+**ver producción pendiente → iniciar/registrar lote → consumir leche e insumos → registrar productos obtenidos → cerrar lote → revisar stock.**
+
+Por eso, la app debe sentirse como una herramienta de operación de planta, no como un panel administrativo.
+
+## Estructura principal — ENCARGADO DE PLANTA
+
+La navegación inferior la dejaría así:
+
+```text
+INICIO · PRODUCCIÓN · INVENTARIO · MÁS
+```
+
+Y arriba, globalmente:
+
+```text
+● Online / Offline
+↻ Sincronización
+🔔 Notificaciones
+👤 Perfil
+```
+
+No pondría `Productos`, `Insumos`, `Movimientos`, `Lotes`, `Registrar producción` como cinco opciones principales distintas, porque todo eso pertenece al mismo proceso productivo.
+
+---
+
+# 1. INICIO
+
+Esta pantalla debe responder:
+
+> “¿Qué está pasando hoy en planta y qué necesita mi atención?”
+
+## Cabecera
+
+```text
+Buenos días, Luis
+
+Encargado de planta
+
+● En línea                       🔔
+```
+
+Si está offline:
+
+```text
+● Sin conexión · 2 pendientes
+Los registros se guardarán localmente
+```
+
+---
+
+## Resumen de planta
+
+Solo información operacional:
+
+```text
+HOY
+
+┌────────────────┐ ┌────────────────┐
+│ 🏭 3 lotes     │ │ 🥛 680 L      │
+│ En proceso     │ │ Leche usada    │
+└────────────────┘ └────────────────┘
+
+┌────────────────┐ ┌────────────────┐
+│ 📦 145 und.    │ │ ⚠ 2 alertas   │
+│ Producidas     │ │ De inventario │
+└────────────────┘ └────────────────┘
+```
+
+No pondría ventas, liquidaciones ni proveedores aquí.
+
+---
+
+# 2. Atención requerida
+
+Muy importante para este rol.
+
+```text
+ATENCIÓN REQUERIDA
+
+🔴 Cuajo con stock crítico
+18% disponible                            >
+
+🟠 Lote LP-045
+Pendiente de cierre                       >
+
+🟡 Envases 1 L
+Stock para aproximadamente 2 lotes        >
+```
+
+Así el usuario no tiene que entrar módulo por módulo para descubrir problemas.
+
+---
+
+# 3. Producción activa
+
+```text
+PRODUCCIÓN ACTIVA
+
+LP-045
+Queso fresco
+
+● En proceso
+
+Inicio: 08:20
+Leche utilizada: 240 L                    >
+
+LP-046
+Yogurt natural
+
+● Preparación
+Inicio: 09:10                             >
+```
+
+Botón principal:
+
+```text
+[ + Registrar producción ]
+```
+
+Aquí sí tiene sentido que esta acción sea visible, porque es una tarea central del rol.
+
+---
+
+# 4. PRODUCCIÓN
+
+Esta sería la pantalla principal del trabajo diario.
+
+```text
+PRODUCCIÓN
+
+[ Activos ] [ Finalizados ] [ Todos ]
+
++ Nuevo lote
+```
+
+Las tarjetas:
+
+```text
+LP-045
+
+Queso fresco
+240 L de leche
+
+● EN PROCESO
+
+Inicio
+08:20 a. m.
+
+Responsable
+Luis Mamani                              >
+```
+
+Otra:
+
+```text
+LP-044
+
+Yogurt natural
+180 L
+
+✓ FINALIZADO
+
+125 unidades
+12 Sep                                   >
+```
+
+No necesitamos una pantalla separada llamada “Historial de producción”. El filtro `Finalizados` ya cumple esa función.
+
+---
+
+# 5. REGISTRAR PRODUCCIÓN
+
+Este flujo no debería ser un formulario enorme.
+
+Lo convertiría en pasos.
+
+```text
+Producto → Leche → Insumos → Resultado → Confirmar
+```
+
+## Paso 1 — Producto
+
+```text
+NUEVA PRODUCCIÓN
+
+¿Qué producto va a elaborar?
+
+○ Queso fresco
+○ Yogurt natural
+○ Leche pasteurizada
+○ Otro producto habilitado
+```
+
+Después:
+
+```text
+Continuar →
+```
+
+---
+
+# 6. Paso 2 — Leche utilizada
+
+```text
+LECHE UTILIZADA
+
+Producto
+Queso fresco
+
+Cantidad
+
+        [ 240 ]
+
+          Litros
+```
+
+La aplicación debería mostrar el volumen disponible relevante.
+
+```text
+Leche disponible para producción
+1,120 L
+```
+
+Si intenta usar más:
+
+```text
+⚠ Cantidad no disponible
+
+Disponible
+1,120 L
+
+Solicitado
+1,250 L
+```
+
+---
+
+# 7. Paso 3 — Insumos
+
+En vez de hacer que el encargado busque manualmente cada cosa en varias pantallas:
+
+```text
+INSUMOS
+
+Cuajo
+[ 2.5 ] kg
+Disponible: 18 kg
+
+Sal
+[ 6 ] kg
+Disponible: 75 kg
+
+Cultivo láctico
+[ 1.2 ] kg
+Disponible: 9 kg
+```
+
+Si un insumo no aplica, no aparece.
+
+Botón:
+
+```text
+Continuar →
+```
+
+---
+
+# 8. Paso 4 — Resultado de producción
+
+Cuando termine el proceso:
+
+```text
+RESULTADO
+
+Producto
+Queso fresco
+
+Cantidad obtenida
+
+       [ 126 ]
+
+       unidades
+```
+
+Opcional:
+
+```text
+Merma
+[ 4.5 ] %
+
+Observación
+[ __________________ ]
+```
+
+Solo si estos datos existen dentro de tus reglas finales.
+
+---
+
+# 9. Paso 5 — Confirmar
+
+```text
+CONFIRMAR PRODUCCIÓN
+
+Producto
+Queso fresco
+
+Leche utilizada
+240 L
+
+Insumos
+Cuajo       2.5 kg
+Sal         6 kg
+
+Resultado
+126 unidades
+
+Responsable
+Luis Mamani
+```
+
+Botón:
+
+```text
+[ CONFIRMAR PRODUCCIÓN ]
+```
+
+Al confirmar debería generar automáticamente los movimientos correspondientes:
+
+```text
+Leche      ↓ consumo
+Insumos    ↓ consumo
+Producto   ↑ stock
+```
+
+El usuario no debería tener que registrar esos movimientos tres veces manualmente.
+
+Ese es un punto importante para evitar redundancia.
+
+---
+
+# 10. Detalle del lote
+
+Aquí concentramos toda la trazabilidad.
+
+```text
+← Lote LP-045
+
+QUESO FRESCO
+
+● Finalizado
+
+Inicio
+13 Sep · 08:20
+
+Finalización
+13 Sep · 12:48
+```
+
+Después:
+
+```text
+LECHE
+
+240 L utilizadas
+```
+
+Luego:
+
+```text
+INSUMOS
+
+Cuajo                 2.5 kg
+Sal                    6 kg
+Cultivo                1.2 kg
+```
+
+Después:
+
+```text
+RESULTADO
+
+126 unidades
+Queso fresco
+```
+
+Y:
+
+```text
+Responsable
+Luis Mamani
+```
+
+También:
+
+```text
+Observación
+Producción completada sin incidencias.
+```
+
+Todo en una sola pantalla.
+
+No necesitamos una pantalla diferente para leche, otra para insumos y otra para productos dentro del mismo lote.
+
+---
+
+# 11. INVENTARIO
+
+Aquí agruparía:
+
+**Insumos + stock de productos**
+
+Pantalla inicial:
+
+```text
+INVENTARIO
+
+[ Insumos ] [ Productos ]
+```
+
+---
+
+# 12. Insumos
+
+```text
+INSUMOS
+
+🔍 Buscar
+
+⚠ Stock crítico primero
+
+Cuajo
+18 kg
+🔴 Bajo                                  >
+
+Sal
+75 kg
+🟢 Normal                                >
+
+Envase 1 L
+85 unidades
+🟠 Bajo                                  >
+```
+
+La prioridad visual debe ser el nivel de stock.
+
+---
+
+# 13. Detalle de insumo
+
+```text
+← Cuajo
+
+STOCK ACTUAL
+
+18 kg
+
+Estado
+🔴 BAJO
+
+Stock mínimo
+20 kg
+```
+
+Después:
+
+```text
+MOVIMIENTOS RECIENTES
+
+Hoy
+-2.5 kg
+Producción LP-045
+
+12 Sep
++20 kg
+Ingreso de inventario
+
+11 Sep
+-3 kg
+Producción LP-041
+```
+
+No necesitamos otra pantalla principal llamada `Movimientos`.
+
+Se accede desde el elemento correspondiente.
+
+---
+
+# 14. ¿Puede registrar ingreso de insumos?
+
+Si el Encargado de Planta es responsable del inventario físico, sí tendría sentido:
+
+```text
+[ Registrar movimiento ]
+```
+
+Luego:
+
+```text
+TIPO
+
+○ Entrada
+○ Ajuste
+```
+
+No permitiría seleccionar manualmente:
+
+`Consumo de producción`
+
+porque eso debe generarse automáticamente cuando registra un lote.
+
+Así evitamos duplicidad.
+
+---
+
+# 15. Productos terminados
+
+Segunda pestaña:
+
+```text
+PRODUCTOS
+
+Queso Fresco
+128 unidades
+🟢 Disponible                            >
+
+Yogurt Natural
+42 unidades
+🟠 Bajo                                  >
+
+Leche Pasteurizada 1 L
+186 unidades
+🟢 Disponible                            >
+```
+
+---
+
+# 16. Detalle de producto
+
+```text
+QUESO FRESCO
+
+Stock actual
+128 unidades
+
+Producción reciente
++126
+Lote LP-045
+Hoy · 12:48
+
+Salida
+-24
+Venta #V-0082
+Hoy · 10:15
+```
+
+El Encargado puede consultar la salida por ventas, pero **no registra la venta**.
+
+Eso corresponde al rol Ventas.
+
+---
+
+# 17. Movimientos de inventario
+
+No lo colocaría como módulo principal.
+
+Desde cada producto/insumo:
+
+```text
+Ver todos los movimientos →
+```
+
+Pantalla:
+
+```text
+MOVIMIENTOS · QUESO FRESCO
+
+Hoy
+
++126
+Producción
+LP-045
+12:48
+
+-24
+Venta
+V-0082
+10:15
+```
+
+Filtros simples:
+
+```text
+[ Todo ] [ Entradas ] [ Salidas ]
+```
+
+---
+
+# 18. MÁS
+
+Quedaría bastante reducido:
+
+```text
+MÁS
+
+🔔 Notificaciones                     >
+↻ Sincronización                      >
+📢 Comunicados                        >
+
+────────────────────
+
+👤 Mi perfil                          >
+⚙ Preferencias                        >
+```
+
+No necesita:
+
+* Proveedores
+* Acopiadores
+* Pagos
+* Calidad
+* Compradores
+* Usuarios
+
+porque no son parte de su trabajo.
+
+---
+
+# 19. NOTIFICACIONES
+
+Las notificaciones deben estar relacionadas con planta.
+
+```text
+NOTIFICACIONES
+
+🔴 Stock crítico
+Cuajo por debajo del mínimo
+Hace 10 min
+
+✓ Producción finalizada
+LP-045 · Queso fresco
+Hace 25 min
+
+⚠ Producto con stock bajo
+Yogurt Natural
+Hace 1 h
+```
+
+---
+
+# 20. SINCRONIZACIÓN
+
+Aquí también debe existir soporte offline.
+
+```text
+SINCRONIZACIÓN
+
+● Sin conexión
+
+2 operaciones pendientes
+
+LP-045
+Producción finalizada
+↻ Pendiente
+
+Movimiento de insumo
+Cuajo -2.5 kg
+↻ Pendiente
+```
+
+Pero internamente yo haría que esas dos operaciones pertenezcan al mismo evento de producción.
+
+Es decir:
+
+```text
+Producción LP-045
+├── consumo de leche
+├── consumo de insumos
+└── entrada de producto
+```
+
+debe sincronizarse como una operación lógica consistente.
+
+No queremos:
+
+```text
+✓ Se sincronizó el producto
+✗ No se sincronizó el consumo de cuajo
+```
+
+y terminar con inventario incoherente.
+
+---
+
+# 21. Producción offline
+
+El encargado sí debería poder iniciar/registrar producción sin cobertura, siempre que tenga previamente descargados:
+
+* productos;
+* insumos;
+* stock disponible;
+* parámetros necesarios;
+* información de planta.
+
+El estado podría ser:
+
+```text
+🟡 Guardado localmente
+Pendiente de sincronización
+```
+
+Cuando vuelva internet:
+
+```text
+↻ Sincronizando...
+```
+
+y después:
+
+```text
+✓ Sincronizado
+```
+
+---
+
+# 22. Conflicto importante de stock
+
+Aquí debemos tener cuidado.
+
+Supongamos:
+
+```text
+SQLite local dice:
+Cuajo = 10 kg
+```
+
+Pero mientras estaba offline otro dispositivo consumió 8 kg.
+
+Al sincronizar ya no quedan los 10 kg esperados.
+
+No debemos sobrescribir silenciosamente el servidor.
+
+La app podría mostrar:
+
+```text
+⚠ Revisión requerida
+
+El stock disponible cambió
+desde la última sincronización.
+
+Cuajo
+
+Registrado localmente:
+2.5 kg de consumo
+
+Stock actual servidor:
+2 kg
+```
+
+Esto requerirá una regla de resolución posterior.
+
+En producción/inventario, los conflictos son más delicados que en una simple consulta.
+
+---
+
+# 23. PERFIL
+
+```text
+MI PERFIL
+
+Luis Mamani
+
+Encargado de Planta
+
+Estado
+● Activo
+
+Última sincronización
+Hoy · 10:42 a. m.
+```
+
+No debería poder cambiar su rol ni permisos.
+
+---
+
+# Estructura definitiva — ENCARGADO DE PLANTA
+
+Yo la dejaría oficialmente así:
+
+```text
+ENCARGADO DE PLANTA
+│
+├── INICIO
+│   ├── Resumen de planta
+│   ├── Producción activa
+│   ├── Alertas de inventario
+│   └── Última actividad
+│
+├── PRODUCCIÓN
+│   ├── Lotes activos
+│   ├── Finalizados
+│   ├── Registrar producción
+│   │   ├── Producto
+│   │   ├── Leche
+│   │   ├── Insumos
+│   │   ├── Resultado
+│   │   └── Confirmar
+│   │
+│   └── Detalle de lote
+│
+├── INVENTARIO
+│   ├── Insumos
+│   │   └── Detalle / movimientos
+│   │
+│   └── Productos
+│       └── Detalle / movimientos
+│
+└── MÁS
+    ├── Notificaciones
+    ├── Comunicados
+    ├── Sincronización
+    └── Mi perfil
+```
+
+### Navegación inferior definitiva
+
+```text
+┌────────┬────────────┬────────────┬───────┐
+│ Inicio │ Producción │ Inventario │  Más  │
+└────────┴────────────┴────────────┴───────┘
+```
+
+La regla central del rol sería:
+
+**el Encargado de Planta registra una vez el proceso productivo y el sistema genera automáticamente sus consecuencias sobre leche, insumos y stock.**
+
+Eso evita redundancia, reduce errores y hace que la app sea mucho más rápida de usar en planta.
+
+---
+NOTA DE LA IMPLEMENTACIÓN REAL (ver encargado-planta.md en esta misma carpeta):
+- El Paso 2 "Leche utilizada" (sección 6) queda EXACTAMENTE como aquí se describe: un campo numérico libre de litros, sin elegir entregas — así funciona realmente el acopio (la leche se junta toda, no se separa por proveedor). El backend valida ese número contra un acumulado de "leche disponible" (todo lo recibido menos lo ya usado en otros lotes).
+- El Paso 3 "Insumos" (sección 7) YA NO EXISTE como paso manual: los insumos se calculan y descuentan solos a partir de una receta configurada por el Administrador (cantidad de insumo por unidad de producto). Elimina ese paso del formulario — el usuario solo indica producto + cantidad producida, y la pantalla de confirmación muestra los insumos ya consumidos (calculados, no escritos por él).
+- El código de lote (LP-045 en los mockups) se genera automáticamente como `LOT-00001`, `LOT-00002`, etc. — nunca se lo pidas al usuario.
+- "Merma %" (sección 8) NO se persiste en el backend — puede mostrarse calculada en pantalla, pero no se guarda.
+- Las alertas de stock (secciones 2, 12, 19) SÍ son reales para insumos (hay stock_minimo). Para productos terminados (sección 15-16, 18-19 del listado "Yogurt Natural 🟠 Bajo") NO hay umbral guardado — no diseñes esa alerta para productos, solo para insumos.
+- "Comunicados" (sección 18) NO tiene endpoint construido todavía para este rol — pídemelo aparte si lo necesitas antes de diseñar esa pantalla.

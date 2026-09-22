@@ -1,0 +1,656 @@
+Perfecto. Para **Proveedor** el criterio cambia bastante respecto al Administrador: aquí no necesitamos “gestionar el sistema”, sino permitir que el proveedor **consulte rápidamente qué entregó, qué calidad obtuvo, cuánto le corresponde cobrar y qué comunicaciones tiene**.
+
+Como en tu sistema el Proveedor es principalmente un rol de consulta, la app debe ser todavía más simple.
+
+## Estructura principal del rol PROVEEDOR
+
+Yo la dejaría con solo **4 opciones inferiores**:
+
+```text
+INICIO · ENTREGAS · PAGOS · MÁS
+```
+
+Y globalmente arriba:
+
+```text
+🔔 Notificaciones
+● Online / Offline
+👤 Perfil
+```
+
+No pondría “Calidad”, “Liquidaciones”, “Compras” y “Comunicados” todos como botones inferiores porque terminaríamos llenando demasiado la navegación.
+
+---
+
+# 1. INICIO — Resumen personal
+
+La pantalla inicial debe responder:
+
+> **“¿Cómo van mis entregas y mis pagos?”**
+
+No necesitamos gráficos administrativos.
+
+### Cabecera
+
+```text
+Buenos días, Juan
+
+● En línea                       🔔
+Zona Huata
+```
+
+Si está sin internet:
+
+```text
+● Sin conexión
+Mostrando datos guardados
+```
+
+---
+
+### Resumen principal
+
+Solo información útil para el proveedor:
+
+```text
+┌─────────────────┐ ┌─────────────────┐
+│ 🥛 128.5 L      │ │ 🚚 4 entregas  │
+│ Esta semana     │ │ Esta semana     │
+└─────────────────┘ └─────────────────┘
+
+┌─────────────────┐ ┌─────────────────┐
+│ ✅ 3 aceptadas  │ │ 💰 S/ 186.40   │
+│ Calidad         │ │ Por cobrar      │
+└─────────────────┘ └─────────────────┘
+```
+
+No pondría estadísticas históricas complejas.
+
+---
+
+### Última entrega
+
+Muy importante porque probablemente es lo primero que quiere comprobar después de entregar leche.
+
+```text
+ÚLTIMA ENTREGA
+
+Hoy · 08:42 a. m.
+
+32.5 L
+Zona Huata
+
+Estado
+🟢 Analizada
+
+Calidad
+ACEPTADA
+
+                    Ver detalle >
+```
+
+---
+
+### Próximo pago / liquidación
+
+```text
+MI LIQUIDACIÓN
+
+Periodo
+07 - 13 Sep
+
+Litros considerados
+128.5 L
+
+Monto estimado
+S/ 186.40
+
+Estado
+🟡 Pendiente
+```
+
+Cuando ya haya sido pagado:
+
+```text
+🟢 PAGADO
+12 Sep · S/ 186.40
+```
+
+---
+
+### Comunicados importantes
+
+Solo los recientes:
+
+```text
+AVISOS
+
+📢 Capacitación de calidad
+Viernes 18 Sep
+
+📢 Nuevo horario de recepción
+Desde el lunes
+
+                         Ver todos >
+```
+
+Esto evita obligarlo a navegar a Comunicados solo para saber si existe algo importante.
+
+---
+
+# 2. ENTREGAS
+
+Este será uno de sus módulos principales.
+
+El proveedor **no registra ni modifica entregas**.
+
+Solo consulta.
+
+```text
+MIS ENTREGAS
+
+[ Semana ] [ Mes ] [ Todo ]
+
+🔍 Buscar / filtrar
+```
+
+Cada entrega como tarjeta:
+
+```text
+13 SEP · 08:42
+
+32.5 L
+
+Zona Huata
+Registrado por: Carlos Mamani
+
+🟢 Analizada
+
+Resultado:
+ACEPTADA                             >
+```
+
+Otra:
+
+```text
+12 SEP · 09:16
+
+28 L
+
+🟡 Pendiente de análisis             >
+```
+
+No usaría tablas en móvil.
+
+---
+
+# 3. Detalle de entrega
+
+Aquí sí reunimos todo el proceso relacionado.
+
+```text
+← Mi entrega
+
+ENTREGA #1048
+
+32.5 L
+
+Fecha
+13 Sep · 08:42 a. m.
+
+Zona
+Huata
+
+Registrado por
+Carlos Mamani
+```
+
+Después:
+
+```text
+CALIDAD
+
+🟢 ACEPTADA
+
+pH
+6.7
+
+Densidad
+1.029
+
+Temperatura
+5.2 °C
+```
+
+Y abajo:
+
+```text
+ESTADO
+
+✓ Entrega registrada
+  08:42
+
+✓ Análisis realizado
+  10:15
+
+✓ Resultado confirmado
+  10:18
+```
+
+Aquí evitamos tener una pantalla aparte llamada “Historial de entrega”.
+
+---
+
+# 4. CALIDAD
+
+Aquí haría algo diferente al diseño web.
+
+En móvil **no pondría Calidad como opción del menú inferior**, porque el proveedor normalmente llega al análisis desde una entrega.
+
+Pero dentro de:
+
+```text
+Más → Mi calidad
+```
+
+sí puede consultar todos sus análisis.
+
+Pantalla:
+
+```text
+MI CALIDAD
+
+[ Todo ] [ Aceptadas ] [ Observadas ] [ Rechazadas ]
+
+Este mes
+
+✅ 12 aceptadas
+🟠 2 observadas
+🔴 1 rechazada
+```
+
+Luego:
+
+```text
+13 Sep
+32.5 L
+✅ ACEPTADA                              >
+
+10 Sep
+30 L
+🟠 OBSERVADA                             >
+```
+
+Esto sirve para que detecte si tiene problemas repetitivos.
+
+---
+
+# 5. PAGOS
+
+Este sería el tercer módulo principal de la barra inferior.
+
+Yo agruparía aquí:
+
+**Liquidaciones + pagos**
+
+porque desde el punto de vista del proveedor forman un único proceso:
+
+> “Entregué leche → se calculó cuánto me corresponde → me pagaron.”
+
+No debería tener que entender la estructura interna del sistema.
+
+---
+
+## Resumen
+
+```text
+MIS PAGOS
+
+S/ 186.40
+Pendiente de pago
+
+S/ 742.80
+Pagado este mes
+```
+
+---
+
+## Liquidación actual
+
+```text
+07 - 13 SEP
+
+128.5 L
+
+Precio base
+S/ 1.42/L
+
+Ajustes de calidad
++ S/ 3.93
+
+TOTAL
+S/ 186.40
+
+🟡 Pendiente de pago                   >
+```
+
+---
+
+## Historial
+
+```text
+HISTORIAL
+
+01 - 06 Sep
+S/ 174.20
+🟢 Pagado
+06 Sep                                    >
+
+25 - 31 Ago
+S/ 165.80
+🟢 Pagado
+31 Ago                                    >
+```
+
+Así no necesitamos:
+
+* “Liquidaciones”
+* “Mis liquidaciones”
+* “Pagos”
+* “Historial de pagos”
+
+como cuatro módulos distintos.
+
+---
+
+# 6. Detalle de liquidación
+
+Esta pantalla debe explicar claramente **de dónde salió el monto**.
+
+```text
+← Detalle
+
+LIQUIDACIÓN
+07 - 13 Sep
+
+Litros entregados
+128.5 L
+
+Precio aplicado
+S/ 1.42/L
+
+Subtotal
+S/ 182.47
+
+Bonificación calidad
++ S/ 3.93
+
+──────────────────
+
+TOTAL
+S/ 186.40
+```
+
+Luego:
+
+```text
+ENTREGAS INCLUIDAS
+
+13 Sep     32.5 L
+12 Sep     28.0 L
+10 Sep     35.0 L
+08 Sep     33.0 L
+```
+
+Si alguna entrega no entra en la liquidación, también debería quedar claro el motivo.
+
+---
+
+# 7. MÁS
+
+Aquí colocamos las funciones secundarias.
+
+```text
+MÁS
+
+🧪 Mi calidad                         >
+📢 Comunicados                        >
+🛒 Mis compras                        >
+🔔 Notificaciones                     >
+
+────────────────────
+
+👤 Mi perfil                          >
+▣ Mi código QR                        >
+⚙ Preferencias                        >
+```
+
+Esto mantiene la navegación principal limpia.
+
+---
+
+# 8. Mi código QR
+
+Esta sí me parece una pantalla muy importante para el proveedor porque tu flujo contempla identificación mediante QR.
+
+```text
+MI CÓDIGO QR
+
+        ███████████
+        █ QR      █
+        ███████████
+
+Juan Quispe Mamani
+
+DNI
+7421****
+
+Zona
+Huata
+
+Proveedor activo
+```
+
+Mensaje:
+
+> Muestre este código al acopiador para identificar su cuenta durante la entrega.
+
+Podemos incluso permitir:
+
+**Aumentar brillo**
+
+cuando abre el QR.
+
+No necesitamos botones de “Editar QR” ni “Generar nuevo QR” para el proveedor.
+
+---
+
+# 9. COMUNICADOS
+
+Muy simple:
+
+```text
+COMUNICADOS
+
+Nuevo horario de recepción
+12 Sep
+● Nuevo                                 >
+
+Capacitación sobre calidad de leche
+10 Sep                                  >
+
+Campaña sanitaria
+05 Sep                                  >
+```
+
+Detalle:
+
+```text
+Capacitación sobre calidad de leche
+
+10 Sep · EcoLact
+
+Este viernes se realizará...
+
+Adjuntos
+📄 Información.pdf
+```
+
+Sin opciones administrativas.
+
+---
+
+# 10. NOTIFICACIONES
+
+Aquí sí conviene mostrar eventos personales.
+
+Ejemplos:
+
+```text
+🔔 NOTIFICACIONES
+
+✅ Su entrega fue aceptada
+Entrega #1048
+Hace 20 min
+
+💰 Liquidación generada
+S/ 186.40
+Hace 2 h
+
+💳 Pago registrado
+S/ 174.20
+6 Sep
+
+📢 Nuevo comunicado
+Capacitación de calidad
+5 Sep
+```
+
+Al tocarlas, llevan directamente al contenido correspondiente.
+
+---
+
+# 11. MI PERFIL
+
+Solo información relevante.
+
+```text
+MI PERFIL
+
+Juan Quispe Mamani
+
+Proveedor
+
+DNI
+7421****
+
+Teléfono
+987 *** ***
+
+Zona
+Huata
+
+Estado
+● Activo
+```
+
+Si vas a permitir editar algo, limitaría la edición a datos de contacto como:
+
+* teléfono,
+* dirección,
+
+siempre que tus reglas de negocio lo permitan.
+
+No permitiría cambiar:
+
+* DNI,
+* zona,
+* estado,
+* rol.
+
+---
+
+# 12. Comportamiento offline del Proveedor
+
+Aquí el diseño debe ser muy sencillo.
+
+El proveedor puede consultar los datos previamente sincronizados:
+
+```text
+● Sin conexión
+Mostrando información guardada
+
+Última actualización
+Hoy · 08:15 a. m.
+```
+
+Puede ver:
+
+* QR;
+* entregas descargadas;
+* análisis descargados;
+* liquidaciones;
+* pagos;
+* comunicados ya sincronizados.
+
+Pero no debería aparecer información como si fuera actual cuando no lo es.
+
+Por ejemplo:
+
+```text
+Datos actualizados hasta
+13 Sep · 08:15 a. m.
+```
+
+Eso evita confusión.
+
+---
+
+# Estructura final del PROVEEDOR
+
+La dejaría oficialmente así:
+
+```text
+PROVEEDOR
+│
+├── INICIO
+│   ├── Resumen semanal
+│   ├── Última entrega
+│   ├── Liquidación actual
+│   └── Comunicados importantes
+│
+├── ENTREGAS
+│   ├── Mis entregas
+│   └── Detalle de entrega
+│       └── Resultado de calidad
+│
+├── PAGOS
+│   ├── Resumen
+│   ├── Liquidación actual
+│   ├── Historial
+│   └── Detalle de liquidación/pago
+│
+└── MÁS
+    ├── Mi calidad
+    ├── Comunicados
+    ├── Mis compras
+    ├── Notificaciones
+    ├── Mi QR
+    └── Mi perfil
+```
+
+### Navegación inferior definitiva
+
+```text
+┌────────┬──────────┬────────┬───────┐
+│ Inicio │ Entregas │ Pagos  │  Más  │
+└────────┴──────────┴────────┴───────┘
+```
+
+Este rol queda mucho más sencillo que Administrador, y eso es correcto: **el proveedor no necesita “administrar EcoLact”; necesita entender claramente qué entregó, qué calidad obtuvo y cuánto recibió o va a recibir**. Esa debería ser la lógica central de toda su experiencia móvil.
+
+---
+NOTA DE LA IMPLEMENTACIÓN REAL (ver proveedor.md en esta misma carpeta):
+- Editar teléfono en "Mi Perfil" (sección 11) NO está soportado todavía — el endpoint es solo lectura, ni siquiera el panel web lo permite hoy. No lo actives en el diseño.
+- El QR (sección 8) es real y funciona de punta a punta: el backend entrega el qr_token como texto, la app lo dibuja como imagen QR, y el Acopiador lo escanea para identificar al proveedor. Ver proveedor.md y acopiador.md para el contrato exacto y las librerías recomendadas (ZXing/ML Kit).
+- El pago que recibe el proveedor (sección 5-6) siempre es en efectivo — no hay forma_pago variable ahí.

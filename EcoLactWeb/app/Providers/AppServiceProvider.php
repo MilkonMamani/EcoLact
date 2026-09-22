@@ -1,0 +1,360 @@
+<?php
+
+namespace App\Providers;
+
+use App\Application\Acopiador\Contracts\AcopiadoresListadoQuery;
+use App\Application\Acopio\Contracts\EntregasListadoQuery;
+use App\Application\Calidad\Contracts\AnalisisCalidadListadoQuery;
+use App\Application\Calidad\Contracts\EntregasCalidadListadoQuery;
+use App\Application\Comunicacion\Contracts\ComunicadosListadoQuery;
+use App\Application\Dashboard\Contracts\DashboardAdministradorQuery;
+use App\Application\Liquidacion\Contracts\LiquidacionesListadoQuery;
+use App\Application\Liquidacion\Contracts\PagosListadoQuery;
+use App\Application\Pago\Contracts\AlmacenComprobantePago;
+use App\Application\Pago\Contracts\EntregasPagablesQuery;
+use App\Application\Pago\Contracts\ObligacionesPagoListadoQuery;
+use App\Application\Pago\Contracts\PagoSemanalProveedoresQuery;
+use App\Application\Pago\Contracts\PagosPendientesProveedorStore;
+use App\Application\Pago\Contracts\PersonalPagableQuery;
+use App\Application\Pago\Contracts\TrabajadoresPagoListadoQuery;
+use App\Application\Produccion\Contracts\AlmacenImagenProducto;
+use App\Application\Produccion\Contracts\LotesProduccionListadoQuery;
+use App\Application\Produccion\Contracts\ProductoDetalleQuery;
+use App\Application\Produccion\Contracts\ProductosListadoQuery;
+use App\Application\Produccion\Contracts\RecetasListadoQuery;
+use App\Application\Proveedor\Contracts\ProveedoresListadoQuery;
+use App\Application\Recorrido\Contracts\RecorridoVistaQuery;
+use App\Application\Ruta\Contracts\RutaDetallesListadoQuery;
+use App\Application\Shared\TransactionManager;
+use App\Application\Ventas\Contracts\VentasListadoQuery;
+use App\Application\Zona\Contracts\ZonaProveedoresQuery;
+use App\Application\Zona\Contracts\ZonasListadoQuery;
+use App\Domain\Acopiador\AcopiadorRepository;
+use App\Domain\Acopiador\AcopiadorZonaHistorialRepository;
+use App\Domain\AnalistaCalidad\AnalistaCalidadRepository;
+use App\Domain\Auth\PasswordHasher;
+use App\Domain\Auth\Repositories\RoleRepository;
+use App\Domain\Auth\Repositories\UsuarioRepository;
+use App\Domain\Calidad\AnalisisCalidadDetalleRepository;
+use App\Domain\Calidad\AnalisisCalidadRepository;
+use App\Domain\Calidad\ParametroCalidadRepository;
+use App\Domain\Calidad\ReglaCalidadRepository;
+use App\Domain\Calidad\SancionRepository;
+use App\Domain\Comunicacion\Repositories\ComunicadoRepository;
+use App\Domain\Comunicacion\Repositories\NotificacionRepository;
+use App\Domain\EncargadoPlanta\EncargadoPlantaRepository;
+use App\Domain\Entrega\EntregaRepository;
+use App\Domain\Pago\AjusteLiquidacionRepository;
+use App\Domain\Pago\ConfiguracionPagoRepository;
+use App\Domain\Pago\JornadaPersonalRepository;
+use App\Domain\Pago\LiquidacionDetalleRepository;
+use App\Domain\Pago\LiquidacionRepository;
+use App\Domain\Pago\ObligacionPagoRepository;
+use App\Domain\Pago\PagoProveedorRepository;
+use App\Domain\Pago\PagoRealizadoRepository;
+use App\Domain\Pago\PeriodoLiquidacionRepository;
+use App\Domain\Pago\PrecioLecheRepository;
+use App\Domain\Pago\ReglaPagoCalidadRepository;
+use App\Domain\Pago\ValorizacionEntregaRepository;
+use App\Domain\PersonalVentas\PersonalVentasRepository;
+use App\Domain\Produccion\InsumoMovimientoRepository;
+use App\Domain\Produccion\InsumoRepository;
+use App\Domain\Produccion\LoteProduccionInsumoRepository;
+use App\Domain\Produccion\LoteProduccionRepository;
+use App\Domain\Produccion\ProduccionDetalleRepository;
+use App\Domain\Produccion\ProductoMovimientoRepository;
+use App\Domain\Produccion\ProductoRepository;
+use App\Domain\Produccion\ProductoStockRepository;
+use App\Domain\Produccion\RecetaRepository;
+use App\Domain\Proveedor\ProveedorRepository;
+use App\Domain\Proveedor\ProveedorZonaHistorialRepository;
+use App\Domain\Recorrido\RecorridoAcopioRepository;
+use App\Domain\Recorrido\RecorridoDetalleRepository;
+use App\Domain\Ruta\ProveedorRutaHistorialRepository;
+use App\Domain\Ruta\RutaDetalleRepository;
+use App\Domain\Ruta\RutaRepository;
+use App\Domain\Ventas\CompradorRepository;
+use App\Domain\Ventas\ProductoPrecioRepository;
+use App\Domain\Ventas\VentaProductoRepository;
+use App\Domain\Zona\ZonaRepository;
+use App\Infrastructure\Persistence\LaravelTransactionManager;
+use App\Infrastructure\Persistence\Models\AcopiadorModel;
+use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
+use App\Infrastructure\Persistence\Models\AnalistaCalidadModel;
+use App\Infrastructure\Persistence\Models\CompradorModel;
+use App\Infrastructure\Persistence\Models\ComunicadoModel;
+use App\Infrastructure\Persistence\Models\ConfiguracionPagoModel;
+use App\Infrastructure\Persistence\Models\EncargadoPlantaModel;
+use App\Infrastructure\Persistence\Models\EntregaModel;
+use App\Infrastructure\Persistence\Models\InsumoModel;
+use App\Infrastructure\Persistence\Models\LiquidacionModel;
+use App\Infrastructure\Persistence\Models\LoteProduccionModel;
+use App\Infrastructure\Persistence\Models\NotificacionModel;
+use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
+use App\Infrastructure\Persistence\Models\PagoProveedorModel;
+use App\Infrastructure\Persistence\Models\ParametroCalidadModel;
+use App\Infrastructure\Persistence\Models\PersonalVentasModel;
+use App\Infrastructure\Persistence\Models\PrecioLecheModel;
+use App\Infrastructure\Persistence\Models\ProductoModel;
+use App\Infrastructure\Persistence\Models\ProductoMovimientoModel;
+use App\Infrastructure\Persistence\Models\ProductoPrecioModel;
+use App\Infrastructure\Persistence\Models\ProveedorModel;
+use App\Infrastructure\Persistence\Models\RecetaModel;
+use App\Infrastructure\Persistence\Models\RecorridoAcopioModel;
+use App\Infrastructure\Persistence\Models\ReglaCalidadModel;
+use App\Infrastructure\Persistence\Models\ReglaPagoCalidadModel;
+use App\Infrastructure\Persistence\Models\RutaModel;
+use App\Infrastructure\Persistence\Models\VentaProductoModel;
+use App\Infrastructure\Persistence\Models\ZonaModel;
+use App\Infrastructure\Persistence\Queries\EloquentAcopiadoresListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentAnalisisCalidadListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentComunicadosListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentDashboardAdministradorQuery;
+use App\Infrastructure\Persistence\Queries\EloquentEntregasCalidadListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentEntregasListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentEntregasPagablesQuery;
+use App\Infrastructure\Persistence\Queries\EloquentLiquidacionesListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentLotesProduccionListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentObligacionesPagoListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentPagoSemanalProveedoresQuery;
+use App\Infrastructure\Persistence\Queries\EloquentPagosListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentPersonalPagableQuery;
+use App\Infrastructure\Persistence\Queries\EloquentProductoDetalleQuery;
+use App\Infrastructure\Persistence\Queries\EloquentProductosListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentProveedoresListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentRecetasListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentRecorridoVistaQuery;
+use App\Infrastructure\Persistence\Queries\EloquentRutaDetallesListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentTrabajadoresPagoListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentVentasListadoQuery;
+use App\Infrastructure\Persistence\Queries\EloquentZonaProveedoresQuery;
+use App\Infrastructure\Persistence\Queries\EloquentZonasListadoQuery;
+use App\Infrastructure\Persistence\Repositories\EloquentAcopiadorRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentAcopiadorZonaHistorialRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentAjusteLiquidacionRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentAnalisisCalidadDetalleRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentAnalisisCalidadRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentAnalistaCalidadRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentCompradorRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentComunicadoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentConfiguracionPagoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentEncargadoPlantaRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentEntregaRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentInsumoMovimientoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentInsumoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentJornadaPersonalRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentLiquidacionDetalleRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentLiquidacionRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentLoteProduccionInsumoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentLoteProduccionRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentNotificacionRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentObligacionPagoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentPagoProveedorRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentPagoRealizadoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentPagosPendientesProveedorStore;
+use App\Infrastructure\Persistence\Repositories\EloquentParametroCalidadRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentPeriodoLiquidacionRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentPersonalVentasRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentPrecioLecheRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProduccionDetalleRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProductoMovimientoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProductoPrecioRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProductoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProductoStockRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProveedorRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProveedorRutaHistorialRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentProveedorZonaHistorialRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentRecetaRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentRecorridoAcopioRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentRecorridoDetalleRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentReglaCalidadRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentReglaPagoCalidadRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentRoleRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentRutaDetalleRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentRutaRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentSancionRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentUsuarioRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentValorizacionEntregaRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentVentaProductoRepository;
+use App\Infrastructure\Persistence\Repositories\EloquentZonaRepository;
+use App\Infrastructure\Security\LaravelPasswordHasher;
+use App\Infrastructure\Storage\StorageAlmacenComprobantePago;
+use App\Infrastructure\Storage\StorageAlmacenImagenProducto;
+use App\Models\User;
+use App\Policies\AcopiadorPolicy;
+use App\Policies\AnalisisCalidadPolicy;
+use App\Policies\AnalistaCalidadPolicy;
+use App\Policies\CompradorPolicy;
+use App\Policies\ComunicadoPolicy;
+use App\Policies\ConfiguracionPagoPolicy;
+use App\Policies\EncargadoPlantaPolicy;
+use App\Policies\EntregaPolicy;
+use App\Policies\InsumoPolicy;
+use App\Policies\LiquidacionPolicy;
+use App\Policies\LoteProduccionPolicy;
+use App\Policies\NotificacionPolicy;
+use App\Policies\ObligacionPagoPolicy;
+use App\Policies\PagoProveedorPolicy;
+use App\Policies\ParametroCalidadPolicy;
+use App\Policies\PersonalVentasPolicy;
+use App\Policies\PrecioLechePolicy;
+use App\Policies\ProductoPolicy;
+use App\Policies\ProductoPrecioPolicy;
+use App\Policies\ProductoStockPolicy;
+use App\Policies\ProveedorPolicy;
+use App\Policies\RecetaPolicy;
+use App\Policies\RecorridoAcopioPolicy;
+use App\Policies\ReglaCalidadPolicy;
+use App\Policies\ReglaPagoCalidadPolicy;
+use App\Policies\RutaPolicy;
+use App\Policies\VentaProductoPolicy;
+use App\Policies\ZonaPolicy;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        $this->app->bind(DashboardAdministradorQuery::class, EloquentDashboardAdministradorQuery::class);
+        $this->app->bind(AnalisisCalidadListadoQuery::class, EloquentAnalisisCalidadListadoQuery::class);
+        $this->app->bind(EntregasCalidadListadoQuery::class, EloquentEntregasCalidadListadoQuery::class);
+        $this->app->bind(EntregasListadoQuery::class, EloquentEntregasListadoQuery::class);
+        $this->app->bind(AcopiadoresListadoQuery::class, EloquentAcopiadoresListadoQuery::class);
+        $this->app->bind(ZonasListadoQuery::class, EloquentZonasListadoQuery::class);
+        $this->app->bind(ZonaProveedoresQuery::class, EloquentZonaProveedoresQuery::class);
+        $this->app->bind(RutaDetallesListadoQuery::class, EloquentRutaDetallesListadoQuery::class);
+        $this->app->bind(RecorridoVistaQuery::class, EloquentRecorridoVistaQuery::class);
+        $this->app->bind(LiquidacionesListadoQuery::class, EloquentLiquidacionesListadoQuery::class);
+        $this->app->bind(PagosListadoQuery::class, EloquentPagosListadoQuery::class);
+        $this->app->bind(ProveedoresListadoQuery::class, EloquentProveedoresListadoQuery::class);
+        $this->app->bind(VentasListadoQuery::class, EloquentVentasListadoQuery::class);
+        $this->app->bind(LotesProduccionListadoQuery::class, EloquentLotesProduccionListadoQuery::class);
+        $this->app->bind(RecetasListadoQuery::class, EloquentRecetasListadoQuery::class);
+        $this->app->bind(ProductoDetalleQuery::class, EloquentProductoDetalleQuery::class);
+        $this->app->bind(AlmacenImagenProducto::class, StorageAlmacenImagenProducto::class);
+        $this->app->bind(ComunicadosListadoQuery::class, EloquentComunicadosListadoQuery::class);
+        $this->app->bind(ProductosListadoQuery::class, EloquentProductosListadoQuery::class);
+        $this->app->bind(ZonaRepository::class, EloquentZonaRepository::class);
+        $this->app->bind(RutaRepository::class, EloquentRutaRepository::class);
+        $this->app->bind(RutaDetalleRepository::class, EloquentRutaDetalleRepository::class);
+        $this->app->bind(ProveedorRutaHistorialRepository::class, EloquentProveedorRutaHistorialRepository::class);
+        $this->app->bind(RecorridoAcopioRepository::class, EloquentRecorridoAcopioRepository::class);
+        $this->app->bind(RecorridoDetalleRepository::class, EloquentRecorridoDetalleRepository::class);
+        $this->app->bind(ProveedorRepository::class, EloquentProveedorRepository::class);
+        $this->app->bind(ProveedorZonaHistorialRepository::class, EloquentProveedorZonaHistorialRepository::class);
+        $this->app->bind(AcopiadorRepository::class, EloquentAcopiadorRepository::class);
+        $this->app->bind(AcopiadorZonaHistorialRepository::class, EloquentAcopiadorZonaHistorialRepository::class);
+        $this->app->bind(EntregaRepository::class, EloquentEntregaRepository::class);
+        $this->app->bind(AnalisisCalidadRepository::class, EloquentAnalisisCalidadRepository::class);
+        $this->app->bind(AnalisisCalidadDetalleRepository::class, EloquentAnalisisCalidadDetalleRepository::class);
+        $this->app->bind(ParametroCalidadRepository::class, EloquentParametroCalidadRepository::class);
+        $this->app->bind(ReglaCalidadRepository::class, EloquentReglaCalidadRepository::class);
+        $this->app->bind(PrecioLecheRepository::class, EloquentPrecioLecheRepository::class);
+        $this->app->bind(ReglaPagoCalidadRepository::class, EloquentReglaPagoCalidadRepository::class);
+        $this->app->bind(ValorizacionEntregaRepository::class, EloquentValorizacionEntregaRepository::class);
+        $this->app->bind(PeriodoLiquidacionRepository::class, EloquentPeriodoLiquidacionRepository::class);
+        $this->app->bind(LiquidacionDetalleRepository::class, EloquentLiquidacionDetalleRepository::class);
+        $this->app->bind(AjusteLiquidacionRepository::class, EloquentAjusteLiquidacionRepository::class);
+        $this->app->bind(LiquidacionRepository::class, EloquentLiquidacionRepository::class);
+        $this->app->bind(PagoProveedorRepository::class, EloquentPagoProveedorRepository::class);
+        $this->app->bind(ProductoRepository::class, EloquentProductoRepository::class);
+        $this->app->bind(LoteProduccionRepository::class, EloquentLoteProduccionRepository::class);
+        $this->app->bind(ProduccionDetalleRepository::class, EloquentProduccionDetalleRepository::class);
+        $this->app->bind(InsumoRepository::class, EloquentInsumoRepository::class);
+        $this->app->bind(InsumoMovimientoRepository::class, EloquentInsumoMovimientoRepository::class);
+        $this->app->bind(LoteProduccionInsumoRepository::class, EloquentLoteProduccionInsumoRepository::class);
+        $this->app->bind(ProductoStockRepository::class, EloquentProductoStockRepository::class);
+        $this->app->bind(RecetaRepository::class, EloquentRecetaRepository::class);
+        $this->app->bind(ProductoMovimientoRepository::class, EloquentProductoMovimientoRepository::class);
+        $this->app->bind(CompradorRepository::class, EloquentCompradorRepository::class);
+        $this->app->bind(ProductoPrecioRepository::class, EloquentProductoPrecioRepository::class);
+        $this->app->bind(VentaProductoRepository::class, EloquentVentaProductoRepository::class);
+        $this->app->bind(UsuarioRepository::class, EloquentUsuarioRepository::class);
+        $this->app->bind(RoleRepository::class, EloquentRoleRepository::class);
+        $this->app->bind(ComunicadoRepository::class, EloquentComunicadoRepository::class);
+        $this->app->bind(NotificacionRepository::class, EloquentNotificacionRepository::class);
+        $this->app->bind(SancionRepository::class, EloquentSancionRepository::class);
+        $this->app->bind(EncargadoPlantaRepository::class, EloquentEncargadoPlantaRepository::class);
+        $this->app->bind(PersonalVentasRepository::class, EloquentPersonalVentasRepository::class);
+        $this->app->bind(AnalistaCalidadRepository::class, EloquentAnalistaCalidadRepository::class);
+
+        $this->app->bind(ConfiguracionPagoRepository::class, EloquentConfiguracionPagoRepository::class);
+        $this->app->bind(ObligacionPagoRepository::class, EloquentObligacionPagoRepository::class);
+        $this->app->bind(JornadaPersonalRepository::class, EloquentJornadaPersonalRepository::class);
+        $this->app->bind(PagoRealizadoRepository::class, EloquentPagoRealizadoRepository::class);
+        $this->app->bind(ObligacionesPagoListadoQuery::class, EloquentObligacionesPagoListadoQuery::class);
+        $this->app->bind(TrabajadoresPagoListadoQuery::class, EloquentTrabajadoresPagoListadoQuery::class);
+        $this->app->bind(PagoSemanalProveedoresQuery::class, EloquentPagoSemanalProveedoresQuery::class);
+        $this->app->bind(PersonalPagableQuery::class, EloquentPersonalPagableQuery::class);
+        $this->app->bind(EntregasPagablesQuery::class, EloquentEntregasPagablesQuery::class);
+        $this->app->bind(PagosPendientesProveedorStore::class, EloquentPagosPendientesProveedorStore::class);
+        $this->app->bind(AlmacenComprobantePago::class, StorageAlmacenComprobantePago::class);
+
+        $this->app->bind(PasswordHasher::class, LaravelPasswordHasher::class);
+        $this->app->bind(TransactionManager::class, LaravelTransactionManager::class);
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        // Los modelos Eloquent viven bajo App\Infrastructure\Persistence\Models,
+        // no bajo App\Models, así que el policy discovery por convención de
+        // Laravel no los encontraría (y tampoco adivinaría "ProveedorPolicy" a
+        // partir de una clase llamada "ProveedorModel"). Se registran explícitamente.
+        Gate::policy(ProveedorModel::class, ProveedorPolicy::class);
+        Gate::policy(AcopiadorModel::class, AcopiadorPolicy::class);
+        Gate::policy(ZonaModel::class, ZonaPolicy::class);
+        Gate::policy(RutaModel::class, RutaPolicy::class);
+        Gate::policy(RecorridoAcopioModel::class, RecorridoAcopioPolicy::class);
+        Gate::policy(EntregaModel::class, EntregaPolicy::class);
+        Gate::policy(AnalisisCalidadModel::class, AnalisisCalidadPolicy::class);
+        Gate::policy(ParametroCalidadModel::class, ParametroCalidadPolicy::class);
+        Gate::policy(ReglaCalidadModel::class, ReglaCalidadPolicy::class);
+        Gate::policy(ComunicadoModel::class, ComunicadoPolicy::class);
+        Gate::policy(PrecioLecheModel::class, PrecioLechePolicy::class);
+        Gate::policy(ReglaPagoCalidadModel::class, ReglaPagoCalidadPolicy::class);
+        Gate::policy(LiquidacionModel::class, LiquidacionPolicy::class);
+        Gate::policy(PagoProveedorModel::class, PagoProveedorPolicy::class);
+        Gate::policy(ConfiguracionPagoModel::class, ConfiguracionPagoPolicy::class);
+        Gate::policy(ObligacionPagoModel::class, ObligacionPagoPolicy::class);
+        Gate::policy(LoteProduccionModel::class, LoteProduccionPolicy::class);
+        Gate::policy(InsumoModel::class, InsumoPolicy::class);
+        Gate::policy(VentaProductoModel::class, VentaProductoPolicy::class);
+        Gate::policy(ProductoModel::class, ProductoPolicy::class);
+        Gate::policy(ProductoMovimientoModel::class, ProductoStockPolicy::class);
+        Gate::policy(RecetaModel::class, RecetaPolicy::class);
+        Gate::policy(CompradorModel::class, CompradorPolicy::class);
+        Gate::policy(ProductoPrecioModel::class, ProductoPrecioPolicy::class);
+        Gate::policy(NotificacionModel::class, NotificacionPolicy::class);
+        Gate::policy(EncargadoPlantaModel::class, EncargadoPlantaPolicy::class);
+        Gate::policy(PersonalVentasModel::class, PersonalVentasPolicy::class);
+        Gate::policy(AnalistaCalidadModel::class, AnalistaCalidadPolicy::class);
+
+        // ADMINISTRADOR tiene acceso administrativo global, pero esto NO
+        // debe saltarse invariantes de negocio: un análisis de calidad
+        // CONFIRMADO es inmutable para cualquiera, incluido el administrador
+        // (la misma regla que ya protege AnalisisCalidad::confirmar() en
+        // Domain). Por eso esa combinación puntual (ability "update" sobre
+        // un AnalisisCalidadModel) se deja pasar a la Policy en vez de
+        // concederse aquí de forma ciega.
+        Gate::before(function (User $user, string $ability, array $arguments = []): ?bool {
+            if (! $user->esAdministrador() || ! $user->estaOperativo()) {
+                return null;
+            }
+
+            $recurso = $arguments[0] ?? null;
+
+            if ($ability === 'update' && $recurso instanceof AnalisisCalidadModel) {
+                return null;
+            }
+
+            return true;
+        });
+    }
+}
