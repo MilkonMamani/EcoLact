@@ -15,6 +15,7 @@ use App\Http\Requests\AnalistaCalidad\UpdateAnalistaCalidadRequest;
 use App\Infrastructure\Persistence\Models\AnalistaCalidadModel;
 use DateTimeImmutable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -44,13 +45,13 @@ final class AnalistaCalidadController extends Controller
         ]);
     }
 
-    public function show(AnalistaCalidadModel $analista): View
+    public function show(AnalistaCalidadModel $analista, ?Request $request = null): View
     {
         Gate::authorize('view', $analista);
 
         return view('admin.analistas-calidad.show', [
             'analista' => $this->obtenerAnalistaCalidad->execute($analista->id),
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($analista->user_id),
+            'controlPeriodo' => $this->obtenerControlPeriodo->execute($analista->user_id, $request?->string('mes')->toString() ?: null),
         ]);
     }
 

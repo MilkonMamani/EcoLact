@@ -1,221 +1,308 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
+@section('title', 'Resumen general')
 @section('body-class', 'admin-dashboard-page')
+@section('contenedor', 'max-w-[1600px]')
+
+@php
+    $periodo = $dashboard->periodo;
+    [$desde, $hasta] = $periodo->limitesFecha();
+    $rango = ['desde' => $desde, 'hasta' => $hasta];
+    $titulos = match ($periodo->nombre) {
+        'hoy' => ['acopio' => 'Leche acopiada hoy', 'produccion' => 'Producción de hoy', 'ventas' => 'Ventas del día', 'pagos' => 'Pagos pendientes de hoy'],
+        'semana' => ['acopio' => 'Leche acopiada esta semana', 'produccion' => 'Producción de la semana', 'ventas' => 'Ventas de la semana', 'pagos' => 'Pagos pendientes de la semana'],
+        'mes' => ['acopio' => 'Leche acopiada este mes', 'produccion' => 'Producción del mes', 'ventas' => 'Ventas del mes', 'pagos' => 'Pagos pendientes del mes'],
+        default => ['acopio' => 'Leche acopiada', 'produccion' => 'Producción', 'ventas' => 'Ventas del período', 'pagos' => 'Pagos pendientes'],
+    };
+    $cantidad = fn (float $valor): string => rtrim(rtrim(number_format($valor, 2), '0'), '.');
+    $litros = fn (float $valor): string => $cantidad($valor).' L';
+    $soles = fn (float $valor): string => 'S/ '.number_format($valor, 2);
+    $plural = fn (int $n, string $uno, string $varios): string => $n.' '.($n === 1 ? $uno : $varios);
+    $estadoLote = fn (string $estado): string => match ($estado) { 'EN_PROCESO' => 'En proceso', 'FINALIZADO' => 'Finalizado', default => ucfirst(strtolower(str_replace('_', ' ', $estado))) };
+
+    $ventas = $dashboard->ventas;
+    $pagos = $dashboard->pagos;
+    $enlaceProveedores = route('admin.pagos.proveedores.index', ['semana' => $pagos['proveedores']['semana'] ?? 'todos', 'estado' => 'pendientes']);
+    $enlaceTrabajadores = $pagos['trabajadores']['mes'] !== null
+        ? route('admin.pagos.trabajadores.index', ['periodo' => $pagos['trabajadores']['mes'], 'estado' => 'PENDIENTE'])
+        : route('admin.pagos.trabajadores.index');
+    $porAtender = array_values(array_filter([
+        ['cantidad' => $dashboard->porAtender['analisisPorConfirmar'], 'texto' => $plural($dashboard->porAtender['analisisPorConfirmar'], 'análisis por confirmar', 'análisis por confirmar'), 'accion' => 'Revisar calidad', 'href' => route('admin.analisis-calidad.index', ['estado' => 'BORRADOR', 'fecha' => 'personalizado'] + $rango), 'tono' => 'info', 'icono' => 'beaker'],
+        ['cantidad' => $dashboard->porAtender['insumosSinStock'], 'texto' => $plural($dashboard->porAtender['insumosSinStock'], 'insumo sin stock', 'insumos sin stock'), 'accion' => 'Ver insumos', 'href' => route('admin.insumos.index', ['nivel' => 'sin_stock']), 'tono' => 'danger', 'icono' => 'alert-circle'],
+        ['cantidad' => $dashboard->porAtender['insumosBajoMinimo'], 'texto' => $plural($dashboard->porAtender['insumosBajoMinimo'], 'insumo bajo su mínimo', 'insumos bajo su mínimo'), 'accion' => 'Ver insumos', 'href' => route('admin.insumos.index', ['nivel' => 'bajo']), 'tono' => 'warning', 'icono' => 'triangle-alert'],
+        ['cantidad' => $dashboard->porAtender['lotesEnProceso'], 'texto' => $plural($dashboard->porAtender['lotesEnProceso'], 'lote en proceso', 'lotes en proceso'), 'accion' => 'Ver producción', 'href' => route('admin.produccion.index', ['estado' => 'EN_PROCESO', 'periodo' => 'personalizado'] + $rango), 'tono' => 'primary', 'icono' => 'clock'],
+    ], fn (array $aviso): bool => $aviso['cantidad'] > 0));
+    $maxZona = max([0.0, ...array_column($dashboard->acopioPorZona, 'litros')]);
+    $existencias = $dashboard->existencias;
+    $asistencia = $dashboard->asistenciaHoy;
+    $comunicado = $dashboard->comunicados['recientes'][0] ?? null;
+    $hayAcopio = $dashboard->acopio['entregas'] > 0;
+    $hayFuturo = in_array(true, array_column($dashboard->acopioPorIntervalo, 'futuro'), true);
+    $unidadIntervalo = $periodo->porHoras() ? 'horas' : 'días';
+@endphp
 
 @section('content')
-<div class="admin-dashboard space-y-6" data-admin-dashboard
-     data-litros-por-dia="{{ \Illuminate\Support\Js::encode($dashboard->litrosPorDia) }}"
-     data-distribucion-calidad="{{ \Illuminate\Support\Js::encode($dashboard->distribucionCalidad) }}">
-    <div class="dashboard-heading">
-        <div>
-            <div class="flex items-center gap-3">
-                <button type="button" data-sidebar-toggle aria-label="Abrir menú" class="rounded-lg p-2 text-text transition hover:bg-text-muted/10">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
-                </button>
-                <h1 class="text-2xl font-semibold uppercase tracking-[0.08em]" style="color: #e7a33c;">PANEL ADMINISTRATIVO</h1>
+<div class="admin-dashboard" data-admin-dashboard
+     data-acopio="{{ \Illuminate\Support\Js::encode($dashboard->acopioPorIntervalo) }}"
+     data-por-horas="{{ $periodo->porHoras() ? 'true' : 'false' }}">
+
+    <header class="dash-header">
+        <div class="flex min-w-0 items-start gap-2">
+            <button type="button" data-sidebar-toggle aria-label="Abrir menú" class="-ml-2 rounded-lg p-2 text-text transition hover:bg-text-muted/10 lg:hidden">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
+            </button>
+            <div class="min-w-0">
+                <x-layout.breadcrumbs :items="[['Administración', null], ['Resumen', null]]" />
+                <h1 class="dash-title">Analitics Dashboard</h1>
+                <p class="dash-subtitle">Lo esencial de tu operación, en un solo lugar</p>
             </div>
-            
         </div>
-        <div class="dashboard-period">
-            <div class="flex items-center justify-end gap-2">
-                <a href="{{ route('notificaciones.index') }}" aria-label="Notificaciones" class="rounded-lg p-2 text-text transition hover:bg-text-muted/10">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
-                </a>
-                <nav class="dashboard-segments" aria-label="Período del dashboard">
-                @foreach (['hoy' => 'Hoy', 'semana' => 'Semana', 'mes' => 'Mes'] as $valor => $etiqueta)
+        <div class="dash-toolbar">
+            <p class="dash-range"><x-ui.icon name="calendar" class="h-4 w-4" /><span class="sr-only">{{ $periodo->nombreVisible() }}:</span> {{ $periodo->rangoVisible() }}</p>
+            <nav class="dash-segments" aria-label="Período del dashboard">
+                @foreach (['hoy' => 'Hoy', 'semana' => '7 días', 'mes' => 'Mes'] as $valor => $etiqueta)
                     <a href="{{ route('admin.dashboard', ['periodo' => $valor]) }}"
-                       @if ($dashboard->periodo->nombre === $valor) aria-current="page" @endif>{{ $etiqueta }}</a>
+                       @if ($periodo->nombre === $valor) aria-current="page" @endif
+                       @if ($valor === 'semana') title="Semana actual, de lunes a domingo" @endif>{{ $etiqueta }}</a>
                 @endforeach
-                <a href="#dashboard-personalizado" data-custom-period
-                   @if ($dashboard->periodo->nombre === 'personalizado') aria-current="page" @endif>Personalizado</a>
-                </nav>
-
+            </nav>
+            <a href="{{ route('notificaciones.index') }}" aria-label="Notificaciones" class="dash-icon-button">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
+            </a>
         </div>
-    </div>
+    </header>
 
-    
+    {{-- Indicadores del período --}}
+    <section class="dash-kpis" aria-label="Indicadores del período">
+        <article class="dash-card dash-kpi">
+            <div class="dash-kpi-head"><h2>{{ $titulos['acopio'] }}</h2><span class="dash-icon" data-tone="primary"><x-ui.icon name="milk-jar" class="h-5 w-5" /></span></div>
+            <p class="dash-kpi-value">{{ $cantidad($dashboard->acopio['litros']) }} <small>L</small></p>
+            <p class="dash-kpi-note">{{ $plural($dashboard->acopio['proveedores'], 'proveedor con entregas', 'proveedores con entregas') }}</p>
+        </article>
+        <article class="dash-card dash-kpi">
+            <div class="dash-kpi-head"><h2>{{ $titulos['produccion'] }}</h2><span class="dash-icon" data-tone="violet"><x-ui.icon name="beaker" class="h-5 w-5" /></span></div>
+            <p class="dash-kpi-value">{{ $dashboard->produccion['total'] }} <small>{{ $dashboard->produccion['total'] === 1 ? 'lote' : 'lotes' }}</small></p>
+            <p class="dash-kpi-note">
+                @forelse ($dashboard->produccion['porEstado'] as $estado => $total)
+                    {{ $total }} {{ match ($estado) { 'EN_PROCESO' => 'en proceso', 'FINALIZADO' => $total === 1 ? 'finalizado' : 'finalizados', default => strtolower(str_replace('_', ' ', $estado)) } }}@if (! $loop->last) · @endif
+                @empty
+                    Sin lotes iniciados
+                @endforelse
+            </p>
+        </article>
+        <article class="dash-card dash-kpi">
+            <div class="dash-kpi-head"><h2>{{ $titulos['ventas'] }}</h2><span class="dash-icon" data-tone="info"><x-ui.icon name="shopping-cart" class="h-5 w-5" /></span></div>
+            <p class="dash-kpi-value">{{ $soles($ventas['importe']) }}</p>
+            <p class="dash-kpi-note">
+                @if ($ventas['ventas'] === 0)
+                    Sin ventas registradas
+                @else
+                    {{ $plural($ventas['ventas'], 'venta', 'ventas') }} · {{ $soles($ventas['contado']) }} contado · {{ $soles($ventas['descuentoPlanilla']) }} en planilla
+                @endif
+            </p>
+        </article>
+        <article class="dash-card dash-kpi is-highlight">
+            <div class="dash-kpi-head"><h2>{{ $titulos['pagos'] }}</h2><span class="dash-icon" data-tone="primary-solid"><x-ui.icon name="calendar-coin" class="h-5 w-5" /></span></div>
+            <p class="dash-kpi-value">{{ $soles($pagos['total']) }}</p>
+            <p class="dash-kpi-note">{{ $plural($pagos['obligaciones'], 'obligación programada', 'obligaciones programadas') }}</p>
+        </article>
+    </section>
 
-    <div class="dashboard-kpis">
-        <x-ui.stat-card label="Total acopiado" :value="number_format($dashboard->kpis['totalAcopiado'], 2).' L'" hint="Entregas válidas del período" class="dashboard-kpi" />
-        <x-ui.stat-card label="Proveedores atendidos" :value="$dashboard->kpis['proveedoresAtendidos'].' / '.$dashboard->kpis['proveedoresActivos']" :hint="number_format($dashboard->kpis['porcentajeAtendidos'], 1).'% respecto a los activos actuales'" class="dashboard-kpi" />
-        <x-ui.stat-card label="Calidad aceptada" :value="number_format($dashboard->kpis['calidadAceptada'], 1).'%'" :hint="$dashboard->kpis['analisisConfirmados'].' análisis confirmados'" class="dashboard-kpi" />
-        <x-ui.stat-card label="Entregas observadas" :value="$dashboard->kpis['entregasObservadas']" hint="Análisis confirmados con observación" class="dashboard-kpi dashboard-kpi-warning" />
-        <x-ui.stat-card label="Total valorizado" :value="'S/ '.number_format($dashboard->kpis['totalValorizado'], 2)" hint="Suma de valorizaciones individuales" class="dashboard-kpi dashboard-kpi-accent" />
-        <x-ui.stat-card label="Producción" :value="$dashboard->kpis['produccion'].($dashboard->kpis['produccion'] === 1 ? ' lote' : ' lotes')" :hint="($dashboard->kpis['produccionPorEstado']['EN_PROCESO'] ?? 0).' en proceso · '.($dashboard->kpis['produccionPorEstado']['FINALIZADO'] ?? 0).' finalizados'" class="dashboard-kpi" />
-    </div>
-
-    <div class="dashboard-charts">
-        <x-ui.card title="Litros de leche por día" subtitle="Cantidad total de leche acopiada en todas las zonas" class="dashboard-volume min-w-0">
-            <x-slot:actions>
-                <div class="dashboard-segments" role="group" aria-label="Medida del gráfico">
-                    <button type="button" data-chart-metric="litros" aria-pressed="true">Litros</button>
-                    <button type="button" data-chart-metric="entregas" aria-pressed="false">N° de entregas</button>
+    <div class="dash-grid">
+        {{-- Pieza principal: acopio en el tiempo --}}
+        <section class="dash-card dash-chart-card" aria-labelledby="dash-acopio-titulo">
+            <div class="dash-card-head">
+                <div>
+                    <h2 id="dash-acopio-titulo">{{ $periodo->porHoras() ? 'Acopio por hora' : 'Acopio diario' }}</h2>
+                    <p>Litros recibidos · {{ $periodo->rangoVisible() }}</p>
                 </div>
-            </x-slot:actions>
-            @if ($dashboard->litrosPorDia === [])
-                <x-ui.empty-state title="No hay entregas en este período" description="El gráfico aparecerá cuando existan entregas válidas." />
-            @else
-                <div class="dashboard-chart" data-chart-container hidden>
-                    <canvas data-volume-chart role="ii" aria-label="Acopio diario del período; los valores también están disponibles en la tabla inferior"></canvas>
+                <div class="dash-chart-total">
+                    <span>Total del período</span>
+                    <strong>{{ $litros($dashboard->acopio['litros']) }}</strong>
+                    <span>{{ $plural($dashboard->acopio['entregas'], 'entrega válida', 'entregas válidas') }}</span>
                 </div>
-                <details class="dashboard-chart-data" data-chart-table open>
-                    <summary>Consultar datos del gráfico</summary>
-                    <div class="overflow-x-auto">
-                        <table class="dashboard-table">
-                            <caption class="sr-only">Acopio diario, únicamente fechas con entregas válidas</caption>
-                            <thead><tr><th scope="col">Fecha</th><th scope="col">Litros</th><th scope="col">Entregas</th></tr></thead>
-                            <tbody>
-                                @foreach ($dashboard->litrosPorDia as $dia)
-                                    <tr><td>{{ $dia['fecha'] }}</td><td>{{ number_format($dia['litros'], 2) }}</td><td>{{ $dia['entregas'] }}</td></tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </details>
-                <p class="mt-3 text-xs text-text-muted">Se muestran las fechas con entregas válidas.</p>
+            </div>
+
+            @if (! $hayAcopio)
+                <p class="dash-empty dash-chart-empty"><x-ui.icon name="info" class="h-4 w-4 shrink-0" /><span><strong>Sin entregas en este período.</strong> Cada {{ $periodo->porHoras() ? 'hora transcurrida' : 'día transcurrido' }} figura con 0 L.</span></p>
             @endif
-        </x-ui.card>
+            <div class="dash-chart" data-chart-container hidden>
+                <canvas data-acopio-chart role="img" aria-label="Litros acopiados por {{ $periodo->porHoras() ? 'hora' : 'día' }}; los valores están en la tabla de datos"></canvas>
+            </div>
+            <p class="dash-chart-error" data-chart-error hidden>No se pudo dibujar el gráfico. Los datos siguen disponibles en la tabla.</p>
+            <div class="dash-card-foot">
+                @if ($hayAcopio)
+                    <details class="dash-chart-data" data-chart-table open>
+                        <summary>Consultar datos del gráfico</summary>
+                        <div class="overflow-x-auto">
+                            <table class="dash-table">
+                                <caption class="sr-only">Litros acopiados por {{ $periodo->porHoras() ? 'hora' : 'día' }}</caption>
+                                <thead><tr><th scope="col">{{ $periodo->porHoras() ? 'Hora' : 'Fecha' }}</th><th scope="col">Litros</th><th scope="col">Entregas</th></tr></thead>
+                                <tbody>
+                                    @foreach ($dashboard->acopioPorIntervalo as $intervalo)
+                                        @continue($intervalo['futuro'] || ! $intervalo['entregas'])
+                                        <tr><td>{{ $intervalo['titulo'] }}</td><td>{{ number_format($intervalo['litros'], 2) }}</td><td>{{ $intervalo['entregas'] }}</td></tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                @endif
+                @if ($hayFuturo)
+                    <p class="dash-legend"><span aria-hidden="true"></span>{{ ucfirst($unidadIntervalo) }} que aún no transcurren</p>
+                @endif
+                <a href="{{ route('admin.entregas.index') }}" class="dash-link">Ver acopio</a>
+            </div>
+        </section>
 
-        <x-ui.card title="Distribución por calidad" subtitle="Análisis confirmados del período" class="min-w-0">
-            @if ($dashboard->kpis['analisisConfirmados'] === 0)
-                <x-ui.empty-state title="Sin datos de calidad" description="Los borradores no se incluyen en las estadísticas." />
-            @else
-                <div class="dashboard-donut" data-chart-container hidden>
-                    <canvas data-quality-chart role="img" aria-label="Distribución de análisis aceptados, observados y rechazados; valores en la lista inferior"></canvas>
+        <div class="dash-stack">
+            <section class="dash-card" aria-labelledby="dash-atender-titulo">
+                <div class="dash-card-head"><div><h2 id="dash-atender-titulo">Por atender</h2></div></div>
+                @if ($porAtender === [])
+                    <p class="dash-empty"><x-ui.icon name="check-circle" class="h-5 w-5 text-success" /> Nada pendiente de atender.</p>
+                @else
+                    <ul class="dash-rows">
+                        @foreach ($porAtender as $aviso)
+                            <li>
+                                <span class="dash-icon is-small" data-tone="{{ $aviso['tono'] }}"><x-ui.icon :name="$aviso['icono']" class="h-4 w-4" /></span>
+                                <span class="dash-row-text">{{ $aviso['texto'] }}</span>
+                                <a href="{{ $aviso['href'] }}" class="dash-link">{{ $aviso['accion'] }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </section>
+
+            <section class="dash-card" aria-labelledby="dash-pagos-titulo">
+                <div class="dash-card-head"><div><h2 id="dash-pagos-titulo">Pagos pendientes</h2><p>Con pago programado en el período</p></div></div>
+                <ul class="dash-rows">
+                    <li>
+                        <div class="dash-row-text"><p>Proveedores · {{ strtolower(\App\Domain\Shared\Enums\PeriodicidadPago::SEMANAL->etiqueta()) }}</p><p class="dash-muted">{{ $plural($pagos['proveedores']['obligaciones'], 'obligación', 'obligaciones') }}</p></div>
+                        <strong class="dash-amount">{{ $soles($pagos['proveedores']['importe']) }}</strong>
+                    </li>
+                    <li>
+                        <div class="dash-row-text"><p>Trabajadores · {{ strtolower(\App\Domain\Shared\Enums\PeriodicidadPago::MENSUAL->etiqueta()) }}</p><p class="dash-muted">{{ $plural($pagos['trabajadores']['obligaciones'], 'obligación', 'obligaciones') }}</p></div>
+                        <strong class="dash-amount">{{ $soles($pagos['trabajadores']['importe']) }}</strong>
+                    </li>
+                </ul>
+                @if ($pagos['sinFecha']['obligaciones'] > 0)
+                    <p class="dash-note" data-tone="warning">{{ $plural($pagos['sinFecha']['obligaciones'], 'pago de trabajador pendiente', 'pagos de trabajadores pendientes') }} sin fecha programada ({{ $soles($pagos['sinFecha']['importe']) }}), no incluidos arriba.</p>
+                @endif
+                @if ($pagos['atrasados']['obligaciones'] > 0)
+                    <p class="dash-note">Además, {{ $plural($pagos['atrasados']['obligaciones'], 'pago programado', 'pagos programados') }} antes de este período sigue{{ $pagos['atrasados']['obligaciones'] === 1 ? '' : 'n' }} sin pagar ({{ $soles($pagos['atrasados']['importe']) }}).</p>
+                @endif
+                <div class="dash-card-foot">
+                    <a href="{{ $enlaceProveedores }}" class="dash-link">Ver pagos a proveedores</a>
+                    <a href="{{ $enlaceTrabajadores }}" class="dash-link">Ver pagos a trabajadores</a>
                 </div>
-                <ul class="space-y-4">
-                    @foreach ($dashboard->distribucionCalidad as $calidad)
-                        <li class="dashboard-quality-row">
-                            <x-ui.badge :status="$calidad['resultado']" />
-                            <div class="text-right">
-                                <span class="text-sm font-semibold">{{ $calidad['cantidad'] }} · {{ number_format($calidad['porcentaje'], 1) }}%</span>
-                                <span class="block text-xs text-text-muted">{{ number_format($calidad['litros'], 2) }} L válidos</span>
-                            </div>
+            </section>
+        </div>
+
+        <section class="dash-card" aria-labelledby="dash-zonas-titulo">
+            <div class="dash-card-head"><div><h2 id="dash-zonas-titulo">Acopio por zona</h2><p>Litros del período</p></div></div>
+            @if ($dashboard->acopioPorZona === [])
+                <p class="dash-empty">Sin acopio en este período.</p>
+            @else
+                <ul class="dash-bars">
+                    @foreach ($dashboard->acopioPorZona as $zona)
+                        <li>
+                            <span @class(['dash-bar-name', 'dash-muted' => $zona['otras']]) title="{{ $zona['nombre'] }}">{{ $zona['nombre'] }}</span>
+                            <progress @class(['dash-bar', 'is-other' => $zona['otras']]) max="{{ $maxZona }}" value="{{ $zona['litros'] }}" aria-hidden="true"></progress>
+                            <strong>{{ $litros($zona['litros']) }}</strong>
                         </li>
                     @endforeach
                 </ul>
             @endif
-        </x-ui.card>
+            <div class="dash-card-foot">
+                <a href="{{ route('admin.zonas.index') }}" class="dash-link">Ver zonas</a>
+            </div>
+        </section>
 
-        <x-ui.card title="Rendimiento por zonas" subtitle="Acopio y calidad del período" class="min-w-0">
-            @if ($dashboard->rendimientoZonas === [])
-                <x-ui.empty-state title="No hay zonas registradas" />
+        <section class="dash-card" aria-labelledby="dash-produccion-titulo">
+            <div class="dash-card-head"><div><h2 id="dash-produccion-titulo">Producción reciente</h2><p>Lotes iniciados en el período</p></div></div>
+            @if ($dashboard->lotesRecientes === [])
+                <p class="dash-empty">No se iniciaron lotes en este período.</p>
             @else
                 <div class="overflow-x-auto">
-                    <table class="dashboard-table">
-                        <caption class="sr-only">Proveedores atendidos, litros y porcentaje de calidad aceptada por zona</caption>
-                        <thead><tr><th scope="col">Zona</th><th scope="col">Proveedores</th><th scope="col">Litros</th><th scope="col">Calidad</th></tr></thead>
+                    <table class="dash-table is-compact">
+                        <thead><tr><th scope="col">Lote</th><th scope="col">Producto</th><th scope="col" class="text-right">Estado</th></tr></thead>
                         <tbody>
-                            @foreach ($dashboard->rendimientoZonas as $zona)
+                            @foreach ($dashboard->lotesRecientes as $lote)
                                 <tr>
-                                    <th scope="row">{{ $zona['nombre'] }}</th>
-                                    <td>{{ $zona['proveedores'] }}</td>
-                                    <td>{{ number_format($zona['litros'], 2) }}</td>
-                                    <td>{{ $zona['confirmados'] > 0 ? number_format($zona['calidad'], 1).'%' : 'Sin datos' }}</td>
+                                    <td><a href="{{ route('admin.produccion.show', $lote['id']) }}" class="dash-link is-plain">{{ $lote['codigo'] }}</a></td>
+                                    <td class="dash-cell-truncate" title="{{ implode(', ', $lote['productos']) }}">{{ $lote['productos'] !== [] ? implode(', ', $lote['productos']) : 'Sin productos' }}</td>
+                                    <td class="text-right"><x-ui.badge :status="$lote['estado']">{{ $estadoLote($lote['estado']) }}</x-ui.badge></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             @endif
-        </x-ui.card>
-    </div>
+            <div class="dash-card-foot">
+                <a href="{{ route('admin.produccion.index', ['periodo' => 'personalizado'] + $rango) }}" class="dash-link">Ver producción</a>
+            </div>
+        </section>
 
-    <div class="dashboard-secondary">
-        <x-ui.card title="Historial reciente de proveedores" subtitle="Últimas 6 entregas del período, incluidas las anuladas" class="min-w-0">
-            <x-slot:actions><a href="{{ route('admin.entregas.index') }}" class="dashboard-link">Ver entregas →</a></x-slot:actions>
-            @if ($dashboard->entregasRecientes === [])
-                <x-ui.empty-state title="No hay entregas en este período" />
+        <section class="dash-card" aria-labelledby="dash-inventario-titulo">
+            <div class="dash-card-head"><div><h2 id="dash-inventario-titulo">Inventario actual</h2><p>Saldo a este momento, no depende del período</p></div></div>
+            <div class="dash-stock-hero">
+                <span class="dash-icon is-small" data-tone="primary"><x-ui.icon name="droplet" class="h-4 w-4" /></span>
+                <span>Leche disponible</span>
+                <strong>{{ $existencias['leche'] !== null ? $cantidad($existencias['leche']['cantidad']).' '.$existencias['leche']['unidad'] : 'Sin registro' }}</strong>
+            </div>
+            @if ($existencias['productos'] === [])
+                <p class="dash-muted mt-3">No hay productos terminados con stock.</p>
             @else
-                <div class="overflow-x-auto">
-                    <table class="dashboard-table dashboard-deliveries">
-                        <thead><tr><th scope="col">Fecha</th><th scope="col">Proveedor</th><th scope="col">Zona</th><th scope="col">Litros</th><th scope="col">Calidad</th><th scope="col">Estado</th><th scope="col">Acción</th></tr></thead>
-                        <tbody>
-                            @foreach ($dashboard->entregasRecientes as $entrega)
-                                <tr>
-                                    <td class="whitespace-nowrap">{{ $entrega['fecha'] }}</td>
-                                    <th scope="row">{{ $entrega['proveedorNombre'] }}</th>
-                                    <td>{{ $entrega['zonaNombre'] }}</td>
-                                    <td class="whitespace-nowrap">{{ number_format($entrega['litros'], 2) }} L</td>
-                                    <td>
-                                        @if ($entrega['calidad'])
-                                            <x-ui.badge :status="$entrega['calidad']" />
-                                        @else
-                                            <span class="text-xs text-text-muted">Sin confirmar</span>
-                                        @endif
-                                    </td>
-                                    <td><x-ui.badge :status="$entrega['estado']" /></td>
-                                    <td><a href="{{ route('admin.entregas.show', $entrega['id']) }}" class="dashboard-link" aria-label="Ver entrega de {{ $entrega['proveedorNombre'] }} del {{ $entrega['fecha'] }}">Ver →</a></td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
-        </x-ui.card>
-
-        <x-ui.card title="Producción reciente" subtitle="Último lote iniciado en el período" class="min-w-0">
-            @if ($dashboard->produccionReciente === null)
-                <x-ui.empty-state title="No existen lotes de producción" description="No hay lotes iniciados en este período." />
-            @else
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <a class="dashboard-link text-lg" href="{{ route('admin.produccion.show', $dashboard->produccionReciente['id']) }}">{{ $dashboard->produccionReciente['codigo'] }}</a>
-                    <x-ui.badge :status="$dashboard->produccionReciente['estado']" />
-                </div>
-                <p class="mt-2 text-xs text-text-muted">{{ $dashboard->produccionReciente['fecha'] }}</p>
-                <div class="dashboard-production-litres">
-                    <span class="text-3xl font-semibold">{{ number_format($dashboard->produccionReciente['litros'], 2) }} L</span>
-                    <span class="text-sm text-primary-dark">Leche utilizada</span>
-                </div>
-                <h3 class="mb-3 text-sm font-semibold">Productos obtenidos</h3>
-                <ul class="space-y-3">
-                    @forelse ($dashboard->produccionReciente['productos'] as $producto)
-                        <li class="flex flex-wrap justify-between gap-2 text-sm"><span>{{ $producto['nombre'] }}</span><strong>{{ number_format($producto['cantidad'], 2) }} {{ $producto['unidad'] }}</strong></li>
-                    @empty
-                        <li class="text-sm text-text-muted">Aún no hay resultados de producción registrados.</li>
-                    @endforelse
-                </ul>
-            @endif
-        </x-ui.card>
-
-        <x-ui.card title="Actividad reciente" subtitle="Últimos movimientos registrados en el período" class="min-w-0">
-            @if ($dashboard->actividadReciente === [])
-                <x-ui.empty-state title="No hay actividad reciente" />
-            @else
-                <ol class="dashboard-activity">
-                    @foreach ($dashboard->actividadReciente as $evento)
-                        <li>
-                            <span class="dashboard-activity-dot" aria-hidden="true"></span>
-                            <div><p class="text-sm font-semibold">{{ $evento['titulo'] }}</p><p class="text-xs text-text-muted">{{ $evento['detalle'] }}</p></div>
-                            <span class="text-xs text-text-muted">{{ $evento['fecha'] }}</span>
-                        </li>
-                    @endforeach
-                </ol>
-            @endif
-        </x-ui.card>
-
-        <x-ui.card title="Comunicaciones" subtitle="Publicados en el período" class="min-w-0">
-            <x-slot:actions><a href="{{ route('admin.comunicados.index') }}" class="dashboard-link">Ver todos →</a></x-slot:actions>
-            @if ($dashboard->comunicaciones['publicados'] === 0)
-                <x-ui.empty-state title="No hay comunicados publicados" />
-            @else
-                <div class="dashboard-communications-stats">
-                    <div><strong>{{ $dashboard->comunicaciones['publicados'] }}</strong><span>Publicados</span></div>
-                    <div><strong>{{ $dashboard->comunicaciones['destinatarios'] }}</strong><span>Destinatarios</span></div>
-                    <div><strong>{{ $dashboard->comunicaciones['tasaLectura'] !== null ? number_format($dashboard->comunicaciones['tasaLectura'], 1).'%' : '—' }}</strong><span>Lectura actual</span></div>
-                </div>
-                <p class="mt-2 text-xs text-text-muted">{{ $dashboard->comunicaciones['destinatarios'] > 0 ? $dashboard->comunicaciones['leidos'].' lecturas registradas' : 'Sin destinatarios registrados para calcular la lectura.' }}</p>
-                <ul class="mt-4 space-y-4">
-                    @foreach ($dashboard->comunicaciones['recientes'] as $comunicado)
-                        <li>
-                            <a href="{{ route('admin.comunicados.show', $comunicado['id']) }}" class="dashboard-link">{{ $comunicado['titulo'] }}</a>
-                            <p class="mt-1 text-xs text-text-muted">{{ $comunicado['alcance'] }} · {{ $comunicado['fecha'] }}</p>
-                        </li>
+                <ul class="dash-stock-list">
+                    @foreach ($existencias['productos'] as $producto)
+                        <li><span>{{ $producto['nombre'] }}</span><strong>{{ $cantidad($producto['cantidad']) }} {{ $producto['unidad'] }}</strong></li>
                     @endforeach
                 </ul>
+                @if ($existencias['productosConStock'] > count($existencias['productos']))
+                    <p class="dash-muted mt-1">y {{ $plural($existencias['productosConStock'] - count($existencias['productos']), 'producto más', 'productos más') }} con stock</p>
+                @endif
             @endif
-        </x-ui.card>
+            @if ($existencias['insumosBajoMinimo'] + $existencias['insumosSinStock'] > 0)
+                <p class="dash-note" data-tone="warning">
+                    <x-ui.icon name="triangle-alert" class="h-4 w-4 shrink-0" />
+                    <span>{{ collect([$existencias['insumosBajoMinimo'] > 0 ? $plural($existencias['insumosBajoMinimo'], 'insumo bajo su mínimo', 'insumos bajo su mínimo') : null, $existencias['insumosSinStock'] > 0 ? $plural($existencias['insumosSinStock'], 'sin stock', 'sin stock') : null])->filter()->implode(' · ') }}</span>
+                </p>
+            @endif
+            <div class="dash-card-foot">
+                <a href="{{ route('admin.insumos.index') }}" class="dash-link">Ver insumos</a>
+                <a href="{{ route('admin.productos.index', ['estado' => 'DISPONIBLE']) }}" class="dash-link">Ver productos</a>
+            </div>
+        </section>
+
+        {{-- Franja inferior: estado de hoy y comunicación --}}
+        <div class="dash-card dash-strip">
+            <section class="dash-strip-item" aria-labelledby="dash-asistencia-titulo">
+                <span class="dash-icon" data-tone="primary"><x-ui.icon name="user-check" class="h-5 w-5" /></span>
+                <div class="min-w-0 flex-1">
+                    <h2 id="dash-asistencia-titulo">Asistencia de hoy</h2>
+                    @if ($asistencia['personal'] === 0)
+                        <p class="dash-muted">No hay personal registrado para este día.</p>
+                    @else
+                        <p class="dash-strip-value">{{ $asistencia['presentes'] }} <small>de {{ $asistencia['personal'] }} presentes</small></p>
+                        <p class="dash-muted">{{ $plural($asistencia['faltas'], 'falta', 'faltas') }} · {{ $asistencia['sinMarcar'] }} sin marcar</p>
+                    @endif
+                </div>
+                <a href="{{ route('admin.asistencia.index', ['fecha' => $periodo->hoy()->desde->toDateString()]) }}" class="dash-link">Ver asistencia</a>
+            </section>
+            <section class="dash-strip-item" aria-labelledby="dash-comunicados-titulo">
+                <span class="dash-icon" data-tone="primary"><x-ui.icon name="file-text" class="h-5 w-5" /></span>
+                <div class="min-w-0 flex-1">
+                    <h2 id="dash-comunicados-titulo">Comunicados</h2>
+                    @if ($comunicado === null)
+                        <p class="dash-muted">No se publicaron comunicados en este período.</p>
+                    @else
+                        <a href="{{ route('admin.comunicados.show', $comunicado['id']) }}" class="dash-strip-title">{{ $comunicado['titulo'] }}</a>
+                        <p class="dash-muted">{{ $comunicado['alcance'] }} · {{ $comunicado['fecha'] }} · {{ $plural($dashboard->comunicados['publicados'], 'publicado', 'publicados') }} en el período</p>
+                    @endif
+                </div>
+                <a href="{{ route('admin.comunicados.index', ['estado' => 'PUBLICADO', 'periodo' => 'personalizado'] + $rango) }}" class="dash-link">Ver comunicados</a>
+            </section>
+        </div>
     </div>
 </div>
 @endsection

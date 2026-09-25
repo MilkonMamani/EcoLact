@@ -3,6 +3,7 @@
 namespace App\Application\Pago;
 
 use App\Application\Pago\Contracts\PersonalPagableQuery;
+use App\Application\Trabajador\SincronizarTrabajadores;
 use App\Domain\Auth\Repositories\RoleRepository;
 use App\Domain\Pago\ConfiguracionPago;
 use App\Domain\Pago\ConfiguracionPagoRepository;
@@ -12,30 +13,29 @@ use App\Domain\Pago\ObligacionPagoRepository;
 use App\Domain\Pago\PeriodoPago;
 use App\Domain\Shared\Enums\EstadoObligacionPago;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
+use App\Domain\Trabajador\Trabajador;
+use App\Domain\Trabajador\TrabajadorRepository;
 use DateTimeImmutable;
 
 /**
- * Abre la ventana de 30 días (el "periodo") de cada persona activa del
- * personal, o recalcula el progreso de la que ya tiene abierta.
+ * Abre la obligación EN_CURSO del MES CALENDARIO actual de cada trabajador
+ * activo (una por trabajador y mes; nunca abre meses pasados ni futuros: eso
+ * es responsabilidad de CerrarNominaMensual al cerrar el mes anterior), o
+ * recalcula el progreso de la que ya tiene abierta.
  *
- * Los roles se leen de la tabla roles (es_remunerable): un rol nuevo
- * remunerable genera ventanas sin tocar código. Cada ventana nace EN_CURSO,
- * sin monto (0 días trabajados); se paga cuando se registran 30 jornadas
- * (ver RegistrarJornadaTrabajador/RecalcularProgresoObligacionPersonal), no
- * al abrirse. La ventana usa la configuración vigente al cierre del periodo
- * (o hoy, si el periodo está en curso). No se abren ventanas anteriores al
- * alta de la persona ni al inicio de la primera configuración, y quien está
- * inactivo no genera ventanas.
+ * Sincroniza `trabajadores` primero (SincronizarTrabajadores), así que
+ * también sirve de red de seguridad diaria: un trabajador nuevo o uno que ya
+ * no es pagable queda reflejado sin esperar al cierre de mes.
  *
- * Es idempotente: cada persona tiene como máximo una ventana abierta
- * (EN_CURSO o PENDIENTE) a la vez; la clave única (persona + periodo) impide
- * duplicar.
+ * Es idempotente: la clave única (beneficiario + periodo) impide duplicar.
  */
 final class GenerarObligacionesPersonal
 {
     public function __construct(
+        private readonly SincronizarTrabajadores $sincronizarTrabajadores,
         private readonly ConfiguracionPagoRepository $configuraciones,
         private readonly PersonalPagableQuery $personal,
+        private readonly TrabajadorRepository $trabajadores,
         private readonly ObligacionPagoRepository $obligaciones,
         private readonly RoleRepository $roles,
         private readonly RecalcularProgresoObligacionPersonal $recalcular,
@@ -45,6 +45,10 @@ final class GenerarObligacionesPersonal
     {
         $hoy = $hoy->setTime(0, 0);
         $resultado = new ResultadoGeneracionPagos;
+
+        $this->sincronizarTrabajadores->execute($hoy);
+
+        $periodo = PeriodoPago::mesQueContiene($hoy);
 
         foreach ($this->roles->listarRemunerables() as $rol) {
             $rolId = $rol->id();
@@ -58,10 +62,14 @@ final class GenerarObligacionesPersonal
                 continue;
             }
 
-            $primeraVigencia = min(array_map(fn (ConfiguracionPago $c): DateTimeImmutable => $c->fechaInicio(), $configuraciones));
-
             foreach ($this->personal->activosPorRol($rolId) as $persona) {
-                $this->asegurarVentanaAbierta($rol->nombre(), $persona, $configuraciones, $primeraVigencia, $hoy, $actorUserId, $resultado);
+                $trabajador = $this->trabajadores->buscarPorUserId($persona->userId);
+
+                if ($trabajador === null || ! $trabajador->estaActivo() || ! $trabajador->estaVigenteEn($hoy)) {
+                    continue;
+                }
+
+                $this->asegurarObligacionDelMes($rolId, $rol->nombre(), $trabajador, $configuraciones, $periodo, $hoy, $actorUserId, $resultado);
             }
         }
 
@@ -71,37 +79,44 @@ final class GenerarObligacionesPersonal
     /**
      * @param  ConfiguracionPago[]  $configuraciones
      */
-    private function asegurarVentanaAbierta(
-        string $rol,
-        PersonalPagable $persona,
+    private function asegurarObligacionDelMes(
+        int $rolId,
+        string $rolNombre,
+        Trabajador $trabajador,
         array $configuraciones,
-        DateTimeImmutable $primeraVigencia,
+        PeriodoPago $periodo,
         DateTimeImmutable $hoy,
         ?int $actorUserId,
         ResultadoGeneracionPagos $resultado,
     ): void {
-        $ultima = $this->obligaciones->buscarPersonalMasRecientePorUsuario($persona->userId);
+        $clave = ObligacionPago::clavePara(TipoBeneficiarioPago::PERSONAL, $trabajador->userId(), $periodo->inicio);
 
-        // Ya hay una ventana abierta (EN_CURSO o PENDIENTE): nada que crear,
-        // solo recalcular su progreso por si hay jornadas que aún no se reflejaron.
-        if ($ultima !== null && ! $ultima->estaPagada()) {
-            $this->recalcular->execute($ultima);
+        if ($this->obligaciones->existePorClave($clave)) {
+            $abierta = $this->obligaciones->buscarPersonalAbiertaPorUsuario($trabajador->userId());
+
+            if ($abierta !== null && $abierta->estado() === EstadoObligacionPago::EN_CURSO) {
+                $this->recalcular->execute($abierta);
+            }
+
             $resultado->existentes++;
 
             return;
         }
 
-        $inicioSiguiente = $ultima !== null
-            ? $ultima->periodoFin()->modify('+1 day')
-            : max($primeraVigencia, $persona->fechaAlta);
+        // Nunca dos EN_CURSO simultáneas: si el mes anterior todavía no se
+        // cerró (CerrarNominaMensual), solo se recalcula esa, no se abre el
+        // mes actual todavía. Evita duplicar periodos si el cierre mensual
+        // falla o se retrasa y este generador sigue corriendo a diario.
+        $masReciente = $this->obligaciones->buscarPersonalMasRecientePorUsuario($trabajador->userId());
 
-        $ventana = PeriodoPago::ventanaDe30Dias($inicioSiguiente);
+        if ($masReciente !== null && $masReciente->estado() === EstadoObligacionPago::EN_CURSO) {
+            $this->recalcular->execute($masReciente);
+            $resultado->existentes++;
 
-        if (! $ventana->haComenzado($hoy)) {
             return;
         }
 
-        $configuracion = $this->configuracionVigente($configuraciones, $ventana->fechaDeReferencia($hoy));
+        $configuracion = $this->configuracionVigente($configuraciones, $periodo->fechaDeReferencia($hoy));
 
         if ($configuracion === null) {
             return;
@@ -111,18 +126,18 @@ final class GenerarObligacionesPersonal
             id: null,
             tipoBeneficiario: TipoBeneficiarioPago::PERSONAL,
             proveedorId: null,
-            userId: $persona->userId,
-            rolId: $persona->rolId,
-            beneficiarioNombre: $persona->nombre,
+            userId: $trabajador->userId(),
+            rolId: $rolId,
+            beneficiarioNombre: $trabajador->nombreCompleto(),
             configuracionPagoId: $configuracion->id(),
             liquidacionId: null,
-            periodoInicio: $ventana->inicio,
-            periodoFin: $ventana->fin,
+            periodoInicio: $periodo->inicio,
+            periodoFin: $periodo->fin,
             periodicidad: $configuracion->periodicidad(),
             concepto: $configuracion->tipoCalculo()->etiqueta(),
             baseCalculo: [
                 'tipo_calculo' => $configuracion->tipoCalculo()->value,
-                'rol' => $rol,
+                'rol' => $rolNombre,
                 'sueldo_base' => $configuracion->montoBase(),
                 'vigente_desde' => $configuracion->fechaInicio()->format('Y-m-d'),
             ],
@@ -132,6 +147,7 @@ final class GenerarObligacionesPersonal
             diasTrabajados: 0,
             valorDia: round((float) $configuracion->montoBase() / JornadaPersonal::DIAS_BASE_PERIODO, 2),
             acumulado: 0.0,
+            fechaPagoProgramada: $periodo->fechaPagoProgramada(),
         ));
 
         if ($creada === null) {
@@ -140,8 +156,6 @@ final class GenerarObligacionesPersonal
             return;
         }
 
-        // Por si ya hay jornadas registradas en el rango (no debería ocurrir en
-        // uso normal, pero deja el estado consistente si así fuera).
         $this->recalcular->execute($creada);
         $resultado->creadas++;
     }

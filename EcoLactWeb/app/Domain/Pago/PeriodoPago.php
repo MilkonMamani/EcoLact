@@ -45,20 +45,6 @@ final class PeriodoPago
         return new self(PeriodicidadPago::MENSUAL, $inicio, $inicio->modify('last day of this month'));
     }
 
-    /**
-     * Ventana móvil de 30 días para el personal (30 días = un sueldo
-     * mensual). A diferencia de mesQueContiene(), no se ajusta al 1° del
-     * mes: arranca exactamente en $inicio. No se encadena con siguiente()
-     * (que sigue usando mesQueContiene() para MENSUAL) — quien la use debe
-     * encadenar sumando 30 días directamente.
-     */
-    public static function ventanaDe30Dias(DateTimeImmutable $inicio): self
-    {
-        $inicio = $inicio->setTime(0, 0);
-
-        return new self(PeriodicidadPago::MENSUAL, $inicio, $inicio->modify('+29 days'));
-    }
-
     public function siguiente(): self
     {
         return self::que($this->periodicidad, $this->fin->modify('+1 day'));
@@ -90,6 +76,15 @@ final class PeriodoPago
         $hoy = $hoy->setTime(0, 0);
 
         return $this->fin < $hoy ? $this->fin : $hoy;
+    }
+
+    /**
+     * Día en que un pendiente de este periodo queda habilitado para pagarse:
+     * el día siguiente a su fin (para MENSUAL, el día 1 del mes siguiente).
+     */
+    public function fechaPagoProgramada(): DateTimeImmutable
+    {
+        return $this->fin->modify('+1 day');
     }
 
     public function etiqueta(): string

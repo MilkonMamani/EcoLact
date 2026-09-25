@@ -35,11 +35,12 @@ function visitar_pagar_a_trabajadores(User $admin, array $query = [])
 
 /**
  * Crea un trabajador ACOPIADOR activo con sueldo configurado, visita la
- * pantalla para que su ventana EN_CURSO se abra sola, y la fuerza a
- * PENDIENTE (30/30 días) para que quede lista para pagar. Los tests de esta
- * pantalla no prueban el control de jornadas en sí (eso lo cubre
- * JornadaPersonalTest y RegistrarJornadaTrabajadorTest), así que se apoyan
- * en pagos_forzar_pendiente para no depender de viajar 30 días reales.
+ * pantalla para que su obligación EN_CURSO se abra sola, y la fuerza a
+ * PENDIENTE (mes completo, sin faltas) para que quede lista para pagar. Los
+ * tests de esta pantalla no prueban el control de jornadas ni el cierre
+ * mensual en sí (eso lo cubren JornadaPersonalTest, RegistrarJornadaTrabajadorTest
+ * y CerrarNominaMensualTest), así que fuerzan el estado directamente en vez
+ * de depender de viajar hasta fin de mes.
  */
 function trabajador_pendiente(User $admin, string $nombre = 'Julio', float $sueldo = 900.0): ObligacionPagoModel
 {
@@ -49,7 +50,24 @@ function trabajador_pendiente(User $admin, string $nombre = 'Julio', float $suel
 
     $obligacion = ObligacionPagoModel::where('beneficiario_nombre', 'like', $nombre.'%')->firstOrFail();
 
-    return pagos_forzar_pendiente($obligacion, $sueldo);
+    return forzar_pendiente($obligacion, $sueldo);
+}
+
+/** Fuerza una obligación EN_CURSO a PENDIENTE con el acumulado del sueldo completo, sin pasar por el cierre real. */
+function forzar_pendiente(ObligacionPagoModel $obligacion, ?float $sueldo = null): ObligacionPagoModel
+{
+    $sueldo ??= (float) ($obligacion->base_calculo['sueldo_base'] ?? 0.0);
+    $valorDia = round($sueldo / 30, 2);
+
+    $obligacion->update([
+        'dias_trabajados' => 0,
+        'valor_dia' => $valorDia,
+        'acumulado' => $sueldo,
+        'monto_calculado' => $sueldo,
+        'estado' => 'PENDIENTE',
+    ]);
+
+    return $obligacion->fresh();
 }
 
 // ------------------------------------------------- CASO 1: generación real
@@ -195,7 +213,7 @@ it('CASO 10: el filtro de estado pendiente devuelve únicamente pendientes', fun
     $obligacion = trabajador_pendiente($admin, 'Julio');
     pagos_personal('ACOPIADOR', 'Otro');
     visitar_pagar_a_trabajadores($admin);
-    pagos_forzar_pendiente(ObligacionPagoModel::where('beneficiario_nombre', 'like', 'Otro%')->firstOrFail());
+    forzar_pendiente(ObligacionPagoModel::where('beneficiario_nombre', 'like', 'Otro%')->firstOrFail());
 
     test()->actingAs($admin)->post(route('admin.pagos.trabajadores.pagar', $obligacion->id), [
         'metodo_pago' => 'EFECTIVO',
@@ -516,4 +534,22 @@ it('CASO 6: la fila completa es clickeable y, al seleccionarla, el panel derecho
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.panel', $vanessa->id))
         ->assertOk()
         ->assertSee('Vanessa Huanca');
+});
+
+it('CASO 7: un mes de 28 días (febrero) muestra el sueldo mensual completo, nunca un monto proporcional a los días del mes', function () {
+    $this->travelTo('2026-02-15 10:00:00');
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_personal('ACOPIADOR', 'Milkon', '2026-01-01');
+    pagos_configurar('ACOPIADOR', 1500, '2026-01-01', $admin);
+
+    $this->actingAs($admin)->get(route('admin.pagos.trabajadores.index', ['periodo' => '2026-02']))
+        ->assertOk()
+        ->assertSee('Milkon')
+        ->assertSee('S/ 1,500.00')
+        ->assertDontSee('S/ 1,400.00');
+
+    $obligacion = ObligacionPagoModel::where('beneficiario_nombre', 'like', 'Milkon%')->firstOrFail();
+    expect($obligacion->periodo_inicio->format('Y-m-d'))->toBe('2026-02-01')
+        ->and($obligacion->periodo_fin->format('Y-m-d'))->toBe('2026-02-28')
+        ->and((float) $obligacion->acumulado)->toBe(1500.0);
 });

@@ -2,7 +2,7 @@
 
 namespace App\Domain\Pago;
 
-use App\Domain\Shared\Enums\EstadoObligacionPago;
+use DateTimeImmutable;
 
 interface ObligacionPagoRepository
 {
@@ -51,17 +51,41 @@ interface ObligacionPagoRepository
     /** La obligación de personal más reciente (por periodo_inicio) del usuario, sea cual sea su estado. */
     public function buscarPersonalMasRecientePorUsuario(int $userId): ?ObligacionPago;
 
+    /** La obligación de personal del usuario cuyo periodo empieza exactamente en $periodoInicio, si existe (navegación de meses en el perfil). */
+    public function buscarPersonalPorUsuarioYPeriodo(int $userId, DateTimeImmutable $periodoInicio): ?ObligacionPago;
+
     /**
-     * Recalcula el progreso (días trabajados/valor por día/acumulado/estado)
-     * de una obligación de personal EN_CURSO o PENDIENTE y recalcula
-     * monto_calculado (acumulado + bonificación - descuento). No hace nada
-     * si la obligación ya está PAGADA: protege el historial.
+     * Recalcula el progreso (días trabajados/valor por día/acumulado) de una
+     * obligación de personal EN_CURSO y recalcula monto_calculado (acumulado
+     * + bonificación - descuento). Nunca cambia el estado (el cierre
+     * EN_CURSO->PENDIENTE es exclusivo de cerrarMesPersonal) ni toca una
+     * obligación que ya no esté EN_CURSO: protege el historial.
      */
     public function actualizarProgresoPersonal(
         int $id,
         int $diasTrabajados,
         float $valorDia,
         float $acumulado,
-        EstadoObligacionPago $estado,
+    ): void;
+
+    /**
+     * Obligaciones de personal EN_CURSO cuyo periodo ya terminó (periodo_fin
+     * < $hoy): las que el cierre mensual debe cerrar.
+     *
+     * @return ObligacionPago[]
+     */
+    public function listarPersonalEnCursoVencidas(DateTimeImmutable $hoy): array;
+
+    /**
+     * Cierra el mes de una obligación de personal: fija el acumulado final,
+     * la transiciona EN_CURSO->PENDIENTE y fija su fecha de pago programada.
+     * No hace nada si ya no está EN_CURSO.
+     */
+    public function cerrarMesPersonal(
+        int $id,
+        int $diasTrabajados,
+        float $valorDia,
+        float $acumulado,
+        DateTimeImmutable $fechaPagoProgramada,
     ): void;
 }

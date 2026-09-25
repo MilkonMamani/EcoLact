@@ -22,6 +22,7 @@ class ObligacionPagoModel extends Model
         'liquidacion_id',
         'periodo_inicio',
         'periodo_fin',
+        'fecha_pago_programada',
         'periodicidad',
         'concepto',
         'base_calculo',
@@ -40,6 +41,7 @@ class ObligacionPagoModel extends Model
     protected $casts = [
         'periodo_inicio' => 'date',
         'periodo_fin' => 'date',
+        'fecha_pago_programada' => 'date',
         'base_calculo' => 'array',
         'monto_calculado' => 'decimal:2',
         'bonificacion' => 'decimal:2',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Application\Acopio\ActualizarEntrega;
 use App\Application\Acopio\AnularEntrega;
 use App\Application\Acopio\Contracts\EntregasListadoQuery;
+use App\Application\Acopio\CorregirLitrosEntrega;
 use App\Application\Acopio\EntregasFiltro;
 use App\Application\Acopio\ObtenerEntrega;
 use App\Application\Acopio\ObtenerEntregas;
@@ -12,6 +13,7 @@ use App\Application\Acopio\ObtenerEntregasProveedor;
 use App\Application\Acopio\RegistrarEntrega;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Entrega\AnularEntregaRequest;
+use App\Http\Requests\Entrega\CorregirLitrosEntregaRequest;
 use App\Http\Requests\Entrega\StoreEntregaRequest;
 use App\Http\Requests\Entrega\UpdateEntregaRequest;
 use App\Infrastructure\Persistence\Models\EntregaModel;
@@ -26,6 +28,9 @@ use Illuminate\View\View;
 
 final class EntregaController extends Controller
 {
+    /** Filas por página en la pantalla principal de Acopio (paginación de servidor). */
+    private const ENTREGAS_POR_PAGINA = 100;
+
     public function __construct(
         private readonly RegistrarEntrega $registrarEntrega,
         private readonly ActualizarEntrega $actualizarEntrega,
@@ -34,6 +39,7 @@ final class EntregaController extends Controller
         private readonly ObtenerEntregasProveedor $obtenerEntregasProveedor,
         private readonly ObtenerEntrega $obtenerEntrega,
         private readonly EntregasListadoQuery $entregasListadoQuery,
+        private readonly CorregirLitrosEntrega $corregirLitrosEntrega,
     ) {}
 
     /**
@@ -76,7 +82,7 @@ final class EntregaController extends Controller
             hasta: $request->string('hasta')->toString() ?: null,
         );
 
-        return view('admin.entregas.index', ['datos' => $this->entregasListadoQuery->obtener($filtro)]);
+        return view('admin.entregas.index', ['datos' => $this->entregasListadoQuery->paginar($filtro, self::ENTREGAS_POR_PAGINA)]);
     }
 
     public function show(EntregaModel $entrega): View
@@ -86,6 +92,22 @@ final class EntregaController extends Controller
         $entrega->load(['proveedor', 'zona', 'acopiador', 'registradoPor']);
 
         return view('admin.entregas.show', [
+            'entrega' => $this->obtenerEntrega->execute($entrega->id),
+            'registro' => $entrega,
+        ]);
+    }
+
+    /**
+     * Fragmento HTML (sin layout) del modal "Ver entrega" de la pantalla de
+     * Acopio; se carga por fetch al pulsar el ícono de la fila.
+     */
+    public function detalle(EntregaModel $entrega): View
+    {
+        Gate::authorize('view', $entrega);
+
+        $entrega->load(['proveedor', 'zona', 'acopiador', 'registradoPor', 'analisisCalidad']);
+
+        return view('admin.entregas._detalle', [
             'entrega' => $this->obtenerEntrega->execute($entrega->id),
             'registro' => $entrega,
         ]);
@@ -131,12 +153,42 @@ final class EntregaController extends Controller
                 litros: isset($datos['litros']) ? (float) $datos['litros'] : null,
                 metodoIdentificacion: $datos['metodo_identificacion'] ?? null,
                 observacion: $datos['observacion'] ?? null,
+                actorUserId: $request->user()->id,
+                ip: $request->ip(),
+                userAgent: $request->userAgent(),
             );
         } catch (DomainException $e) {
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
 
         return redirect()->route('admin.entregas.show', $entrega->id)->with('success', 'Entrega actualizada correctamente.');
+    }
+
+    /**
+     * Edición inline de litros del modal "Ver entrega" (fetch/JSON). Es el
+     * único campo que acepta; el cambio queda registrado en `auditorias`.
+     */
+    public function actualizarLitros(CorregirLitrosEntregaRequest $request, EntregaModel $entrega): JsonResponse
+    {
+        Gate::authorize('update', $entrega);
+
+        try {
+            $actualizada = $this->corregirLitrosEntrega->execute(
+                entregaId: $entrega->id,
+                litros: (float) $request->validated()['litros'],
+                adminUserId: $request->user()->id,
+                ip: $request->ip(),
+                userAgent: $request->userAgent(),
+            );
+        } catch (DomainException $e) {
+            return response()->json(['message' => $e->getMessage(), 'errors' => ['litros' => [$e->getMessage()]]], 422);
+        }
+
+        return response()->json([
+            'message' => 'Litros actualizados correctamente.',
+            'litros' => $actualizada->litros(),
+            'litros_formateados' => number_format($actualizada->litros(), 2).' L',
+        ]);
     }
 
     /**

@@ -30,7 +30,10 @@
                 <x-ui.card>
                     <form method="GET" action="{{ route('admin.pagos.trabajadores.index') }}" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.4fr_auto] lg:items-end">
                         <x-forms.select name="rol" label="Rol" :options="collect($roles)->pluck('nombre', 'id')->all()" :value="request('rol')" placeholder="Todos" :sticky="false" />
-                        <x-forms.input name="periodo" type="month" label="Mes" :value="$periodo" :sticky="false" />
+                        <div>
+                            <x-forms.input name="periodo" type="month" label="Mes" :value="$periodo" :sticky="false" />
+                            <p class="mt-1 text-xs text-text-muted">{{ $periodoEtiqueta }}</p>
+                        </div>
                         <x-forms.select name="estado" label="Estado" :options="['EN_CURSO' => 'En curso', 'PENDIENTE' => 'Pendiente de pago', 'PAGADO' => 'Pagado']" :value="request('estado')" placeholder="Todos" :sticky="false" />
                         <x-forms.input name="q" label="Buscar trabajador" placeholder="Nombre del trabajador" :value="request('q')" :sticky="false" />
                         <div class="flex items-center gap-2">
@@ -58,10 +61,11 @@
                                     <tr class="border-b border-text-muted/10 text-[11px] font-medium uppercase tracking-wider text-label">
                                         <th class="py-3 pl-5 pr-3">Trabajador</th>
                                         <th class="px-3 py-3">DNI</th>
-                                        <th class="px-3 py-3">Días</th>
-                                        <th class="px-3 py-3 text-right">Sueldo</th>
+                                        <th class="px-3 py-3">Asistencia</th>
+                                        <th class="px-3 py-3">Faltas</th>
+                                        <th class="px-3 py-3 text-right">Sueldo mensual</th>
                                         <th class="px-3 py-3 text-right">Acumulado</th>
-                                        <th class="px-3 py-3">Periodo</th>
+                                        <th class="px-3 py-3">Mes</th>
                                         <th class="px-3 py-3 text-right">Total</th>
                                         <th class="py-3 pl-3 pr-5">Estado</th>
                                     </tr>
@@ -87,10 +91,11 @@
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap px-3 py-3 text-text-muted">{{ $fila->dni ?? '—' }}</td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->diasTrabajados }} / 30</td>
+                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->diasTrabajados }} {{ $fila->diasTrabajados === 1 ? 'asistencia' : 'asistencias' }}</td>
+                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->faltas }} {{ $fila->faltas === 1 ? 'falta' : 'faltas' }}</td>
                                             <td class="whitespace-nowrap px-3 py-3 text-right text-text">{{ $soles($fila->sueldoBase) }}</td>
                                             <td class="whitespace-nowrap px-3 py-3 text-right text-text">{{ $soles($fila->acumulado) }}</td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->periodoRango }}</td>
+                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->periodoEtiqueta }}</td>
                                             <td data-celda-total class="whitespace-nowrap px-3 py-3 text-right font-semibold text-text">{{ $soles($fila->total) }}</td>
                                             <td class="whitespace-nowrap py-3 pl-3 pr-5"><x-ui.badge :status="$fila->estado" :icon="$fila->estado === 'PAGADO' ? 'check-circle' : 'clock'">{{ $fila->estadoEtiqueta }}</x-ui.badge></td>
                                         </tr>

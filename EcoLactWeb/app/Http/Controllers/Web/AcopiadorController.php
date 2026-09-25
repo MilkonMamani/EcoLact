@@ -63,7 +63,7 @@ final class AcopiadorController extends Controller
         return view('admin.acopiadores.index', ['datos' => $this->acopiadoresListadoQuery->obtener($filtro)]);
     }
 
-    public function show(AcopiadorModel $acopiador): View
+    public function show(AcopiadorModel $acopiador, ?Request $request = null): View
     {
         Gate::authorize('view', $acopiador);
 
@@ -72,7 +72,7 @@ final class AcopiadorController extends Controller
             'entregas' => $this->obtenerEntregasAcopiador->execute($acopiador->id),
             'zonaHistorial' => $this->obtenerZonaHistorialAcopiador->execute($acopiador->id),
             'zonas' => ZonaModel::pluck('nombre', 'id'),
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($acopiador->user_id),
+            'controlPeriodo' => $this->obtenerControlPeriodo->execute($acopiador->user_id, $request?->string('mes')->toString() ?: null),
         ]);
     }
 

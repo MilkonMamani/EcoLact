@@ -11,21 +11,24 @@ class JornadaPersonalModel extends Model
     protected $table = 'jornadas_personal';
 
     protected $fillable = [
-        'user_id',
+        'trabajador_id',
         'rol_id',
         'fecha',
         'estado',
+        'origen',
+        'hora_marcacion',
         'observacion',
         'registrado_por_user_id',
     ];
 
     protected $casts = [
         'fecha' => 'date',
+        'hora_marcacion' => 'datetime',
     ];
 
-    public function user(): BelongsTo
+    public function trabajador(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(TrabajadorModel::class, 'trabajador_id');
     }
 
     public function rol(): BelongsTo

@@ -141,7 +141,7 @@
                     <p class="mt-0.5 text-sm text-label">Configura el sueldo de cada rol del personal. Los roles se cargan desde la tabla roles del sistema.</p>
                 </div>
             </div>
-            <p class="border-b border-text-muted/10 px-5 py-3 text-xs text-label">El valor diario se calcula automáticamente dividiendo el sueldo mensual entre 30 días.</p>
+            <p class="border-b border-text-muted/10 px-5 py-3 text-xs text-label">El valor diario se calcula automáticamente dividiendo el sueldo mensual entre 30. Los trabajadores que cumplen todo el mes reciben su sueldo mensual completo.</p>
             <div class="px-5 pb-4">
                 <x-tables.table class="ecolact-table-cards">
                     <thead>
@@ -163,12 +163,12 @@
                                 <td data-label="Valor / Sueldo base" class="py-4 pr-4 font-medium text-text whitespace-nowrap">
                                     @if ($configuracion)
                                         {{ $soles($configuracion->montoBase()) }}
-                                        <span class="mt-0.5 block text-xs font-normal text-label">{{ $soles($fila['valorDia']) }} / día</span>
+                                        <span class="mt-0.5 block text-xs font-normal text-label">{{ $soles($fila['valorDia']) }} / día · Base salarial: 30 días</span>
                                     @else
                                         —
                                     @endif
                                 </td>
-                                <td data-label="Periodicidad" class="py-4 pr-4 text-text">Cada 30 días</td>
+                                <td data-label="Periodicidad" class="py-4 pr-4 text-text">Día 1 de cada mes</td>
                                 <td data-label="Estado" class="py-4 pr-4">
                                     <x-ui.badge :status="$fila['estado']">{{ $etiquetasEstado[$fila['estado']] }}</x-ui.badge>
                                     @if ($configuracion)

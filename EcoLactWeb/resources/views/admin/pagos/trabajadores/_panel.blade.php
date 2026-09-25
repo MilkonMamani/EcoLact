@@ -37,7 +37,28 @@
                 </div>
             </div>
 
-            <x-pagos.control-periodo :control-periodo="$controlPeriodo" :trabajador-id="$seleccion->userId" :trabajador-nombre="$seleccion->nombre" class="rounded-lg bg-background/60 p-4" />
+            <div class="rounded-lg bg-background/60 p-4">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Control de asistencia</p>
+
+                <dl class="grid grid-cols-2 gap-3 text-sm">
+                    <div><dt class="text-text-muted">Asistencias</dt><dd class="font-medium text-text">{{ $seleccion->diasTrabajados }}</dd></div>
+                    <div><dt class="text-text-muted">Faltas</dt><dd class="font-medium text-text">{{ $seleccion->faltas }}</dd></div>
+                    <div><dt class="text-text-muted">Sueldo mensual</dt><dd class="font-medium text-text">{{ $soles($seleccion->sueldoBase) }}</dd></div>
+                    <div><dt class="text-text-muted">Valor por día</dt><dd class="font-medium text-text">{{ $soles($seleccion->valorDia) }}</dd></div>
+                </dl>
+
+                <p class="mt-3 text-xs text-text-muted">
+                    @if ($seleccion->esMesCompleto)
+                        Sueldo mensual menos faltas registradas.
+                    @else
+                        Pago proporcional según los días trabajados desde su ingreso ({{ $seleccion->fechaIngresoEtiqueta }}).
+                    @endif
+                </p>
+
+                @if ($seleccion->estaEnCurso())
+                    <p class="mt-2 text-xs font-medium text-warning">El mes aún no ha sido cerrado.</p>
+                @endif
+            </div>
 
             <div class="rounded-lg bg-background/60 p-4">
                 <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">Resumen de pago</p>
@@ -45,7 +66,7 @@
                 <dl class="space-y-2.5 text-sm">
                     <div class="flex items-center justify-between gap-3">
                         <dt class="text-text-muted">Acumulado</dt>
-                        <dd class="font-medium text-text">{{ $soles($seleccion->sueldoBase) }}</dd>
+                        <dd class="font-medium text-text">{{ $soles($seleccion->acumulado) }}</dd>
                     </div>
 
                     <div class="flex items-center justify-between gap-3">

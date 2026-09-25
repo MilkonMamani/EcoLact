@@ -3,41 +3,145 @@
 namespace App\Application\Pago;
 
 use App\Domain\Pago\JornadaPersonal;
+use App\Domain\Pago\JornadaPersonalRepository;
+use App\Domain\Pago\ObligacionPago;
 use App\Domain\Pago\ObligacionPagoRepository;
 use App\Domain\Pago\PeriodoPago;
+use App\Domain\Shared\Enums\EstadoJornada;
+use App\Domain\Trabajador\Trabajador;
+use App\Domain\Trabajador\TrabajadorRepository;
+use DateTimeImmutable;
 
-/** La única implementación de "Control del periodo": reusada por los 5 perfiles y el panel de Pagar a trabajadores. */
+/**
+ * La única implementación de "Control del periodo": reusada por los 5
+ * perfiles y el panel de Pagar a trabajadores. Devuelve el resumen del mes
+ * (asistencias, faltas, sueldo, valor por día, acumulado ya calculado por el
+ * backend) y el calendario día a día del mes resuelto. Nunca recalcula el
+ * dinero: los montos vienen tal cual del snapshot de la obligación.
+ */
 final class ObtenerControlPeriodoTrabajador
 {
-    public function __construct(private readonly ObligacionPagoRepository $obligaciones) {}
+    public function __construct(
+        private readonly ObligacionPagoRepository $obligaciones,
+        private readonly TrabajadorRepository $trabajadores,
+        private readonly JornadaPersonalRepository $jornadas,
+    ) {}
 
-    public function execute(int $userId): ?ControlPeriodoTrabajador
+    /** @param  string|null  $mes  Formato "Y-m"; por defecto el mes del periodo abierto (o el más reciente). */
+    public function execute(int $userId, ?string $mes = null): ?ControlPeriodoTrabajador
     {
-        $obligacion = $this->obligaciones->buscarPersonalAbiertaPorUsuario($userId)
-            ?? $this->obligaciones->buscarPersonalMasRecientePorUsuario($userId);
+        $trabajador = $this->trabajadores->buscarPorUserId($userId);
 
-        if ($obligacion === null) {
+        if ($trabajador === null) {
             return null;
         }
 
-        $sueldoMensual = (float) ($obligacion->baseCalculo()['sueldo_base'] ?? 0.0);
-        $dias = $obligacion->diasTrabajados();
+        $hoy = DateTimeImmutable::createFromInterface(now())->setTime(0, 0);
+        [$periodoInicio, $periodoFin, $obligacion] = $this->resolverPeriodo($userId, $mes, $hoy);
+
+        $dias = $this->construirCalendario($trabajador, $periodoInicio, $periodoFin, $hoy);
+
+        $asistencias = $this->jornadas->contarEnPeriodo($trabajador->id(), $periodoInicio, $periodoFin, EstadoJornada::PRESENTE);
+        $faltas = $this->jornadas->contarEnPeriodo($trabajador->id(), $periodoInicio, $periodoFin, EstadoJornada::FALTA);
+        $esMesCompleto = $trabajador->estuvoVigenteTodoElRango($periodoInicio, $periodoFin);
+
+        $sueldoMensual = $obligacion !== null ? (float) ($obligacion->baseCalculo()['sueldo_base'] ?? 0.0) : 0.0;
+        $valorDia = $obligacion?->valorDia() ?? ($sueldoMensual > 0 ? round($sueldoMensual / JornadaPersonal::DIAS_BASE_PERIODO, 2) : 0.0);
+        $acumulado = $obligacion?->acumulado() ?? 0.0;
+        $descuentoPorFaltas = $esMesCompleto ? max(0.0, round($sueldoMensual - $acumulado, 2)) : 0.0;
+
+        $mesActual = $periodoInicio->format('Y-m');
+        $inicioMesActual = PeriodoPago::mesQueContiene($hoy)->inicio->format('Y-m');
 
         return new ControlPeriodoTrabajador(
             userId: $userId,
-            obligacionId: $obligacion->id(),
-            estado: $obligacion->estado()->value,
-            estadoEtiqueta: $obligacion->estado()->etiqueta(),
-            diasTrabajados: $dias,
-            diasBase: JornadaPersonal::DIAS_BASE_PERIODO,
-            diasFaltantes: max(JornadaPersonal::DIAS_BASE_PERIODO - $dias, 0),
+            obligacionId: $obligacion?->id(),
+            estado: $obligacion?->estado()->value ?? 'SIN_OBLIGACION',
+            estadoEtiqueta: $obligacion?->estado()->etiqueta() ?? 'Sin registro de nómina',
+            asistencias: $asistencias,
+            faltas: $faltas,
             sueldoMensual: $sueldoMensual,
-            valorDia: (float) ($obligacion->valorDia() ?? 0.0),
-            acumulado: (float) ($obligacion->acumulado() ?? 0.0),
-            periodoEtiqueta: PeriodoPago::etiquetaDe($obligacion->periodicidad(), $obligacion->periodoInicio()),
-            periodoRango: $obligacion->periodoInicio()->format('d/m/Y').' – '.$obligacion->periodoFin()->format('d/m/Y'),
-            periodoInicioIso: $obligacion->periodoInicio()->format('Y-m-d'),
-            periodoFinIso: $obligacion->periodoFin()->format('Y-m-d'),
+            valorDia: $valorDia,
+            descuentoPorFaltas: $descuentoPorFaltas,
+            acumulado: $acumulado,
+            bonificacion: $obligacion?->bonificacion() ?? 0.0,
+            descuento: $obligacion?->descuento() ?? 0.0,
+            total: $obligacion?->montoCalculado() ?? 0.0,
+            esMesCompleto: $esMesCompleto,
+            fechaIngresoEtiqueta: $esMesCompleto ? null : $trabajador->fechaIngreso()->format('d/m/Y'),
+            periodoEtiqueta: PeriodoPago::mesQueContiene($periodoInicio)->etiqueta(),
+            periodoRango: $periodoInicio->format('d/m/Y').' – '.$periodoFin->format('d/m/Y'),
+            periodoInicioIso: $periodoInicio->format('Y-m-d'),
+            periodoFinIso: $periodoFin->format('Y-m-d'),
+            mesValor: $mesActual,
+            mesAnteriorValor: $periodoInicio->modify('-1 month')->format('Y-m'),
+            mesSiguienteValor: $mesActual < $inicioMesActual ? $periodoInicio->modify('+1 month')->format('Y-m') : null,
+            dias: $dias,
+            qrToken: $trabajador->qrToken(),
         );
+    }
+
+    /** @return array{0: DateTimeImmutable, 1: DateTimeImmutable, 2: ?ObligacionPago} */
+    private function resolverPeriodo(int $userId, ?string $mes, DateTimeImmutable $hoy): array
+    {
+        if ($mes !== null) {
+            $periodo = PeriodoPago::mesQueContiene(DateTimeImmutable::createFromFormat('Y-m-d', $mes.'-01')->setTime(0, 0));
+
+            return [$periodo->inicio, $periodo->fin, $this->obligaciones->buscarPersonalPorUsuarioYPeriodo($userId, $periodo->inicio)];
+        }
+
+        $obligacion = $this->obligaciones->buscarPersonalAbiertaPorUsuario($userId)
+            ?? $this->obligaciones->buscarPersonalMasRecientePorUsuario($userId);
+
+        if ($obligacion !== null) {
+            return [$obligacion->periodoInicio(), $obligacion->periodoFin(), $obligacion];
+        }
+
+        $periodo = PeriodoPago::mesQueContiene($hoy);
+
+        return [$periodo->inicio, $periodo->fin, null];
+    }
+
+    /**
+     * @return DiaCalendarioTrabajador[]
+     */
+    private function construirCalendario(Trabajador $trabajador, DateTimeImmutable $inicio, DateTimeImmutable $fin, DateTimeImmutable $hoy): array
+    {
+        $jornadasPorFecha = [];
+
+        foreach ($this->jornadas->listarEnPeriodo($trabajador->id(), $inicio, $fin) as $jornada) {
+            $jornadasPorFecha[$jornada->fecha()->format('Y-m-d')] = $jornada;
+        }
+
+        $dias = [];
+        $fecha = $inicio;
+
+        while ($fecha <= $fin) {
+            $fechaIso = $fecha->format('Y-m-d');
+            $jornada = $jornadasPorFecha[$fechaIso] ?? null;
+            $esHoy = $fechaIso === $hoy->format('Y-m-d');
+
+            $estado = match (true) {
+                $fecha > $hoy => 'FUTURO',
+                ! $trabajador->estaVigenteEn($fecha) => 'NO_APLICABLE',
+                $jornada !== null => $jornada->estado()->value,
+                default => 'SIN_REGISTRO',
+            };
+
+            $dias[] = new DiaCalendarioTrabajador(
+                fechaIso: $fechaIso,
+                diaNumero: (int) $fecha->format('j'),
+                estado: $estado,
+                horaMarcacion: $jornada?->horaMarcacion()?->format('H:i'),
+                origenEtiqueta: $jornada?->origen()->etiqueta(),
+                observacion: $jornada?->observacion(),
+                jornadaId: $jornada?->id(),
+                esHoy: $esHoy,
+            );
+
+            $fecha = $fecha->modify('+1 day');
+        }
+
+        return $dias;
     }
 }

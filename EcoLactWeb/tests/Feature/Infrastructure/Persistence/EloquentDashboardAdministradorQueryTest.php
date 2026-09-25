@@ -1,14 +1,10 @@
 <?php
 
 use App\Application\Dashboard\Contracts\DashboardAdministradorQuery;
+use App\Application\Dashboard\DashboardAdministradorData;
 use App\Application\Dashboard\DashboardPeriodo;
 use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
-use App\Infrastructure\Persistence\Models\ComunicadoDestinatarioModel;
-use App\Infrastructure\Persistence\Models\LiquidacionModel;
-use App\Infrastructure\Persistence\Models\PagoProveedorModel;
-use App\Infrastructure\Persistence\Models\PeriodoLiquidacionModel;
 use App\Infrastructure\Persistence\Models\ProduccionDetalleModel;
-use App\Infrastructure\Persistence\Models\ProductoModel;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -18,229 +14,243 @@ require_once __DIR__.'/../../../Support/DashboardFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+/*
+ * "Hoy" es el jueves 10/09/2026: semana calendario 07/09-13/09, mes 01/09-30/09.
+ * Semanas de pago de proveedores (jueves a miércoles): la del 03/09 se paga hoy.
+ */
 beforeEach(function () {
-    $this->travelTo(CarbonImmutable::parse('2026-09-10 12:00:00', 'UTC'));
+    $this->travelTo(CarbonImmutable::parse('2026-09-10 12:00:00', config('app.timezone')));
 });
 
-it('devuelve ceros y bloques vacíos con una base de datos vacía', function () {
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
+function dashboard_admin(string $periodo): DashboardAdministradorData
+{
+    return app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver($periodo));
+}
 
-    expect($data->kpis)->toMatchArray([
-        'totalAcopiado' => 0.0, 'proveedoresAtendidos' => 0, 'proveedoresActivos' => 0,
-        'porcentajeAtendidos' => 0.0, 'calidadAceptada' => 0.0, 'analisisConfirmados' => 0,
-        'entregasObservadas' => 0, 'totalValorizado' => 0.0, 'produccion' => 0,
-    ]);
-    expect($data->litrosPorDia)->toBe([]);
-    expect($data->rendimientoZonas)->toBe([]);
-    expect($data->entregasRecientes)->toBe([]);
-    expect($data->actividadReciente)->toBe([]);
-    expect($data->produccionReciente)->toBeNull();
-    expect($data->comunicaciones)->toBe(['publicados' => 0, 'destinatarios' => 0, 'leidos' => 0, 'tasaLectura' => null, 'recientes' => []]);
+it('devuelve ceros, bloques vacíos e intervalos sin datos inventados con la base vacía', function () {
+    $data = dashboard_admin('semana');
+
+    expect($data->acopio)->toBe(['litros' => 0.0, 'entregas' => 0, 'proveedores' => 0]);
+    expect($data->produccion)->toBe(['total' => 0, 'porEstado' => []]);
+    expect($data->ventas)->toBe(['importe' => 0.0, 'ventas' => 0, 'contado' => 0.0, 'descuentoPlanilla' => 0.0]);
+    expect($data->pagos['total'])->toBe(0.0);
+    expect($data->pagos['obligaciones'])->toBe(0);
+    expect($data->acopioPorZona)->toBe([]);
+    expect($data->lotesRecientes)->toBe([]);
+    expect($data->comunicados)->toBe(['publicados' => 0, 'recientes' => []]);
+    expect($data->porAtender['analisisPorConfirmar'])->toBe(0);
+    expect($data->porAtender['lotesEnProceso'])->toBe(0);
+    expect(array_column($data->acopioPorIntervalo, 'litros'))->toBe([0.0, 0.0, 0.0, 0.0, null, null, null]);
+    expect(array_column($data->acopioPorIntervalo, 'futuro'))->toBe([false, false, false, false, true, true, true]);
 });
 
-it('suma litros válidos e incluye los extremos del día excluyendo anuladas y fechas ajenas', function () {
-    dashboard_entrega('2026-09-10 00:00:00', 20.15);
-    dashboard_entrega('2026-09-10 23:59:59', 30.25, 'ACEPTADA');
-    dashboard_entrega('2026-09-10 10:00:00', 900)->update(['estado' => 'ANULADA']);
-    dashboard_entrega('2026-09-09 23:59:59', 1000);
-    dashboard_entrega('2026-09-11 00:00:00', 2000);
+it('suma solo entregas válidas dentro de cada período y distingue hoy, semana y mes', function () {
+    dashboard_entrega('2026-08-31 23:59:59', 1000);
+    dashboard_entrega('2026-09-06 23:59:59', 100);
+    dashboard_entrega('2026-09-07 00:00:00', 10.25);
+    dashboard_entrega('2026-09-10 00:00:00', 20.5);
+    dashboard_entrega('2026-09-10 09:30:00', 4.25);
+    dashboard_entrega('2026-09-10 09:00:00', 900)->update(['estado' => 'ANULADA']);
 
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->kpis['totalAcopiado'])->toBe(50.4);
-    expect($data->litrosPorDia)->toHaveCount(1);
-    expect($data->litrosPorDia[0])->toMatchArray(['fecha' => '2026-09-10', 'litros' => 50.4, 'entregas' => 2]);
+    expect(dashboard_admin('hoy')->acopio)->toBe(['litros' => 24.75, 'entregas' => 2, 'proveedores' => 2]);
+    expect(dashboard_admin('semana')->acopio['litros'])->toBe(35.0);
+    expect(dashboard_admin('mes')->acopio['litros'])->toBe(135.0);
 });
 
-it('cuenta proveedores distintos y usa los activos actuales como denominador', function () {
+it('cuenta proveedores distintos aunque entreguen varias veces', function () {
     $zona = fixture_zona();
     $acopiador = fixture_acopiador($zona);
     $proveedor = fixture_proveedor($zona);
-    fixture_proveedor($zona);
-    fixture_proveedor($zona)->update(['estado' => 'INACTIVO']);
-    fixture_entrega($proveedor, $acopiador, 10, new DateTimeImmutable('2026-09-10 08:00:00'));
-    fixture_entrega($proveedor, $acopiador, 20, new DateTimeImmutable('2026-09-10 10:00:00'));
+    fixture_entrega($proveedor, $acopiador, 10, new DateTimeImmutable('2026-09-10 06:00:00'));
+    fixture_entrega($proveedor, $acopiador, 15, new DateTimeImmutable('2026-09-10 07:00:00'));
 
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->kpis)->toMatchArray(['proveedoresAtendidos' => 1, 'proveedoresActivos' => 2, 'porcentajeAtendidos' => 50.0]);
+    expect(dashboard_admin('hoy')->acopio)->toBe(['litros' => 25.0, 'entregas' => 2, 'proveedores' => 1]);
 });
 
-it('muestra cero sobre cero si ya no quedan proveedores activos', function () {
-    $entrega = dashboard_entrega('2026-09-10 08:00:00');
-    $entrega->proveedor->update(['estado' => 'INACTIVO']);
+it('agrupa el gráfico por hora en hoy y por día en semana y mes con totales iguales a la tarjeta', function () {
+    dashboard_entrega('2026-09-08 07:00:00', 12);
+    dashboard_entrega('2026-09-10 06:10:00', 20.25);
+    dashboard_entrega('2026-09-10 06:50:00', 5);
+    dashboard_entrega('2026-09-10 11:00:00', 30)->update(['estado' => 'ANULADA']);
 
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
+    $hoy = dashboard_admin('hoy');
+    $semana = dashboard_admin('semana');
+    $mes = dashboard_admin('mes');
 
-    expect($data->kpis)->toMatchArray(['proveedoresAtendidos' => 0, 'proveedoresActivos' => 0, 'porcentajeAtendidos' => 0.0, 'totalAcopiado' => 30.0]);
+    expect($hoy->acopioPorIntervalo)->toHaveCount(24);
+    expect($hoy->acopioPorIntervalo[6])->toMatchArray(['clave' => '06', 'litros' => 25.25, 'entregas' => 2, 'futuro' => false]);
+    expect($hoy->acopioPorIntervalo[13])->toMatchArray(['futuro' => true, 'litros' => null]);
+    expect($semana->acopioPorIntervalo)->toHaveCount(7);
+    expect($semana->acopioPorIntervalo[1])->toMatchArray(['clave' => '2026-09-08', 'litros' => 12.0, 'entregas' => 1]);
+    expect($semana->acopioPorIntervalo[2])->toMatchArray(['clave' => '2026-09-09', 'litros' => 0.0, 'entregas' => 0, 'futuro' => false]);
+    expect($mes->acopioPorIntervalo)->toHaveCount(30);
+    expect($mes->acopioPorIntervalo[29])->toMatchArray(['clave' => '2026-09-30', 'futuro' => true, 'litros' => null]);
+
+    foreach ([$hoy, $semana, $mes] as $data) {
+        expect(round(array_sum(array_column($data->acopioPorIntervalo, 'litros')), 2))->toBe($data->acopio['litros']);
+    }
 });
 
-it('calcula aceptación observadas y distribución solo con confirmados según fecha de análisis', function () {
-    dashboard_entrega('2026-09-10 08:00:00', 20, 'ACEPTADA');
-    dashboard_entrega('2026-09-10 09:00:00', 30, 'OBSERVADA');
-    dashboard_entrega('2026-09-10 10:00:00', 40, 'RECHAZADA');
-    $anterior = dashboard_entrega('2026-09-09 10:00:00', 10, 'ACEPTADA');
-    $anterior->analisisCalidad->update(['fecha_analisis' => '2026-09-10 11:00:00']);
-    dashboard_entrega('2026-09-09 11:00:00', 500, 'OBSERVADA');
-    $borrador = dashboard_entrega('2026-09-10 11:00:00', 1000);
-    AnalisisCalidadModel::create(['entrega_id' => $borrador->id, 'estado' => 'BORRADOR', 'resultado' => null, 'fecha_analisis' => '2026-09-10 11:00:00']);
-    $borradorConResultado = dashboard_entrega('2026-09-10 11:30:00', 1000, 'OBSERVADA');
-    $borradorConResultado->analisisCalidad->update(['estado' => 'BORRADOR']);
+it('ordena zonas de mayor a menor y suma las menores en Otras sin perder litros', function () {
+    foreach ([70, 10, 60, 20, 50, 30, 40, 5] as $indice => $litros) {
+        dashboard_entrega('2026-09-10 0'.($indice + 1).':00:00', $litros)->zona->update(['nombre' => 'Zona '.$litros]);
+    }
+    dashboard_entrega('2026-09-10 10:00:00', 500)->update(['estado' => 'ANULADA']);
 
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
+    $data = dashboard_admin('hoy');
 
-    expect($data->kpis)->toMatchArray(['calidadAceptada' => 50.0, 'analisisConfirmados' => 4, 'entregasObservadas' => 1]);
-    expect($data->distribucionCalidad)->toBe([
-        ['resultado' => 'ACEPTADA', 'cantidad' => 2, 'porcentaje' => 50.0, 'litros' => 30.0],
-        ['resultado' => 'OBSERVADA', 'cantidad' => 1, 'porcentaje' => 25.0, 'litros' => 30.0],
-        ['resultado' => 'RECHAZADA', 'cantidad' => 1, 'porcentaje' => 25.0, 'litros' => 40.0],
+    expect(array_column($data->acopioPorZona, 'nombre'))->toBe(['Zona 70', 'Zona 60', 'Zona 50', 'Zona 40', 'Zona 30', 'Otras 3 zonas']);
+    expect($data->acopioPorZona[5])->toBe(['nombre' => 'Otras 3 zonas', 'litros' => 35.0, 'otras' => true]);
+    expect(array_sum(array_column($data->acopioPorZona, 'litros')))->toBe($data->acopio['litros']);
+});
+
+it('suma ventas de contado y descuento en planilla del período sin anuladas', function () {
+    dashboard_venta('2026-09-10 08:00:00', '25.50');
+    dashboard_venta('2026-09-10 09:00:00', '14.50', 'DESCUENTO_PLANILLA');
+    dashboard_venta('2026-09-10 10:00:00', '999.00', estado: 'ANULADA');
+    dashboard_venta('2026-09-09 23:59:59', '300.00');
+
+    expect(dashboard_admin('hoy')->ventas)->toBe(['importe' => 40.0, 'ventas' => 2, 'contado' => 25.5, 'descuentoPlanilla' => 14.5]);
+    expect(dashboard_admin('semana')->ventas['importe'])->toBe(340.0);
+});
+
+it('asigna pagos pendientes por fecha programada y tipo de beneficiario', function () {
+    dashboard_obligacion_proveedor('2026-08-20', '1.00');   // se pagaba el 27/08: atrasado
+    dashboard_obligacion_proveedor('2026-08-27', '10.00');  // se paga el 03/09
+    dashboard_obligacion_proveedor('2026-09-03', '100.00'); // se paga hoy
+    dashboard_obligacion_proveedor('2026-09-03', '5000.00', 'PAGADO');
+    dashboard_obligacion_proveedor('2026-09-10', '1000.00'); // se paga el 17/09
+    dashboard_obligacion_proveedor('2026-09-24', '7.00');   // se paga el 01/10
+    dashboard_obligacion_trabajador('2026-08', '2026-09-01', '1200.00');
+    dashboard_obligacion_trabajador('2026-07', '2026-08-01', '1300.00', 'PAGADO');
+    dashboard_obligacion_trabajador('2026-09', null, '400.00', 'EN_CURSO');
+    dashboard_obligacion_trabajador('2026-06', null, '50.00');
+
+    $hoy = dashboard_admin('hoy')->pagos;
+    $semana = dashboard_admin('semana')->pagos;
+    $mes = dashboard_admin('mes')->pagos;
+
+    expect($hoy['proveedores'])->toBe(['importe' => 100.0, 'obligaciones' => 1, 'semana' => '2026-09-03']);
+    expect($hoy['trabajadores'])->toBe(['importe' => 0.0, 'obligaciones' => 0, 'mes' => null]);
+    expect($hoy['atrasados'])->toBe(['importe' => 1211.0, 'obligaciones' => 3]);
+    expect($semana['proveedores']['importe'])->toBe(100.0);
+    expect($semana['proveedores']['semana'])->toBe('2026-09-03');
+    expect($mes['proveedores'])->toBe(['importe' => 1110.0, 'obligaciones' => 3, 'semana' => null]);
+    expect($mes['trabajadores'])->toBe(['importe' => 1200.0, 'obligaciones' => 1, 'mes' => '2026-08']);
+    expect($mes['atrasados'])->toBe(['importe' => 1.0, 'obligaciones' => 1]);
+    expect($mes['sinFecha'])->toBe(['importe' => 50.0, 'obligaciones' => 1]);
+
+    foreach ([$hoy, $semana, $mes] as $pagos) {
+        expect($pagos['total'])->toBe(round($pagos['proveedores']['importe'] + $pagos['trabajadores']['importe'], 2));
+        expect($pagos['obligaciones'])->toBe($pagos['proveedores']['obligaciones'] + $pagos['trabajadores']['obligaciones']);
+    }
+});
+
+it('cuenta lotes iniciados en el período con desglose coherente y todos sus productos', function () {
+    dashboard_lote('ANTERIOR', '2026-09-06 23:59:59');
+    dashboard_lote('EN-CURSO', '2026-09-07 08:00:00');
+    $ultimo = dashboard_lote('TERMINADO', '2026-09-10 07:00:00', 'FINALIZADO');
+    foreach ([['Yogur', 'L'], ['Queso fresco', 'kg']] as [$nombre, $unidad]) {
+        ProduccionDetalleModel::create(['lote_produccion_id' => $ultimo->id, 'producto_id' => fixture_producto($nombre, $unidad)->id, 'cantidad_planificada' => 10, 'cantidad_obtenida' => 10]);
+    }
+
+    $semana = dashboard_admin('semana');
+
+    expect($semana->produccion)->toBe(['total' => 2, 'porEstado' => ['EN_PROCESO' => 1, 'FINALIZADO' => 1]]);
+    expect($semana->porAtender['lotesEnProceso'])->toBe(1);
+    expect(array_column($semana->lotesRecientes, 'codigo'))->toBe(['TERMINADO', 'EN-CURSO']);
+    expect($semana->lotesRecientes[0]['productos'])->toBe(['Queso fresco', 'Yogur']);
+    expect($semana->lotesRecientes[1]['productos'])->toBe([]);
+    expect(dashboard_admin('hoy')->produccion['total'])->toBe(1);
+});
+
+it('cuenta análisis en borrador solo de entregas válidas del período', function () {
+    foreach (['2026-09-10 08:00:00', '2026-09-09 08:00:00'] as $fecha) {
+        AnalisisCalidadModel::create(['entrega_id' => dashboard_entrega($fecha)->id, 'estado' => 'BORRADOR', 'fecha_analisis' => $fecha]);
+    }
+    $anulada = dashboard_entrega('2026-09-10 09:00:00');
+    AnalisisCalidadModel::create(['entrega_id' => $anulada->id, 'estado' => 'BORRADOR', 'fecha_analisis' => '2026-09-10 09:00:00']);
+    $anulada->update(['estado' => 'ANULADA']);
+    dashboard_entrega('2026-09-10 10:00:00', 30, 'ACEPTADA');
+
+    expect(dashboard_admin('hoy')->porAtender['analisisPorConfirmar'])->toBe(1);
+    expect(dashboard_admin('semana')->porAtender['analisisPorConfirmar'])->toBe(2);
+});
+
+it('presenta existencias y alertas de insumos como saldo actual, igual en cualquier período', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    fixture_stock_leche(320.5, $admin->id);
+    fixture_insumo('Cuajo', 'L', stock: 2, minimo: 5, userId: $admin->id);
+    fixture_insumo('Sal', 'kg', stock: 0, minimo: 3, userId: $admin->id);
+    fixture_insumo('Envases', 'unidad', stock: 100, minimo: 10, userId: $admin->id);
+    $queso = fixture_producto('Queso fresco', 'kg');
+    fixture_ingreso_producto($queso->id, 12.5, $admin->id);
+    fixture_producto('Mantequilla', 'kg');
+
+    $hoy = dashboard_admin('hoy');
+
+    expect($hoy->existencias)->toMatchArray([
+        'leche' => ['cantidad' => 320.5, 'unidad' => 'L'],
+        'productos' => [['id' => $queso->id, 'nombre' => 'Queso fresco', 'cantidad' => 12.5, 'unidad' => 'kg']],
+        'productosConStock' => 1,
+        'insumosBajoMinimo' => 1,
+        'insumosSinStock' => 1,
     ]);
+    expect(dashboard_admin('mes')->existencias)->toBe($hoy->existencias);
 });
 
-it('excluye litros anulados también de la distribución sin alterar el total de análisis confirmados', function () {
-    dashboard_entrega('2026-09-10 10:00:00', 90, 'RECHAZADA')->update(['estado' => 'ANULADA']);
+it('mide la asistencia del día contra el personal aplicable y el rango con jornadas registradas', function () {
+    $presente = dashboard_trabajador();
+    $falta = dashboard_trabajador();
+    dashboard_trabajador();
+    dashboard_trabajador(ingreso: '2026-09-11');
+    dashboard_trabajador(salida: '2026-09-09');
+    dashboard_trabajador(estado: 'INACTIVO');
+    dashboard_jornada($presente->id, '2026-09-10');
+    dashboard_jornada($falta->id, '2026-09-10', 'FALTA');
+    dashboard_jornada($presente->id, '2026-09-08');
+    dashboard_jornada($presente->id, '2026-09-01');
 
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->kpis['totalAcopiado'])->toBe(0.0);
-    expect($data->distribucionCalidad[2])->toBe(['resultado' => 'RECHAZADA', 'cantidad' => 1, 'porcentaje' => 100.0, 'litros' => 0.0]);
+    expect(dashboard_admin('hoy')->asistencia)->toBe(['modo' => 'dia', 'personal' => 3, 'presentes' => 1, 'faltas' => 1, 'sinMarcar' => 1, 'trabajadores' => 1, 'dias' => 1]);
+    expect(dashboard_admin('semana')->asistencia)->toBe(['modo' => 'rango', 'personal' => 0, 'presentes' => 2, 'faltas' => 1, 'sinMarcar' => 0, 'trabajadores' => 2, 'dias' => 4]);
+    expect(dashboard_admin('mes')->asistencia)->toMatchArray(['presentes' => 3, 'faltas' => 1, 'dias' => 10]);
 });
 
-it('suma importes individuales con decimales y filtra por fecha de cálculo', function () {
-    dashboard_valorizacion(dashboard_entrega('2026-09-09 08:00:00', 30, 'ACEPTADA'), '60.10', '2026-09-10 00:00:00');
-    dashboard_valorizacion(dashboard_entrega('2026-09-10 08:00:00', 30, 'OBSERVADA'), '45.20', '2026-09-10 23:59:59');
-    dashboard_valorizacion(dashboard_entrega('2026-09-10 09:00:00', 30, 'ACEPTADA'), '500.00', '2026-09-11 00:00:00');
+it('mide la asistencia de hoy sin importar el período elegido', function () {
+    $presente = dashboard_trabajador();
+    dashboard_trabajador();
+    dashboard_jornada($presente->id, '2026-09-10');
+    dashboard_jornada($presente->id, '2026-09-08');
 
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->kpis['totalValorizado'])->toBe(105.3);
+    $hoy = ['modo' => 'dia', 'personal' => 2, 'presentes' => 1, 'faltas' => 0, 'sinMarcar' => 1, 'trabajadores' => 1, 'dias' => 1];
+    expect(dashboard_admin('hoy')->asistenciaHoy)->toBe($hoy);
+    expect(dashboard_admin('semana')->asistenciaHoy)->toBe($hoy);
+    expect(dashboard_admin('mes')->asistenciaHoy)->toBe($hoy);
 });
 
-it('agrupa litros y número de entregas por día en orden cronológico', function () {
-    dashboard_entrega('2026-09-10 08:00:00', 21.25);
-    dashboard_entrega('2026-09-09 08:00:00', 10.10);
-    dashboard_entrega('2026-09-09 14:00:00', 15.20);
-
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('personalizado', '2026-09-09', '2026-09-10'));
-
-    expect($data->litrosPorDia)->toHaveCount(2);
-    expect($data->litrosPorDia[0])->toMatchArray(['fecha' => '2026-09-09', 'litros' => 25.3, 'entregas' => 2]);
-    expect($data->litrosPorDia[1])->toMatchArray(['fecha' => '2026-09-10', 'litros' => 21.25, 'entregas' => 1]);
-});
-
-it('separa el rendimiento por zona histórica de la entrega e incluye zonas sin actividad', function () {
-    $norte = dashboard_entrega('2026-09-10 08:00:00', 50, 'ACEPTADA');
-    $sur = dashboard_entrega('2026-09-10 09:00:00', 20, 'RECHAZADA');
-    $norte->zona->update(['nombre' => 'Pampa Norte']);
-    $sur->zona->update(['nombre' => 'Valle Sur']);
-    $vacia = fixture_zona('Pampa Alta');
-    $norte->proveedor->update(['zona_id' => $sur->zona_id]);
-
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-    $zonas = collect($data->rendimientoZonas)->keyBy('id');
-
-    expect($zonas[$norte->zona_id])->toMatchArray(['nombre' => 'Pampa Norte', 'litros' => 50.0, 'proveedores' => 1, 'calidad' => 100.0]);
-    expect($zonas[$sur->zona_id])->toMatchArray(['nombre' => 'Valle Sur', 'litros' => 20.0, 'proveedores' => 1, 'calidad' => 0.0]);
-    expect($zonas[$vacia->id])->toMatchArray(['litros' => 0.0, 'proveedores' => 0, 'confirmados' => 0]);
-});
-
-it('cuenta lotes del período y devuelve cantidades por producto con sus propias unidades', function () {
-    dashboard_lote('ANTERIOR', '2026-09-09 23:59:59');
-    dashboard_lote('EN-CURSO', '2026-09-10 00:00:00');
-    $ultimo = dashboard_lote('TERMINADO', '2026-09-10 23:59:59', 'FINALIZADO');
-    $queso = ProductoModel::create(['nombre' => 'Queso fresco', 'unidad_medida' => 'kg', 'estado' => 'ACTIVO']);
-    $yogur = ProductoModel::create(['nombre' => 'Yogur', 'unidad_medida' => 'L', 'estado' => 'ACTIVO']);
-    ProduccionDetalleModel::create(['lote_produccion_id' => $ultimo->id, 'producto_id' => $queso->id, 'cantidad_planificada' => 15.25, 'cantidad_obtenida' => 15.25]);
-    ProduccionDetalleModel::create(['lote_produccion_id' => $ultimo->id, 'producto_id' => $yogur->id, 'cantidad_planificada' => 20, 'cantidad_obtenida' => 20]);
-
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->kpis)->toMatchArray(['produccion' => 2, 'produccionPorEstado' => ['EN_PROCESO' => 1, 'FINALIZADO' => 1]]);
-    expect($data->produccionReciente)->toMatchArray(['id' => $ultimo->id, 'codigo' => 'TERMINADO', 'litros' => 150.25]);
-    expect($data->produccionReciente['productos'])->toBe([
-        ['nombre' => 'Queso fresco', 'unidad' => 'kg', 'cantidad' => 15.25],
-        ['nombre' => 'Yogur', 'unidad' => 'L', 'cantidad' => 20.0],
-    ]);
-});
-
-it('calcula lecturas reales de publicados sin incluir borradores futuros ni otros períodos', function () {
-    $comunicado = dashboard_comunicado('Reunión de proveedores', '2026-09-10 08:00:00');
+it('lista comunicados publicados del período sin borradores ni programados a futuro', function () {
+    dashboard_comunicado('Reunión de proveedores', '2026-09-10 08:00:00');
     dashboard_comunicado('Borrador', '2026-09-10 09:00:00', 'BORRADOR');
-    dashboard_comunicado('Futuro', '2026-09-10 13:00:00');
-    dashboard_comunicado('Anterior', '2026-09-09 08:00:00');
-    foreach ([true, false] as $leido) {
-        ComunicadoDestinatarioModel::create(['comunicado_id' => $comunicado->id, 'user_id' => fixture_usuario('PROVEEDOR')->id, 'leido' => $leido]);
-    }
+    dashboard_comunicado('Programado', '2026-09-10 18:00:00');
+    dashboard_comunicado('Del lunes', '2026-09-07 08:00:00');
 
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->comunicaciones)->toMatchArray(['publicados' => 1, 'destinatarios' => 2, 'leidos' => 1, 'tasaLectura' => 50.0]);
-    expect($data->comunicaciones['recientes'][0]['titulo'])->toBe('Reunión de proveedores');
+    expect(dashboard_admin('hoy')->comunicados['publicados'])->toBe(1);
+    expect(array_column(dashboard_admin('semana')->comunicados['recientes'], 'titulo'))->toBe(['Reunión de proveedores', 'Del lunes']);
 });
 
-it('no inventa tasa de lectura para un comunicado sin destinatarios', function () {
-    dashboard_comunicado('Aviso general', '2026-09-10 08:00:00');
-
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->comunicaciones)->toMatchArray(['publicados' => 1, 'destinatarios' => 0, 'tasaLectura' => null]);
-});
-
-it('ordena cinco eventos reales incluyendo entregas análisis liquidaciones pagos y comunicados', function () {
-    $entrega = dashboard_entrega('2026-09-10 07:00:00', 30, 'ACEPTADA');
-    $entrega->analisisCalidad->update(['fecha_analisis' => '2026-09-10 08:00:00']);
-    $periodo = PeriodoLiquidacionModel::create(['fecha_inicio' => '2026-09-03', 'fecha_fin' => '2026-09-09', 'estado' => 'ABIERTO']);
-    $liquidacion = LiquidacionModel::create([
-        'periodo_id' => $periodo->id, 'proveedor_id' => $entrega->proveedor_id,
-        'total_litros_entregados' => 30, 'total_litros_pagables' => 30, 'subtotal' => 60,
-        'total_ajustes' => 0, 'total_pagar' => 60, 'estado' => 'PENDIENTE',
-        'fecha_calculo' => '2026-09-10 09:00:00', 'generado_por_user_id' => $entrega->registrado_por_user_id,
-        'precio_litro_aplicado' => 2.00, 'tuvo_incidencia' => false,
-    ]);
-    PagoProveedorModel::create([
-        'liquidacion_id' => $liquidacion->id, 'fecha_pago' => '2026-09-10 10:00:00', 'monto' => 60,
-        'estado' => 'REGISTRADO', 'registrado_por_user_id' => $entrega->registrado_por_user_id,
-    ]);
-    dashboard_comunicado('Aviso', '2026-09-10 11:00:00');
-    dashboard_entrega('2026-09-09 10:00:00', 30);
-
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect(array_column($data->actividadReciente, 'tipo'))->toBe(['comunicado', 'pago', 'liquidacion', 'analisis', 'entrega']);
-    expect($data->kpis['totalValorizado'])->toBe(0.0);
-    $this->assertDatabaseCount('auditorias', 0);
-});
-
-it('limita las entregas recientes a seis y mantiene las anuladas visibles con nombres reales', function () {
-    $ultima = null;
-    for ($hora = 1; $hora <= 8; $hora++) {
-        $ultima = dashboard_entrega(sprintf('2026-09-10 %02d:00:00', $hora));
-    }
-    $ultima->update(['estado' => 'ANULADA']);
-    $ultima->proveedor->update(['nombres' => 'Elena', 'apellidos' => 'Quispe']);
-    $ultima->zona->update(['nombre' => 'Pampa Grande']);
-
-    $data = app(DashboardAdministradorQuery::class)->obtener(DashboardPeriodo::resolver('hoy'));
-
-    expect($data->entregasRecientes)->toHaveCount(6);
-    expect($data->entregasRecientes[0])->toMatchArray(['id' => $ultima->id, 'estado' => 'ANULADA', 'proveedorNombre' => 'Elena Quispe', 'zonaNombre' => 'Pampa Grande', 'calidad' => null]);
-    expect($data->actividadReciente)->toHaveCount(5);
-});
-
-it('mantiene constante el número de consultas al aumentar zonas y solo ejecuta lecturas', function () {
-    dashboard_entrega('2026-09-10 08:00:00', 20, 'ACEPTADA');
-    $query = app(DashboardAdministradorQuery::class);
+it('solo ejecuta lecturas y mantiene constante el número de consultas', function () {
+    dashboard_entrega('2026-09-10 08:00:00', 20);
+    dashboard_lote('L-1', '2026-09-10 08:00:00');
     DB::enableQueryLog();
-    $query->obtener(DashboardPeriodo::resolver('hoy'));
+    dashboard_admin('mes');
     $iniciales = count(DB::getQueryLog());
-    DB::disableQueryLog();
-    foreach (range(1, 15) as $numero) {
-        fixture_zona('Zona adicional '.$numero);
+    foreach (range(1, 6) as $numero) {
+        dashboard_entrega('2026-09-0'.$numero.' 08:00:00', 10);
+        dashboard_lote('L-extra-'.$numero, '2026-09-0'.$numero.' 09:00:00');
     }
     DB::flushQueryLog();
-    DB::enableQueryLog();
 
-    $query->obtener(DashboardPeriodo::resolver('hoy'));
+    dashboard_admin('mes');
 
     $consultas = DB::getQueryLog();
     DB::disableQueryLog();

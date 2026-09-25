@@ -8,6 +8,8 @@ final readonly class JornadaPersonalFila
     public function __construct(
         public string $fechaIso,
         public string $fechaEtiqueta,
+        public string $estado,
+        public string $origen,
         public ?string $observacion,
     ) {}
 }

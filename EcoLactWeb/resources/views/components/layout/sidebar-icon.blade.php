@@ -13,6 +13,7 @@
         @case('box') <path d="M21 8 12 3 3 8l9 5 9-5Zm0 0v8l-9 5-9-5V8m9 5v8"/> @break
         @case('sales') <circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h7.2a2 2 0 0 0 2-1.6L21 8H6"/> @break
         @case('settings') <path d="m10 2-1 3-3 1-3-1-2 4 3 2v3l-2 2 2 4 3-1 3 2h4l1-3 3-1 3 1 2-4-3-2v-3l2-2-2-4-3 1-3-2Z"/><circle cx="12" cy="12" r="3"/> @break
+        @case('qr-code')
         @case('qr') <path d="M3 3h6v6H3zm12 0h6v6h-6ZM3 15h6v6H3zm12 0h3v3h3v3h-6zm6-3v3M12 3v3m0 6H6m6 6v3"/> @break
         @case('chevron') <path d="m9 5 7 7-7 7"/> @break
         @case('logout') <path d="M9 4H4v16h5m6-13 5 5-5 5m-6-5h11"/> @break

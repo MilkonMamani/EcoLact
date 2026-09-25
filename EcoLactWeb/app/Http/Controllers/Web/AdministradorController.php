@@ -24,7 +24,7 @@ final class AdministradorController extends Controller
 
         return view('admin.administrador.show', [
             'administrador' => $administrador,
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($administrador->id),
+            'controlPeriodo' => $this->obtenerControlPeriodo->execute($administrador->id, $request->string('mes')->toString() ?: null),
         ]);
     }
 }

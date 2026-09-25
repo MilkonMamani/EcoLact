@@ -1,9 +1,12 @@
 <?php
 
 use App\Application\Liquidacion\ValorizarEntrega;
+use App\Application\Pago\CerrarNominaMensual;
 use App\Application\Pago\RegistrarConfiguracionPago;
 use App\Application\Pago\RegistrarJornadaTrabajador;
-use App\Domain\Pago\JornadaPersonal;
+use App\Application\Trabajador\SincronizarTrabajadores;
+use App\Domain\Shared\Enums\EstadoJornada;
+use App\Domain\Shared\Enums\OrigenJornada;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use App\Infrastructure\Persistence\Models\AcopiadorModel;
 use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
@@ -15,6 +18,7 @@ use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use App\Infrastructure\Persistence\Models\PersonalVentasModel;
 use App\Infrastructure\Persistence\Models\PrecioLecheModel;
 use App\Infrastructure\Persistence\Models\ProveedorModel;
+use App\Infrastructure\Persistence\Models\TrabajadorModel;
 use App\Models\User;
 
 require_once __DIR__.'/EcoLactFixtures.php';
@@ -117,55 +121,56 @@ if (! function_exists('pagos_entrega')) {
     }
 }
 
-if (! function_exists('pagos_forzar_pendiente')) {
-    /**
-     * Completa de golpe los 30 días de una ventana de personal EN_CURSO,
-     * insertando jornadas reales (no solo tocando columnas), para que quede
-     * PENDIENTE de forma consistente con RecalcularProgresoObligacionPersonal
-     * incluso si una visita posterior a la pantalla vuelve a recalcularla.
-     * Solo para tests que necesitan un trabajador ya listo para pagar y no
-     * están probando el control de jornadas en sí mismo (para eso está
-     * JornadaPersonalTest/RegistrarJornadaTrabajadorTest). Usa sueldos
-     * múltiplos de 30 en los tests para que el valor por día sea exacto.
-     */
-    function pagos_forzar_pendiente(ObligacionPagoModel $obligacion, ?float $sueldo = null): ObligacionPagoModel
+if (! function_exists('pagos_trabajador')) {
+    /** Sincroniza (SincronizarTrabajadores) y devuelve la identidad laboral (`trabajadores`) del usuario. */
+    function pagos_trabajador(User $usuario): TrabajadorModel
     {
-        $sueldo ??= (float) ($obligacion->base_calculo['sueldo_base'] ?? 0.0);
-        $inicio = new DateTimeImmutable($obligacion->periodo_inicio->format('Y-m-d'));
+        app(SincronizarTrabajadores::class)->execute();
 
-        for ($i = 0; $i < JornadaPersonal::DIAS_BASE_PERIODO; $i++) {
-            JornadaPersonalModel::create([
-                'user_id' => $obligacion->user_id,
-                'rol_id' => $obligacion->rol_id,
-                'fecha' => $inicio->modify("+{$i} days")->format('Y-m-d'),
-            ]);
-        }
-
-        $valorDia = round($sueldo / JornadaPersonal::DIAS_BASE_PERIODO, 2);
-        $acumulado = round($valorDia * JornadaPersonal::DIAS_BASE_PERIODO, 2);
-
-        $obligacion->update([
-            'dias_trabajados' => JornadaPersonal::DIAS_BASE_PERIODO,
-            'valor_dia' => $valorDia,
-            'acumulado' => $acumulado,
-            'monto_calculado' => $acumulado,
-            'estado' => 'PENDIENTE',
-        ]);
-
-        return $obligacion->fresh();
+        return TrabajadorModel::where('user_id', $usuario->id)->firstOrFail();
     }
 }
 
 if (! function_exists('pagos_jornada')) {
-    /** Registra un día trabajado real (pasando por el use case) para un usuario. */
-    function pagos_jornada(int $userId, int $rolId, string $fecha, int $registradoPorUserId, ?string $observacion = null): void
+    /** Registra PRESENTE (pasando por el use case) para un trabajador en una fecha. */
+    function pagos_jornada(int $trabajadorId, string $fecha, int $registradoPorUserId, ?string $observacion = null): void
     {
         app(RegistrarJornadaTrabajador::class)->execute(
-            userId: $userId,
-            rolId: $rolId,
+            trabajadorId: $trabajadorId,
             fecha: new DateTimeImmutable($fecha),
             observacion: $observacion,
             registradoPorUserId: $registradoPorUserId,
         );
+    }
+}
+
+if (! function_exists('pagos_falta')) {
+    /** Inserta directamente una FALTA/AUTOMATICO (sin pasar por el scheduler) para un trabajador en una fecha. */
+    function pagos_falta(int $trabajadorId, int $rolId, string $fecha): void
+    {
+        JornadaPersonalModel::create([
+            'trabajador_id' => $trabajadorId,
+            'rol_id' => $rolId,
+            'fecha' => $fecha,
+            'estado' => EstadoJornada::FALTA->value,
+            'origen' => OrigenJornada::AUTOMATICO->value,
+        ]);
+    }
+}
+
+if (! function_exists('pagos_cerrar_mes')) {
+    /**
+     * Cierra de verdad (CerrarNominaMensual) el mes de una obligación de
+     * personal EN_CURSO, con la fecha "hoy" un día después de su periodo_fin
+     * (como lo haría el cron del día 1), y devuelve la obligación ya
+     * PENDIENTE. A diferencia del modelo anterior, esto pasa por el cálculo
+     * real (faltas/presentes/vigencia), no fija un acumulado a mano.
+     */
+    function pagos_cerrar_mes(ObligacionPagoModel $obligacion, ?int $actorUserId = null): ObligacionPagoModel
+    {
+        $hoyCierre = new DateTimeImmutable($obligacion->periodo_fin->format('Y-m-d'));
+        app(CerrarNominaMensual::class)->execute($hoyCierre->modify('+1 day'), $actorUserId);
+
+        return $obligacion->fresh();
     }
 }

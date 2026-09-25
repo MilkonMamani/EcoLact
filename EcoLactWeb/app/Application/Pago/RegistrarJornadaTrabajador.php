@@ -3,30 +3,35 @@
 namespace App\Application\Pago;
 
 use App\Application\Shared\TransactionManager;
+use App\Domain\Auth\Repositories\UsuarioRepository;
 use App\Domain\Pago\JornadaPersonal;
 use App\Domain\Pago\JornadaPersonalRepository;
 use App\Domain\Pago\ObligacionPagoRepository;
+use App\Domain\Shared\Enums\EstadoJornada;
+use App\Domain\Shared\Enums\OrigenJornada;
+use App\Domain\Trabajador\TrabajadorRepository;
 use DateTimeImmutable;
 use DomainException;
 
 /**
- * Registra un día trabajado y actualiza en la misma transacción el progreso
- * de la obligación de pago abierta del trabajador (si su fecha cae dentro de
- * esa ventana de 30 días). Bloquea la fila de la obligación para que dos
- * registros simultáneos no pisen el conteo.
+ * Marca PRESENTE a mano (p.ej. para completar un día que no se marcó por
+ * QR). Las jornadas son hechos independientes del ciclo de nómina: no exige
+ * que exista una obligación abierta (si la hay para el mes de la fecha, se
+ * recalcula; si no, GenerarObligacionesPersonal la sincronizará después).
  */
 final class RegistrarJornadaTrabajador
 {
     public function __construct(
         private readonly JornadaPersonalRepository $jornadas,
+        private readonly TrabajadorRepository $trabajadores,
+        private readonly UsuarioRepository $usuarios,
         private readonly ObligacionPagoRepository $obligaciones,
         private readonly RecalcularProgresoObligacionPersonal $recalcular,
         private readonly TransactionManager $transacciones,
     ) {}
 
     public function execute(
-        int $userId,
-        int $rolId,
+        int $trabajadorId,
         DateTimeImmutable $fecha,
         ?string $observacion,
         int $registradoPorUserId,
@@ -40,27 +45,35 @@ final class RegistrarJornadaTrabajador
             throw new DomainException('No se puede registrar un día trabajado en el futuro.');
         }
 
-        return $this->transacciones->run(function () use ($userId, $rolId, $fecha, $observacion, $registradoPorUserId): JornadaPersonal {
-            if ($this->jornadas->existeEnFecha($userId, $fecha)) {
-                throw new DomainException('Ya se registró un día trabajado para esta fecha.');
-            }
+        $trabajador = $this->trabajadores->buscarPorId($trabajadorId)
+            ?? throw new DomainException('El trabajador indicado no existe.');
 
-            $obligacion = $this->obligaciones->buscarPersonalAbiertaPorUsuarioBloqueando($userId);
+        if ($fecha->setTime(0, 0) < $trabajador->fechaIngreso()->setTime(0, 0)) {
+            throw new DomainException('La fecha es anterior al ingreso del trabajador.');
+        }
 
-            if ($obligacion === null || $fecha < $obligacion->periodoInicio() || $fecha > $obligacion->periodoFin()) {
-                throw new DomainException('No hay un periodo abierto que incluya esta fecha. Actualiza la pantalla e inténtalo de nuevo.');
+        return $this->transacciones->run(function () use ($trabajador, $fecha, $observacion, $registradoPorUserId): JornadaPersonal {
+            if ($this->jornadas->existeEnFecha($trabajador->id(), $fecha)) {
+                throw new DomainException('Ya se registró una jornada para esta fecha.');
             }
 
             $jornada = $this->jornadas->registrar(new JornadaPersonal(
                 id: null,
-                userId: $userId,
-                rolId: $rolId,
+                trabajadorId: $trabajador->id(),
+                rolId: $this->usuarios->buscarPorId($trabajador->userId())->roleId(),
                 fecha: $fecha,
+                estado: EstadoJornada::PRESENTE,
+                origen: OrigenJornada::MANUAL,
+                horaMarcacion: null,
                 observacion: $observacion,
                 registradoPorUserId: $registradoPorUserId,
             ));
 
-            $this->recalcular->execute($obligacion);
+            $abierta = $this->obligaciones->buscarPersonalAbiertaPorUsuarioBloqueando($trabajador->userId());
+
+            if ($abierta !== null && $abierta->estaEnCurso() && $fecha >= $abierta->periodoInicio() && $fecha <= $abierta->periodoFin()) {
+                $this->recalcular->execute($abierta);
+            }
 
             return $jornada;
         });

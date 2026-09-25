@@ -93,7 +93,7 @@ it('la pantalla de configuración muestra KPIs, cómo funciona y las dos seccion
         ->assertSee('Precio base por litro (S/)')
         ->assertSee('Aplicar ajustes de calidad')
         ->assertSee('El precio base de la leche ahora se configura aquí; no existe un módulo separado de Precio de leche.')
-        ->assertSee('Si se crea un nuevo rol remunerable en la tabla roles, aparecerá automáticamente.');
+        ->assertSee('El valor diario se calcula automáticamente dividiendo el sueldo mensual entre 30. Los trabajadores que cumplen todo el mes reciben su sueldo mensual completo.');
 });
 
 it('la tabla de personal se arma con los roles remunerables de la base de datos', function () {
@@ -286,8 +286,12 @@ it('no se puede crear un pago ni un beneficiario manualmente', function () {
 it('filtra los pagos por beneficiario, tipo, periodo y estado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_personal('ACOPIADOR', 'Julio');
-    pagos_personal('CALIDAD', 'Ruth');
     pagos_configurar('ACOPIADOR', 1000, '2026-08-01', $admin);
+    // Julio abre (y se queda) en agosto: la generación solo abre el mes
+    // calendario actual, nunca uno pasado ni futuro.
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-08-20'));
+
+    pagos_personal('CALIDAD', 'Ruth');
     pagos_configurar('CALIDAD', 1100, '2026-09-01', $admin);
     app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'));
 

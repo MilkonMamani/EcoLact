@@ -8,6 +8,9 @@ use InvalidArgumentException;
 
 final class Entrega
 {
+    /** Minutos, contados desde la hora de acopio, durante los que aún se pueden corregir los litros. */
+    public const MINUTOS_EDICION_LITROS = 10;
+
     public function __construct(
         private readonly ?int $id,
         private readonly int $proveedorId,
@@ -59,6 +62,17 @@ final class Entrega
     public function fechaHora(): DateTimeImmutable
     {
         return $this->fechaHora;
+    }
+
+    /** Último instante en que se pueden corregir los litros: hora de acopio + MINUTOS_EDICION_LITROS. */
+    public function litrosEditablesHasta(): DateTimeImmutable
+    {
+        return $this->fechaHora->modify('+'.self::MINUTOS_EDICION_LITROS.' minutes');
+    }
+
+    public function permiteEditarLitros(DateTimeImmutable $ahora): bool
+    {
+        return $ahora <= $this->litrosEditablesHasta();
     }
 
     public function litros(): float

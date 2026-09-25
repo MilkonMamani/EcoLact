@@ -16,7 +16,7 @@ final class EloquentProductosListadoQuery implements ProductosListadoQuery
      * Saldo de un producto: suma con signo de sus movimientos (no existe una
      * tabla de saldo). Requiere que la consulta externa use el alias `p`.
      */
-    private const SALDO_SQL = "SELECT COALESCE(SUM(CASE WHEN m.tipo IN ('INGRESO_PRODUCCION', 'AJUSTE_ENTRADA') THEN m.cantidad ELSE -m.cantidad END), 0) FROM producto_movimientos AS m WHERE m.producto_id = p.id";
+    public const SALDO_SQL = "SELECT COALESCE(SUM(CASE WHEN m.tipo IN ('INGRESO_PRODUCCION', 'AJUSTE_ENTRADA') THEN m.cantidad ELSE -m.cantidad END), 0) FROM producto_movimientos AS m WHERE m.producto_id = p.id";
 
     private const RECETA_ACTIVA_SQL = "SELECT COUNT(*) FROM recetas AS r WHERE r.producto_id = p.id AND r.estado = 'ACTIVA'";
 

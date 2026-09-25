@@ -27,7 +27,7 @@
 @endphp
 
 <header class="sticky top-0 z-30 flex flex-wrap items-center gap-4 border-b border-text-muted/10 bg-surface/95 px-4 py-3 backdrop-blur sm:px-6">
-    <button type="button" data-sidebar-toggle aria-label="Abrir menú" class="rounded-lg p-2 text-text hover:bg-text-muted/10 lg:hidden">
+    <button type="button" data-sidebar-toggle aria-label="Abrir menú" aria-controls="ecolact-sidebar" aria-expanded="false" class="rounded-lg p-2 text-text hover:bg-text-muted/10 lg:hidden">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
     </button>
 

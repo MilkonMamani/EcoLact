@@ -71,7 +71,7 @@ it('Acopio y Calidad cuentan lo mismo: 3 entregas, 2 pendientes y 1 analizada', 
     $acopio = $this->actingAs($admin)->get(route('admin.entregas.index'))->assertOk();
     $calidad = app(EntregasCalidadListadoQuery::class)->obtener(AnalisisCalidadFiltro::resolver(null, null, null, null, null, null, null));
 
-    $acopio->assertSee('70.00 L');
+    $acopio->assertSeeText('Mostrando 1 a 3 de 3 entregas');
 
     expect($calidad->kpis)->toBe(['pendientes' => 2, 'analizadas' => 1, 'aceptadas' => 1, 'observadas' => 0, 'rechazadas' => 0])
         ->and($calidad->filas)->toHaveCount(3);

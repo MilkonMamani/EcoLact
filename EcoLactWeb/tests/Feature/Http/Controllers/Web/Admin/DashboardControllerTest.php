@@ -102,3 +102,22 @@ it('ignora fechas externas al filtro personalizado', function () {
 it('redirige invitados desde la raíz al login', function () {
     $this->get('/')->assertRedirectToRoute('login');
 });
+
+it('entrega el dashboard por API solo al administrador y con el mismo período', function () {
+    $this->actingAs(fixture_usuario('ADMINISTRADOR'), 'sanctum');
+
+    $this->getJson(route('api.admin.dashboard', ['periodo' => 'semana']))
+        ->assertOk()
+        ->assertJsonPath('data.periodo.nombre', 'semana')
+        ->assertJsonPath('data.periodo.etiqueta', '07/09/2026 — 13/09/2026')
+        ->assertJsonStructure(['data' => ['acopio', 'produccion', 'ventas', 'pagos_pendientes', 'acopio_por_intervalo', 'acopio_por_zona', 'por_atender', 'existencias_actuales', 'lotes_recientes', 'asistencia', 'comunicados']])
+        ->assertJsonMissingPath('data.distribucion_calidad');
+});
+
+it('rechaza el dashboard por API a otros roles y a invitados', function () {
+    $this->getJson(route('api.admin.dashboard'))->assertUnauthorized();
+
+    $this->actingAs(fixture_acopiador(fixture_zona())->user, 'sanctum');
+
+    $this->getJson(route('api.admin.dashboard'))->assertForbidden();
+});

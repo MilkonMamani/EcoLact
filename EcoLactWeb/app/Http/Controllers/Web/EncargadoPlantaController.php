@@ -15,6 +15,7 @@ use App\Http\Requests\EncargadoPlanta\UpdateEncargadoPlantaRequest;
 use App\Infrastructure\Persistence\Models\EncargadoPlantaModel;
 use DateTimeImmutable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -44,13 +45,13 @@ final class EncargadoPlantaController extends Controller
         ]);
     }
 
-    public function show(EncargadoPlantaModel $encargado): View
+    public function show(EncargadoPlantaModel $encargado, ?Request $request = null): View
     {
         Gate::authorize('view', $encargado);
 
         return view('admin.encargados-planta.show', [
             'encargado' => $this->obtenerEncargadoPlanta->execute($encargado->id),
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($encargado->user_id),
+            'controlPeriodo' => $this->obtenerControlPeriodo->execute($encargado->user_id, $request?->string('mes')->toString() ?: null),
         ]);
     }
 

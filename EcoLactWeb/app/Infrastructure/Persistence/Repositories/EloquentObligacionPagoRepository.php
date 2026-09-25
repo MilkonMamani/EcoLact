@@ -41,6 +41,7 @@ class EloquentObligacionPagoRepository implements ObligacionPagoRepository
             'liquidacion_id' => $obligacion->liquidacionId(),
             'periodo_inicio' => $obligacion->periodoInicio()->format('Y-m-d'),
             'periodo_fin' => $obligacion->periodoFin()->format('Y-m-d'),
+            'fecha_pago_programada' => $obligacion->fechaPagoProgramada()?->format('Y-m-d'),
             'periodicidad' => $obligacion->periodicidad()->value,
             'concepto' => $obligacion->concepto(),
             'base_calculo' => $obligacion->baseCalculo(),
@@ -125,11 +126,21 @@ class EloquentObligacionPagoRepository implements ObligacionPagoRepository
         return $model ? $this->toEntity($model) : null;
     }
 
-    public function actualizarProgresoPersonal(int $id, int $diasTrabajados, float $valorDia, float $acumulado, EstadoObligacionPago $estado): void
+    public function buscarPersonalPorUsuarioYPeriodo(int $userId, DateTimeImmutable $periodoInicio): ?ObligacionPago
+    {
+        $model = ObligacionPagoModel::where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value)
+            ->where('user_id', $userId)
+            ->whereDate('periodo_inicio', $periodoInicio->format('Y-m-d'))
+            ->first();
+
+        return $model ? $this->toEntity($model) : null;
+    }
+
+    public function actualizarProgresoPersonal(int $id, int $diasTrabajados, float $valorDia, float $acumulado): void
     {
         $model = ObligacionPagoModel::whereKey($id)->lockForUpdate()->first();
 
-        if ($model === null || $model->estado === EstadoObligacionPago::PAGADO->value) {
+        if ($model === null || $model->estado !== EstadoObligacionPago::EN_CURSO->value) {
             return;
         }
 
@@ -140,7 +151,37 @@ class EloquentObligacionPagoRepository implements ObligacionPagoRepository
             'valor_dia' => $valorDia,
             'acumulado' => $acumulado,
             'monto_calculado' => max($montoCalculado, 0.0),
-            'estado' => $estado->value,
+        ]);
+    }
+
+    public function listarPersonalEnCursoVencidas(DateTimeImmutable $hoy): array
+    {
+        return ObligacionPagoModel::where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value)
+            ->where('estado', EstadoObligacionPago::EN_CURSO->value)
+            ->whereDate('periodo_fin', '<', $hoy->format('Y-m-d'))
+            ->orderBy('periodo_fin')
+            ->get()
+            ->map(fn (ObligacionPagoModel $model): ObligacionPago => $this->toEntity($model))
+            ->all();
+    }
+
+    public function cerrarMesPersonal(int $id, int $diasTrabajados, float $valorDia, float $acumulado, DateTimeImmutable $fechaPagoProgramada): void
+    {
+        $model = ObligacionPagoModel::whereKey($id)->lockForUpdate()->first();
+
+        if ($model === null || $model->estado !== EstadoObligacionPago::EN_CURSO->value) {
+            return;
+        }
+
+        $montoCalculado = round($acumulado + (float) $model->bonificacion - (float) $model->descuento, 2);
+
+        $model->update([
+            'dias_trabajados' => $diasTrabajados,
+            'valor_dia' => $valorDia,
+            'acumulado' => $acumulado,
+            'monto_calculado' => max($montoCalculado, 0.0),
+            'estado' => EstadoObligacionPago::PENDIENTE->value,
+            'fecha_pago_programada' => $fechaPagoProgramada->format('Y-m-d'),
         ]);
     }
 
@@ -173,6 +214,9 @@ class EloquentObligacionPagoRepository implements ObligacionPagoRepository
             diasTrabajados: (int) $model->dias_trabajados,
             valorDia: $model->valor_dia !== null ? (float) $model->valor_dia : null,
             acumulado: $model->acumulado !== null ? (float) $model->acumulado : null,
+            fechaPagoProgramada: $model->fecha_pago_programada !== null ? DateTimeImmutable::createFromInterface($model->fecha_pago_programada) : null,
+            bonificacion: (float) $model->bonificacion,
+            descuento: (float) $model->descuento,
         );
     }
 }

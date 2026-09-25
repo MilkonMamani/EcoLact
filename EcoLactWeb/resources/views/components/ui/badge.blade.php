@@ -56,6 +56,13 @@
         // Pagos
         'REGISTRADO' => 'bg-info/10 text-info ring-info/20',
 
+        // Asistencia
+        'PRESENTE' => 'bg-success/10 text-success ring-success/20',
+        'FALTA' => 'bg-danger/10 text-danger ring-danger/20',
+        'SIN_REGISTRO' => 'bg-text-muted/10 text-text-muted ring-text-muted/20',
+        'FUTURO' => 'bg-text-muted/10 text-text-muted ring-text-muted/20',
+        'NO_APLICABLE' => 'bg-text-muted/10 text-text-muted ring-text-muted/20',
+
         // Genéricos
         'SUCCESS' => 'bg-success/10 text-success ring-success/20',
         'WARNING' => 'bg-warning/10 text-warning ring-warning/20',

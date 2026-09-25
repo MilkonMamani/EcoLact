@@ -49,13 +49,41 @@
             <div><dt>DNI</dt><dd>{{ $c->dni ?? '—' }}</dd></div>
             <div><dt>Rol</dt><dd>{{ $c->rol }}</dd></div>
             <div><dt>Periodo</dt><dd>{{ $c->periodoEtiqueta }}</dd></div>
+            @if (! $c->esMesCompleto)
+                <div><dt>Fecha de ingreso</dt><dd>{{ $c->fechaIngresoEtiqueta }}</dd></div>
+            @endif
         </dl>
     </section>
 
     <section class="pp-seccion">
         <div class="pp-seccion-cabecera">
+            <span class="pp-seccion-icono"><x-ui.icon name="calendar-days" class="" /></span>
+            <h2>2. Resumen de asistencia</h2>
+        </div>
+        <table class="pp-tabla">
+            <thead>
+                <tr>
+                    <th class="pp-izq" style="width: 60%">Concepto</th>
+                    <th style="width: 40%">Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="pp-izq">Asistencias</td>
+                    <td class="pp-importe">{{ $c->diasTrabajados }}</td>
+                </tr>
+                <tr>
+                    <td class="pp-izq">Faltas</td>
+                    <td class="pp-importe">{{ $c->faltas }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="pp-seccion">
+        <div class="pp-seccion-cabecera">
             <span class="pp-seccion-icono"><x-ui.icon name="banknote" class="" /></span>
-            <h2>2. Detalle del pago</h2>
+            <h2>3. Cálculo</h2>
         </div>
         <table class="pp-tabla">
             <thead>
@@ -66,10 +94,6 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="pp-izq">Días trabajados</td>
-                    <td class="pp-importe">{{ $c->diasTrabajados }} de 30</td>
-                </tr>
-                <tr>
                     <td class="pp-izq">Sueldo mensual</td>
                     <td class="pp-importe">{{ $soles($c->sueldoBase) }}</td>
                 </tr>
@@ -77,16 +101,27 @@
                     <td class="pp-izq">Valor por día</td>
                     <td class="pp-importe">{{ $soles($c->valorDia) }}</td>
                 </tr>
+                @if (! $c->esMesCompleto)
+                    <tr>
+                        <td class="pp-izq">Pago proporcional</td>
+                        <td class="pp-importe">{{ $soles($c->acumulado) }}</td>
+                    </tr>
+                @else
+                    <tr>
+                        <td class="pp-izq">Descuento por faltas</td>
+                        <td class="pp-importe">{{ $c->descuentoPorFaltas > 0 ? '- '.$soles($c->descuentoPorFaltas) : $soles(0) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="pp-izq">Acumulado</td>
+                        <td class="pp-importe">{{ $soles($c->acumulado) }}</td>
+                    </tr>
+                @endif
                 <tr>
-                    <td class="pp-izq">Acumulado</td>
-                    <td class="pp-importe">{{ $soles($c->acumulado) }}</td>
-                </tr>
-                <tr>
-                    <td class="pp-izq">Bonificación</td>
+                    <td class="pp-izq">Bonificaciones</td>
                     <td class="pp-importe">{{ $c->bonificacion > 0 ? '+ '.$soles($c->bonificacion) : $soles(0) }}</td>
                 </tr>
                 <tr>
-                    <td class="pp-izq">Descuento</td>
+                    <td class="pp-izq">Otros descuentos</td>
                     <td class="pp-importe">{{ $c->descuento > 0 ? '- '.$soles($c->descuento) : $soles(0) }}</td>
                 </tr>
             </tbody>

@@ -27,6 +27,7 @@ use App\Http\Controllers\Web\EncargadoPlantaController;
 use App\Http\Controllers\Web\EntregaController;
 use App\Http\Controllers\Web\Liquidacion\LiquidacionController;
 use App\Http\Controllers\Web\Pago\ConfiguracionPagoController;
+use App\Http\Controllers\Web\Pago\ControlAsistenciaController;
 use App\Http\Controllers\Web\Pago\JornadaPersonalController;
 use App\Http\Controllers\Web\Pago\PagoController;
 use App\Http\Controllers\Web\Pago\PagoSemanalProveedorController;
@@ -156,6 +157,9 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('entregas', [EntregaController::class, 'index'])->name('entregas.index');
         Route::get('entregas/buscar-proveedor', [EntregaController::class, 'buscarProveedorPorDni'])->name('entregas.buscar-proveedor');
         Route::get('entregas/{entrega}', [EntregaController::class, 'show'])->name('entregas.show');
+        // Fragmento del modal "Ver entrega" + edición inline de litros (auditada).
+        Route::get('entregas/{entrega}/detalle', [EntregaController::class, 'detalle'])->name('entregas.detalle');
+        Route::patch('entregas/{entrega}/litros', [EntregaController::class, 'actualizarLitros'])->name('entregas.litros.update');
         Route::post('entregas', [EntregaController::class, 'store'])->name('entregas.store');
         Route::patch('entregas/{entrega}', [EntregaController::class, 'update'])->name('entregas.update');
         Route::patch('entregas/{entrega}/anular', [EntregaController::class, 'anular'])->name('entregas.anular');
@@ -212,6 +216,10 @@ Route::middleware(['auth', 'active'])->group(function () {
         // personal y por el panel de "Pagar a trabajadores".
         Route::get('trabajadores/{trabajador}/jornadas', [JornadaPersonalController::class, 'index'])->name('trabajadores.jornadas.index');
         Route::post('trabajadores/{trabajador}/jornadas', [JornadaPersonalController::class, 'store'])->name('trabajadores.jornadas.store');
+        Route::post('trabajadores/{trabajador}/jornadas/{fecha}/corregir', [JornadaPersonalController::class, 'corregir'])->name('trabajadores.jornadas.corregir');
+
+        // Control de asistencia: registro y consulta diaria del personal (QR, manual, corrección).
+        Route::get('asistencia', [ControlAsistenciaController::class, 'index'])->name('asistencia.index');
 
         // Pagos: pendientes y pagados generados desde Configuración de pagos. Un pago
         // NO se crea a mano; solo se confirma la entrega del dinero de un pendiente.

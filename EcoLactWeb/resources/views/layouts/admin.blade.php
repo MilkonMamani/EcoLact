@@ -55,10 +55,11 @@
             <x-layout.sidebar-link icon="chat" :href="route('admin.comunicados.index')" :active="request()->routeIs('admin.comunicados.*')">Comunicados</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Administración</p>
+            <x-layout.sidebar-link icon="qr-code" :href="route('admin.asistencia.index')" :active="request()->routeIs('admin.asistencia.*')">Control de asistencia</x-layout.sidebar-link>
             <x-layout.sidebar-link icon="users" :href="route('admin.encargados-planta.index')" :active="request()->routeIs('admin.encargados-planta.*')">Encargados de planta</x-layout.sidebar-link>
             <x-layout.sidebar-link icon="users" :href="route('admin.personal-ventas.index')" :active="request()->routeIs('admin.personal-ventas.*')">Personal de ventas</x-layout.sidebar-link>
             <x-layout.sidebar-link icon="users" :href="route('admin.analistas-calidad.index')" :active="request()->routeIs('admin.analistas-calidad.*')">Analistas de calidad</x-layout.sidebar-link>
-            {{-- Pendiente: la tabla auditorias existe pero ningún Use Case escribe todavía en ella. --}}
+            {{-- Pendiente: la tabla auditorias ya registra correcciones de asistencia (CorregirJornada), pero todavía no hay una pantalla de consulta general. --}}
             <x-layout.sidebar-link icon="audit" disabled>Auditoría</x-layout.sidebar-link>
         </x-layout.sidebar>
 

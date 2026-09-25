@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Acopiador\SeguimientoCalidadController as Acopiador
 use App\Http\Controllers\Api\Admin\AcopiadorController;
 use App\Http\Controllers\Api\Admin\AnalisisCalidadController;
 use App\Http\Controllers\Api\Admin\AnalistaCalidadController;
+use App\Http\Controllers\Api\Admin\AsistenciaQrController;
 use App\Http\Controllers\Api\Admin\ComunicadoController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\EncargadoPlantaController;
@@ -95,6 +96,8 @@ Route::prefix('v1')->group(function () {
 
             Route::get('pagos', [PagoController::class, 'index'])->name('pagos.index');
             Route::get('pagos/{pago}', [PagoController::class, 'show'])->name('pagos.show');
+
+            Route::post('asistencia/qr', [AsistenciaQrController::class, 'registrar'])->name('asistencia.qr');
 
             Route::get('analisis-calidad', [AnalisisCalidadController::class, 'index'])->name('analisis-calidad.index');
             Route::get('analisis-calidad/{analisis}', [AnalisisCalidadController::class, 'show'])->name('analisis-calidad.show');

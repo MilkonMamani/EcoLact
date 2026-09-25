@@ -26,8 +26,11 @@ final readonly class TrabajadorPagoFila
         public ?string $metodoPago,
         public ?string $registradoPor,
         public int $diasTrabajados,
+        public int $faltas,
         public float $valorDia,
         public float $acumulado,
+        public bool $esMesCompleto,
+        public ?string $fechaIngresoEtiqueta,
     ) {}
 
     public function estaPendiente(): bool

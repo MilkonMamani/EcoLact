@@ -31,8 +31,16 @@
         @if ($sticky)<x-forms.error name="monto_base" />@endif
     </div>
     <div>
-        <label class="mb-1.5 block text-sm font-medium text-text" for="{{ $p }}-periodicidad">Periodicidad</label>
-        <input id="{{ $p }}-periodicidad" type="text" value="Mensual" readonly tabindex="-1" class="{{ $soloLectura }}">
+        <label class="mb-1.5 block text-sm font-medium text-text" for="{{ $p }}-periodicidad">Pago</label>
+        <input id="{{ $p }}-periodicidad" type="text" value="Día 1 de cada mes" readonly tabindex="-1" class="{{ $soloLectura }}">
+    </div>
+    <div>
+        <label class="mb-1.5 block text-sm font-medium text-text" for="{{ $p }}-base">Base salarial</label>
+        <input id="{{ $p }}-base" type="text" value="30 días" readonly tabindex="-1" class="{{ $soloLectura }}">
+    </div>
+    <div>
+        <label class="mb-1.5 block text-sm font-medium text-text" for="{{ $p }}-valor-dia">Valor por día (calculado)</label>
+        <input id="{{ $p }}-valor-dia" type="text" value="{{ $monto !== null ? 'S/ '.number_format($monto / 30, 2) : '—' }}" readonly tabindex="-1" class="{{ $soloLectura }}">
     </div>
 
     <div class="sm:col-span-2 sm:max-w-[calc(50%-0.5rem)]">
@@ -49,5 +57,5 @@
 
 <div class="mt-4 flex items-start gap-2 rounded-xl border border-info/20 bg-info-soft px-4 py-3 text-xs text-text">
     <x-ui.icon name="info" class="mt-0.5 h-4 w-4 shrink-0 text-info" />
-    <span>Si se crea un nuevo rol remunerable en la tabla roles, aparecerá automáticamente.</span>
+    <span>El valor diario se calcula automáticamente dividiendo el sueldo mensual entre 30. Los trabajadores que cumplen todo el mes reciben su sueldo mensual completo.</span>
 </div>

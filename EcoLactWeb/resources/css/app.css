@@ -6,6 +6,8 @@
 @import './components/sidebar.css';
 @import './components/misc.css';
 @import './components/pago-semanal.css';
+@import './components/pager.css';
+@import './pages/admin-acopio.css';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',

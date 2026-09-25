@@ -1,0 +1,9 @@
+/* Paginación compacta de tablas (x-tables.pagination). */
+.ecolact-pager { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1rem; }
+.ecolact-pager-info { color: #667085; font-size: .85rem; }
+.ecolact-pager-links { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; }
+.ecolact-pager-links > a, .ecolact-pager-links > span { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; height: 2rem; padding-inline: .5rem; border: 1px solid #d9dee4; border-radius: .45rem; background: #fff; color: #344054; font-size: .8rem; font-weight: 500; font-variant-numeric: tabular-nums; transition: border-color .15s, color .15s; }
+.ecolact-pager-links > a:hover { border-color: #01aa62; color: #016046; }
+.ecolact-pager-links > .is-active { border-color: #01aa62; background: #01aa62; color: #fff; font-weight: 600; }
+.ecolact-pager-links > .is-disabled { color: #c3cad3; }
+.ecolact-pager-links > .is-gap { border-color: transparent; background: transparent; color: #98a2b3; }

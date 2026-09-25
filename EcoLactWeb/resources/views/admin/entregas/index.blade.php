@@ -2,105 +2,135 @@
 
 @section('title', 'Acopio')
 
+@if (isset($datos))
+    @section('body-class', 'admin-acopio-page')
+    @section('contenedor', 'max-w-[1600px]')
+@endif
+
 @section('content')
     @if (isset($datos))
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <x-ui.stat-card label="Litros registrados" :value="number_format($datos->kpis['litrosRegistrados'], 2).' L'" hint="Según filtros aplicados" />
-            <x-ui.stat-card label="Entregas" :value="$datos->kpis['entregas']" />
-            <x-ui.stat-card label="Pendientes de análisis" :value="$datos->kpis['pendientesAnalisis']" accent="warning" />
-            <x-ui.stat-card label="Analizadas" :value="$datos->kpis['analizadas']" accent="success" />
-        </div>
+        @php
+            $filas = $datos->filas;
+            $filtrosActivos = request()->anyFilled(['q', 'fecha', 'zona_id', 'acopiador_id', 'estado']);
+            $etiquetasEstado = ['PENDIENTE_ANALISIS' => ['Pendiente de análisis', 'clock'], 'ANALIZADA' => ['Analizada', 'check'], 'ANULADA' => ['Anulada', 'x-circle']];
+        @endphp
 
-        <x-ui.card title="Acopio" subtitle="Registro y seguimiento de entregas de leche.">
-            <x-slot:actions>
+        <div class="acopio" data-acopio-page>
+            <header class="acopio-header">
+                <div class="min-w-0">
+                    <nav aria-label="Ruta de navegación" class="acopio-breadcrumb">
+                    </nav>
+                    <h1 class="acopio-title">Acopio</h1>
+                    <p class="acopio-subtitle">Registro y seguimiento de entregas de leche.</p>
+                </div>
                 @can('create', \App\Infrastructure\Persistence\Models\EntregaModel::class)
-                    <x-ui.button data-modal-open="modal-nueva-entrega" size="sm" as="button" type="button">+ Registrar entrega</x-ui.button>
+                    <button type="button" data-modal-open="modal-nueva-entrega" class="acopio-btn is-primary">
+                        <x-ui.icon name="plus" class="h-4 w-4" /> Registrar entrega
+                    </button>
                 @endcan
-            </x-slot:actions>
+            </header>
 
-            <form method="GET" class="mb-4 space-y-3">
-                <x-forms.input name="q" label="Buscar proveedor, DNI o código de entrega" value="{{ request('q') }}" />
+            <form method="GET" action="{{ route('admin.entregas.index') }}" class="acopio-filtros" data-acopio-filtros>
+                <label class="acopio-search">
+                    <span class="sr-only">Buscar proveedor, DNI o código de entrega</span>
+                    <x-ui.icon name="magnifying-glass" class="h-5 w-5" />
+                    <input type="search" name="q" value="{{ request('q') }}" placeholder="Buscar proveedor, DNI o código de entrega…" autocomplete="off">
+                </label>
 
-                <div class="flex flex-wrap items-end gap-3">
-                    <div class="w-44">
-                        <x-forms.select name="fecha" label="Fecha" :options="[
-                            'hoy' => 'Hoy',
-                            'ayer' => 'Ayer',
-                            'esta_semana' => 'Esta semana',
-                            'semana_anterior' => 'Semana anterior',
-                            'este_mes' => 'Este mes',
-                            'personalizado' => 'Personalizado',
-                        ]" :value="request('fecha')" placeholder="Todas" />
-                    </div>
+                <div class="acopio-filtros-fila">
+                    <x-forms.select name="fecha" label="Fecha" :sticky="false" :options="[
+                        'hoy' => 'Hoy',
+                        'ayer' => 'Ayer',
+                        'esta_semana' => 'Esta semana',
+                        'semana_anterior' => 'Semana anterior',
+                        'este_mes' => 'Este mes',
+                        'personalizado' => 'Personalizado',
+                    ]" :value="request('fecha')" placeholder="Todas" />
 
                     @if (request('fecha') === 'personalizado')
-                        <div class="w-40">
-                            <x-forms.input name="desde" type="date" label="Desde" value="{{ request('desde') }}" />
-                        </div>
-                        <div class="w-40">
-                            <x-forms.input name="hasta" type="date" label="Hasta" value="{{ request('hasta') }}" />
-                        </div>
+                        <x-forms.input name="desde" type="date" label="Desde" value="{{ request('desde') }}" />
+                        <x-forms.input name="hasta" type="date" label="Hasta" value="{{ request('hasta') }}" />
                     @endif
 
-                    <div class="w-44">
-                        <x-forms.select name="zona_id" label="Zona" :options="collect($datos->zonas)->pluck('nombre', 'id')->all()" :value="request('zona_id')" placeholder="Todas" />
-                    </div>
+                    <x-forms.select name="zona_id" label="Zona" :sticky="false" :options="collect($datos->zonas)->pluck('nombre', 'id')->all()" :value="request('zona_id')" placeholder="Todas" />
+                    <x-forms.select name="acopiador_id" label="Acopiador" :sticky="false" :options="collect($datos->acopiadores)->pluck('nombre', 'id')->all()" :value="request('acopiador_id')" placeholder="Todos" />
+                    <x-forms.select name="estado" label="Estado" :sticky="false" :options="['PENDIENTE_ANALISIS' => 'Pendiente de análisis', 'ANALIZADA' => 'Analizada']" :value="request('estado')" placeholder="Todos" />
 
-                    <div class="w-48">
-                        <x-forms.select name="acopiador_id" label="Acopiador" :options="collect($datos->acopiadores)->pluck('nombre', 'id')->all()" :value="request('acopiador_id')" placeholder="Todos" />
+                    <div class="acopio-filtros-acciones">
+                        <button type="submit" class="acopio-btn is-dark">Filtrar</button>
+                        <a href="{{ route('admin.entregas.index') }}" class="acopio-btn is-outline">Limpiar</a>
                     </div>
-
-                    <div class="w-44">
-                        <x-forms.select name="estado" label="Estado" :options="['PENDIENTE_ANALISIS' => 'Pendiente de análisis', 'ANALIZADA' => 'Analizada']" :value="request('estado')" placeholder="Todos" />
-                    </div>
-
-                    <x-ui.button type="submit" variant="secondary" size="sm">Filtrar</x-ui.button>
-                    @if (request()->anyFilled(['q', 'fecha', 'zona_id', 'acopiador_id', 'estado']))
-                        <x-ui.button :href="route('admin.entregas.index')" variant="ghost" size="sm" as="a">Limpiar</x-ui.button>
-                    @endif
                 </div>
             </form>
 
-            @if (count($datos->filas) === 0)
-                <x-ui.empty-state title="No hay entregas registradas" description="Las entregas registradas por los acopiadores aparecerán aquí." />
+            @if ($filas->total() === 0)
+                <div class="acopio-vacio">
+                    <x-ui.icon name="milk-jar" class="h-6 w-6" />
+                    <div>
+                        <p class="font-semibold text-text">{{ $filtrosActivos ? 'Ninguna entrega coincide con los filtros' : 'No hay entregas registradas' }}</p>
+                        <p>{{ $filtrosActivos ? 'Prueba con otra búsqueda o limpia los filtros.' : 'Las entregas registradas por los acopiadores aparecerán aquí.' }}</p>
+                    </div>
+                </div>
             @else
-                <x-tables.table>
-                    <thead>
-                        <tr class="border-b border-text-muted/10 text-xs uppercase tracking-wide text-text-muted">
-                            <th class="py-2 pr-4">Fecha y hora</th>
-                            <th class="py-2 pr-4">Proveedor</th>
-                            <th class="py-2 pr-4">Zona</th>
-                            <th class="py-2 pr-4">Acopiador</th>
-                            <th class="py-2 pr-4">Litros</th>
-                            <th class="py-2 pr-4">Identificación</th>
-                            <th class="py-2 pr-4">Estado</th>
-                            <th class="py-2 pl-4 text-right">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($datos->filas as $fila)
-                            <tr class="border-b border-text-muted/5 last:border-0">
-                                <td class="py-3 pr-4 whitespace-nowrap text-text">{{ $fila['fecha'] }}</td>
-                                <td class="py-3 pr-4 text-text">
-                                    {{ $fila['proveedorNombre'] }}
-                                    <span class="block text-xs text-text-muted">DNI: {{ $fila['proveedorDni'] }}</span>
-                                </td>
-                                <td class="py-3 pr-4 text-text-muted">{{ $fila['zonaNombre'] }}</td>
-                                <td class="py-3 pr-4 text-text-muted">{{ $fila['acopiadorNombre'] }}</td>
-                                <td class="py-3 pr-4 font-medium text-text">{{ number_format($fila['litros'], 2) }} L</td>
-                                <td class="py-3 pr-4 text-text-muted">{{ $fila['metodoIdentificacion'] }}</td>
-                                <td class="py-3 pr-4"><x-ui.badge :status="$fila['estado']" /></td>
-                                <td class="py-3 pl-4">
-                                    <x-tables.actions>
-                                        <x-ui.action-button type="view" label="Ver entrega" :href="route('admin.entregas.show', $fila['id'])" />
-                                    </x-tables.actions>
-                                </td>
+                <div class="acopio-tabla is-loading" data-acopio-tabla>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Fecha y hora</th>
+                                <th scope="col">Proveedor</th>
+                                <th scope="col">Zona</th>
+                                <th scope="col">Acopiador</th>
+                                <th scope="col" class="is-num">Litros</th>
+                                <th scope="col">Identificación</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col" class="is-accion">Acción</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </x-tables.table>
+                        </thead>
+                        <tbody class="acopio-skeleton" aria-hidden="true">
+                            @for ($i = 0; $i < min(8, max(1, $filas->count())); $i++)
+                                <tr>
+                                    @foreach (['is-lg', 'is-xl', 'is-md', 'is-lg', 'is-sm', 'is-xs', 'is-md', 'is-dot'] as $ancho)
+                                        <td><span class="acopio-bone {{ $ancho }}"></span></td>
+                                    @endforeach
+                                </tr>
+                            @endfor
+                        </tbody>
+                        <tbody data-acopio-filas>
+                            @forelse ($filas as $fila)
+                                @php [$etiquetaEstado, $iconoEstado] = $etiquetasEstado[$fila['estado']] ?? [str($fila['estado'])->replace('_', ' ')->lower()->ucfirst()->toString(), null]; @endphp
+                                <tr data-acopio-fila>
+                                    <td class="whitespace-nowrap">{{ $fila['fecha'] }}</td>
+                                    <td>
+                                        <span class="acopio-proveedor">{{ $fila['proveedorNombre'] }}</span>
+                                        <span class="acopio-dni">DNI: {{ $fila['proveedorDni'] }}</span>
+                                    </td>
+                                    <td class="is-muted">{{ $fila['zonaNombre'] }}</td>
+                                    <td class="is-muted">{{ $fila['acopiadorNombre'] }}</td>
+                                    <td class="is-num acopio-litros" data-entrega-litros="{{ $fila['id'] }}">{{ number_format($fila['litros'], 2) }} L</td>
+                                    <td class="is-muted">{{ $fila['metodoIdentificacion'] }}</td>
+                                    <td><x-ui.badge :status="$fila['estado']" :icon="$iconoEstado">{{ $etiquetaEstado }}</x-ui.badge></td>
+                                    <td class="is-accion">
+                                        <a href="{{ route('admin.entregas.show', $fila['id']) }}" class="acopio-ver" aria-label="Ver entrega" title="Ver entrega" data-entrega-ver data-url-detalle="{{ route('admin.entregas.detalle', $fila['id']) }}">
+                                            <x-ui.icon name="eye" class="h-4 w-4" />
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="8" class="acopio-sin-pagina">No hay entregas en esta página. <a href="{{ $filas->url(1) }}">Ir a la primera página</a></td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <noscript><style>.acopio-tabla.is-loading [data-acopio-filas] { display: table-row-group; } .acopio-tabla.is-loading .acopio-skeleton { display: none; }</style></noscript>
+
+                <x-tables.pagination :paginator="$filas" noun="entregas" class="acopio-pager" />
             @endif
-        </x-ui.card>
+
+            {{-- Modal "Ver entrega": el contenido (resources/views/admin/entregas/_detalle.blade.php) lo carga admin-acopio.js. --}}
+            <div id="modal-ver-entrega" data-modal class="fixed inset-0 z-50 items-center justify-center bg-text/40 p-4" role="dialog" aria-modal="true" aria-label="Ver entrega">
+                <div class="acopio-detalle-panel" data-entrega-detalle-contenido></div>
+            </div>
+        </div>
     @else
         {{-- Rama heredada para los roles ACOPIADOR/PROVEEDOR (index() con recorte propio, sin KPIs/filtros). --}}
         <x-ui.card title="Entregas" subtitle="Historial de acopio de leche.">

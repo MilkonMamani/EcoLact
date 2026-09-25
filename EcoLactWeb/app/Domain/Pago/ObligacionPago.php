@@ -38,6 +38,9 @@ final class ObligacionPago
         private readonly int $diasTrabajados = 0,
         private readonly ?float $valorDia = null,
         private readonly ?float $acumulado = null,
+        private readonly ?DateTimeImmutable $fechaPagoProgramada = null,
+        private readonly float $bonificacion = 0.0,
+        private readonly float $descuento = 0.0,
     ) {
         if ($montoCalculado < 0.0) {
             throw new InvalidArgumentException('El monto calculado no puede ser negativo.');
@@ -152,6 +155,11 @@ final class ObligacionPago
         return $this->estado === EstadoObligacionPago::PENDIENTE;
     }
 
+    public function estaEnCurso(): bool
+    {
+        return $this->estado === EstadoObligacionPago::EN_CURSO;
+    }
+
     public function estaPagada(): bool
     {
         return $this->estado === EstadoObligacionPago::PAGADO;
@@ -170,5 +178,20 @@ final class ObligacionPago
     public function acumulado(): ?float
     {
         return $this->acumulado;
+    }
+
+    public function fechaPagoProgramada(): ?DateTimeImmutable
+    {
+        return $this->fechaPagoProgramada;
+    }
+
+    public function bonificacion(): float
+    {
+        return $this->bonificacion;
+    }
+
+    public function descuento(): float
+    {
+        return $this->descuento;
     }
 }

@@ -34,25 +34,6 @@
     display: block;
 }
 
-@media (max-width: 1023px) {
-    [data-sidebar] {
-        transform: translateX(-100%);
-        transition: transform 0.2s ease;
-    }
-
-    [data-sidebar].is-open {
-        transform: translateX(0);
-    }
-
-    [data-sidebar-backdrop] {
-        display: none;
-    }
-
-    [data-sidebar-backdrop].is-open {
-        display: block;
-    }
-}
-
 /* Tablas que en móvil se apilan como tarjetas (una fila = una tarjeta). Cada
    <td> lleva data-label con el nombre de su columna. */
 @media (max-width: 767px) {

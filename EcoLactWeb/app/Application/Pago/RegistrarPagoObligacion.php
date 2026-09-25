@@ -5,7 +5,6 @@ namespace App\Application\Pago;
 use App\Application\Liquidacion\RegistrarPago;
 use App\Application\Pago\Contracts\AlmacenComprobantePago;
 use App\Application\Shared\TransactionManager;
-use App\Domain\Pago\JornadaPersonal;
 use App\Domain\Pago\ObligacionPagoRepository;
 use App\Domain\Pago\PagoRealizado;
 use App\Domain\Pago\PagoRealizadoRepository;
@@ -78,14 +77,6 @@ final class RegistrarPagoObligacion
 
                 if (! $obligacion->estaPendiente()) {
                     throw new DomainException('Este pago ya fue registrado. No se puede pagar dos veces.');
-                }
-
-                // Defensa en profundidad: aunque el estado ya lo garantiza, si
-                // alguien manipula la petición HTTP directamente, esto impide
-                // pagar personal antes de completar los 30 días del periodo.
-                if ($obligacion->tipoBeneficiario() === TipoBeneficiarioPago::PERSONAL
-                    && $obligacion->diasTrabajados() < JornadaPersonal::DIAS_BASE_PERIODO) {
-                    throw new DomainException('Aún no se completaron los 30 días trabajados del periodo: no se puede pagar.');
                 }
 
                 if ($fechaPago < $obligacion->periodoInicio()) {

@@ -8,10 +8,12 @@ use App\Application\Pago\TrabajadoresPagoFiltro;
 use App\Application\Pago\TrabajadorPagoFila;
 use App\Domain\Pago\JornadaPersonal;
 use App\Domain\Pago\PeriodoPago;
+use App\Domain\Shared\Enums\EstadoJornada;
 use App\Domain\Shared\Enums\EstadoObligacionPago;
 use App\Domain\Shared\Enums\MetodoPago;
 use App\Domain\Shared\Enums\PeriodicidadPago;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
+use App\Domain\Trabajador\TrabajadorRepository;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use Carbon\CarbonImmutable;
 use DateTimeImmutable;
@@ -25,6 +27,8 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
 
     /** Tablas de ficha del personal, cada una con user_id y dni. */
     private const TABLAS_FICHA = ['acopiadores', 'analistas_calidad', 'encargados_planta', 'personal_ventas'];
+
+    public function __construct(private readonly TrabajadorRepository $trabajadores) {}
 
     public function obtener(TrabajadoresPagoFiltro $filtro): LengthAwarePaginator
     {
@@ -62,9 +66,13 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
             periodoInicio: $fila->periodoInicioIso,
             periodoRango: $fila->periodoRango,
             diasTrabajados: $fila->diasTrabajados,
+            faltas: $fila->faltas,
             valorDia: $fila->valorDia,
             sueldoBase: $fila->sueldoBase,
             acumulado: $fila->acumulado,
+            descuentoPorFaltas: $fila->esMesCompleto ? max(0.0, round($fila->sueldoBase - $fila->acumulado, 2)) : 0.0,
+            esMesCompleto: $fila->esMesCompleto,
+            fechaIngresoEtiqueta: $fila->fechaIngresoEtiqueta,
             bonificacion: $fila->bonificacion,
             descuento: $fila->descuento,
             total: $fila->total,
@@ -121,6 +129,15 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
         // asume que todo el sueldo ya estaba acumulado, como pagaba el modelo viejo.
         $valorDia = (float) ($obligacion->valor_dia ?? round($sueldoBase / JornadaPersonal::DIAS_BASE_PERIODO, 2));
         $acumulado = (float) ($obligacion->acumulado ?? $sueldoBase);
+        $trabajador = $this->trabajadores->buscarPorUserId((int) $obligacion->user_id);
+        $esMesCompleto = $trabajador?->estuvoVigenteTodoElRango($inicio, $fin) ?? true;
+        $faltas = $trabajador !== null
+            ? DB::table('jornadas_personal')
+                ->where('trabajador_id', $trabajador->id())
+                ->where('estado', EstadoJornada::FALTA->value)
+                ->whereBetween('fecha', [$inicio->format('Y-m-d'), $fin->format('Y-m-d')])
+                ->count()
+            : 0;
 
         return new TrabajadorPagoFila(
             id: $obligacion->id,
@@ -141,7 +158,10 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
             estadoEtiqueta: EstadoObligacionPago::from($obligacion->estado)->etiqueta(),
             observacion: $pago?->observacion,
             diasTrabajados: (int) $obligacion->dias_trabajados,
+            faltas: $faltas,
             valorDia: $valorDia,
+            esMesCompleto: $esMesCompleto,
+            fechaIngresoEtiqueta: $esMesCompleto ? null : $trabajador?->fechaIngreso()->format('d/m/Y'),
             pagadoEl: $pago?->fecha_pago?->format('d/m/Y'),
             metodoPago: $pago !== null ? MetodoPago::from($pago->metodo_pago)->etiqueta() : null,
             registradoPor: $pago?->registradoPor?->username,

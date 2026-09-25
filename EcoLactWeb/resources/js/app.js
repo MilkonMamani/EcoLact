@@ -4,6 +4,10 @@ if (document.querySelector('[data-admin-dashboard]')) {
     import('./pages/admin-dashboard.js');
 }
 
+if (document.querySelector('[data-acopio-page]')) {
+    import('./pages/admin-acopio.js');
+}
+
 if (document.querySelector('[data-ruta-detalle]')) {
     import('./pages/admin-ruta.js');
 }
@@ -46,6 +50,10 @@ if (document.querySelector('[data-proveedor-pagos]')) {
 
 if (document.querySelector('[data-control-periodo]')) {
     import('./pages/admin-jornadas.js');
+}
+
+if (document.querySelector('[data-asistencia-page]')) {
+    import('./pages/admin-asistencia.js');
 }
 
 // Despliega/oculta una fila de detalle en la misma tabla (sin cambiar de pantalla).
@@ -151,6 +159,16 @@ function closeAllDropdowns(except) {
     });
 }
 
+const sidebarMobile = window.matchMedia('(max-width: 1023px)');
+const sidebarFallback = document.querySelector('[data-sidebar-fallback]');
+if (sidebarFallback) {
+    sidebarFallback.hidden = Boolean(document.querySelector('[data-sidebar-toggle]:not([data-sidebar-fallback])'));
+}
+document.querySelectorAll('[data-sidebar-toggle]').forEach((button) => {
+    button.setAttribute('aria-controls', 'ecolact-sidebar');
+    button.setAttribute('aria-expanded', 'false');
+});
+
 function toggleSidebar(open) {
     const sidebar = document.querySelector('[data-sidebar]');
     const backdrop = document.querySelector('[data-sidebar-backdrop]');
@@ -159,12 +177,52 @@ function toggleSidebar(open) {
         return;
     }
 
-    const shouldOpen = open ?? !sidebar.classList.contains('is-open');
+    const wasOpen = sidebar.classList.contains('is-open');
+    const shouldOpen = sidebarMobile.matches && (open ?? !wasOpen);
 
     sidebar.classList.toggle('is-open', shouldOpen);
     backdrop?.classList.toggle('is-open', shouldOpen);
-    document.body.classList.toggle('overflow-hidden', shouldOpen);
+    document.body.classList.toggle('overflow-hidden', shouldOpen || Boolean(document.querySelector('[data-modal].is-open')));
+    document.querySelectorAll('[data-sidebar-toggle]').forEach((button) => {
+        button.setAttribute('aria-expanded', String(shouldOpen));
+        button.setAttribute('aria-label', shouldOpen ? 'Cerrar menú' : 'Abrir menú');
+    });
+
+    if (shouldOpen) {
+        window.requestAnimationFrame(() => {
+            if (sidebar.classList.contains('is-open')) {
+                sidebar.querySelector('[data-sidebar-close]')?.focus();
+            }
+        });
+    } else if (wasOpen && sidebarMobile.matches) {
+        document.querySelector('[data-sidebar-toggle]:not([hidden])')?.focus();
+    }
 }
+
+sidebarMobile.addEventListener('change', () => toggleSidebar(false));
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab' || !sidebarMobile.matches) {
+        return;
+    }
+
+    const sidebar = document.querySelector('[data-sidebar].is-open');
+    if (!sidebar) {
+        return;
+    }
+
+    const controls = [...sidebar.querySelectorAll('a[href], button, summary, [tabindex="0"]')]
+        .filter((element) => element.getClientRects().length > 0);
+    const first = controls[0];
+    const last = controls.at(-1);
+    if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+    }
+});
 
 function openModal(id) {
     const modal = document.getElementById(id);
@@ -205,7 +263,7 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    if (event.target.closest('[data-sidebar-backdrop]')) {
+    if (event.target.closest('[data-sidebar-backdrop], [data-sidebar-close]')) {
         toggleSidebar(false);
         return;
     }

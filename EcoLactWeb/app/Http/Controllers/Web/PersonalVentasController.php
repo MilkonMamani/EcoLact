@@ -15,6 +15,7 @@ use App\Http\Requests\PersonalVentas\UpdatePersonalVentasRequest;
 use App\Infrastructure\Persistence\Models\PersonalVentasModel;
 use DateTimeImmutable;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -43,13 +44,13 @@ final class PersonalVentasController extends Controller
         ]);
     }
 
-    public function show(PersonalVentasModel $personalVenta): View
+    public function show(PersonalVentasModel $personalVenta, ?Request $request = null): View
     {
         Gate::authorize('view', $personalVenta);
 
         return view('admin.personal-ventas.show', [
             'personal' => $this->obtenerPersonalVentas->execute($personalVenta->id),
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($personalVenta->user_id),
+            'controlPeriodo' => $this->obtenerControlPeriodo->execute($personalVenta->user_id, $request?->string('mes')->toString() ?: null),
         ]);
     }
 

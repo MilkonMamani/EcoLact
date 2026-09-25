@@ -33,7 +33,7 @@ function generar_pagos(string $hoy): ResultadoGeneracionPagos
 // Personal: ventana de 30 días por rol (EN_CURSO hasta completar los días)
 // --------------------------------------------------------------------------
 
-it('abre la ventana de 30 días EN_CURSO de una analista de calidad activa, con su valor por día calculado', function () {
+it('abre la obligación EN_CURSO del mes calendario de una analista de calidad activa, con su valor por día calculado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $ruth = pagos_personal('CALIDAD', 'Ruth');
     pagos_configurar('CALIDAD', 1100, '2026-09-01', $admin);
@@ -42,14 +42,18 @@ it('abre la ventana de 30 días EN_CURSO de una analista de calidad activa, con 
 
     $obligacion = ObligacionPagoModel::firstOrFail();
 
+    // Ruth ingresó mucho antes de septiembre y sigue activa: al no tener
+    // faltas todavía, el acumulado provisional muestra el sueldo completo
+    // (sección 38: EN_CURSO puede actualizar el acumulado provisional).
     expect($resultado->creadas)->toBe(1)
         ->and($obligacion->user_id)->toBe($ruth->id)
         ->and($obligacion->beneficiario_nombre)->toBe('Ruth Apellido')
         ->and($obligacion->tipo_beneficiario)->toBe('PERSONAL')
         ->and($obligacion->periodo_inicio->format('Y-m-d'))->toBe('2026-09-01')
         ->and($obligacion->periodo_fin->format('Y-m-d'))->toBe('2026-09-30')
+        ->and($obligacion->fecha_pago_programada->format('Y-m-d'))->toBe('2026-10-01')
         ->and($obligacion->periodicidad)->toBe('MENSUAL')
-        ->and((float) $obligacion->monto_calculado)->toBe(0.0)
+        ->and((float) $obligacion->monto_calculado)->toBe(1100.0)
         ->and((float) $obligacion->valor_dia)->toBe(round(1100 / 30, 2))
         ->and((int) $obligacion->dias_trabajados)->toBe(0)
         ->and($obligacion->estado)->toBe('EN_CURSO')
@@ -142,7 +146,7 @@ it('conserva los pagos históricos de quien luego quedó inactivo', function () 
     expect(ObligacionPagoModel::where('user_id', $persona->id)->pluck('periodo_inicio')->map->format('Y-m')->all())->toBe(['2026-09']);
 });
 
-it('un trabajador nuevo no abre una ventana anterior a su fecha de alta', function () {
+it('un trabajador que ingresó a mitad de mes se incorpora al mes calendario actual, no a uno anterior a su alta', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_personal('ACOPIADOR', 'Antiguo', '2026-01-10');
     pagos_personal('ACOPIADOR', 'Nuevo', '2026-09-05');
@@ -153,13 +157,26 @@ it('un trabajador nuevo no abre una ventana anterior a su fecha de alta', functi
     $nuevo = ObligacionPagoModel::where('beneficiario_nombre', 'Nuevo Apellido')->get();
     $antiguo = ObligacionPagoModel::where('beneficiario_nombre', 'Antiguo Apellido')->get();
 
-    // Cada persona tiene como máximo una ventana abierta a la vez: "Nuevo"
-    // abre la suya en su alta (no antes); "Antiguo" abre la suya en la
-    // vigencia de la configuración (no en su alta, que es anterior).
+    // Mes calendario: ambos comparten el mismo periodo (septiembre), sin
+    // importar que "Nuevo" haya ingresado a mitad de mes; nunca se abre un
+    // periodo anterior a su fecha de alta.
     expect($nuevo)->toHaveCount(1)
-        ->and($nuevo->first()->periodo_inicio->format('Y-m-d'))->toBe('2026-09-05')
+        ->and($nuevo->first()->periodo_inicio->format('Y-m-d'))->toBe('2026-09-01')
         ->and($antiguo)->toHaveCount(1)
-        ->and($antiguo->first()->periodo_inicio->format('Y-m-d'))->toBe('2026-07-01');
+        ->and($antiguo->first()->periodo_inicio->format('Y-m-d'))->toBe('2026-09-01');
+});
+
+it('un trabajador cuya alta es posterior al mes calendario actual no abre obligación hasta que ese mes llegue', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_personal('ACOPIADOR', 'Futuro', '2026-10-05');
+    pagos_configurar('ACOPIADOR', 1000, '2026-07-01', $admin);
+
+    generar_pagos('2026-09-20');
+    expect(ObligacionPagoModel::count())->toBe(0);
+
+    generar_pagos('2026-10-10');
+    $obligacion = ObligacionPagoModel::firstOrFail();
+    expect($obligacion->periodo_inicio->format('Y-m-d'))->toBe('2026-10-01');
 });
 
 it('una configuración futura no genera pagos hasta que comienza su vigencia', function () {
@@ -174,14 +191,17 @@ it('una configuración futura no genera pagos hasta que comienza su vigencia', f
     expect(ObligacionPagoModel::pluck('periodo_inicio')->map->format('Y-m')->all())->toBe(['2026-10']);
 });
 
-it('un cambio de sueldo solo aplica a la ventana que abre después de pagar la anterior, sin recalcular el histórico', function () {
+it('un cambio de sueldo solo aplica al mes que abre después de pagar el anterior, sin recalcular el histórico', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $persona = pagos_personal('ACOPIADOR');
     pagos_configurar('ACOPIADOR', 900, '2026-09-01', $admin);
     generar_pagos('2026-09-20');
 
     $sept = ObligacionPagoModel::where('user_id', $persona->id)->firstOrFail();
-    pagos_forzar_pendiente($sept);
+    // Fuerza septiembre a PENDIENTE sin pasar por el cierre real (que ya
+    // abriría octubre con la config vieja): este test solo quiere aislar
+    // que un cambio de sueldo posterior no reescribe un histórico pagado.
+    $sept->update(['dias_trabajados' => 30, 'valor_dia' => 30.0, 'acumulado' => 900.0, 'monto_calculado' => 900.0, 'estado' => 'PENDIENTE']);
     pagar_obligacion($sept->fresh(), $admin);
 
     $original = ConfiguracionPagoModel::firstOrFail();
