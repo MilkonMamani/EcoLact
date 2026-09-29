@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Trabajador\TipoFichaPersonal;
 use App\Http\Controllers\Web\AnalistaCalidadController;
 use App\Infrastructure\Persistence\Models\AnalistaCalidadModel;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -21,34 +22,30 @@ function fixture_analista_calidad(): AnalistaCalidadModel
         'apellidos' => 'Test',
         'telefono' => null,
         'estado' => 'ACTIVO',
-        'fecha_ingreso' => now(),
     ]);
 }
 
-it('index delega en ObtenerAnalistasCalidad y expone el listado a la vista', function () {
-    $analista = fixture_analista_calidad();
+it('index pinta la pantalla compartida con el listado y el panel del primero', function () {
+    $ficha = fixture_analista_calidad();
     $admin = fixture_usuario('ADMINISTRADOR');
 
     registrar_vistas_stub();
     $this->actingAs($admin);
 
-    $view = app(AnalistaCalidadController::class)->index();
+    $view = app(AnalistaCalidadController::class)->index(request());
 
-    expect($view->name())->toBe('admin.analistas-calidad.index');
-    expect(collect($view->getData()['analistas'])->contains(fn ($a) => $a->id() === $analista->id))->toBeTrue();
+    expect($view->name())->toBe('admin.fichas-personal.index');
+    expect($view->getData()['config']['tipo'])->toBe(TipoFichaPersonal::ANALISTA_CALIDAD);
+    expect(collect($view->getData()['filas']->items())->pluck('id')->all())->toBe([$ficha->id]);
+    expect($view->getData()['panel']->id)->toBe($ficha->id);
 });
 
-it('show delega en ObtenerAnalistaCalidad y expone el analista a la vista', function () {
-    $analista = fixture_analista_calidad();
+it('show ya no es una página aparte: redirige al listado con el registro seleccionado', function () {
+    $ficha = fixture_analista_calidad();
     $admin = fixture_usuario('ADMINISTRADOR');
 
-    registrar_vistas_stub();
-    $this->actingAs($admin);
-
-    $view = app(AnalistaCalidadController::class)->show($analista);
-
-    expect($view->name())->toBe('admin.analistas-calidad.show');
-    expect($view->getData()['analista']->id())->toBe($analista->id);
+    $this->actingAs($admin)->get(route('admin.analistas-calidad.show', $ficha))
+        ->assertRedirect(route('admin.analistas-calidad.index', ['analista' => $ficha->id]));
 });
 
 it('store llama a RegistrarAnalistaCalidad y redirige con éxito', function () {
@@ -108,5 +105,5 @@ it('un analista de CALIDAD no puede listar a otros analistas de calidad', functi
     registrar_vistas_stub();
     $this->actingAs($otroAnalista);
 
-    app(AnalistaCalidadController::class)->index();
+    app(AnalistaCalidadController::class)->index(request());
 })->throws(AuthorizationException::class);

@@ -45,7 +45,8 @@ it('admin.encargados-planta.index e .show renderizan de verdad', function () {
     );
 
     $this->actingAs($admin)->get(route('admin.encargados-planta.index'))->assertOk()->assertSee('Marco Flores');
-    $this->actingAs($admin)->get(route('admin.encargados-planta.show', $encargado->id()))->assertOk()->assertSee('Marco Flores');
+    $this->actingAs($admin)->get(route('admin.encargados-planta.show', $encargado->id()))->assertRedirect(route('admin.encargados-planta.index', ['encargado' => $encargado->id()]));
+    $this->actingAs($admin)->get(route('admin.encargados-planta.panel', $encargado->id()))->assertOk()->assertSee('Marco Flores');
 });
 
 it('admin.personal-ventas.index e .show renderizan de verdad', function () {
@@ -61,7 +62,8 @@ it('admin.personal-ventas.index e .show renderizan de verdad', function () {
     );
 
     $this->actingAs($admin)->get(route('admin.personal-ventas.index'))->assertOk()->assertSee('Rosa Choque');
-    $this->actingAs($admin)->get(route('admin.personal-ventas.show', $personal->id()))->assertOk()->assertSee('Rosa Choque');
+    $this->actingAs($admin)->get(route('admin.personal-ventas.show', $personal->id()))->assertRedirect(route('admin.personal-ventas.index', ['personal' => $personal->id()]));
+    $this->actingAs($admin)->get(route('admin.personal-ventas.panel', $personal->id()))->assertOk()->assertSee('Rosa Choque');
 });
 
 it('admin.analistas-calidad.index e .show renderizan de verdad', function () {
@@ -77,5 +79,6 @@ it('admin.analistas-calidad.index e .show renderizan de verdad', function () {
     );
 
     $this->actingAs($admin)->get(route('admin.analistas-calidad.index'))->assertOk()->assertSee('Ana Vargas');
-    $this->actingAs($admin)->get(route('admin.analistas-calidad.show', $analista->id()))->assertOk()->assertSee('Ana Vargas');
+    $this->actingAs($admin)->get(route('admin.analistas-calidad.show', $analista->id()))->assertRedirect(route('admin.analistas-calidad.index', ['analista' => $analista->id()]));
+    $this->actingAs($admin)->get(route('admin.analistas-calidad.panel', $analista->id()))->assertOk()->assertSee('Ana Vargas');
 });

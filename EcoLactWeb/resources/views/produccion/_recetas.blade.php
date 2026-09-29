@@ -82,7 +82,7 @@
                             <td class="hidden py-3 pr-4 whitespace-nowrap text-text md:table-cell">{{ $fila['presentacion'] ?? '—' }}</td>
                             <td class="py-3 pr-4 text-text">{{ $fila['nombre'] }} <span class="text-xs text-text-muted">v{{ $fila['version'] }}</span></td>
                             <td class="hidden py-3 pr-4 text-text-muted lg:table-cell">{{ count($fila['ingredientes']) }} {{ count($fila['ingredientes']) === 1 ? 'ingrediente' : 'ingredientes' }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$fila['estado']" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$fila['estado']" /></td>
                             <td class="hidden py-3 pr-4 whitespace-nowrap text-text-muted md:table-cell">{{ $fila['actualizada'] }}</td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>

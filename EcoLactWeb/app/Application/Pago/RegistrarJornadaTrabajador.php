@@ -14,8 +14,10 @@ use DateTimeImmutable;
 use DomainException;
 
 /**
- * Marca PRESENTE a mano (p.ej. para completar un día que no se marcó por
- * QR). Las jornadas son hechos independientes del ciclo de nómina: no exige
+ * Marca PRESENTE a mano (p.ej. cuando el QR no se pudo escanear). Solo para
+ * el día de hoy y antes del cierre de las 07:00 (VentanaAsistencia); un día
+ * cerrado es solo consulta, y el backend lo rechaza aunque llegue una
+ * petición armada a mano. Las jornadas son hechos independientes del ciclo de nómina: no exige
  * que exista una obligación abierta (si la hay para el mes de la fecha, se
  * recalcula; si no, GenerarObligacionesPersonal la sincronizará después).
  */
@@ -28,6 +30,7 @@ final class RegistrarJornadaTrabajador
         private readonly ObligacionPagoRepository $obligaciones,
         private readonly RecalcularProgresoObligacionPersonal $recalcular,
         private readonly TransactionManager $transacciones,
+        private readonly VentanaAsistencia $ventana,
     ) {}
 
     public function execute(
@@ -35,9 +38,8 @@ final class RegistrarJornadaTrabajador
         DateTimeImmutable $fecha,
         ?string $observacion,
         int $registradoPorUserId,
-        ?DateTimeImmutable $hoy = null,
     ): JornadaPersonal {
-        $hoy = ($hoy ?? DateTimeImmutable::createFromInterface(now()))->setTime(0, 0);
+        $hoy = $this->ventana->hoy();
         $fecha = $fecha->setTime(0, 0);
         $observacion = $observacion !== null && trim($observacion) !== '' ? trim($observacion) : null;
 
@@ -48,9 +50,19 @@ final class RegistrarJornadaTrabajador
         $trabajador = $this->trabajadores->buscarPorId($trabajadorId)
             ?? throw new DomainException('El trabajador indicado no existe.');
 
+        if (! $this->trabajadores->controlaAsistencia($trabajador->id())) {
+            throw new DomainException('El administrador no marca asistencia: cobra sueldo fijo mensual.');
+        }
+
         if ($fecha->setTime(0, 0) < $trabajador->fechaIngreso()->setTime(0, 0)) {
             throw new DomainException('La fecha es anterior al ingreso del trabajador.');
         }
+
+        if (! $trabajador->estaVigenteEn($fecha)) {
+            throw new DomainException('Ese día no le corresponde marcar asistencia: el trabajador no estaba activo.');
+        }
+
+        $this->ventana->exigirAbierta($fecha);
 
         return $this->transacciones->run(function () use ($trabajador, $fecha, $observacion, $registradoPorUserId): JornadaPersonal {
             if ($this->jornadas->existeEnFecha($trabajador->id(), $fecha)) {

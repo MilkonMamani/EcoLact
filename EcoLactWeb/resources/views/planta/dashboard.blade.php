@@ -108,7 +108,7 @@
                             <td class="py-2 pr-4 font-mono text-xs text-text">{{ $lote->codigo() }}</td>
                             <td class="py-2 pr-4 text-text-muted">{{ $lote->fechaHoraInicio()->format('d/m/Y H:i') }}</td>
                             <td class="py-2 pr-4 text-text">{{ number_format($dashboard->litrosPorLote[$lote->id()] ?? 0, 2) }} L</td>
-                            <td class="py-2 pr-4"><x-ui.badge :status="$lote->estado()" /></td>
+                            <td class="py-2 pr-4"><x-ui.badge compact :status="$lote->estado()" /></td>
                             <td class="py-2 pl-4 text-right"><a class="text-primary hover:underline" href="{{ route('planta.produccion.show', $lote->id()) }}">Ver</a></td>
                         </tr>
                     @endforeach

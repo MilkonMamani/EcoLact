@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Auth;
  */
 final class SesionWeb
 {
+    /** Mensaje único para toda cuenta desactivada por el administrador (web y app). */
+    public const MENSAJE_CUENTA_INACTIVA = 'Acceso no permitido: tu cuenta está desactivada. Comunícate con el administrador.';
+
+    /** Trabajador o proveedor desactivado: entra, pero solo puede consultar. */
+    public const MENSAJE_SOLO_CONSULTA = 'Tu cuenta está desactivada: solo puedes consultar tu historial. Comunícate con el administrador para reactivarla.';
+
     public function destino(User $user): ?string
     {
         return match ($user->role?->nombre) {
@@ -32,8 +38,8 @@ final class SesionWeb
             return 'Tu cuenta no tiene un rol válido. Comunícate con el administrador.';
         }
 
-        if (! $user->estaOperativo()) {
-            return 'Tu cuenta se encuentra inactiva. Comunícate con el administrador.';
+        if (! $user->estaOperativo() && ! $user->estaEnSoloConsulta()) {
+            return self::MENSAJE_CUENTA_INACTIVA;
         }
 
         return null;

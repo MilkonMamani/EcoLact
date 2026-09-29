@@ -29,7 +29,7 @@
                             <td class="py-3 pr-4 font-mono text-xs text-text">{{ $parametro->codigo() }}</td>
                             <td class="py-3 pr-4 font-medium text-text">{{ $parametro->nombre() }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $parametro->unidad() ?? '—' }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$parametro->estado()" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$parametro->estado()" /></td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
                                     <x-ui.action-button type="view" label="Ver parámetro de calidad" :href="route('admin.parametros-calidad.show', $parametro->id())" />

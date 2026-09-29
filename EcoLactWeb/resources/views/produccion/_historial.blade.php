@@ -93,7 +93,7 @@
                                 <span class="text-text-muted">Pendiente ({{ $fila['productos'] }} {{ $fila['productos'] === 1 ? 'producto' : 'productos' }})</span>
                             @endif
                         </td>
-                        <td class="py-3 pr-4"><x-ui.badge :status="$fila['estado']" /></td>
+                        <td class="py-3 pr-4"><x-ui.badge compact :status="$fila['estado']" /></td>
                         <td class="py-3 pl-4">
                             <x-tables.actions>
                                 <x-ui.action-button type="view" label="Ver detalle del lote" :subject="$fila['codigo']" :href="route($prefijo.'.produccion.show', $fila['id'])" />

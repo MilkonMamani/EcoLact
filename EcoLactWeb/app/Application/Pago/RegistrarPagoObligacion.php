@@ -8,6 +8,7 @@ use App\Application\Shared\TransactionManager;
 use App\Domain\Pago\ObligacionPagoRepository;
 use App\Domain\Pago\PagoRealizado;
 use App\Domain\Pago\PagoRealizadoRepository;
+use App\Domain\Pago\PeriodoPago;
 use App\Domain\Shared\Enums\MetodoPago;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use DateTimeImmutable;
@@ -70,13 +71,20 @@ final class RegistrarPagoObligacion
             return $this->transacciones->run(function () use (
                 $obligacionId, $metodoPago, $numeroOperacion, $fechaPago, $observacion,
                 $comprobante, $rutaComprobante, $registradoPorUserId, $montoDeclarado,
-                $loteCodigo, $impresoAt, $comprobanteSnapshot,
+                $loteCodigo, $impresoAt, $comprobanteSnapshot, $hoy,
             ): PagoRealizado {
                 $obligacion = $this->obligaciones->buscarPorIdBloqueando($obligacionId)
                     ?? throw new DomainException('El pago pendiente indicado no existe.');
 
                 if (! $obligacion->estaPendiente()) {
                     throw new DomainException('Este pago ya fue registrado. No se puede pagar dos veces.');
+                }
+
+                if ($obligacion->tipoBeneficiario() === TipoBeneficiarioPago::PROVEEDOR) {
+                    $programada = PeriodoPago::semanaQueContiene($obligacion->periodoInicio())->fechaPagoProgramada();
+                    if ($hoy < $programada || $fechaPago < $programada) {
+                        throw new DomainException('El pago semanal estará disponible desde el miércoles '.$programada->format('d/m/Y').'.');
+                    }
                 }
 
                 if ($fechaPago < $obligacion->periodoInicio()) {

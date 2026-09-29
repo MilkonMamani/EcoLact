@@ -20,6 +20,7 @@ use App\Infrastructure\Persistence\Models\PrecioLecheModel;
 use App\Infrastructure\Persistence\Models\ProveedorModel;
 use App\Infrastructure\Persistence\Models\TrabajadorModel;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 
 require_once __DIR__.'/EcoLactFixtures.php';
 
@@ -132,15 +133,26 @@ if (! function_exists('pagos_trabajador')) {
 }
 
 if (! function_exists('pagos_jornada')) {
-    /** Registra PRESENTE (pasando por el use case) para un trabajador en una fecha. */
+    /**
+     * Registra PRESENTE (pasando por el use case) para un trabajador en una fecha.
+     * La asistencia solo se registra ese mismo día antes de las 07:00 (VentanaAsistencia):
+     * viaja a las 06:00 hora del negocio de esa fecha, registra y vuelve al "ahora" del test.
+     */
     function pagos_jornada(int $trabajadorId, string $fecha, int $registradoPorUserId, ?string $observacion = null): void
     {
-        app(RegistrarJornadaTrabajador::class)->execute(
-            trabajadorId: $trabajadorId,
-            fecha: new DateTimeImmutable($fecha),
-            observacion: $observacion,
-            registradoPorUserId: $registradoPorUserId,
-        );
+        $antes = now()->toImmutable();
+        test()->travelTo(CarbonImmutable::parse($fecha.' 06:00:00', config('app.zona_horaria_negocio')));
+
+        try {
+            app(RegistrarJornadaTrabajador::class)->execute(
+                trabajadorId: $trabajadorId,
+                fecha: new DateTimeImmutable($fecha),
+                observacion: $observacion,
+                registradoPorUserId: $registradoPorUserId,
+            );
+        } finally {
+            test()->travelTo($antes);
+        }
     }
 }
 

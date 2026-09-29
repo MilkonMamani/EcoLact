@@ -2,6 +2,9 @@
 
 namespace App\Application\Pago;
 
+use Carbon\CarbonImmutable;
+use DateTimeImmutable;
+
 /**
  * Datos del comprobante individual "Pago semanal a proveedor": lo mismo que se
  * ve en la hoja de la pantalla, en la vista previa de impresión y en el papel.
@@ -42,6 +45,61 @@ final class ComprobantePagoProveedor
     public function estaPagado(): bool
     {
         return $this->estado === 'PAGADO';
+    }
+
+    /**
+     * Número del comprobante: PRV-{año ISO}-{semana ISO}-{id de la obligación, 4 dígitos}.
+     * La obligación es única por proveedor y semana, así que el número es estable: la hoja
+     * impresa antes de pagar y la consultada después muestran el mismo número.
+     */
+    public function numero(): string
+    {
+        $fin = new DateTimeImmutable($this->periodoFin);
+
+        return sprintf('PRV-%s-%s-%04d', $fin->format('o'), $fin->format('W'), $this->obligacionId);
+    }
+
+    /** d/m/Y: la fecha del pago si ya se registró; si no, hoy (hora del negocio), el día en que se imprime. */
+    public function fechaEmision(): string
+    {
+        if ($this->pagadoEl !== null) {
+            return substr($this->pagadoEl, 0, 10);
+        }
+
+        return CarbonImmutable::now(config('app.zona_horaria_negocio'))->format('d/m/Y');
+    }
+
+    public function tieneAjusteDeCalidad(): bool
+    {
+        return abs($this->penalidad) >= 0.005;
+    }
+
+    /** Concepto entendible del ajuste por calidad según su signo. */
+    public function conceptoCalidad(): string
+    {
+        return match (true) {
+            $this->penalidad >= 0.005 => 'Bonificación por calidad',
+            $this->penalidad <= -0.005 => 'Penalidad por calidad',
+            default => 'Sin bonificación ni penalidad',
+        };
+    }
+
+    /**
+     * Detalle del ajuste por calidad: los resultados de análisis que lo originaron (p. ej.
+     * "observada"). Los comprobantes pagados guardados con la redacción anterior
+     * ("Ajuste por calidad", "Sin penalidad") se leen con la misma terminología.
+     */
+    public function detalleCalidad(): string
+    {
+        if (! $this->tieneAjusteDeCalidad()) {
+            return 'Todas las entregas sin ajuste por calidad';
+        }
+
+        if (preg_match('/\(([^)]+)\)/', $this->detallePenalidad, $causa) === 1) {
+            return 'Resultado de análisis: '.$causa[1];
+        }
+
+        return 'Según análisis de calidad';
     }
 
     /**

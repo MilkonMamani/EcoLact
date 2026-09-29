@@ -1,0 +1,35 @@
+/* Solo la pantalla principal; el comprobante y el modal conservan sus estilos. */
+body.pagos-proveedores-page { background: #fff; }
+
+[data-pago-semanal] {
+    --color-primary: #006146;
+    --color-primary-dark: #004d38;
+    min-width: 0;
+}
+
+[data-pago-semanal] .pp-filtros-fila {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 12px;
+}
+
+[data-pago-semanal] .pp-filtros-fila > div { grid-column: 1 / -1; }
+
+@media (min-width: 640px) {
+    [data-pago-semanal] .pp-filtros-fila {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto;
+        gap: 8px;
+    }
+    [data-pago-semanal] .pp-filtros-fila > div { grid-column: auto; }
+}
+
+/* El JS existente aplica esta clase a las filas seleccionadas o previsualizadas. */
+[data-pago-semanal] [data-fila].bg-info-soft { background: #f0faf5; }
+[data-pago-semanal] [data-fila].bg-info-soft > td:first-child { box-shadow: inset 2px 0 #006146; }
+[data-pago-semanal] [data-fila]:not(.bg-info-soft):hover { background: #f8faf9; }
+[data-pago-semanal] [data-paginacion] .bg-info-soft {
+    background: #f0faf5;
+    border-color: #b9d9ca;
+    color: #006146;
+}

@@ -1,17 +1,21 @@
 import { cargarGoogleMaps, getMapId, getCsrfToken } from '../maps.js';
+import { crearPinProveedor, dibujarDelimitacion, encuadrar, iniciarEditorDelimitacion, iniciarMapaGeneral, verticesDeGeometria } from './zonas-mapa.js';
 
 /**
- * Pantalla /admin/zonas (maestro-detalle):
- *  - buscador de proveedores con debounce que abre el modal de asignación;
- *  - selección de zona sin recargar la página (se reemplaza el fragmento
- *    HTML que ya renderiza el servidor: tabla de proveedores + mapa);
- *  - mapa de Google Maps con los proveedores ubicados de la zona
- *    seleccionada, bajo el listado de zonas;
- *  - modal "Asignar proveedor a zona y ruta" con selector dependiente
- *    Zona → Ruta y mapa de Google Maps para fijar latitud/longitud.
+ * Pantalla /admin/zonas. La selección de fila, el panel por fetch, las pestañas y el skeleton
+ * son los de admin-fichas.js (igual que Proveedores y Acopiadores) y el switch de estado es
+ * admin-estado-switch.js. Aquí solo va lo propio de Zonas:
+ *  - mapa general de zonas (zonas-mapa.js), sincronizado con la tabla y el panel;
+ *  - editor de delimitación de "Editar zona" (zonas-mapa.js);
+ *  - mini mapa de Google Maps en el Resumen con SOLO la zona seleccionada (su delimitación y
+ *    sus proveedores ubicados), y el mismo mapa ampliado en "Ver mapa completo";
+ *  - filtro local de la pestaña Proveedores;
+ *  - "+ Asignar proveedor": buscador de proveedores (nombre o DNI) que abre el modal de asignación;
+ *  - modal "Asignar proveedor a zona y ruta" con selector dependiente Zona → Ruta y mapa
+ *    para fijar latitud/longitud.
  *
- * Google Maps se carga una sola vez por página (cargarGoogleMaps memoiza la
- * promesa) y solo cuando hace falta (mapa de la zona o modal de asignación).
+ * Google Maps se carga una sola vez por página (cargarGoogleMaps memoiza la promesa) y solo
+ * cuando hace falta.
  */
 const pagina = document.querySelector('[data-zonas-page]');
 
@@ -20,29 +24,38 @@ if (pagina) {
 }
 
 function iniciarZonasPage(pagina) {
-    const contenedorPanel = pagina.querySelector('[data-zona-panel]');
-    const aviso = pagina.querySelector('[data-zonas-aviso]');
-
-    const mostrarAviso = (mensaje) => {
-        aviso.textContent = mensaje;
-        aviso.hidden = false;
-    };
-
-    const ocultarAviso = () => {
-        aviso.hidden = true;
-    };
-
+    const mapaGeneral = iniciarMapaGeneral(pagina, zonaDelPanel(pagina));
     const mapaZona = iniciarMapaDeZona(pagina);
     const asignacion = iniciarModalAsignacion(pagina);
 
+    iniciarEditorDelimitacion(pagina);
     iniciarBuscador(pagina, asignacion.abrir);
-    iniciarSeleccionDeZona(pagina, contenedorPanel, mapaZona, mostrarAviso, ocultarAviso);
-    iniciarEnfoqueDeUbicacion(pagina, mapaZona);
+    iniciarFiltroDeProveedores(pagina);
     mapaZona.cargar();
 
-    // Abrir el modal de asignación desde el lápiz de cada fila (delegado, porque
-    // el panel se reemplaza al cambiar de zona).
+    // El panel se reemplaza al elegir otra zona (desde la tabla o desde el mapa): se vuelve a
+    // pintar su mini mapa y el mapa general resalta esa zona y se acerca a ella.
+    document.addEventListener('fichas:panel-actualizado', () => {
+        const zonaId = zonaDelPanel(pagina);
+
+        mapaZona.cargar();
+
+        if (zonaId !== mapaGeneral.seleccionada?.()) {
+            mapaGeneral.resaltar(zonaId, { zoom: true });
+        }
+    });
+
+    // Un mapa creado con su pestaña oculta queda sin tamaño: se rehace al volver al Resumen.
     pagina.addEventListener('click', (event) => {
+        if (event.target.closest('[data-fichas-tab="resumen"]')) {
+            window.requestAnimationFrame(() => mapaZona.cargar());
+        }
+
+        if (event.target.closest('[data-zona-mapa-ampliar]')) {
+            window.requestAnimationFrame(() => mapaZona.cargarCompleto());
+        }
+
+        // Lápiz de cada fila de proveedor (delegado, porque el panel se reemplaza).
         const boton = event.target.closest('[data-asignar-abrir]');
 
         if (boton) {
@@ -68,7 +81,7 @@ function iniciarZonasPage(pagina) {
 async function abrirAsignacionPorDni(pagina, dni, abrirAsignacion) {
     const url = new URL(window.location.href);
     url.searchParams.delete('asignar');
-    window.history.replaceState({}, '', url);
+    window.history.replaceState(window.history.state, '', url);
 
     try {
         const respuesta = await fetch(`${pagina.dataset.urlBuscar}?q=${encodeURIComponent(dni)}`, { headers: { Accept: 'application/json' } });
@@ -78,7 +91,7 @@ async function abrirAsignacionPorDni(pagina, dni, abrirAsignacion) {
             abrirAsignacion(proveedor);
         }
     } catch {
-        // Sin el modal el administrador aún puede usar el buscador de la pantalla.
+        // Sin el modal el administrador aún puede usar "+ Asignar proveedor".
     }
 }
 
@@ -93,12 +106,54 @@ function abrirModalPorId(id) {
     disparador.remove();
 }
 
+/** Zona que se está viendo en el panel (null en "Proveedores sin zona"). */
+function zonaDelPanel(pagina) {
+    const id = pagina.querySelector('[data-fichas-panel] [data-zona-id]')?.dataset.zonaId;
+
+    return id ? parseInt(id, 10) : null;
+}
+
+// ------------------------------------------------- filtro de la pestaña Proveedores
+
+function iniciarFiltroDeProveedores(pagina) {
+    pagina.addEventListener('input', (event) => {
+        const filtro = event.target.closest('[data-zona-proveedores-filtro]');
+
+        if (!filtro) {
+            return;
+        }
+
+        const seccion = filtro.closest('[data-fichas-tab-panel]');
+        const texto = filtro.value.trim().toLowerCase();
+        let visibles = 0;
+
+        seccion.querySelectorAll('[data-zona-proveedor]').forEach((fila) => {
+            const coincide = texto === '' || fila.dataset.buscarTexto.includes(texto);
+            fila.hidden = !coincide;
+            visibles += coincide ? 1 : 0;
+        });
+
+        const vacio = seccion.querySelector('[data-zona-proveedores-vacio]');
+
+        if (vacio) {
+            vacio.hidden = visibles > 0;
+        }
+    });
+}
+
 // ---------------------------------------------------------------- buscador
 
+/** Buscador del modal "+ Asignar proveedor": elegir un resultado abre el modal de asignación. */
 function iniciarBuscador(pagina, abrirAsignacion) {
-    const buscador = pagina.querySelector('[data-buscador]');
+    const buscador = document.querySelector('[data-buscador]');
+
+    if (!buscador) {
+        return;
+    }
+
     const input = buscador.querySelector('input');
     const resultados = buscador.querySelector('[data-buscador-resultados]');
+    const modalBuscador = buscador.closest('[data-modal]');
     const url = pagina.dataset.urlBuscar;
     let temporizador;
     let controlador;
@@ -148,6 +203,7 @@ function iniciarBuscador(pagina, abrirAsignacion) {
             boton.addEventListener('click', () => {
                 cerrar();
                 input.value = '';
+                modalBuscador?.querySelector('[data-modal-close]')?.click();
                 abrirAsignacion(proveedor);
             });
 
@@ -197,185 +253,94 @@ function iniciarBuscador(pagina, abrirAsignacion) {
         }
     });
 
+    // Al abrir el modal, el foco va directo al buscador.
     document.addEventListener('click', (event) => {
-        if (!buscador.contains(event.target)) {
-            cerrar();
+        if (event.target.closest('[data-modal-open="modal-buscar-proveedor"]')) {
+            window.requestAnimationFrame(() => input.focus());
         }
     });
-}
-
-// ------------------------------------------------------ selección de zona
-
-function iniciarSeleccionDeZona(pagina, contenedorPanel, mapaZona, mostrarAviso, ocultarAviso) {
-    const enlaces = () => [...pagina.querySelectorAll('[data-zona-link]')];
-
-    const marcarSeleccion = (clave) => {
-        enlaces().forEach((enlace) => {
-            const activa = enlace.dataset.zonaKey === String(clave);
-            enlace.dataset.selected = activa ? 'true' : 'false';
-
-            if (activa) {
-                enlace.setAttribute('aria-current', 'page');
-            } else {
-                enlace.removeAttribute('aria-current');
-            }
-        });
-    };
-
-    pagina.addEventListener('click', async (event) => {
-        const enlace = event.target.closest('[data-zona-link]');
-
-        if (!enlace || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) {
-            return;
-        }
-
-        event.preventDefault();
-        ocultarAviso();
-
-        try {
-            await cargarPanel(contenedorPanel, enlace.dataset.panelUrl);
-            marcarSeleccion(enlace.dataset.zonaKey);
-            window.history.pushState({ zona: enlace.dataset.zonaKey }, '', enlace.href);
-            mapaZona.cargar();
-        } catch {
-            mostrarAviso('No se pudo cargar la zona. Inténtalo de nuevo.');
-        }
-    });
-
-    window.addEventListener('popstate', () => window.location.reload());
-}
-
-async function cargarPanel(contenedorPanel, url) {
-    const respuesta = await fetch(url, { headers: { Accept: 'text/html' } });
-
-    if (!respuesta.ok) {
-        throw new Error('No se pudo cargar el panel.');
-    }
-
-    contenedorPanel.innerHTML = await respuesta.text();
 }
 
 // --------------------------------------------------- mapa de la zona
 
 /**
- * Mapa con los proveedores ubicados de la zona (o "sin asignar") que se
- * está viendo. El lienzo [data-zona-mapa-lienzo] se reemplaza por completo
- * cada vez que se cambia de zona (viene dentro del fragmento AJAX), así que
- * el mapa de Google se vuelve a crear sobre el lienzo nuevo en cada
- * cargar(); es más simple que sincronizar marcadores contra un mapa vivo y
- * el costo de recrearlo es insignificante para esta pantalla.
+ * Mini mapa del Resumen: SOLO la zona del panel, con su delimitación (si ya se dibujó) y los
+ * puntos de sus proveedores ubicados, del color de la zona. El lienzo llega dentro del fragmento
+ * del panel, así que el mapa se vuelve a crear sobre el lienzo nuevo en cada cargar(); "Ver mapa
+ * completo" pinta lo mismo en el lienzo del modal.
  */
 function iniciarMapaDeZona(pagina) {
     const zoomInicial = parseInt(pagina.dataset.mapaZoom, 10) || 10;
-
     let mapsLib = null;
-    let mapa = null;
-    let marcadores = new Map();
 
-    const cargar = async () => {
-        const lienzo = pagina.querySelector('[data-zona-mapa-lienzo]');
+    const datos = () => {
+        const datosEl = pagina.querySelector('[data-fichas-panel] [data-zona-mapa-datos]');
 
-        mapa = null;
-        marcadores = new Map();
+        return datosEl ? JSON.parse(datosEl.textContent) : null;
+    };
 
-        if (!lienzo) {
-            return; // Estado vacío: la zona no tiene proveedores con ubicación.
+    const pintar = async (lienzo, contenido, aviso = null) => {
+        if (!lienzo || !contenido || lienzo.offsetParent === null) {
+            return; // Sin datos, o el lienzo está oculto (otra pestaña): se pinta al mostrarse.
         }
 
-        const aviso = pagina.querySelector('[data-zona-mapa-aviso]');
-        const datosEl = pagina.querySelector('[data-zona-mapa-datos]');
-        const proveedores = datosEl ? JSON.parse(datosEl.textContent) : [];
+        const { zona, proveedores } = contenido;
 
-        if (proveedores.length === 0) {
+        if (proveedores.length === 0 && !zona.geometry) {
             return;
         }
 
         mapsLib ??= await cargarGoogleMaps();
 
         if (!mapsLib) {
-            aviso.hidden = false;
-            aviso.textContent = 'No se pudo cargar Google Maps. Usa "Ver ubicación" en cada fila para abrir el punto en Google Maps.';
+            if (aviso) {
+                aviso.hidden = false;
+                aviso.textContent = 'No se pudo cargar Google Maps. Usa "Registrada" en la pestaña Proveedores para abrir cada punto en Google Maps.';
+            }
             lienzo.classList.add('hidden');
             return;
         }
 
-        mapa = new mapsLib.Map(lienzo, {
-            center: { lat: proveedores[0].lat, lng: proveedores[0].lng },
+        const vertices = verticesDeGeometria(zona.geometry);
+        const inicio = proveedores[0] ?? vertices[0];
+        const mapa = new mapsLib.Map(lienzo, {
+            center: { lat: inicio.lat, lng: inicio.lng },
             zoom: zoomInicial,
             mapId: getMapId(),
             streetViewControl: false,
+            mapTypeControl: false,
+            clickableIcons: false,
         });
 
         const bounds = new google.maps.LatLngBounds();
 
+        if (zona.geometry) {
+            dibujarDelimitacion(mapa, zona, { clickable: false });
+            vertices.forEach((vertice) => bounds.extend(vertice));
+        }
+
         proveedores.forEach((proveedor) => {
-            const marcador = new mapsLib.AdvancedMarkerElement({
+            new mapsLib.AdvancedMarkerElement({
                 map: mapa,
                 position: { lat: proveedor.lat, lng: proveedor.lng },
-                title: proveedor.nombre,
+                content: crearPinProveedor(zona.color, proveedor.fueraDeDelimitacion),
+                title: proveedor.fueraDeDelimitacion ? `${proveedor.nombre} · fuera de la delimitación` : proveedor.nombre,
             });
-
-            marcadores.set(proveedor.id, marcador);
             bounds.extend({ lat: proveedor.lat, lng: proveedor.lng });
         });
 
-        if (proveedores.length > 1) {
-            mapa.fitBounds(bounds);
-        }
+        encuadrar(mapa, bounds, 24);
     };
 
-    const enfocar = (proveedorId) => {
-        const marcador = marcadores.get(proveedorId);
+    const cargar = () => pintar(
+        pagina.querySelector('[data-fichas-panel] [data-zona-mapa-lienzo]'),
+        datos(),
+        pagina.querySelector('[data-fichas-panel] [data-zona-mapa-aviso]'),
+    );
 
-        if (!mapa || !marcador) {
-            return false;
-        }
+    const cargarCompleto = () => pintar(document.querySelector('[data-zona-mapa-completo]'), datos());
 
-        mapa.panTo(marcador.position);
-        mapa.setZoom(16);
-        resaltar(marcador);
-        pagina.querySelector('[data-zona-mapa-lienzo]')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-        return true;
-    };
-
-    const resaltar = (marcador) => {
-        const contenido = marcador.content;
-
-        if (!contenido) {
-            return;
-        }
-
-        contenido.animate?.(
-            [{ transform: 'scale(1)' }, { transform: 'scale(1.4)' }, { transform: 'scale(1)' }],
-            { duration: 500, easing: 'ease-in-out' },
-        );
-    };
-
-    return { cargar, enfocar };
-}
-
-/**
- * El enlace "Ver ubicación" de la tabla enfoca el marcador correspondiente
- * en el mapa de la zona en vez de salir de /admin/zonas. Si el mapa no está
- * disponible (Google Maps no cargó, o el proveedor todavía no aparece en el
- * mapa por cualquier motivo) se conserva el comportamiento por defecto del
- * enlace: abrir la ubicación en Google Maps en una pestaña nueva.
- */
-function iniciarEnfoqueDeUbicacion(pagina, mapaZona) {
-    pagina.addEventListener('click', (event) => {
-        const enlace = event.target.closest('[data-ver-ubicacion]');
-
-        if (!enlace) {
-            return;
-        }
-
-        const proveedorId = Number(enlace.dataset.verUbicacion);
-
-        if (mapaZona.enfocar(proveedorId)) {
-            event.preventDefault();
-        }
-    });
+    return { cargar, cargarCompleto };
 }
 
 // ------------------------------------------------------ modal de asignación
@@ -624,8 +589,7 @@ function iniciarModalAsignacion(pagina) {
         modal.querySelector('[data-asignacion-dni]').textContent = datos.dni;
 
         // Un proveedor sin zona toma por defecto la zona que se está viendo.
-        const zonaSeleccionada = pagina.querySelector('[data-zona-link][data-selected="true"]')?.dataset.zonaKey;
-        const zonaInicial = datos.zonaId ?? (zonaSeleccionada && zonaSeleccionada !== 'sin-asignar' ? parseInt(zonaSeleccionada, 10) : null);
+        const zonaInicial = datos.zonaId ?? zonaDelPanel(pagina);
 
         llenarZonas(zonaInicial);
         llenarRutas(datos.rutaId);

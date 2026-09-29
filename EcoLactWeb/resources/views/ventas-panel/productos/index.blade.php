@@ -46,9 +46,9 @@
                             <td class="py-3 pr-4 text-text">{{ number_format($producto->cantidadActual(), 2) }} {{ $producto->unidadMedida() }}</td>
                             <td class="py-3 pr-4">
                                 @if ($producto->sinStock())
-                                    <x-ui.badge variant="danger">Agotado</x-ui.badge>
+                                    <x-ui.badge compact variant="danger">Agotado</x-ui.badge>
                                 @else
-                                    <x-ui.badge variant="success">Disponible</x-ui.badge>
+                                    <x-ui.badge compact variant="success">Disponible</x-ui.badge>
                                 @endif
                             </td>
                             <td class="py-3 pl-4">

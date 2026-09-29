@@ -21,6 +21,9 @@ use Illuminate\Database\UniqueConstraintViolationException;
  * MarcarFaltasAutomaticas antes de que llegara a marcar), NO se cambia en
  * silencio: exige corrección administrativa explícita (CorregirJornada), con
  * motivo, para no perder trazabilidad.
+ *
+ * Solo funciona mientras la asistencia de hoy está abierta (antes de las
+ * 07:00, VentanaAsistencia); desde el cierre se rechaza en el backend.
  */
 final class RegistrarAsistenciaQr
 {
@@ -31,11 +34,12 @@ final class RegistrarAsistenciaQr
         private readonly ObligacionPagoRepository $obligaciones,
         private readonly RecalcularProgresoObligacionPersonal $recalcular,
         private readonly TransactionManager $transacciones,
+        private readonly VentanaAsistencia $ventana,
     ) {}
 
-    public function execute(string $qrToken, int $adminUserId, ?DateTimeImmutable $hoy = null): ResultadoAsistenciaQr
+    public function execute(string $qrToken, int $adminUserId): ResultadoAsistenciaQr
     {
-        $hoy = ($hoy ?? DateTimeImmutable::createFromInterface(now()))->setTime(0, 0);
+        $hoy = $this->ventana->hoy();
 
         $trabajador = $this->trabajadores->buscarPorQrToken($qrToken)
             ?? throw new DomainException('QR no reconocido.');
@@ -44,9 +48,19 @@ final class RegistrarAsistenciaQr
             throw new DomainException('El trabajador no está activo.');
         }
 
+        if (! $this->trabajadores->controlaAsistencia($trabajador->id())) {
+            throw new DomainException('El administrador no marca asistencia: cobra sueldo fijo mensual.');
+        }
+
         if ($trabajador->fechaIngreso()->setTime(0, 0) > $hoy) {
             throw new DomainException('El trabajador aún no ha ingresado.');
         }
+
+        if (! $trabajador->estaVigenteEn($hoy)) {
+            throw new DomainException('Hoy no le corresponde marcar asistencia a este trabajador.');
+        }
+
+        $this->ventana->exigirAbierta($hoy);
 
         return $this->transacciones->run(function () use ($trabajador, $hoy, $adminUserId): ResultadoAsistenciaQr {
             $existente = $this->jornadas->buscarEnFecha($trabajador->id(), $hoy);

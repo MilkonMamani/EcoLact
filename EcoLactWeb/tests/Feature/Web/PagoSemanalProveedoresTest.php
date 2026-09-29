@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Pago\ComprobantePagoProveedor;
 use App\Application\Pago\GenerarPagosPendientes;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use App\Infrastructure\Persistence\Models\PagoModel;
@@ -65,8 +66,9 @@ it('pagar a trabajadores muestra la pantalla de tabla y panel lateral', function
 
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.index'))
         ->assertOk()
-        ->assertSee('Pago a trabajadores')
-        ->assertSee('Gestiona aquí los pagos individuales de los trabajadores');
+        ->assertSee('Pagos a trabajadores')
+        ->assertSee('Gestiona los pagos individuales de los trabajadores correspondientes al mes seleccionado.')
+        ->assertSee('data-fichas-panel', false);
 });
 
 it('la pantalla muestra KPIs, filtros, tabla con el cálculo y la hoja individual', function () {
@@ -78,9 +80,9 @@ it('la pantalla muestra KPIs, filtros, tabla con el cálculo y la hoja individua
         ->assertSeeInOrder(['Semana', 'Zona', 'Estado', 'Seleccionar pendientes de la zona'])
         ->assertSee('Se imprimirá 1 hoja por cada proveedor seleccionado.')
         ->assertSee('Proveedores de la semana')
-        ->assertSeeInOrder(['Proveedor', 'Zona', 'Litros', 'Precio por', 'Penalidad /', 'Compras', 'Subtotal', 'Total final', 'Estado'])
+        ->assertSeeInOrder(['Proveedor', 'Zona', 'Litros', 'Precio/L', 'Calidad', 'Compras', 'Subtotal', 'Total', 'Estado'])
         ->assertSee('Hoja individual del proveedor')
-        ->assertSee('Imprimir y marcar pagados')
+        ->assertSee('Revisar e imprimir')
         ->assertSee('Limpiar selección')
         ->assertDontSee('Generar PDF de sobres')
         ->assertDontSee('Resumen de selección')
@@ -105,23 +107,79 @@ it('el comprobante calcula litros, penalidad, compras descontadas y total final'
     expect((float) $respuesta->json('hojas.0.total'))->toBe(264.0);
 
     $html = $respuesta->json('hojas.0.html');
-    expect($html)->toContain('Pago semanal a proveedor')
+    expect($html)->toContain('Comprobante de pago')
         ->and($html)->toContain('01345678')
         ->and($html)->toContain('PRV-'.str_pad((string) $obligacion->proveedor_id, 3, '0', STR_PAD_LEFT))
-        ->and($html)->toContain('Semana 38')
-        ->and($html)->toContain('10/09/2026 - 16/09/2026')
-        ->and($html)->toContain('Ajuste por calidad (observada)')
-        ->and($html)->toContain('- S/ 15.00')
-        ->and($html)->toContain('Subtotal de leche')
+        ->and($html)->toContain('<dt>Semana</dt><dd>38</dd>')
+        ->and($html)->toContain('10/09/2026 – 16/09/2026')
+        ->and($html)->toContain('Penalidad por calidad')
+        ->and($html)->toContain('− S/ 15.00')
+        ->and($html)->toContain('Subtotal por leche')
         ->and($html)->toContain('S/ 300.00')
         ->and($html)->toContain('Queso Paria')
         ->and($html)->toContain('500 g')
-        ->and($html)->toContain('- S/ 36.00')
-        ->and($html)->toContain('Monto final total a entregar')
-        ->and($html)->toContain('Pago en efectivo')
+        ->and($html)->toContain('− S/ 36.00')
+        ->and($html)->toContain('Total a entregar')
+        ->and($html)->toContain('Forma de pago')
         ->and($html)->toContain('S/ 264.00')
         ->and($html)->toContain('Recibí conforme')
-        ->and($html)->toContain('Entregado por (EcoLact)');
+        ->and($html)->toContain('Entregado por EcoLact');
+});
+
+it('el documento conserva los importes y describe la calidad y las compras', function (float $calidad, string $concepto, int $compras, float $subtotal, float $descuentos, float $total) {
+    $c = new ComprobantePagoProveedor(
+        obligacionId: 42, proveedorId: 12, proveedorNombre: 'Miguel Flores Apaza',
+        dni: '72100011', codigo: 'PRV-012', zona: 'Collana 2', semanaEtiqueta: 'Semana 39',
+        periodoInicio: '2026-09-17', periodoFin: '2026-09-23', rango: '17/09/2026 - 23/09/2026',
+        litros: 30, precioLitro: 1.70, importeLeche: 51, penalidad: $calidad,
+        penalidadLitros: $calidad, detallePenalidad: 'Según análisis de calidad', subtotalLeche: $subtotal,
+        descuentos: array_fill(0, $compras, ['producto' => 'Queso Paria', 'presentacion' => '500 g', 'cantidad' => '1', 'precioUnitario' => 5.0, 'importe' => 5.0]),
+        subtotalDescuentos: $descuentos, totalFinal: $total, estado: 'PENDIENTE', pagadoEl: null, anioFirma: 2026,
+    );
+
+    $html = view('admin.pagos.proveedores._comprobante', ['c' => $c])->render();
+
+    expect($html)->toContain($concepto, 'PRV-2026-39-0042', '72100011', 'Recibí conforme', 'Entregado por EcoLact')
+        ->toContain('data-hoja-total>S/ '.number_format($total, 2))
+        ->not->toContain('1. Datos', 'pp-icono', 'Productores de hoy');
+    expect(substr_count($html, '<td>Queso Paria</td>'))->toBe($compras);
+    expect(str_contains($html, 'data-sin-compras'))->toBe($compras === 0);
+    expect(str_contains($html, '<td>'.$concepto.'</td>'))->toBe($calidad !== 0.0);
+})->with([
+    'sin calidad ni compras' => [0.0, 'Sin bonificación ni penalidad', 0, 51.0, 0.0, 51.0],
+    'penalidad y una compra' => [-1.7, 'Penalidad por calidad', 1, 49.3, 5.0, 44.3],
+    'bonificación y varias compras' => [1.7, 'Bonificación por calidad', 3, 52.7, 15.0, 37.7],
+    'muchas compras conservan todas las filas' => [0.0, 'Sin bonificación ni penalidad', 10, 51.0, 50.0, 1.0],
+]);
+
+it('el listado entrega el DNI para buscar y la misma identidad en el comprobante', function () {
+    [$admin, $obligacion] = pago_semanal_con_pendiente();
+
+    $respuesta = $this->actingAs($admin)->get(route('admin.pagos.proveedores.index', ['buscar' => '01345678']));
+
+    expect($respuesta->viewData('datos')['filas'][0]['dni'])->toBe('01345678');
+    $respuesta->assertSee('Buscar proveedor por nombre, DNI o zona');
+    $this->get(route('admin.pagos.proveedores.receipt', $obligacion->id))
+        ->assertSee('01345678')->assertSee('Comprobante de pago');
+});
+
+it('la vista previa múltiple entrega un documento por proveedor sin registrar pagos', function () {
+    [$admin, $primera] = pago_semanal_con_pendiente();
+    $proveedor = fixture_proveedor(fixture_zona('Zona 2'), '72100012');
+    pagos_entrega($proveedor, 100.0, '2026-09-10', 'ACEPTADA');
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'), $admin->id);
+    $segunda = ObligacionPagoModel::where('proveedor_id', $proveedor->id)->firstOrFail();
+
+    $respuesta = $this->actingAs($admin)->getJson(route('admin.pagos.proveedores.preview', ['ids' => [$primera->id, $segunda->id]]));
+
+    $respuesta->assertJsonCount(2, 'hojas');
+    expect(array_column($respuesta->json('hojas'), 'id'))->toBe([$primera->id, $segunda->id]);
+    foreach ($respuesta->json('hojas') as $hoja) {
+        expect(substr_count($hoja['html'], '<article class="pp-hoja"'))->toBe(1);
+    }
+    expect(PagoModel::count())->toBe(0);
+    expect($primera->fresh()->estado)->toBe('PENDIENTE');
+    expect($segunda->fresh()->estado)->toBe('PENDIENTE');
 });
 
 it('abrir la vista previa no marca nada como pagado', function () {
@@ -222,4 +280,28 @@ it('solo el administrador puede pagar a proveedores', function () {
 
     $this->actingAs($proveedor)->get($ruta)->assertForbidden();
     $this->actingAs($proveedor)->post(route('admin.pagos.proveedores.print-and-pay'), ['ids' => [1]])->assertForbidden();
+});
+
+it('toda entrega de Acopio aparece en Pagar a proveedores aunque su pago no se haya sincronizado al registrarla', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_precios_y_reglas($admin);
+    pagos_configurar('PROVEEDOR', null, '2026-01-01', $admin);
+    $zona = fixture_zona('Zona 1');
+    $rosa = fixture_proveedor($zona, '01345678');
+    $rosa->update(['nombres' => 'Rosa', 'apellidos' => 'Quispe']);
+    $pedro = fixture_proveedor($zona, '01345679');
+    $pedro->update(['nombres' => 'Pedro', 'apellidos' => 'Apaza']);
+
+    // Entregas guardadas sin pasar por la sincronización (p. ej. registradas antes de configurar el pago).
+    $acopiador = fixture_acopiador($zona);
+    fixture_entrega($rosa, $acopiador, 40.0, new DateTimeImmutable('2026-09-18 08:00:00'));
+    fixture_entrega($pedro, $acopiador, 25.0, new DateTimeImmutable('2026-09-19 08:00:00'));
+    expect(ObligacionPagoModel::count())->toBe(0);
+
+    $this->actingAs($admin)->get(route('admin.pagos.proveedores.index'))
+        ->assertOk()
+        ->assertSee('Rosa Quispe')
+        ->assertSee('Pedro Apaza');
+
+    expect(ObligacionPagoModel::where('estado', 'PENDIENTE')->count())->toBe(2);
 });

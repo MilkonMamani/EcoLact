@@ -56,6 +56,17 @@ final class EloquentJornadaPersonalRepository implements JornadaPersonalReposito
         return $model ? $this->toEntity($model) : null;
     }
 
+    public function fechasRegistradasEntre(int $trabajadorId, DateTimeImmutable $inicio, DateTimeImmutable $fin): array
+    {
+        return JornadaPersonalModel::where('trabajador_id', $trabajadorId)
+            ->whereDate('fecha', '>=', $inicio->format('Y-m-d'))
+            ->whereDate('fecha', '<=', $fin->format('Y-m-d'))
+            ->pluck('fecha')
+            ->map(fn ($fecha): string => substr((string) $fecha, 0, 10))
+            ->values()
+            ->all();
+    }
+
     public function contarEnPeriodo(int $trabajadorId, DateTimeImmutable $inicio, DateTimeImmutable $fin, ?EstadoJornada $estado = null): int
     {
         return JornadaPersonalModel::where('trabajador_id', $trabajadorId)

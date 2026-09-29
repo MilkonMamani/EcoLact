@@ -26,6 +26,43 @@
     display: flex;
 }
 
+/* Apertura: overlay en fade y tarjeta con fade + scale sutil. El cierre (is-closing) lo pone app.js. */
+[data-modal].is-open {
+    animation: modal-overlay-in 180ms ease-out both;
+}
+
+[data-modal].is-open > [data-modal-panel] {
+    animation: modal-panel-in 200ms cubic-bezier(.2, .7, .3, 1) both;
+}
+
+[data-modal].is-closing {
+    animation: modal-overlay-out 150ms ease-in both;
+}
+
+[data-modal].is-closing > [data-modal-panel] {
+    animation: modal-panel-out 150ms ease-in both;
+}
+
+/* Inputs y selects de los modales: alto cómodo (~42px) y foco verde/teal del sistema. */
+[data-modal] input:not([type='hidden']):not([type='checkbox']):not([type='radio']):not([type='file']),
+[data-modal] select {
+    min-height: 2.625rem;
+}
+
+@keyframes modal-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modal-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes modal-panel-in { from { opacity: 0; transform: scale(.98) translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes modal-panel-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(.98); } }
+
+@media (prefers-reduced-motion: reduce) {
+    [data-modal].is-open,
+    [data-modal].is-open > [data-modal-panel],
+    [data-modal].is-closing,
+    [data-modal].is-closing > [data-modal-panel] {
+        animation: none;
+    }
+}
+
 [data-dropdown-menu] {
     display: none;
 }

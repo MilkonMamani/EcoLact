@@ -13,6 +13,8 @@ class ZonaModel extends Model
         'nombre',
         'descripcion',
         'estado',
+        'color_mapa',
+        'poligono_geojson',
     ];
 
     public function proveedores(): HasMany

@@ -4,18 +4,17 @@
     administrador confirma, tras imprimir, en la franja inferior.
 --}}
 <div id="modal-vista-previa" data-modal data-vista-previa class="fixed inset-0 z-50 items-center justify-center bg-text/50 p-2 sm:p-5" role="dialog" aria-modal="true" aria-labelledby="vista-previa-titulo">
-    <div class="flex h-full max-h-[94vh] w-full max-w-[1240px] flex-col overflow-hidden rounded-2xl bg-surface shadow-2xl">
+    <div class="flex h-full max-h-[94vh] w-full max-w-[1240px] flex-col overflow-hidden rounded-lg bg-surface">
         <header class="flex flex-wrap items-center justify-between gap-3 border-b border-text-muted/10 px-5 py-4 sm:px-6">
             <div class="flex items-center gap-3">
-                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary-dark"><x-ui.icon name="printer" class="h-6 w-6" /></span>
                 <div>
-                    <h2 id="vista-previa-titulo" class="text-xl font-bold leading-tight text-[#12324a]">Vista previa de impresión</h2>
+                    <h2 id="vista-previa-titulo" class="text-xl font-bold leading-tight text-text">Vista previa de impresión</h2>
                     <p class="text-sm text-text-muted">Se generará 1 hoja por cada proveedor seleccionado.</p>
                 </div>
             </div>
             <div class="flex items-center gap-2.5">
-                <button type="button" data-modal-close class="inline-flex h-11 items-center rounded-lg border border-text-muted/25 bg-surface px-5 text-sm font-medium text-[#12324a] transition hover:bg-text-muted/10">Cancelar</button>
-                <button type="button" data-imprimir disabled class="inline-flex h-11 items-center gap-2.5 rounded-lg bg-primary px-6 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="button" data-modal-close class="inline-flex h-11 items-center rounded-lg border border-text-muted/25 bg-surface px-5 text-sm font-medium text-text transition hover:bg-text-muted/10">Cancelar</button>
+                <button type="button" data-imprimir disabled class="inline-flex h-11 items-center gap-2.5 rounded-lg bg-primary px-6 text-sm font-medium text-white  transition-colors hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50">
                     <x-ui.icon name="printer" class="h-[18px] w-[18px]" /> Imprimir
                 </button>
                 <button type="button" data-modal-close aria-label="Cerrar" class="ml-1 flex h-9 w-9 items-center justify-center rounded-lg text-text-muted transition hover:bg-text-muted/10 hover:text-text">
@@ -34,8 +33,8 @@
             {{-- Vista previa --}}
             <div class="flex min-h-0 min-w-0 flex-col">
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-text-muted/10 px-5 py-2.5">
-                    <p class="text-sm font-semibold text-[#12324a]"><span data-nombre-pagina>—</span></p>
-                    <div class="flex items-center gap-1.5 text-sm text-[#12324a]">
+                    <p class="text-sm font-semibold text-text"><span data-nombre-pagina>—</span></p>
+                    <div class="flex items-center gap-1.5 text-sm text-text">
                         <button type="button" data-pagina-anterior aria-label="Página anterior" class="flex h-9 w-9 items-center justify-center rounded-lg border border-text-muted/25 transition hover:bg-text-muted/10 disabled:opacity-40"><x-ui.icon name="chevron-left" class="h-4 w-4" /></button>
                         <span class="min-w-[3.5rem] text-center font-medium" data-contador>0 / 0</span>
                         <button type="button" data-pagina-siguiente aria-label="Página siguiente" class="flex h-9 w-9 items-center justify-center rounded-lg border border-text-muted/25 transition hover:bg-text-muted/10 disabled:opacity-40"><x-ui.icon name="chevron-right" class="h-4 w-4" /></button>
@@ -46,15 +45,15 @@
                     </div>
                 </div>
 
-                <div data-area-hoja class="min-h-0 flex-1 overflow-auto bg-text-muted/10 p-4 sm:p-6">
+                <div data-area-hoja class="min-h-0 flex-1 overflow-auto bg-neutral-100 p-4 sm:p-6">
                     <p data-cargando class="py-20 text-center text-sm text-text-muted">Preparando comprobantes…</p>
-                    <div data-hoja-grande hidden class="mx-auto shadow-xl"></div>
+                    <div data-hoja-grande hidden class="mx-auto border border-neutral-300"></div>
                 </div>
             </div>
         </div>
 
         {{-- Confirmación final: aparece tras imprimir --}}
-        <form method="POST" action="{{ route('admin.pagos.proveedores.print-and-pay') }}" data-form-pagar hidden class="border-t border-warning/30 bg-warning-soft px-5 py-3.5 sm:px-6">
+        <form method="POST" action="{{ route('admin.pagos.proveedores.print-and-pay') }}" data-form-pagar hidden class="border-t border-text-muted/20 bg-surface px-5 py-3.5 sm:px-6">
             @csrf
             <input type="hidden" name="semana" value="{{ $semana['inicio'] }}">
             <input type="hidden" name="zona" value="{{ $filtro->zonaId }}">
@@ -63,12 +62,12 @@
             <input type="hidden" name="ver" value="" data-ver-hoja>
             <div data-campos-pago></div>
             <div class="flex flex-wrap items-center justify-between gap-3">
-                <p class="flex max-w-3xl items-start gap-2.5 text-sm text-[#12324a]">
+                <p class="flex max-w-3xl items-start gap-2.5 text-sm text-text">
                     <x-ui.icon name="info" class="mt-0.5 h-5 w-5 shrink-0 text-warning" />
                     <span>¿Se imprimieron los comprobantes y se entregó el efectivo? Al confirmar, <strong data-conf-cantidad>0 proveedores</strong> pasarán a <strong>Pagado</strong> por <strong data-conf-total>S/ 0.00</strong>. Esta acción no se puede deshacer.</span>
                 </p>
                 <div class="flex items-center gap-2.5">
-                    <button type="button" data-conf-volver class="inline-flex h-10 items-center rounded-lg border border-text-muted/25 bg-surface px-4 text-sm font-medium text-[#12324a] transition hover:bg-text-muted/10">Todavía no</button>
+                    <button type="button" data-conf-volver class="inline-flex h-10 items-center rounded-lg border border-text-muted/25 bg-surface px-4 text-sm font-medium text-text transition hover:bg-text-muted/10">Todavía no</button>
                     <button type="submit" data-conf-confirmar class="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-white transition-colors hover:bg-primary-dark disabled:opacity-60">
                         <x-ui.icon name="check" class="h-4 w-4" /> Confirmar pago en efectivo
                     </button>

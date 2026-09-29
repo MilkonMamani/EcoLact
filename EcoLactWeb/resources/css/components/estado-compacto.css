@@ -1,0 +1,35 @@
+/*
+ * Estado compacto (x-ui.badge compact): solo ícono con color semántico para tablas y
+ * listados. El nombre del estado aparece como tooltip al pasar el mouse o al enfocar.
+ */
+.estado-compacto { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 1.875rem; height: 1.875rem; border: 1px solid transparent; border-radius: .5rem; vertical-align: middle; cursor: default; }
+.estado-compacto.is-positivo { border-color: rgb(39 155 117 / .18); background: rgb(39 155 117 / .09); color: #1f8a66; }
+.estado-compacto.is-pendiente { border-color: rgb(230 162 60 / .22); background: rgb(230 162 60 / .1); color: #c07a14; }
+.estado-compacto.is-advertencia { border-color: rgb(234 179 8 / .28); background: rgb(234 179 8 / .12); color: #a16207; }
+.estado-compacto.is-negativo { border-color: rgb(217 76 76 / .2); background: rgb(217 76 76 / .08); color: #c53b3b; }
+.estado-compacto.is-neutro { border-color: rgb(104 119 125 / .18); background: rgb(104 119 125 / .07); color: #7b878c; }
+
+.estado-compacto::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + .4rem);
+    left: 50%;
+    z-index: 30;
+    padding: .3rem .55rem;
+    border-radius: .4rem;
+    background: #1d2939;
+    color: #fff;
+    font-size: .72rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 2px);
+    transition: opacity .12s ease-out, transform .12s ease-out;
+}
+.estado-compacto:hover::after, .estado-compacto:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+    .estado-compacto::after { transition: none; }
+}

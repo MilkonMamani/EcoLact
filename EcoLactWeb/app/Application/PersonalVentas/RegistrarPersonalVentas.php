@@ -2,7 +2,9 @@
 
 namespace App\Application\PersonalVentas;
 
+use App\Application\Shared\Reloj;
 use App\Application\Shared\TransactionManager;
+use App\Application\Trabajador\SincronizarTrabajadores;
 use App\Domain\Auth\PasswordHasher;
 use App\Domain\Auth\Repositories\RoleRepository;
 use App\Domain\Auth\Repositories\UsuarioRepository;
@@ -10,7 +12,6 @@ use App\Domain\Auth\Usuario;
 use App\Domain\PersonalVentas\PersonalVentas;
 use App\Domain\PersonalVentas\PersonalVentasRepository;
 use App\Domain\Shared\Enums\EstadoUsuario;
-use DateTimeImmutable;
 use DomainException;
 
 /**
@@ -26,6 +27,8 @@ final class RegistrarPersonalVentas
         private readonly RoleRepository $roles,
         private readonly PasswordHasher $passwordHasher,
         private readonly TransactionManager $transacciones,
+        private readonly Reloj $reloj,
+        private readonly SincronizarTrabajadores $sincronizarTrabajadores,
     ) {}
 
     public function execute(
@@ -35,7 +38,6 @@ final class RegistrarPersonalVentas
         ?string $telefono,
         string $username,
         string $password,
-        ?DateTimeImmutable $fechaIngreso = null,
     ): PersonalVentas {
         if ($this->personal->buscarPorDni($dni) !== null) {
             throw new DomainException("Ya existe personal de ventas registrado con el DNI {$dni}.");
@@ -54,7 +56,7 @@ final class RegistrarPersonalVentas
         $roleId = $role->id() ?? throw new DomainException('El rol VENTAS no está configurado en el sistema.');
 
         return $this->transacciones->run(function () use (
-            $dni, $nombres, $apellidos, $telefono, $username, $password, $roleId, $fechaIngreso
+            $dni, $nombres, $apellidos, $telefono, $username, $password, $roleId
         ): PersonalVentas {
             $usuario = $this->usuarios->guardar(new Usuario(
                 id: null,
@@ -67,7 +69,7 @@ final class RegistrarPersonalVentas
 
             $userId = $usuario->id() ?? throw new DomainException('No se pudo registrar el usuario del personal de ventas.');
 
-            return $this->personal->guardar(new PersonalVentas(
+            $ficha = $this->personal->guardar(new PersonalVentas(
                 id: null,
                 userId: $userId,
                 dni: $dni,
@@ -75,8 +77,12 @@ final class RegistrarPersonalVentas
                 apellidos: $apellidos,
                 telefono: $telefono,
                 estado: EstadoUsuario::ACTIVO,
-                fechaIngreso: $fechaIngreso ?? new DateTimeImmutable,
+                fechaIngreso: $this->reloj->hoy(),
             ));
+
+            $this->sincronizarTrabajadores->execute(soloUserId: $ficha->userId());
+
+            return $ficha;
         });
     }
 }

@@ -32,10 +32,10 @@ it('lista a los trabajadores vigentes de hoy con su estado de asistencia', funct
 
     $this->actingAs($admin)->get(route('admin.asistencia.index'))
         ->assertOk()
-        ->assertSee('Control de asistencia')
-        ->assertSee('Rusman Torres')
-        ->assertSee('ACOPIADOR')
-        ->assertSee('Asistió');
+        ->assertSee('Asistencia de hoy')
+        ->assertSeeInOrder(['Trabajador', 'Rol', 'DNI', 'Asistencia', 'Hora', 'Origen'])
+        ->assertSeeInOrder(['Rusman Torres', 'Acopiador', 'Presente'])
+        ->assertDontSee('>ACOPIADOR<', false);
 });
 
 it('un trabajador sin marcar hoy aparece como pendiente de registro, no como falta', function () {
@@ -45,9 +45,9 @@ it('un trabajador sin marcar hoy aparece como pendiente de registro, no como fal
     $this->actingAs($admin)->get(route('admin.asistencia.index'))
         ->assertOk()
         ->assertSee('Sin Marcar')
-        ->assertSee('Pendiente de registro')
-        // La leyenda siempre muestra "Falta" como color de referencia; lo que no debe
-        // aparecer es "Automático" (origen), que solo existe si hay una jornada real.
+        ->assertSeeInOrder(['Sin Marcar', 'Pendiente'])
+        ->assertDontSee('Pendiente de registro</span>', false)
+        // "Automático" (origen) solo existe si hay una jornada real.
         ->assertDontSee('Automático');
 });
 

@@ -105,11 +105,11 @@
                             </td>
                             <td class="py-3 pr-4">
                                 @if ($insumo->estado() !== 'ACTIVO')
-                                    <x-ui.badge status="INACTIVO">Inactivo</x-ui.badge>
+                                    <x-ui.badge compact status="INACTIVO">Inactivo</x-ui.badge>
                                 @elseif ($sinStock)
-                                    <x-ui.badge variant="WARNING">Sin stock</x-ui.badge>
+                                    <x-ui.badge compact variant="WARNING">Sin stock</x-ui.badge>
                                 @else
-                                    <x-ui.badge status="ACTIVO">Disponible</x-ui.badge>
+                                    <x-ui.badge compact status="ACTIVO">Disponible</x-ui.badge>
                                 @endif
                             </td>
                             <td class="py-3 pl-4">

@@ -1,174 +1,148 @@
 {{--
-    Hoja "Pago a trabajador" (A4). Reutiliza el mismo sistema visual pp-* que
-    "Pago semanal a proveedor" (resources/css/components/pago-semanal.css).
-    Recibe: $c: App\Application\Pago\ComprobantePagoTrabajador
+    Hoja A4 vertical "Comprobante de pago" de un trabajador: documento formal en UNA sola
+    hoja (cabecera breve, título, aviso de vista previa, resumen, trabajador, tabla de
+    conceptos, totales y firmas al pie). Estilos en resources/css/components/comprobante-pago.css.
+    Solo pinta ComprobantePagoTrabajador (snapshot de la obligación): no calcula dinero.
+
+    La tabla explica el acumulado con la regla real de nómina:
+    - Mes completo: sueldo mensual − faltas × valor por día.
+    - Mes parcial (ingresó, salió o estuvo inactivo): asistencias × valor por día.
+
+    @var \App\Application\Pago\ComprobantePagoTrabajador $c
 --}}
 @php
-    $soles = fn (float $valor): string => ($valor < 0 ? '- ' : '').'S/ '.number_format(abs($valor), 2);
+    $soles = fn (float $valor): string => 'S/ '.number_format($valor, 2);
+    $empresa = config('empresa.nombre') ?: 'EcoLact';
+    $identificador = 'Comprobante '.$c->numero().' - '.$c->nombre;
 @endphp
-<article class="pp-hoja" data-hoja-id="{{ $c->obligacionId }}" aria-label="Pago a trabajador · {{ $c->nombre }}">
-    <header class="pp-cabecera">
-        <div class="pp-marca">
-            <img src="{{ asset('images/ecolact-mark.svg') }}" alt="">
-            <div><strong>EcoLact</strong><small>Del campo a tu mesa</small></div>
+<article class="cp-hoja" data-comprobante="{{ $c->obligacionId }}" aria-label="{{ $identificador }}">
+    <div class="cp-cuerpo">
+        <div class="cp-encabezado">
+            <span>{{ $c->fechaHoraEmision }}</span>
+            <span>{{ $identificador }}</span>
         </div>
-        <div class="pp-lema">
-            <span>Productores de hoy, una mejor mañana</span>
-            <i></i>
-            <x-ui.icon name="leaf" class="" />
-        </div>
-    </header>
 
-    <div class="pp-titulo-fila">
-        <div class="pp-titulo-caja">
-            <span class="pp-icono-caja"><x-ui.icon name="users" class="" /></span>
-            <div>
-                <h1>Pago a trabajador</h1>
-                <p>Comprobante de pago de sueldo mensual</p>
-            </div>
-        </div>
-        <div class="pp-semana">
-            <x-ui.icon name="calendar-days" class="" />
-            <div>
-                <strong>{{ $c->periodoEtiqueta }}</strong>
-                <span>{{ $c->periodoRango }}</span>
-                @if ($c->estaPagado() && $c->pagadoEl)
-                    <em class="pp-pagado-sello not-italic">Pagado el {{ $c->pagadoEl }}@if ($c->pagadoPor) · por {{ $c->pagadoPor }}@endif</em>
-                @endif
-            </div>
-        </div>
-    </div>
+        <header class="cp-titulo">
+            <h1>Comprobante de pago</h1>
+            <p class="cp-numero">N.° {{ $c->numero() }}</p>
+        </header>
 
-    <section class="pp-seccion">
-        <div class="pp-seccion-cabecera">
-            <span class="pp-seccion-icono"><x-ui.icon name="user" class="" /></span>
-            <h2>1. Datos del trabajador</h2>
-        </div>
-        <dl class="pp-datos">
-            <div><dt>Nombre</dt><dd>{{ $c->nombre }}</dd></div>
-            <div><dt>DNI</dt><dd>{{ $c->dni ?? '—' }}</dd></div>
-            <div><dt>Rol</dt><dd>{{ $c->rol }}</dd></div>
-            <div><dt>Periodo</dt><dd>{{ $c->periodoEtiqueta }}</dd></div>
-            @if (! $c->esMesCompleto)
-                <div><dt>Fecha de ingreso</dt><dd>{{ $c->fechaIngresoEtiqueta }}</dd></div>
+        @unless ($c->estaPagado())
+            <p class="cp-aviso" data-comprobante-previa>Vista previa - pago aún no registrado{{ $c->estado === 'EN_CURSO' ? ' (mes en curso: montos parciales)' : '' }}</p>
+        @endunless
+
+        <dl class="cp-resumen">
+            <div>
+                <dt>Fecha de emisión</dt>
+                <dd>{{ $c->fechaEmision }}</dd>
+            </div>
+            <div>
+                <dt>Periodo</dt>
+                <dd>{{ $c->periodoEtiqueta }}<small>{{ $c->periodoRango }}</small></dd>
+            </div>
+            @if ($c->estaPagado() && $c->pagadoEl)
+                <div>
+                    <dt>Fecha de pago</dt>
+                    <dd>{{ $c->pagadoEl }}</dd>
+                </div>
             @endif
+            <div class="is-total">
+                <dt>{{ $c->estaPagado() ? 'Total pagado' : 'Total a pagar' }}</dt>
+                <dd>{{ $soles($c->total) }}</dd>
+            </div>
         </dl>
-    </section>
 
-    <section class="pp-seccion">
-        <div class="pp-seccion-cabecera">
-            <span class="pp-seccion-icono"><x-ui.icon name="calendar-days" class="" /></span>
-            <h2>2. Resumen de asistencia</h2>
-        </div>
-        <table class="pp-tabla">
-            <thead>
-                <tr>
-                    <th class="pp-izq" style="width: 60%">Concepto</th>
-                    <th style="width: 40%">Cantidad</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="pp-izq">Asistencias</td>
-                    <td class="pp-importe">{{ $c->diasTrabajados }}</td>
-                </tr>
-                <tr>
-                    <td class="pp-izq">Faltas</td>
-                    <td class="pp-importe">{{ $c->faltas }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="pp-seccion">
-        <div class="pp-seccion-cabecera">
-            <span class="pp-seccion-icono"><x-ui.icon name="banknote" class="" /></span>
-            <h2>3. Cálculo</h2>
-        </div>
-        <table class="pp-tabla">
-            <thead>
-                <tr>
-                    <th class="pp-izq" style="width: 60%">Concepto</th>
-                    <th style="width: 40%">Importe (S/)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="pp-izq">Sueldo mensual</td>
-                    <td class="pp-importe">{{ $soles($c->sueldoBase) }}</td>
-                </tr>
-                <tr>
-                    <td class="pp-izq">Valor por día</td>
-                    <td class="pp-importe">{{ $soles($c->valorDia) }}</td>
-                </tr>
-                @if (! $c->esMesCompleto)
-                    <tr>
-                        <td class="pp-izq">Pago proporcional</td>
-                        <td class="pp-importe">{{ $soles($c->acumulado) }}</td>
-                    </tr>
-                @else
-                    <tr>
-                        <td class="pp-izq">Descuento por faltas</td>
-                        <td class="pp-importe">{{ $c->descuentoPorFaltas > 0 ? '- '.$soles($c->descuentoPorFaltas) : $soles(0) }}</td>
-                    </tr>
-                    <tr>
-                        <td class="pp-izq">Acumulado</td>
-                        <td class="pp-importe">{{ $soles($c->acumulado) }}</td>
-                    </tr>
-                @endif
-                <tr>
-                    <td class="pp-izq">Bonificaciones</td>
-                    <td class="pp-importe">{{ $c->bonificacion > 0 ? '+ '.$soles($c->bonificacion) : $soles(0) }}</td>
-                </tr>
-                <tr>
-                    <td class="pp-izq">Otros descuentos</td>
-                    <td class="pp-importe">{{ $c->descuento > 0 ? '- '.$soles($c->descuento) : $soles(0) }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <section class="pp-total">
-        <span class="pp-icono-caja"><x-ui.icon name="banknote" class="" /></span>
-        <div>
-            <h3>Monto final total a entregar</h3>
-            <p>{{ $c->metodoPago ?? 'Pago pendiente' }}</p>
-        </div>
-        <strong>S/ {{ number_format($c->total, 2) }}</strong>
-    </section>
-
-    @if ($c->observacion)
-        <p style="margin-top: 10px; font-size: 13px; color: var(--pp-muted);">Observación: {{ $c->observacion }}</p>
-    @endif
-
-    <div class="pp-firmas">
-        <div class="pp-firma">
-            <x-ui.icon name="pen-line" class="" />
-            <div class="pp-firma-linea"></div>
-            <h4>Recibí conforme</h4>
-            <dl>
-                <div><dt>Nombre:</dt><dd></dd></div>
-                <div><dt>DNI:</dt><dd></dd></div>
-                <div><dt>Fecha:</dt><dd class="pp-fecha"><i></i>/<i></i>/ {{ $c->anioFirma }}</dd></div>
+        <section class="cp-trabajador" aria-label="Datos del trabajador">
+            <p class="cp-etiqueta">Trabajador</p>
+            <p class="cp-trabajador-nombre">{{ $c->nombre }}</p>
+            <dl class="cp-trabajador-datos">
+                <div><dt>DNI</dt><dd>{{ $c->dni ?? '—' }}</dd></div>
+                <div><dt>Rol</dt><dd>{{ $c->rol }}</dd></div>
+                <div><dt>Zona</dt><dd>{{ $c->zona ?? '—' }}</dd></div>
+                <div><dt>Fecha de ingreso</dt><dd>{{ $c->fechaIngresoEtiqueta ?? '—' }}</dd></div>
+                <div><dt>Periodo</dt><dd>{{ $c->periodoEtiqueta }}</dd></div>
             </dl>
-        </div>
-        <div class="pp-firma">
-            <x-ui.icon name="pen-line" class="" />
-            <div class="pp-firma-linea"></div>
-            <h4>Entregado por (EcoLact)</h4>
-            <dl>
-                <div><dt>Nombre:</dt><dd></dd></div>
-                <div><dt>Cargo:</dt><dd></dd></div>
-                <div><dt>Fecha:</dt><dd class="pp-fecha"><i></i>/<i></i>/ {{ $c->anioFirma }}</dd></div>
+        </section>
+
+        <table class="cp-tabla">
+            <thead>
+                <tr>
+                    <th scope="col">Concepto</th>
+                    <th scope="col">Detalle</th>
+                    <th scope="col" class="is-num">Cantidad</th>
+                    <th scope="col" class="is-num">Monto (S/)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sueldo mensual</td>
+                    <td>Base mensual (Configuración de pagos)</td>
+                    <td class="is-num">1</td>
+                    <td class="is-num">{{ $soles($c->sueldoBase) }}</td>
+                </tr>
+                <tr>
+                    <td>Valor por día</td>
+                    <td>Sueldo mensual ÷ 30</td>
+                    <td class="is-num">—</td>
+                    <td class="is-num">{{ $soles($c->valorDia) }}</td>
+                </tr>
+                <tr>
+                    <td>Asistencias</td>
+                    <td>{{ $c->esMesCompleto ? 'Días trabajados' : 'Días trabajados × valor por día' }}</td>
+                    <td class="is-num">{{ $c->diasTrabajados }}</td>
+                    <td class="is-num">{{ $c->esMesCompleto ? '—' : $soles($c->acumulado) }}</td>
+                </tr>
+                <tr>
+                    <td>Faltas</td>
+                    <td>{{ $c->esMesCompleto ? 'Días no trabajados (se descuentan del sueldo)' : 'Días no trabajados (no se pagan)' }}</td>
+                    <td class="is-num">{{ $c->faltas }}</td>
+                    <td @class(['is-num', 'is-negativo' => $c->esMesCompleto && $c->descuentoPorFaltas > 0])>{{ $c->esMesCompleto ? ($c->descuentoPorFaltas > 0 ? '− '.$soles($c->descuentoPorFaltas) : $soles(0)) : '—' }}</td>
+                </tr>
+                <tr class="is-acumulado">
+                    <td>Acumulado del periodo</td>
+                    <td>{{ $c->esMesCompleto ? 'Sueldo mensual − faltas' : 'Proporcional a días trabajados' }}</td>
+                    <td class="is-num">—</td>
+                    <td class="is-num">{{ $soles($c->acumulado) }}</td>
+                </tr>
+                <tr>
+                    <td>Bonificaciones</td>
+                    <td>Ajustes positivos</td>
+                    <td class="is-num">—</td>
+                    <td class="is-num">{{ $soles($c->bonificacion) }}</td>
+                </tr>
+                <tr>
+                    <td>Descuentos</td>
+                    <td>Ajustes negativos</td>
+                    <td class="is-num">—</td>
+                    <td @class(['is-num', 'is-negativo' => $c->descuento > 0])>{{ $c->descuento > 0 ? '− '.$soles($c->descuento) : $soles(0) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="cp-cierre">
+            <div class="cp-notas">
+                @if ($c->estaPagado())
+                    <p><span>Método de pago</span>{{ $c->metodoPago }}@if ($c->numeroOperacion) · Op. {{ $c->numeroOperacion }}@endif</p>
+                    @if ($c->pagadoPor)
+                        <p><span>Registrado por</span>{{ $c->pagadoPor }}</p>
+                    @endif
+                @endif
+                @if ($c->observacion)
+                    <p><span>Observación</span>{{ \Illuminate\Support\Str::limit($c->observacion, 160) }}</p>
+                @endif
+            </div>
+
+            <dl class="cp-totales">
+                <div><dt>Subtotal</dt><dd>{{ $soles($c->acumulado) }}</dd></div>
+                <div><dt>Bonificaciones</dt><dd>{{ $soles($c->bonificacion) }}</dd></div>
+                <div><dt>Descuentos</dt><dd>{{ $c->descuento > 0 ? '− '.$soles($c->descuento) : $soles(0) }}</dd></div>
+                <div class="is-total"><dt>Total</dt><dd data-comprobante-total>{{ $soles($c->total) }}</dd></div>
             </dl>
         </div>
     </div>
 
-    <footer class="pp-pie">
-        <div class="pp-pie-frase">
-            <x-ui.icon name="leaf" class="" />
-            <p>¡Gracias por tu esfuerzo, juntos llevamos nutrición a más familias!</p>
-        </div>
-        <div class="pp-pie-marca"><strong>EcoLact</strong><small>Del campo a tu mesa</small></div>
+    <footer class="cp-firmas">
+        <div><span></span><p>Recibí conforme - {{ $c->nombre }}</p></div>
+        <div><span></span><p>Entregado por - {{ $empresa }}</p></div>
     </footer>
 </article>

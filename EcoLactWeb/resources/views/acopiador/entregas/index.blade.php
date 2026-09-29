@@ -73,10 +73,10 @@
                                 </a>
                             </td>
                             <td class="py-3 pr-4 font-medium text-text">{{ number_format($entrega->litros(), 2) }} L</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$entrega->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$entrega->estado()->value" /></td>
                             <td class="py-3 pr-4">
                                 @if ($resultadosPorEntrega[$entrega->id()] ?? null)
-                                    <x-ui.badge :status="$resultadosPorEntrega[$entrega->id()]" />
+                                    <x-ui.badge compact :status="$resultadosPorEntrega[$entrega->id()]" />
                                 @else
                                     <span class="text-xs text-text-muted">—</span>
                                 @endif

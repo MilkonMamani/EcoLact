@@ -161,7 +161,6 @@ it('rechaza registrar un día trabajado en el futuro', function () {
         fecha: new DateTimeImmutable('2026-09-21'),
         observacion: null,
         registradoPorUserId: $admin->id,
-        hoy: new DateTimeImmutable('2026-09-20'),
     ))->toThrow(DomainException::class, 'futuro');
 });
 

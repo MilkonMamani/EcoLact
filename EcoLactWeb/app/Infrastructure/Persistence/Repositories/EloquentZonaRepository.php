@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
+use App\Domain\Zona\DelimitacionZona;
 use App\Domain\Zona\Zona;
 use App\Domain\Zona\ZonaRepository;
 use App\Infrastructure\Persistence\Models\ZonaModel;
@@ -66,6 +67,14 @@ class EloquentZonaRepository implements ZonaRepository
         $model = ZonaModel::where('nombre', $nombre)->first();
 
         return $model ? $this->toEntity($model) : null;
+    }
+
+    public function guardarDelimitacion(int $zonaId, string $colorMapa, ?DelimitacionZona $delimitacion): void
+    {
+        ZonaModel::whereKey($zonaId)->update([
+            'color_mapa' => $colorMapa,
+            'poligono_geojson' => $delimitacion !== null ? json_encode($delimitacion->aGeoJson()) : null,
+        ]);
     }
 
     /**

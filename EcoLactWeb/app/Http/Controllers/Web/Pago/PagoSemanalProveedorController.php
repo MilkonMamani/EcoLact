@@ -7,6 +7,7 @@ use App\Application\Pago\ImprimirYMarcarPagadosProveedores;
 use App\Application\Pago\ObtenerComprobantesPagoProveedor;
 use App\Application\Pago\ObtenerPagoSemanalProveedores;
 use App\Application\Pago\PagoSemanalFiltro;
+use App\Application\Pago\SincronizarPagosProveedor;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pago\ImprimirYMarcarPagadosRequest;
 use App\Http\Requests\Pago\PrevisualizarComprobantesRequest;
@@ -28,6 +29,7 @@ use Illuminate\View\View;
 final class PagoSemanalProveedorController extends Controller
 {
     public function __construct(
+        private readonly SincronizarPagosProveedor $sincronizarPagosProveedor,
         private readonly ObtenerPagoSemanalProveedores $obtenerPagoSemanal,
         private readonly ObtenerComprobantesPagoProveedor $obtenerComprobantes,
         private readonly ImprimirYMarcarPagadosProveedores $imprimirYMarcarPagados,
@@ -36,6 +38,11 @@ final class PagoSemanalProveedorController extends Controller
     public function index(Request $request): View
     {
         Gate::authorize('viewAny', ObligacionPagoModel::class);
+
+        // Red de seguridad (igual que Pagos a trabajadores): toda entrega válida de Acopio que haya
+        // quedado sin pago (p. ej. registrada antes de configurar el precio o el pago por litros) se
+        // asigna ahora a su pago pendiente. Idempotente: no duplica ni toca pagos ya realizados.
+        $this->sincronizarPagosProveedor->execute(actorUserId: $request->user()?->id);
 
         $filtro = PagoSemanalFiltro::resolver(
             semana: $request->string('semana')->toString() ?: null,

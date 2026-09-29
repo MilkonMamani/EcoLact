@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Web;
 
 use App\Application\EncargadoPlanta\ActualizarEncargadoPlanta;
 use App\Application\EncargadoPlanta\DesactivarEncargadoPlanta;
-use App\Application\EncargadoPlanta\ObtenerEncargadoPlanta;
-use App\Application\EncargadoPlanta\ObtenerEncargadosPlanta;
 use App\Application\EncargadoPlanta\ReactivarEncargadoPlanta;
 use App\Application\EncargadoPlanta\RegistrarEncargadoPlanta;
-use App\Application\Pago\ObtenerControlPeriodoTrabajador;
+use App\Application\Trabajador\TipoFichaPersonal;
+use App\Domain\EncargadoPlanta\EncargadoPlanta;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EncargadoPlanta\StoreEncargadoPlantaRequest;
 use App\Http\Requests\EncargadoPlanta\UpdateEncargadoPlantaRequest;
+use App\Http\Support\PantallaFichasPersonal;
 use App\Infrastructure\Persistence\Models\EncargadoPlantaModel;
-use DateTimeImmutable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -23,6 +23,12 @@ use Illuminate\View\View;
  * Puente HTTP -> Application para el módulo EncargadoPlanta. Exclusivo de
  * ADMINISTRADOR (Gate::before + EncargadoPlantaPolicy): sin zona, porque el
  * encargado de planta opera sobre toda la planta.
+ *
+ * La pantalla es la misma de Acopiadores (PantallaFichasPersonal): listado
+ * paginado a la izquierda y panel del seleccionado a la derecha, pintado en
+ * la carga inicial (?encargado=ID) y pedido por fetch a panel() al elegir otra
+ * fila. El switch de estado llama a desactivar/reactivar pidiendo JSON; sin
+ * zona, reactivar no pide nada más.
  */
 final class EncargadoPlantaController extends Controller
 {
@@ -31,28 +37,31 @@ final class EncargadoPlantaController extends Controller
         private readonly ActualizarEncargadoPlanta $actualizarEncargadoPlanta,
         private readonly DesactivarEncargadoPlanta $desactivarEncargadoPlanta,
         private readonly ReactivarEncargadoPlanta $reactivarEncargadoPlanta,
-        private readonly ObtenerEncargadoPlanta $obtenerEncargadoPlanta,
-        private readonly ObtenerEncargadosPlanta $obtenerEncargadosPlanta,
-        private readonly ObtenerControlPeriodoTrabajador $obtenerControlPeriodo,
+        private readonly PantallaFichasPersonal $pantalla,
     ) {}
 
-    public function index(): View
+    /** Sin ?encargado= se selecciona el primero de la página. */
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', EncargadoPlantaModel::class);
 
-        return view('admin.encargados-planta.index', [
-            'encargados' => $this->obtenerEncargadosPlanta->execute(),
-        ]);
+        return $this->pantalla->index(TipoFichaPersonal::ENCARGADO_PLANTA, $request);
     }
 
-    public function show(EncargadoPlantaModel $encargado, ?Request $request = null): View
+    /** Fragmento HTML del panel derecho (lo pide admin-fichas.js al elegir una fila). */
+    public function panel(Request $request, EncargadoPlantaModel $encargado): View
     {
         Gate::authorize('view', $encargado);
 
-        return view('admin.encargados-planta.show', [
-            'encargado' => $this->obtenerEncargadoPlanta->execute($encargado->id),
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($encargado->user_id, $request?->string('mes')->toString() ?: null),
-        ]);
+        return $this->pantalla->panel(TipoFichaPersonal::ENCARGADO_PLANTA, $encargado->id, $request);
+    }
+
+    /** Ya no hay página de detalle aparte: se ve en el panel del listado. */
+    public function show(EncargadoPlantaModel $encargado): RedirectResponse
+    {
+        Gate::authorize('view', $encargado);
+
+        return redirect()->route('admin.encargados-planta.index', ['encargado' => $encargado->id]);
     }
 
     public function store(StoreEncargadoPlantaRequest $request): RedirectResponse
@@ -68,7 +77,6 @@ final class EncargadoPlantaController extends Controller
             telefono: $datos['telefono'] ?? null,
             username: $datos['username'],
             password: $datos['password'],
-            fechaIngreso: isset($datos['fecha_ingreso']) ? new DateTimeImmutable($datos['fecha_ingreso']) : null,
         );
 
         return redirect()->back()->with('success', 'Encargado de planta registrado correctamente.');
@@ -90,21 +98,25 @@ final class EncargadoPlantaController extends Controller
         return redirect()->back()->with('success', 'Encargado de planta actualizado correctamente.');
     }
 
-    public function desactivar(EncargadoPlantaModel $encargado): RedirectResponse
+    public function desactivar(Request $request, EncargadoPlantaModel $encargado): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $encargado);
 
-        $this->desactivarEncargadoPlanta->execute($encargado->id);
-
-        return redirect()->back()->with('success', 'Encargado de planta desactivado correctamente.');
+        return $this->pantalla->responderCambioDeEstado(
+            $request,
+            fn (): EncargadoPlanta => $this->desactivarEncargadoPlanta->execute($encargado->id),
+            'Encargado de planta desactivado correctamente.',
+        );
     }
 
-    public function reactivar(EncargadoPlantaModel $encargado): RedirectResponse
+    public function reactivar(Request $request, EncargadoPlantaModel $encargado): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $encargado);
 
-        $this->reactivarEncargadoPlanta->execute($encargado->id);
-
-        return redirect()->back()->with('success', 'Encargado de planta reactivado correctamente.');
+        return $this->pantalla->responderCambioDeEstado(
+            $request,
+            fn (): EncargadoPlanta => $this->reactivarEncargadoPlanta->execute($encargado->id),
+            'Encargado de planta reactivado correctamente.',
+        );
     }
 }

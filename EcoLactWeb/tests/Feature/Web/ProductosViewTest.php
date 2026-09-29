@@ -187,10 +187,12 @@ it('el menú lateral del administrador sigue la estructura pedida', function () 
     $admin = fixture_usuario('ADMINISTRADOR');
 
     $this->actingAs($admin)->get(route('admin.dashboard'))->assertSeeInOrder([
-        'Inicio', 'Operación', 'Acopio', 'Proveedores', 'Acopiadores', 'Zonas', 'Calidad', 'Configuración',
+        'Dashboard', 'Inicio', 'Asistencia', 'Operación', 'Acopio', 'Proveedores', 'Zonas',
+        'Personal', 'Trabajadores', 'Nuevo trabajador', 'Acopiadores', 'Analistas de calidad', 'Encargados de planta', 'Personal de ventas',
+        'Calidad', 'Configuración',
         'Parámetros de calidad', 'Reglas de calidad', 'Configuración de pagos', 'Finanzas', 'Pagos',
         'Producción', 'Recetas', 'Producción', 'Inventario', 'Insumos', 'Productos', 'Ventas', 'Ventas', 'Compradores',
-        'Comunicación', 'Comunicados', 'Administración', 'Encargados de planta', 'Personal de ventas', 'Analistas de calidad', 'Auditoría',
+        'Comunicación', 'Comunicados', 'Administración', 'Auditoría',
     ]);
 });
 

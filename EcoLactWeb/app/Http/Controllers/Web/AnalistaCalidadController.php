@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Web;
 
 use App\Application\AnalistaCalidad\ActualizarAnalistaCalidad;
 use App\Application\AnalistaCalidad\DesactivarAnalistaCalidad;
-use App\Application\AnalistaCalidad\ObtenerAnalistaCalidad;
-use App\Application\AnalistaCalidad\ObtenerAnalistasCalidad;
 use App\Application\AnalistaCalidad\ReactivarAnalistaCalidad;
 use App\Application\AnalistaCalidad\RegistrarAnalistaCalidad;
-use App\Application\Pago\ObtenerControlPeriodoTrabajador;
+use App\Application\Trabajador\TipoFichaPersonal;
+use App\Domain\AnalistaCalidad\AnalistaCalidad;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AnalistaCalidad\StoreAnalistaCalidadRequest;
 use App\Http\Requests\AnalistaCalidad\UpdateAnalistaCalidadRequest;
+use App\Http\Support\PantallaFichasPersonal;
 use App\Infrastructure\Persistence\Models\AnalistaCalidadModel;
-use DateTimeImmutable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -23,6 +23,12 @@ use Illuminate\View\View;
  * Puente HTTP -> Application para el módulo AnalistaCalidad. Exclusivo de
  * ADMINISTRADOR (Gate::before + AnalistaCalidadPolicy): sin zona, el
  * analista controla calidad en cualquier zona.
+ *
+ * La pantalla es la misma de Acopiadores (PantallaFichasPersonal): listado
+ * paginado a la izquierda y panel del seleccionado a la derecha, pintado en
+ * la carga inicial (?analista=ID) y pedido por fetch a panel() al elegir otra
+ * fila. El switch de estado llama a desactivar/reactivar pidiendo JSON; sin
+ * zona, reactivar no pide nada más.
  */
 final class AnalistaCalidadController extends Controller
 {
@@ -31,28 +37,31 @@ final class AnalistaCalidadController extends Controller
         private readonly ActualizarAnalistaCalidad $actualizarAnalistaCalidad,
         private readonly DesactivarAnalistaCalidad $desactivarAnalistaCalidad,
         private readonly ReactivarAnalistaCalidad $reactivarAnalistaCalidad,
-        private readonly ObtenerAnalistaCalidad $obtenerAnalistaCalidad,
-        private readonly ObtenerAnalistasCalidad $obtenerAnalistasCalidad,
-        private readonly ObtenerControlPeriodoTrabajador $obtenerControlPeriodo,
+        private readonly PantallaFichasPersonal $pantalla,
     ) {}
 
-    public function index(): View
+    /** Sin ?analista= se selecciona el primero de la página. */
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', AnalistaCalidadModel::class);
 
-        return view('admin.analistas-calidad.index', [
-            'analistas' => $this->obtenerAnalistasCalidad->execute(),
-        ]);
+        return $this->pantalla->index(TipoFichaPersonal::ANALISTA_CALIDAD, $request);
     }
 
-    public function show(AnalistaCalidadModel $analista, ?Request $request = null): View
+    /** Fragmento HTML del panel derecho (lo pide admin-fichas.js al elegir una fila). */
+    public function panel(Request $request, AnalistaCalidadModel $analista): View
     {
         Gate::authorize('view', $analista);
 
-        return view('admin.analistas-calidad.show', [
-            'analista' => $this->obtenerAnalistaCalidad->execute($analista->id),
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($analista->user_id, $request?->string('mes')->toString() ?: null),
-        ]);
+        return $this->pantalla->panel(TipoFichaPersonal::ANALISTA_CALIDAD, $analista->id, $request);
+    }
+
+    /** Ya no hay página de detalle aparte: se ve en el panel del listado. */
+    public function show(AnalistaCalidadModel $analista): RedirectResponse
+    {
+        Gate::authorize('view', $analista);
+
+        return redirect()->route('admin.analistas-calidad.index', ['analista' => $analista->id]);
     }
 
     public function store(StoreAnalistaCalidadRequest $request): RedirectResponse
@@ -68,7 +77,6 @@ final class AnalistaCalidadController extends Controller
             telefono: $datos['telefono'] ?? null,
             username: $datos['username'],
             password: $datos['password'],
-            fechaIngreso: isset($datos['fecha_ingreso']) ? new DateTimeImmutable($datos['fecha_ingreso']) : null,
         );
 
         return redirect()->back()->with('success', 'Analista de calidad registrado correctamente.');
@@ -90,21 +98,25 @@ final class AnalistaCalidadController extends Controller
         return redirect()->back()->with('success', 'Analista de calidad actualizado correctamente.');
     }
 
-    public function desactivar(AnalistaCalidadModel $analista): RedirectResponse
+    public function desactivar(Request $request, AnalistaCalidadModel $analista): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $analista);
 
-        $this->desactivarAnalistaCalidad->execute($analista->id);
-
-        return redirect()->back()->with('success', 'Analista de calidad desactivado correctamente.');
+        return $this->pantalla->responderCambioDeEstado(
+            $request,
+            fn (): AnalistaCalidad => $this->desactivarAnalistaCalidad->execute($analista->id),
+            'Analista de calidad desactivado correctamente.',
+        );
     }
 
-    public function reactivar(AnalistaCalidadModel $analista): RedirectResponse
+    public function reactivar(Request $request, AnalistaCalidadModel $analista): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $analista);
 
-        $this->reactivarAnalistaCalidad->execute($analista->id);
-
-        return redirect()->back()->with('success', 'Analista de calidad reactivado correctamente.');
+        return $this->pantalla->responderCambioDeEstado(
+            $request,
+            fn (): AnalistaCalidad => $this->reactivarAnalistaCalidad->execute($analista->id),
+            'Analista de calidad reactivado correctamente.',
+        );
     }
 }

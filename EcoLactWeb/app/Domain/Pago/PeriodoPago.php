@@ -80,11 +80,13 @@ final class PeriodoPago
 
     /**
      * Día en que un pendiente de este periodo queda habilitado para pagarse:
-     * el día siguiente a su fin (para MENSUAL, el día 1 del mes siguiente).
+     * Proveedores: el miércoles de cierre; personal: día 1 del mes siguiente.
      */
     public function fechaPagoProgramada(): DateTimeImmutable
     {
-        return $this->fin->modify('+1 day');
+        return $this->periodicidad === PeriodicidadPago::SEMANAL
+            ? $this->fin
+            : $this->fin->modify('+1 day');
     }
 
     public function etiqueta(): string

@@ -121,7 +121,7 @@ if (! function_exists('fixture_qr_token')) {
 if (! function_exists('fixture_rol')) {
     function fixture_rol(string $nombre): RoleModel
     {
-        return RoleModel::firstOrCreate(['nombre' => $nombre], ['descripcion' => null, 'es_remunerable' => $nombre !== 'PROVEEDOR']);
+        return RoleModel::firstOrCreate(['nombre' => $nombre], ['descripcion' => null, 'es_remunerable' => $nombre !== 'PROVEEDOR', 'controla_asistencia' => $nombre !== 'ADMINISTRADOR']);
     }
 }
 

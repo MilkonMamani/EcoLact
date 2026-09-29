@@ -2,7 +2,9 @@
 
 namespace App\Application\Acopiador;
 
+use App\Application\Shared\Reloj;
 use App\Application\Shared\TransactionManager;
+use App\Application\Trabajador\SincronizarTrabajadores;
 use App\Domain\Acopiador\Acopiador;
 use App\Domain\Acopiador\AcopiadorRepository;
 use App\Domain\Acopiador\AcopiadorZonaHistorial;
@@ -13,7 +15,6 @@ use App\Domain\Auth\Repositories\UsuarioRepository;
 use App\Domain\Auth\Usuario;
 use App\Domain\Shared\Enums\EstadoUsuario;
 use App\Domain\Zona\ZonaRepository;
-use DateTimeImmutable;
 use DomainException;
 
 /**
@@ -31,6 +32,8 @@ final class RegistrarAcopiador
         private readonly RoleRepository $roles,
         private readonly PasswordHasher $passwordHasher,
         private readonly TransactionManager $transacciones,
+        private readonly Reloj $reloj,
+        private readonly SincronizarTrabajadores $sincronizarTrabajadores,
     ) {}
 
     public function execute(
@@ -41,7 +44,6 @@ final class RegistrarAcopiador
         int $zonaId,
         string $username,
         string $password,
-        ?DateTimeImmutable $fechaIngreso = null,
     ): Acopiador {
         if ($this->acopiadores->buscarPorDni($dni) !== null) {
             throw new DomainException("Ya existe un acopiador registrado con el DNI {$dni}.");
@@ -66,7 +68,7 @@ final class RegistrarAcopiador
         $roleId = $role->id() ?? throw new DomainException('El rol ACOPIADOR no está configurado en el sistema.');
 
         return $this->transacciones->run(function () use (
-            $dni, $nombres, $apellidos, $telefono, $zonaId, $username, $password, $roleId, $fechaIngreso
+            $dni, $nombres, $apellidos, $telefono, $zonaId, $username, $password, $roleId
         ): Acopiador {
             $usuario = $this->usuarios->guardar(new Usuario(
                 id: null,
@@ -79,7 +81,7 @@ final class RegistrarAcopiador
 
             $userId = $usuario->id() ?? throw new DomainException('No se pudo registrar el usuario del acopiador.');
 
-            $fechaIngresoFinal = $fechaIngreso ?? new DateTimeImmutable;
+            $fechaIngresoFinal = $this->reloj->hoy();
 
             $acopiador = $this->acopiadores->guardar(new Acopiador(
                 id: null,
@@ -103,6 +105,8 @@ final class RegistrarAcopiador
                 fechaFin: null,
                 motivo: 'Registro inicial del acopiador.',
             ));
+
+            $this->sincronizarTrabajadores->execute(soloUserId: $acopiador->userId());
 
             return $acopiador;
         });

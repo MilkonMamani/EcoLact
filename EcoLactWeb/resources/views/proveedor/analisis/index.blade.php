@@ -47,10 +47,10 @@
                             <td class="py-3 pr-4 text-text-muted">
                                 <a class="text-primary hover:underline" href="{{ route('proveedor.entregas.show', $item->entregaId()) }}">Entrega #{{ $item->entregaId() }}</a>
                             </td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$item->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$item->estado()->value" /></td>
                             <td class="py-3 pr-4">
                                 @if ($item->resultado())
-                                    <x-ui.badge :status="$item->resultado()->value" />
+                                    <x-ui.badge compact :status="$item->resultado()->value" />
                                 @else
                                     <span class="text-text-muted">Pendiente</span>
                                 @endif

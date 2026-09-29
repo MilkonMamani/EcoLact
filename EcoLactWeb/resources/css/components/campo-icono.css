@@ -1,0 +1,23 @@
+/*
+ * x-forms.campo-icono: campo con ícono a la izquierda (y botón para ver la clave en contraseñas).
+ * Alto ~44px, borde suave y foco verde EcoLact.
+ */
+.campo-icono { min-width: 0; }
+.campo-icono[hidden] { display: none; }
+.campo-icono label { margin-bottom: .4rem; color: #344054; font-size: .82rem; font-weight: 600; }
+.campo-icono-caja { position: relative; display: flex; align-items: center; height: 2.75rem; border: 1px solid #e5e7eb; border-radius: .6rem; background: #fff; transition: border-color .15s, box-shadow .15s; }
+.campo-icono-caja:focus-within { border-color: #00ab62; box-shadow: 0 0 0 3px rgb(0 171 98 / .12); }
+.campo-icono-caja.is-error { border-color: var(--color-danger); }
+.campo-icono-caja.is-error:focus-within { box-shadow: 0 0 0 3px rgb(217 76 76 / .12); }
+.campo-icono-simbolo { position: absolute; left: .8rem; color: #98a2b3; pointer-events: none; transition: color .15s; }
+.campo-icono-caja:focus-within .campo-icono-simbolo { color: #006146; }
+.campo-icono-caja input,
+.campo-icono-caja select { width: 100%; min-width: 0; height: 100%; padding: 0 .9rem 0 2.55rem; border: 0; border-radius: inherit; background: transparent; color: #1d2939; font-size: .9rem; outline: none; box-shadow: none; }
+.campo-icono-caja input::placeholder { color: #98a2b3; }
+.campo-icono-caja select { padding-right: 2.25rem; appearance: none; cursor: pointer; }
+.campo-icono-caja select:invalid, .campo-icono-caja select option[value=''] { color: #98a2b3; }
+.campo-icono-flecha { position: absolute; right: .8rem; color: #98a2b3; pointer-events: none; }
+.campo-icono-caja input[type='password'], .campo-icono-caja input[data-clave-visible] { padding-right: 2.75rem; }
+.campo-icono-ver { position: absolute; right: .45rem; display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: .45rem; color: #98a2b3; cursor: pointer; transition: color .15s, background-color .15s; }
+.campo-icono-ver:hover { background: #f2f4f7; color: #344054; }
+.campo-icono .text-danger { margin-top: .35rem; }

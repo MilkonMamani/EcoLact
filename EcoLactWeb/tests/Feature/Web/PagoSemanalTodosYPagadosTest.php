@@ -67,7 +67,7 @@ function historial_pagos_proveedores(): array
 /** Nombres de proveedor visibles en la tabla, en el orden mostrado. */
 function nombres_en_tabla(string $html): array
 {
-    preg_match_all('/<tr data-fila data-id="\d+".*?<td class="whitespace-nowrap px-2 py-3 font-medium text-\[#12324a\]">\s*([^<]+?)\s*(?:<|$)/s', $html, $coincidencias);
+    preg_match_all('/<tr data-fila data-id="\d+".*?<td data-proveedor-nombre[^>]*>\s*([^<]+?)\s*(?:<|$)/s', $html, $coincidencias);
 
     return array_map('trim', $coincidencias[1]);
 }

@@ -56,22 +56,22 @@
                             <td class="py-3 pr-4 whitespace-nowrap font-medium text-text">{{ rtrim(rtrim(number_format($fila['stockActual'], 2), '0'), '.') }} {{ $fila['unidadMedida'] === 'unidad' ? 'unidades' : $fila['unidadMedida'] }}</td>
                             <td class="py-3 pr-4">
                                 @if ($fila['recetaEstado'] === 'CONFIGURADA')
-                                    <x-ui.badge status="CONFIGURADA">Configurada</x-ui.badge>
+                                    <x-ui.badge compact status="CONFIGURADA">Configurada</x-ui.badge>
                                 @elseif ($fila['recetaEstado'] === 'INACTIVA')
-                                    <x-ui.badge status="INACTIVA">Inactiva</x-ui.badge>
+                                    <x-ui.badge compact status="INACTIVA">Inactiva</x-ui.badge>
                                 @else
-                                    <x-ui.badge status="SIN_RECETA">Sin receta</x-ui.badge>
+                                    <x-ui.badge compact status="SIN_RECETA">Sin receta</x-ui.badge>
                                     <a href="{{ route('admin.recetas.index', ['configurar' => $fila['id']]) }}" class="ml-1 text-xs font-medium text-primary hover:underline">Configurar</a>
                                 @endif
                             </td>
                             <td class="hidden py-3 pr-4 whitespace-nowrap text-text-muted lg:table-cell">{{ $fila['ultimaProduccion'] ?? '—' }}</td>
                             <td class="py-3 pr-4">
                                 @if ($fila['estado'] === 'DISPONIBLE')
-                                    <x-ui.badge status="DISPONIBLE">Disponible</x-ui.badge>
+                                    <x-ui.badge compact status="DISPONIBLE">Disponible</x-ui.badge>
                                 @elseif ($fila['estado'] === 'SIN_STOCK')
-                                    <x-ui.badge status="SIN_STOCK">Sin stock</x-ui.badge>
+                                    <x-ui.badge compact status="SIN_STOCK">Sin stock</x-ui.badge>
                                 @else
-                                    <x-ui.badge status="INACTIVO">Inactivo</x-ui.badge>
+                                    <x-ui.badge compact status="INACTIVO">Inactivo</x-ui.badge>
                                 @endif
                             </td>
                         </tr>

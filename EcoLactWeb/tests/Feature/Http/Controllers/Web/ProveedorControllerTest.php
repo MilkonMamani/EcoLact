@@ -13,7 +13,7 @@ uses(TestCase::class, RefreshDatabase::class);
 // Etapa 10.1.2 — Scope de listados: index() se llama directamente en el
 // Controller (sin pasar por el Kernel HTTP) porque todavía no existen
 // vistas Blade (Etapa 10.3).
-it('index (ADMINISTRADOR) ve proveedores de varias zonas, con KPIs', function () {
+it('index (ADMINISTRADOR) ve proveedores de varias zonas y selecciona el primero', function () {
     $zonaA = fixture_zona('Zona A');
     $zonaB = fixture_zona('Zona B');
     $proveedorA = fixture_proveedor($zonaA, '11112222');
@@ -25,9 +25,9 @@ it('index (ADMINISTRADOR) ve proveedores de varias zonas, con KPIs', function ()
 
     $view = app(ProveedorController::class)->index(crear_request_autenticado());
 
-    $dnis = collect($view->getData()['datos']->filas)->pluck('dni');
+    $dnis = $view->getData()['datos']->filas->getCollection()->pluck('dni');
     expect($dnis)->toContain('11112222')->toContain('33334444');
-    expect($view->getData()['datos']->kpis['activos'])->toBe(2);
+    expect($view->getData()['panel']->id)->toBe($view->getData()['datos']->filas->first()['id']);
 });
 
 it('index (ACOPIADOR Zona A) NO recibe proveedores de Zona B', function () {
@@ -43,7 +43,7 @@ it('index (ACOPIADOR Zona A) NO recibe proveedores de Zona B', function () {
     // Un ACOPIADOR malicioso intenta forzar la zona de otro vía query.
     $view = app(ProveedorController::class)->index(crear_request_autenticado('/proveedores', ['zona_id' => $zonaB->id]));
 
-    $ids = collect($view->getData()['proveedores'])->map(fn ($p) => $p->id());
+    $ids = $view->getData()['datos']->filas->getCollection()->pluck('id');
     expect($ids)->toContain($proveedorA->id)->not->toContain($proveedorB->id);
 });
 

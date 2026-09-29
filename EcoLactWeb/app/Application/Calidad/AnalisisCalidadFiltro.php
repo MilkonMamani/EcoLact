@@ -10,9 +10,15 @@ use Carbon\CarbonInterface;
  * DashboardPeriodo, el rango de fecha es OPCIONAL: el análisis de calidad no
  * ocurre a diario (el analista solo muestrea algunos proveedores), así que
  * el listado por defecto no debe acotarse a "hoy" ni a ningún periodo.
+ *
+ * analistaUserId filtra por quien confirmó el análisis
+ * (analisis_calidad.confirmado_por_user_id): un BORRADOR aún no tiene analista.
  */
 final readonly class AnalisisCalidadFiltro
 {
+    /** Columnas por las que el listado puede ordenarse (lista blanca: nunca SQL libre). */
+    public const ORDENES = ['fecha', 'proveedor', 'resultado'];
+
     public function __construct(
         public ?string $busqueda,
         public ?int $zonaId,
@@ -20,6 +26,9 @@ final readonly class AnalisisCalidadFiltro
         public ?string $estado,
         public ?CarbonImmutable $fechaDesde,
         public ?CarbonImmutable $fechaHasta,
+        public ?int $analistaUserId = null,
+        public string $orden = 'fecha',
+        public string $direccion = 'desc',
     ) {}
 
     public static function resolver(
@@ -30,6 +39,9 @@ final readonly class AnalisisCalidadFiltro
         ?string $fecha,
         ?string $desde,
         ?string $hasta,
+        ?int $analistaUserId = null,
+        ?string $orden = null,
+        ?string $direccion = null,
     ): self {
         $hoy = CarbonImmutable::now(config('app.timezone'));
         $ayer = $hoy->subDay();
@@ -55,6 +67,12 @@ final readonly class AnalisisCalidadFiltro
             estado: $estado !== null && $estado !== '' ? $estado : null,
             fechaDesde: $fechaDesde,
             fechaHasta: $fechaHasta,
+            analistaUserId: $analistaUserId,
+            orden: in_array($orden, self::ORDENES, true) ? $orden : 'fecha',
+            direccion: match ($direccion) {
+                'asc', 'desc' => $direccion,
+                default => in_array($orden, self::ORDENES, true) && $orden !== 'fecha' ? 'asc' : 'desc',
+            },
         );
     }
 }

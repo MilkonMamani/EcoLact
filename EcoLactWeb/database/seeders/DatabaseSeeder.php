@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
             ParametroCalidadSeeder::class,
             PrecioLecheSeeder::class,
             ReglaPagoCalidadSeeder::class,
+            // Las 4 zonas operativas y su delimitación operativa referencial inicial (idempotentes:
+            // no duplican zonas ni pisan una delimitación ya editada por el administrador).
+            ZonaSeeder::class,
+            ZonaDelimitacionSeeder::class,
         ]);
     }
 }

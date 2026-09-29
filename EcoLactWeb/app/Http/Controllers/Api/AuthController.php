@@ -71,7 +71,7 @@ final class AuthController extends Controller
         return response()->json(['data' => $this->usuario($request->user())]);
     }
 
-    /** @return array{id: int, username: string, role: ?string, estado: string, debe_cambiar_password: bool, ultimo_acceso: ?string} */
+    /** @return array{id: int, username: string, role: ?string, estado: string, debe_cambiar_password: bool, solo_consulta: bool, ultimo_acceso: ?string} */
     private function usuario(User $user): array
     {
         return [
@@ -80,6 +80,7 @@ final class AuthController extends Controller
             'role' => $user->role?->nombre,
             'estado' => $user->estado,
             'debe_cambiar_password' => $user->debe_cambiar_password,
+            'solo_consulta' => $user->estaEnSoloConsulta(),
             'ultimo_acceso' => $user->ultimo_acceso?->toIso8601String(),
         ];
     }

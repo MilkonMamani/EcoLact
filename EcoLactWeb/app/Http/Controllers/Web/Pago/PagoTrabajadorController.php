@@ -7,7 +7,7 @@ use App\Application\Pago\ComprobanteSubido;
 use App\Application\Pago\Contracts\TrabajadoresPagoListadoQuery;
 use App\Application\Pago\DiagnosticarSueldosDelPeriodo;
 use App\Application\Pago\GenerarObligacionesPersonal;
-use App\Application\Pago\ObtenerControlPeriodoTrabajador;
+use App\Application\Pago\MarcarFaltasAutomaticas;
 use App\Application\Pago\ObtenerPagosTrabajadores;
 use App\Application\Pago\RegistrarPagoObligacion;
 use App\Application\Pago\TrabajadoresPagoFiltro;
@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pago\AjustarObligacionPersonalRequest;
 use App\Http\Requests\Pago\RegistrarPagoRequest;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
+use App\Infrastructure\Persistence\Models\TrabajadorModel;
 use DateTimeImmutable;
 use DomainException;
 use Illuminate\Http\JsonResponse;
@@ -44,7 +45,7 @@ final class PagoTrabajadorController extends Controller
         private readonly GenerarObligacionesPersonal $generarObligaciones,
         private readonly DiagnosticarSueldosDelPeriodo $diagnosticarSueldos,
         private readonly RoleRepository $roles,
-        private readonly ObtenerControlPeriodoTrabajador $obtenerControlPeriodo,
+        private readonly MarcarFaltasAutomaticas $marcarFaltas,
     ) {}
 
     /**
@@ -59,6 +60,8 @@ final class PagoTrabajadorController extends Controller
         Gate::authorize('viewAny', ObligacionPagoModel::class);
 
         $this->generarObligaciones->execute(DateTimeImmutable::createFromInterface(now()));
+        // Cierra los días de asistencia ya vencidos (07:00) antes de mostrar faltas y acumulados.
+        $this->marcarFaltas->execute();
 
         $periodo = $request->string('periodo')->toString() ?: now()->format('Y-m');
         $fechaDelPeriodo = DateTimeImmutable::createFromFormat('Y-m-d', $periodo.'-01')->setTime(0, 0);
@@ -73,12 +76,19 @@ final class PagoTrabajadorController extends Controller
         $filas = $this->obtenerPagos->execute($filtro);
 
         $hayFiltrosDeBusqueda = $filtro->busqueda !== null || $filtro->rolId !== null || $filtro->estado !== null;
-        $diagnostico = ($filas->total() === 0 && ! $hayFiltrosDeBusqueda)
+        // Sin ningún pago generado (la tabla vacía o solo con trabajadores "sin sueldo"), se explica por qué.
+        $hayPagos = collect($filas->items())->contains(fn ($fila): bool => ! $fila->sinSueldo());
+        $diagnostico = (! $hayPagos && $filas->onFirstPage() && ! $hayFiltrosDeBusqueda)
             ? $this->diagnosticarSueldos->execute($fechaDelPeriodo)
             : null;
 
-        $seleccionId = $request->integer('trabajador') ?: null;
-        $seleccion = $seleccionId !== null ? $this->listado->buscarFila($seleccionId) : null;
+        // ?trabajador=ID de la obligación, o "s{trabajador}" para un trabajador cuyo rol no tiene sueldo configurado.
+        $clave = $request->string('trabajador')->toString();
+        $seleccion = match (true) {
+            str_starts_with($clave, 's') && ctype_digit(substr($clave, 1)) => $this->listado->buscarSinSueldo((int) substr($clave, 1), $periodo),
+            ctype_digit($clave) && $clave !== '0' => $this->listado->buscarFila((int) $clave),
+            default => null,
+        };
         $seleccion ??= collect($filas->items())->first(fn ($fila) => $fila->estaPendiente()) ?? collect($filas->items())->first();
 
         return view('admin.pagos.trabajadores.index', [
@@ -87,9 +97,8 @@ final class PagoTrabajadorController extends Controller
             'periodo' => $periodo,
             'periodoEtiqueta' => PeriodoPago::mesQueContiene($fechaDelPeriodo)->etiqueta(),
             'diagnostico' => $diagnostico,
-            'roles' => collect($this->roles->listarRemunerables())->map(fn ($rol) => ['id' => $rol->id(), 'nombre' => $rol->nombre()])->all(),
+            'roles' => collect($this->roles->listarRemunerables())->map(fn ($rol) => ['id' => $rol->id(), 'nombre' => $rol->etiqueta()])->sortBy('nombre')->values()->all(),
             'seleccion' => $seleccion,
-            'controlPeriodo' => $seleccion !== null ? $this->obtenerControlPeriodo->execute($seleccion->userId) : null,
             'metodos' => MetodoPago::opciones(),
             'metodosElectronicos' => array_values(array_map(
                 fn (MetodoPago $metodo): string => $metodo->value,
@@ -107,12 +116,29 @@ final class PagoTrabajadorController extends Controller
 
         return view('admin.pagos.trabajadores._panel', [
             'seleccion' => $fila,
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($fila->userId),
             'metodos' => MetodoPago::opciones(),
             'metodosElectronicos' => array_values(array_map(
                 fn (MetodoPago $metodo): string => $metodo->value,
                 array_filter(MetodoPago::cases(), fn (MetodoPago $metodo): bool => $metodo->requiereNumeroOperacion()),
             )),
+        ]);
+    }
+
+    /**
+     * Fragmento del panel de un trabajador cuyo rol no tiene sueldo configurado:
+     * no hay obligación que pagar, solo su asistencia y el aviso para configurar el sueldo.
+     */
+    public function panelSinSueldo(Request $request, TrabajadorModel $trabajador): View
+    {
+        Gate::authorize('viewAny', ObligacionPagoModel::class);
+
+        $periodo = $request->string('periodo')->toString();
+        $periodo = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $periodo) === 1 ? $periodo : now()->format('Y-m');
+
+        return view('admin.pagos.trabajadores._panel', [
+            'seleccion' => $this->listado->buscarSinSueldo($trabajador->id, $periodo) ?? abort(404),
+            'metodos' => [],
+            'metodosElectronicos' => [],
         ]);
     }
 

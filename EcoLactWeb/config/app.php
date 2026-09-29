@@ -69,6 +69,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Zona horaria del negocio
+    |--------------------------------------------------------------------------
+    |
+    | La app guarda y calcula en UTC (timezone de arriba), pero las fechas "de
+    | calendario" del negocio (p. ej. el día de ingreso de un trabajador) son
+    | las de Perú. App\Application\Shared\Reloj la usa para saber qué día es hoy
+    | en la planta.
+    |
+    */
+
+    'zona_horaria_negocio' => env('APP_ZONA_HORARIA_NEGOCIO', 'America/Lima'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |

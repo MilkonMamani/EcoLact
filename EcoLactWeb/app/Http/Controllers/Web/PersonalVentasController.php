@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Application\Pago\ObtenerControlPeriodoTrabajador;
 use App\Application\PersonalVentas\ActualizarPersonalVentas;
 use App\Application\PersonalVentas\DesactivarPersonalVentas;
-use App\Application\PersonalVentas\ObtenerListaPersonalVentas;
-use App\Application\PersonalVentas\ObtenerPersonalVentas;
 use App\Application\PersonalVentas\ReactivarPersonalVentas;
 use App\Application\PersonalVentas\RegistrarPersonalVentas;
+use App\Application\Trabajador\TipoFichaPersonal;
+use App\Domain\PersonalVentas\PersonalVentas;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PersonalVentas\StorePersonalVentasRequest;
 use App\Http\Requests\PersonalVentas\UpdatePersonalVentasRequest;
+use App\Http\Support\PantallaFichasPersonal;
 use App\Infrastructure\Persistence\Models\PersonalVentasModel;
-use DateTimeImmutable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -22,6 +22,12 @@ use Illuminate\View\View;
 /**
  * Puente HTTP -> Application para el módulo PersonalVentas. Exclusivo de
  * ADMINISTRADOR (Gate::before + PersonalVentasPolicy): sin zona.
+ *
+ * La pantalla es la misma de Acopiadores (PantallaFichasPersonal): listado
+ * paginado a la izquierda y panel del seleccionado a la derecha, pintado en
+ * la carga inicial (?personal=ID) y pedido por fetch a panel() al elegir otra
+ * fila. El switch de estado llama a desactivar/reactivar pidiendo JSON; sin
+ * zona, reactivar no pide nada más.
  */
 final class PersonalVentasController extends Controller
 {
@@ -30,28 +36,31 @@ final class PersonalVentasController extends Controller
         private readonly ActualizarPersonalVentas $actualizarPersonalVentas,
         private readonly DesactivarPersonalVentas $desactivarPersonalVentas,
         private readonly ReactivarPersonalVentas $reactivarPersonalVentas,
-        private readonly ObtenerPersonalVentas $obtenerPersonalVentas,
-        private readonly ObtenerListaPersonalVentas $obtenerListaPersonalVentas,
-        private readonly ObtenerControlPeriodoTrabajador $obtenerControlPeriodo,
+        private readonly PantallaFichasPersonal $pantalla,
     ) {}
 
-    public function index(): View
+    /** Sin ?personal= se selecciona el primero de la página. */
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', PersonalVentasModel::class);
 
-        return view('admin.personal-ventas.index', [
-            'personal' => $this->obtenerListaPersonalVentas->execute(),
-        ]);
+        return $this->pantalla->index(TipoFichaPersonal::PERSONAL_VENTAS, $request);
     }
 
-    public function show(PersonalVentasModel $personalVenta, ?Request $request = null): View
+    /** Fragmento HTML del panel derecho (lo pide admin-fichas.js al elegir una fila). */
+    public function panel(Request $request, PersonalVentasModel $personalVenta): View
     {
         Gate::authorize('view', $personalVenta);
 
-        return view('admin.personal-ventas.show', [
-            'personal' => $this->obtenerPersonalVentas->execute($personalVenta->id),
-            'controlPeriodo' => $this->obtenerControlPeriodo->execute($personalVenta->user_id, $request?->string('mes')->toString() ?: null),
-        ]);
+        return $this->pantalla->panel(TipoFichaPersonal::PERSONAL_VENTAS, $personalVenta->id, $request);
+    }
+
+    /** Ya no hay página de detalle aparte: se ve en el panel del listado. */
+    public function show(PersonalVentasModel $personalVenta): RedirectResponse
+    {
+        Gate::authorize('view', $personalVenta);
+
+        return redirect()->route('admin.personal-ventas.index', ['personal' => $personalVenta->id]);
     }
 
     public function store(StorePersonalVentasRequest $request): RedirectResponse
@@ -67,7 +76,6 @@ final class PersonalVentasController extends Controller
             telefono: $datos['telefono'] ?? null,
             username: $datos['username'],
             password: $datos['password'],
-            fechaIngreso: isset($datos['fecha_ingreso']) ? new DateTimeImmutable($datos['fecha_ingreso']) : null,
         );
 
         return redirect()->back()->with('success', 'Personal de ventas registrado correctamente.');
@@ -89,21 +97,25 @@ final class PersonalVentasController extends Controller
         return redirect()->back()->with('success', 'Personal de ventas actualizado correctamente.');
     }
 
-    public function desactivar(PersonalVentasModel $personalVenta): RedirectResponse
+    public function desactivar(Request $request, PersonalVentasModel $personalVenta): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $personalVenta);
 
-        $this->desactivarPersonalVentas->execute($personalVenta->id);
-
-        return redirect()->back()->with('success', 'Personal de ventas desactivado correctamente.');
+        return $this->pantalla->responderCambioDeEstado(
+            $request,
+            fn (): PersonalVentas => $this->desactivarPersonalVentas->execute($personalVenta->id),
+            'Personal de ventas desactivado correctamente.',
+        );
     }
 
-    public function reactivar(PersonalVentasModel $personalVenta): RedirectResponse
+    public function reactivar(Request $request, PersonalVentasModel $personalVenta): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $personalVenta);
 
-        $this->reactivarPersonalVentas->execute($personalVenta->id);
-
-        return redirect()->back()->with('success', 'Personal de ventas reactivado correctamente.');
+        return $this->pantalla->responderCambioDeEstado(
+            $request,
+            fn (): PersonalVentas => $this->reactivarPersonalVentas->execute($personalVenta->id),
+            'Personal de ventas reactivado correctamente.',
+        );
     }
 }

@@ -16,7 +16,7 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
-it('la pantalla principal de proveedores muestra los KPIs y filtra por estado', function () {
+it('la pantalla principal de proveedores filtra por estado y muestra última entrega y litros totales', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Zona Norte');
     $activo = fixture_proveedor($zona, '11112222');
@@ -26,11 +26,48 @@ it('la pantalla principal de proveedores muestra los KPIs y filtra por estado', 
     $response = $this->actingAs($admin)->get(route('admin.proveedores.index', ['estado' => 'INACTIVO']));
 
     $response->assertOk();
-    $response->assertSee('Proveedores activos');
     $response->assertSee('33334444');
+    $response->assertDontSee('11112222');
+
+    $acopiador = fixture_acopiador($zona);
+    fixture_entrega($activo, $acopiador, 20.0, new DateTimeImmutable('2026-09-10 08:00'));
+    fixture_entrega($activo, $acopiador, 15.5, new DateTimeImmutable('2026-09-12 08:00'));
+    fixture_entrega($activo, $acopiador, 99.0, new DateTimeImmutable('2026-09-14 08:00'))->update(['estado' => 'ANULADA']);
+
+    $this->get(route('admin.proveedores.index', ['q' => '11112222']))
+        ->assertOk()
+        ->assertSeeInOrder(['Nombre', 'DNI', 'Teléfono', 'Zona', 'Última entrega', 'Total (L)', 'Estado'])
+        ->assertSeeInOrder(['11112222', 'Zona Norte', '12/09/2026', '35.50', 'Activo']);
 });
 
-it('el perfil del proveedor muestra sus entregas, análisis, liquidaciones, compras y zona', function () {
+it('el listado se pagina en el servidor y conserva los filtros en los enlaces', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $zona = fixture_zona('Zona Norte');
+    foreach (range(1, 13) as $i) {
+        fixture_proveedor($zona, sprintf('7000%04d', $i));
+    }
+
+    $this->actingAs($admin)->get(route('admin.proveedores.index', ['estado' => 'ACTIVO']))
+        ->assertOk()
+        ->assertSee('Mostrando 1 a 12 de 13 proveedores')
+        ->assertSee(e(route('admin.proveedores.index', ['estado' => 'ACTIVO', 'pagina' => 2])), false);
+});
+
+it('busca por teléfono y por código (#) además de nombre y DNI', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $zona = fixture_zona('Zona Norte');
+    $conTelefono = fixture_proveedor($zona, '11110000');
+    $conTelefono->update(['telefono' => '951222333']);
+    $otro = fixture_proveedor($zona, '22220000');
+
+    $this->actingAs($admin)->get(route('admin.proveedores.index', ['q' => '951222']))
+        ->assertSee('11110000')->assertDontSee('22220000');
+
+    $this->get(route('admin.proveedores.index', ['q' => '#'.$otro->id]))
+        ->assertSee('22220000')->assertDontSee('11110000');
+});
+
+it('el panel del proveedor muestra sus entregas y deja fuera de Compras las ventas al contado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona();
     $proveedor = fixture_proveedor($zona);
@@ -63,11 +100,11 @@ it('el perfil del proveedor muestra sus entregas, análisis, liquidaciones, comp
     );
     app(ActualizarProveedor::class)->execute(proveedorId: $proveedor->id, nuevaZonaId: fixture_zona('Otra Zona')->id, motivoCambioZona: 'Reasignación');
 
-    $response = $this->actingAs($admin)->get(route('admin.proveedores.show', $proveedor->id));
+    $response = $this->actingAs($admin)->get(route('admin.proveedores.index', ['proveedor' => $proveedor->id]));
 
     $response->assertOk();
     $response->assertSee('Resumen');
-    $response->assertSee('30.00 L');
-    $response->assertSee('Queso Paria', false);
-    $response->assertSee('Reasignación');
+    $response->assertSee('30.00');
+    $response->assertSee('Otra Zona');
+    $response->assertDontSee('Queso Paria');
 });

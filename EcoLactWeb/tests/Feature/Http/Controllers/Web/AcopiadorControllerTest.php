@@ -15,7 +15,7 @@ uses(TestCase::class, RefreshDatabase::class);
 // (sin pasar por el Kernel HTTP) porque todavía no existen vistas Blade
 // (Etapa 10.3); así se comprueba la delegación a Application sin depender
 // de un renderizado que aún no puede existir.
-it('index delega en AcopiadoresListadoQuery y expone el listado con KPIs a la vista', function () {
+it('index delega en AcopiadoresListadoQuery y expone la página y el panel del primero', function () {
     $zona = fixture_zona();
     $acopiador = fixture_acopiador($zona);
     $admin = fixture_usuario('ADMINISTRADOR');
@@ -26,11 +26,11 @@ it('index delega en AcopiadoresListadoQuery y expone el listado con KPIs a la vi
     $view = app(AcopiadorController::class)->index(crear_request_autenticado());
 
     expect($view->name())->toBe('admin.acopiadores.index');
-    expect(collect($view->getData()['datos']->filas)->contains(fn ($f) => $f['id'] === $acopiador->id))->toBeTrue();
-    expect($view->getData()['datos']->kpis['activos'])->toBe(1);
+    expect($view->getData()['datos']->filas->getCollection()->pluck('id'))->toContain($acopiador->id);
+    expect($view->getData()['panel']->id)->toBe($acopiador->id);
 });
 
-it('show delega en ObtenerAcopiador y expone el acopiador a la vista', function () {
+it('show ya no es una página aparte: redirige al listado con el acopiador seleccionado', function () {
     $zona = fixture_zona();
     $acopiador = fixture_acopiador($zona);
     $admin = fixture_usuario('ADMINISTRADOR');
@@ -38,10 +38,9 @@ it('show delega en ObtenerAcopiador y expone el acopiador a la vista', function 
     registrar_vistas_stub();
     $this->actingAs($admin);
 
-    $view = app(AcopiadorController::class)->show(AcopiadorModel::find($acopiador->id));
+    $respuesta = app(AcopiadorController::class)->show(AcopiadorModel::find($acopiador->id));
 
-    expect($view->name())->toBe('admin.acopiadores.show');
-    expect($view->getData()['acopiador']->id())->toBe($acopiador->id);
+    expect($respuesta->getTargetUrl())->toBe(route('admin.acopiadores.index', ['acopiador' => $acopiador->id]));
 });
 
 it('store llama a RegistrarAcopiador y redirige con éxito', function () {

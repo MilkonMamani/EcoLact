@@ -68,7 +68,7 @@
                             <td class="py-3 pr-4 text-text-muted">{{ $proveedor->telefono() ?? '—' }}</td>
                             <td class="py-3 pr-4 text-text">{{ $resumen->entregas ?? 0 }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $resumen?->ultima_entrega ? \Illuminate\Support\Carbon::parse($resumen->ultima_entrega)->format('d/m/Y') : 'Sin entregas' }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$proveedor->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$proveedor->estado()->value" /></td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
                                     <x-ui.action-button type="view" label="Ver proveedor" :href="route('acopiador.proveedores.show', $proveedor->id())" />

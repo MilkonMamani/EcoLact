@@ -1,14 +1,12 @@
 import { getCsrfToken } from '../maps.js';
 
 /**
- * Pantalla /admin/pagos/trabajadores (tabla + panel lateral):
- *  - clic en una fila carga al trabajador en el panel derecho sin recargar
- *    la página (fragmento HTML que ya renderiza el servidor, igual que
- *    /admin/zonas);
+ * Pantalla /admin/pagos/trabajadores. La selección de fila, el panel por fetch, el
+ * skeleton y la entrada escalonada los resuelve admin-fichas.js (mismo patrón que
+ * Proveedores/Acopiadores). Aquí solo queda lo propio de pagos:
  *  - la bonificación y el descuento se ajustan desde el panel mientras el
  *    pago esté pendiente, y se guardan al vuelo;
- *  - confirmar el pago sigue siendo un POST normal (con archivo adjunto),
- *    igual que en la pantalla general de Pagos.
+ *  - registrar el pago sigue siendo un POST normal (con archivo adjunto).
  */
 const pagina = document.querySelector('[data-pago-trabajadores]');
 
@@ -21,57 +19,48 @@ function formatearSoles(valor) {
 }
 
 function iniciarPantalla(pagina) {
-    const panel = pagina.querySelector('[data-panel-trabajador]');
     const sincronizarFormularios = iniciarConfirmacionPago(pagina);
 
-    iniciarSeleccionDeFila(pagina, panel, sincronizarFormularios);
+    // El panel llega por fetch (admin-fichas.js): sincroniza su formulario de pago.
+    document.addEventListener('fichas:panel-actualizado', sincronizarFormularios);
     iniciarAjuste(pagina);
+    iniciarImpresionComprobante(pagina);
 }
 
-// --------------------------------------------------------- selección de fila
+// ------------------------------------------------------ imprimir comprobante
 
-function iniciarSeleccionDeFila(pagina, panel, sincronizarFormularios) {
-    const marcarSeleccion = (id) => {
-        pagina.querySelectorAll('[data-fila-trabajador]').forEach((fila) => {
-            fila.dataset.selected = fila.dataset.id === String(id) ? 'true' : 'false';
-        });
-    };
-
-    const seleccionar = async (id) => {
-        try {
-            const url = new URL(pagina.dataset.urlPanel.replace('__ID__', id), window.location.href);
-            // Los filtros activos (q, rol, periodo, estado) viajan al fragmento para
-            // que el formulario de "Confirmar pago" los conserve al redirigir.
-            new URLSearchParams(window.location.search).forEach((valor, clave) => {
-                if (clave !== 'trabajador') {
-                    url.searchParams.set(clave, valor);
-                }
-            });
-
-            const respuesta = await fetch(url, { headers: { Accept: 'text/html' } });
-
-            if (!respuesta.ok) {
-                throw new Error('No se pudo cargar el trabajador.');
-            }
-
-            panel.innerHTML = await respuesta.text();
-            marcarSeleccion(id);
-            sincronizarFormularios();
-
-            const url2 = new URL(window.location.href);
-            url2.searchParams.set('trabajador', id);
-            window.history.replaceState({}, '', url2);
-        } catch {
-            // El panel conserva su contenido anterior; la fila sigue disponible para reintentar.
-        }
-    };
+/**
+ * Imprime EXACTAMENTE la hoja del comprobante (su propia página HTML A4) sin salir de
+ * la pantalla: la carga en un iframe oculto y llama a print() de ese documento. Si el
+ * navegador no lo permite, el enlace abre el comprobante en otra pestaña (sin JS igual).
+ */
+function iniciarImpresionComprobante(pagina) {
+    let marco = null;
 
     pagina.addEventListener('click', (event) => {
-        const fila = event.target.closest('[data-fila-trabajador]');
+        const enlace = event.target.closest('[data-imprimir-comprobante]');
 
-        if (fila && !event.target.closest('a, button')) {
-            seleccionar(fila.dataset.id);
+        if (!enlace || event.metaKey || event.ctrlKey || event.shiftKey) {
+            return;
         }
+
+        event.preventDefault();
+        marco?.remove();
+        marco = document.createElement('iframe');
+        marco.title = 'Comprobante para imprimir';
+        marco.setAttribute('aria-hidden', 'true');
+        marco.style.cssText = 'position:fixed;width:0;height:0;border:0;right:0;bottom:0;visibility:hidden;';
+        marco.addEventListener('load', async () => {
+            try {
+                await marco.contentDocument?.fonts?.ready;
+                marco.contentWindow.focus();
+                marco.contentWindow.print();
+            } catch {
+                window.open(enlace.href, '_blank', 'noopener');
+            }
+        }, { once: true });
+        marco.src = enlace.href;
+        document.body.append(marco);
     });
 }
 
@@ -124,22 +113,8 @@ function iniciarAjuste(pagina) {
     });
 }
 
-function actualizarFila(pagina, id, { bonificacion, descuento, total }) {
-    const fila = pagina.querySelector(`[data-fila-trabajador][data-id="${id}"]`);
-
-    if (!fila) {
-        return;
-    }
-
-    const ajuste = bonificacion - descuento;
-    const celdaAjuste = fila.querySelector('[data-celda-ajuste]');
-    const celdaTotal = fila.querySelector('[data-celda-total]');
-
-    if (celdaAjuste) {
-        celdaAjuste.textContent = ajuste === 0 ? '—' : `${ajuste > 0 ? '+ ' : '− '}${formatearSoles(Math.abs(ajuste))}`;
-        celdaAjuste.classList.remove('text-success', 'text-danger', 'text-text-muted');
-        celdaAjuste.classList.add(ajuste > 0 ? 'text-success' : ajuste < 0 ? 'text-danger' : 'text-text-muted');
-    }
+function actualizarFila(pagina, id, { total }) {
+    const celdaTotal = pagina.querySelector(`[data-fichas-fila][data-ficha-id="${id}"] [data-celda-total]`);
 
     if (celdaTotal) {
         celdaTotal.textContent = formatearSoles(total);

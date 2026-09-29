@@ -28,7 +28,7 @@ use DateTimeImmutable;
  * pago pendiente abierto, que se recalcula cada vez que llega una entrega, se
  * confirma un análisis o cambia un dato. Un pago PAGADO es inmutable: sus
  * entregas ya no se tocan, y las entregas posteriores de la misma semana
- * forman otro pago pendiente. Cualquier diferencia posterior sobre un pago
+ * pasan a la siguiente semana disponible. Cualquier diferencia posterior sobre un pago
  * realizado requeriría un flujo de regularización (no existe todavía).
  *
  * Es idempotente y NUNCA lanza por faltas de configuración (sin configuración de
@@ -83,16 +83,21 @@ final class SincronizarPagosProveedor
     private function sincronizarProveedor(int $proveedorId, array $configuraciones, ?int $actorUserId, ResultadoGeneracionPagos $resultado): void
     {
         $existentes = $this->pendientes->liberarPendientes($proveedorId);
+        $cerradas = array_fill_keys($this->pendientes->semanasCerradas($proveedorId), true);
         $entregas = $this->entregas->porAsignar($proveedorId);
         $usados = [];
         $grupos = [];
 
         foreach ($entregas as $entrega) {
-            $grupos[PeriodoPago::semanaQueContiene($entrega->fechaHora)->clave()][] = $entrega;
+            $periodo = PeriodoPago::semanaQueContiene($entrega->fechaHora);
+            while (isset($cerradas[$periodo->clave()])) {
+                $periodo = $periodo->siguiente();
+            }
+            $grupos[$periodo->clave()][] = $entrega;
         }
 
         foreach ($grupos as $clave => $grupo) {
-            $periodo = PeriodoPago::semanaQueContiene($grupo[0]->fechaHora);
+            $periodo = PeriodoPago::semanaQueContiene(new DateTimeImmutable($clave));
             $nombre = $grupo[0]->proveedorNombre;
             $detalles = [];
             $configuracion = null;

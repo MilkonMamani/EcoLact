@@ -5,8 +5,8 @@
     $esForm = $size === 'form';
 @endphp
 
-<div id="{{ $id }}" data-modal class="@if ($open) is-open @endif fixed inset-0 {{ $nested ? 'z-[60]' : 'z-50' }} items-center justify-center {{ $esForm ? 'bg-text/50 p-2 sm:p-4' : 'bg-text/40 p-4' }}" role="dialog" aria-modal="true" @if ($title) aria-label="{{ $title }}" @endif>
-    <div class="max-h-[92vh] w-full overflow-y-auto {{ $esForm ? 'rounded-2xl p-5 sm:p-7' : 'rounded-xl p-6' }} bg-surface shadow-xl {{ $widths[$size] ?? $widths['md'] }}">
+<div id="{{ $id }}" data-modal class="@if ($open) is-open @endif fixed inset-0 {{ $nested ? 'z-[60]' : 'z-50' }} items-center justify-center {{ $esForm ? 'bg-text/35 p-2 sm:p-4' : 'bg-text/30 p-4' }}" role="dialog" aria-modal="true" @if ($title) aria-label="{{ $title }}" @endif>
+    <div data-modal-panel class="max-h-[92vh] w-full overflow-y-auto {{ $esForm ? 'rounded-2xl p-5 sm:p-7' : 'rounded-2xl p-6' }} bg-surface shadow-[0_20px_45px_-15px_rgb(16_24_40/0.28)] {{ $widths[$size] ?? $widths['md'] }}">
         <div class="flex items-start justify-between gap-4">
             @if ($title)
                 <h2 class="{{ $esForm ? 'text-xl font-bold' : 'text-base font-semibold' }} text-text">{{ $title }}</h2>

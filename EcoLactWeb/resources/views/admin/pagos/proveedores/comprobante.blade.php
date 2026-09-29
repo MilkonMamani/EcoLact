@@ -14,7 +14,7 @@
         }
     </style>
 </head>
-<body class="bg-background font-sans text-text antialiased">
+<body class="bg-neutral-100 font-sans text-text antialiased">
     <div class="no-imprimir flex items-center justify-between gap-3 border-b border-text-muted/10 bg-surface px-4 py-3">
         <a href="{{ route('admin.pagos.proveedores.index', ['semana' => $c->periodoInicio]) }}" class="text-sm text-text-muted hover:text-text">&larr; Volver a Pagar a proveedores</a>
         <button type="button" onclick="window.print()" class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark">
@@ -23,7 +23,7 @@
     </div>
 
     <main class="pp-pantalla overflow-x-auto px-4 py-6">
-        <div class="mx-auto shadow-lg" style="width: 794px">
+        <div class="pp-documento-individual mx-auto border border-neutral-200" style="width: 794px">
             @include('admin.pagos.proveedores._comprobante', ['c' => $c])
         </div>
     </main>

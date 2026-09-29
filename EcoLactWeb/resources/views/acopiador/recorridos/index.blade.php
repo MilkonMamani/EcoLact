@@ -22,7 +22,7 @@
                         <tr class="border-b border-text-muted/5 last:border-0">
                             <td class="py-3 pr-4 text-text">{{ $recorrido->fechaOperativa()->format('d/m/Y') }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $ruta?->zona?->nombre }} · {{ $ruta?->nombre }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$recorrido->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$recorrido->estado()->value" /></td>
                             <td class="py-3 pl-4 text-right">
                                 <x-ui.button :href="route('acopiador.recorridos.show', $recorrido->id())" variant="ghost" size="sm" as="a">Abrir →</x-ui.button>
                             </td>

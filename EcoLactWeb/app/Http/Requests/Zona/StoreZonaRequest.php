@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Zona;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreZonaRequest extends FormRequest
 {
@@ -20,7 +19,6 @@ class StoreZonaRequest extends FormRequest
         return [
             'nombre' => ['required', 'string', 'max:100', 'unique:zonas,nombre'],
             'descripcion' => ['nullable', 'string'],
-            'estado' => ['required', 'string', Rule::in(['ACTIVO', 'INACTIVO'])],
         ];
     }
 

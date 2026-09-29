@@ -2,7 +2,9 @@
 
 namespace App\Infrastructure\Persistence\Models;
 
+use App\Domain\Pago\PeriodoPago;
 use App\Models\User;
+use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +12,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ObligacionPagoModel extends Model
 {
+    protected static function booted(): void
+    {
+        static::creating(function (self $obligacion): void {
+            if ($obligacion->tipo_beneficiario === 'PROVEEDOR' && $obligacion->fecha_pago_programada === null) {
+                $obligacion->fecha_pago_programada = PeriodoPago::semanaQueContiene(
+                    DateTimeImmutable::createFromInterface($obligacion->periodo_inicio),
+                )->fechaPagoProgramada();
+            }
+        });
+    }
+
     protected $table = 'obligaciones_pago';
 
     protected $fillable = [

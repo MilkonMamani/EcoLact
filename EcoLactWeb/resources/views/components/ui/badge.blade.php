@@ -1,4 +1,4 @@
-@props(['status' => null, 'variant' => null, 'icon' => null])
+@props(['status' => null, 'variant' => null, 'icon' => null, 'compact' => false])
 
 @php
     $key = strtoupper((string) ($variant ?? $status ?? ''));
@@ -71,11 +71,53 @@
     ];
 
     $classes = $palette[$key] ?? 'bg-text-muted/10 text-text-muted ring-text-muted/20';
+
+    /*
+     * Modo compacto (tablas y listados): solo un ícono con color semántico; el nombre del
+     * estado queda en el tooltip (data-tooltip) y como texto para lectores de pantalla.
+     * Un único mapeo para todo el sistema, así un mismo estado se ve igual en todas partes.
+     */
+    $tonos = [
+        // Positivo / final correcto → doble check verde
+        'positivo' => ['ANALIZADA', 'ACEPTADA', 'CONFIRMADO', 'PUBLICADO', 'FINALIZADO', 'RECOLECTADO', 'PAGADA', 'PAGADO', 'PRESENTE', 'ACTIVO', 'ACTIVA', 'DISPONIBLE', 'CONFIGURADA', 'REGISTRADA', 'CERRADO', 'SUCCESS'],
+        // Pendiente / en curso → reloj ámbar
+        'pendiente' => ['PENDIENTE_ANALISIS', 'PENDIENTE', 'SIN_REGISTRO', 'BORRADOR', 'EN_CURSO', 'EN_PROCESO', 'EN_PROGRESO', 'PROGRAMADA', 'REGISTRADO', 'PARCIALMENTE_PAGADA', 'ABIERTO', 'INFO'],
+        // Observación / requiere atención → advertencia amarilla
+        'advertencia' => ['OBSERVADA', 'SIN_STOCK', 'NO_ENTREGO', 'WARNING'],
+        // Negativo / rechazado → X roja
+        'negativo' => ['RECHAZADA', 'ANULADA', 'ANULADO', 'CANCELADO', 'FALTA', 'SIN_RECETA', 'INACTIVO', 'INACTIVA', 'DANGER'],
+        // Sin efecto (no aplica / vencido / sin configurar) → neutro gris
+        'neutro' => ['VENCIDA', 'SIN_CONFIGURAR', 'NO_APLICABLE', 'FUTURO'],
+    ];
+    $estilosCompactos = [
+        'positivo' => ['check-double', 'is-positivo'],
+        'pendiente' => ['clock', 'is-pendiente'],
+        'advertencia' => ['triangle-alert', 'is-advertencia'],
+        'negativo' => ['x-circle', 'is-negativo'],
+        'neutro' => ['minus-circle', 'is-neutro'],
+    ];
+    $tono = collect($tonos)->search(fn (array $claves): bool => in_array($key, $claves, true)) ?: 'neutro';
+    [$iconoCompacto, $claseCompacta] = $estilosCompactos[$tono];
+
+    $nombres = [
+        'PENDIENTE_ANALISIS' => 'Pendiente de análisis', 'SIN_REGISTRO' => 'Pendiente', 'NO_ENTREGO' => 'No entregó',
+        'EN_CURSO' => 'En curso', 'EN_PROCESO' => 'En proceso', 'EN_PROGRESO' => 'En progreso', 'SIN_STOCK' => 'Sin stock',
+        'SIN_RECETA' => 'Sin receta', 'SIN_CONFIGURAR' => 'Sin configurar', 'NO_APLICABLE' => 'No aplica',
+        'PARCIALMENTE_PAGADA' => 'Parcialmente pagada',
+    ];
+    $etiqueta = $slot->isEmpty() ? ($nombres[$key] ?? str($key)->replace('_', ' ')->lower()->ucfirst()->toString()) : trim(strip_tags((string) $slot));
 @endphp
 
-<span {{ $attributes->class(['inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset', $classes]) }}>
-    @if ($icon)
-        <x-ui.icon :name="$icon" class="h-3.5 w-3.5" />
-    @endif
-    {{ $slot->isEmpty() ? str($key)->replace('_', ' ')->title() : $slot }}
-</span>
+@if ($compact)
+    <span {{ $attributes->class(['estado-compacto', $claseCompacta]) }} data-tooltip="{{ $etiqueta }}" data-estado="{{ $key }}">
+        <x-ui.icon :name="$iconoCompacto" class="h-4 w-4" />
+        <span class="sr-only">{{ $etiqueta }}</span>
+    </span>
+@else
+    <span {{ $attributes->class(['inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset', $classes]) }}>
+        @if ($icon)
+            <x-ui.icon :name="$icon" class="h-3.5 w-3.5" />
+        @endif
+        {{ $slot->isEmpty() ? str($key)->replace('_', ' ')->title() : $slot }}
+    </span>
+@endif

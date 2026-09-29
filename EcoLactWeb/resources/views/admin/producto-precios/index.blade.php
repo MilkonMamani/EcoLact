@@ -26,7 +26,7 @@
                             <td class="py-3 pr-4 font-medium text-text">S/ {{ number_format($precio->precio(), 2) }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $precio->fechaInicio()->format('d/m/Y') }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $precio->fechaFin()?->format('d/m/Y') ?? '—' }}</td>
-                            <td class="py-3 pl-4"><x-ui.badge :status="$precio->estado()" /></td>
+                            <td class="py-3 pl-4"><x-ui.badge compact :status="$precio->estado()" /></td>
                         </tr>
                     @endforeach
                 </tbody>

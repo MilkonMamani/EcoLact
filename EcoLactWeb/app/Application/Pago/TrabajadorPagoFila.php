@@ -2,9 +2,16 @@
 
 namespace App\Application\Pago;
 
-/** Fila de la tabla y datos del panel de "Pagar a trabajadores". */
+/**
+ * Fila de la tabla y datos del panel de "Pagos a trabajadores". Normalmente es la
+ * obligación de pago del mes ($id = obligación). Si el rol del trabajador no tiene
+ * sueldo configurado no existe obligación: la fila igual se muestra (estado
+ * SIN_SUELDO, $id = 0, $trabajadorId = trabajador) con su asistencia real y sin montos.
+ */
 final readonly class TrabajadorPagoFila
 {
+    public const SIN_SUELDO = 'SIN_SUELDO';
+
     public function __construct(
         public int $id,
         public int $userId,
@@ -31,7 +38,19 @@ final readonly class TrabajadorPagoFila
         public float $acumulado,
         public bool $esMesCompleto,
         public ?string $fechaIngresoEtiqueta,
+        public ?int $trabajadorId = null,
     ) {}
+
+    public function sinSueldo(): bool
+    {
+        return $this->estado === self::SIN_SUELDO;
+    }
+
+    /** Identificador de la fila en la pantalla (?trabajador=...): la obligación, o "s{trabajador}" si no tiene sueldo. */
+    public function clave(): string
+    {
+        return $this->sinSueldo() ? 's'.$this->trabajadorId : (string) $this->id;
+    }
 
     public function estaPendiente(): bool
     {

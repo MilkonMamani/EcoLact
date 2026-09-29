@@ -1,0 +1,102 @@
+/*
+ * Personal → Trabajadores → Nuevo trabajador. Mismo lenguaje que Proveedores/Acopiadores
+ * (tokens de .fichas): fondo gris muy suave, tarjetas blancas con borde #e5e7eb, radio 14px.
+ */
+.nuevo-trabajador {
+    --nt-borde: #e5e7eb;
+    --nt-sombra: 0 1px 2px rgb(16 24 40 / .04), 0 1px 3px rgb(16 24 40 / .04);
+}
+
+/* Colores por rol (ícono y selección) */
+.nt-icono-rol { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: .7rem; }
+.nt-icono-rol.is-verde { background: #e8f6ee; color: #0a7a4e; }
+.nt-icono-rol.is-morado { background: #f1ecfd; color: #6d4ad1; }
+.nt-icono-rol.is-azul { background: #e9f1fc; color: #2f6fc0; }
+.nt-icono-rol.is-ambar { background: #fdf3e2; color: #b7730c; }
+
+/* Barra: Volver + Ver lista de trabajadores */
+.nt-barra { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; margin-top: 1rem; }
+.nt-volver { display: inline-flex; align-items: center; gap: .4rem; height: 2.25rem; padding-inline: .8rem; border: 1px solid var(--nt-borde); border-radius: .55rem; background: #fff; color: #344054; font-size: .85rem; font-weight: 600; transition: border-color .15s, color .15s; }
+.nt-volver:hover { border-color: #00ab62; color: #006146; }
+.nt-listas { position: relative; }
+.nt-listas > summary { list-style: none; }
+.nt-listas > summary::-webkit-details-marker { display: none; }
+.nt-listas[open] > summary svg:last-child { transform: rotate(180deg); }
+.nt-listas-menu { position: absolute; right: 0; top: calc(100% + .35rem); z-index: 20; min-width: 15rem; padding: .35rem; border: 1px solid var(--nt-borde); border-radius: .7rem; background: #fff; box-shadow: 0 12px 28px -12px rgb(16 24 40 / .25); }
+.nt-listas-menu a { display: flex; align-items: center; gap: .6rem; padding: .45rem .55rem; border-radius: .5rem; color: #1d2939; font-size: .85rem; font-weight: 500; }
+.nt-listas-menu a:hover { background: #f5f7f6; }
+.nt-listas-menu .nt-icono-rol { width: 1.9rem; height: 1.9rem; border-radius: .5rem; }
+
+/* Encabezado */
+.nt-encabezado { margin-top: 1.25rem; }
+.nt-encabezado .fichas-title { margin-top: 0; font-size: 2rem; }
+
+/* Selector de rol */
+.nt-roles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .85rem; margin: 1.5rem 0 0; padding: 0; border: 0; }
+.nt-rol { position: relative; display: flex; align-items: flex-start; gap: .8rem; padding: 1rem 2.6rem 1rem 1rem; border: 1px solid var(--nt-borde); border-radius: .9rem; background: #fff; box-shadow: var(--nt-sombra); cursor: pointer; transition: border-color .18s, background-color .18s, box-shadow .18s, transform .18s; }
+.nt-rol:hover { border-color: #b7dcc8; transform: translateY(-1px); }
+.nt-rol input { position: absolute; opacity: 0; pointer-events: none; }
+.nt-rol-texto { display: grid; gap: .2rem; min-width: 0; }
+.nt-rol-nombre { color: #1d2939; font-size: .92rem; font-weight: 700; }
+.nt-rol-descripcion { color: #667085; font-size: .78rem; line-height: 1.4; }
+.nt-rol-radio { position: absolute; top: 1rem; right: 1rem; width: 1.1rem; height: 1.1rem; border: 1.5px solid #d0d5dd; border-radius: 9999px; background: #fff; transition: border-color .18s, box-shadow .18s; }
+.nt-rol:has(input:checked) { border-color: #00ab62; background: #f3fbf6; box-shadow: 0 0 0 1px #00ab62, var(--nt-sombra); }
+.nt-rol:has(input:checked) .nt-rol-radio { border-color: #00ab62; box-shadow: inset 0 0 0 4px #00ab62; }
+.nt-rol:has(input:focus-visible) { outline: 2px solid #00ab62; outline-offset: 2px; }
+.nt-noscript { margin-top: .6rem; color: #667085; font-size: .8rem; }
+.nt-noscript a { color: #006146; font-weight: 600; }
+
+/* Cuerpo: formulario + lateral */
+.nt-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; align-items: start; gap: 1.5rem; margin-top: 1.5rem; }
+.nt-formulario { border: 1px solid var(--nt-borde); border-radius: 1rem; background: #fff; box-shadow: var(--nt-sombra); }
+.nt-seccion { padding: 1.5rem 1.6rem; }
+.nt-seccion.is-cuenta { border-top: 1px solid #f0f2f4; }
+.nt-seccion-head { display: flex; align-items: flex-start; gap: .8rem; margin-bottom: 1.25rem; }
+.nt-seccion-head h2 { color: #1d2939; font-size: 1.02rem; font-weight: 700; }
+.nt-seccion-head p { margin-top: .15rem; color: #667085; font-size: .82rem; }
+.nt-seccion-icono { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 2.4rem; height: 2.4rem; border-radius: .7rem; background: #eef7f2; color: #006146; }
+.nt-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.1rem 1.25rem; }
+.nt-grid > .campo-icono.is-entrando { animation: nt-campo-in 200ms ease-out both; }
+.nt-footer { display: flex; justify-content: flex-end; gap: .6rem; padding: 1rem 1.6rem; border-top: 1px solid #f0f2f4; border-radius: 0 0 1rem 1rem; background: #fafbfa; }
+.nt-footer .fichas-btn { height: 2.625rem; padding-inline: 1.15rem; }
+
+/* Lateral */
+.nt-lateral { display: grid; gap: 1rem; }
+.nt-aviso { display: flex; gap: .75rem; padding: 1rem 1.05rem; border: 1px solid #cfe9db; border-radius: .9rem; background: #f2faf5; }
+.nt-aviso-icono { display: inline-flex; flex-shrink: 0; color: #0a7a4e; }
+.nt-aviso h3, .nt-roles-info h3 { color: #1d2939; font-size: .9rem; font-weight: 700; }
+.nt-aviso p { margin-top: .3rem; color: #475467; font-size: .8rem; line-height: 1.5; }
+.nt-roles-info { padding: 1.05rem 1.1rem; border: 1px solid var(--nt-borde); border-radius: .9rem; background: #fff; box-shadow: var(--nt-sombra); }
+.nt-roles-info ul { display: grid; gap: .85rem; margin-top: .9rem; }
+.nt-roles-info li { display: flex; align-items: flex-start; gap: .7rem; }
+.nt-roles-info .nt-icono-rol { width: 2.1rem; height: 2.1rem; border-radius: .6rem; }
+.nt-roles-info strong { display: block; color: #1d2939; font-size: .84rem; font-weight: 600; }
+.nt-roles-info li span > span { display: block; margin-top: .1rem; color: #667085; font-size: .76rem; line-height: 1.4; }
+
+@keyframes nt-campo-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* Tablet: el lateral pasa debajo; tarjetas de rol en 2 columnas */
+@media (max-width: 1100px) {
+    .nt-cuerpo { grid-template-columns: minmax(0, 1fr); }
+    .nt-lateral { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1023px) {
+    .nt-roles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Móvil: una columna */
+@media (max-width: 639px) {
+    .nt-roles, .nt-grid, .nt-lateral { grid-template-columns: minmax(0, 1fr); }
+    .nt-seccion { padding: 1.2rem 1.1rem; }
+    .nt-footer { padding: .9rem 1.1rem; }
+    .nt-footer .fichas-btn { flex: 1; }
+    .nt-barra .nt-listas { flex: 1; }
+    .nt-listas > summary { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nt-rol, .nt-rol-radio { transition: none; }
+    .nt-rol:hover { transform: none; }
+    .nt-grid > .campo-icono.is-entrando { animation: none; }
+}

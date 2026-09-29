@@ -12,5 +12,7 @@ final class PersonalPagable
         public readonly int $rolId,
         public readonly string $nombre,
         public readonly DateTimeImmutable $fechaAlta,
+        /** DNI de su ficha (null para roles sin ficha, p. ej. el administrador). */
+        public readonly ?string $dni = null,
     ) {}
 }

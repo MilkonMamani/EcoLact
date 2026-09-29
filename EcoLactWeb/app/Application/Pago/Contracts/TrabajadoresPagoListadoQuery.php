@@ -16,5 +16,8 @@ interface TrabajadoresPagoListadoQuery
 
     public function buscarFila(int $obligacionId): ?TrabajadorPagoFila;
 
+    /** Fila "sin sueldo" de un trabajador (su rol no tiene sueldo configurado) en el mes indicado (Y-m). */
+    public function buscarSinSueldo(int $trabajadorId, string $periodo): ?TrabajadorPagoFila;
+
     public function comprobante(int $obligacionId): ?ComprobantePagoTrabajador;
 }

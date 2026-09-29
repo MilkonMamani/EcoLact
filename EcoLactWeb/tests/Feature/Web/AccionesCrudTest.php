@@ -80,20 +80,19 @@ it('ninguna columna de acciones de las vistas usa botones de texto: todas usan x
     expect($infractores)->toBe([]);
 });
 
-it('la tabla de proveedores usa ver (azul), editar (amarillo) y desactivar (rojo) con nombre del proveedor en el aria-label', function () {
+it('la tabla de proveedores selecciona al proveedor en el panel sin página de detalle ni botones por fila', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $proveedor = fixture_proveedor(fixture_zona('Collana 1'), '72100012');
     $proveedor->update(['nombres' => 'Ana', 'apellidos' => 'Choque Condori']);
 
     $this->actingAs($admin)->get(route('admin.proveedores.index'))
         ->assertOk()
-        ->assertSee('aria-label="Ver perfil Ana Choque Condori"', false)
-        ->assertSee('aria-label="Editar proveedor Ana Choque Condori"', false)
-        ->assertSee('aria-label="Desactivar proveedor Ana Choque Condori"', false)
-        ->assertSee('bg-warning text-text', false)
-        ->assertSee(route('admin.proveedores.show', $proveedor->id), false)
+        ->assertSee('data-url-panel="'.route('admin.proveedores.panel', $proveedor->id).'"', false)
+        ->assertSee(e(route('admin.proveedores.index', ['proveedor' => $proveedor->id])), false)
+        ->assertSee('aria-label="Editar información personal de Ana Choque Condori"', false)
         ->assertSee('modal-editar-proveedor-'.$proveedor->id, false)
-        ->assertSee('modal-desactivar-proveedor-'.$proveedor->id, false);
+        ->assertSee('id="modal-desactivar-proveedor"', false)
+        ->assertDontSee('aria-label="Ver perfil Ana Choque Condori"', false);
 });
 
 it('desactivar conserva su modal de confirmación con el aviso de que el registro no se elimina', function () {
@@ -101,7 +100,7 @@ it('desactivar conserva su modal de confirmación con el aviso de que el registr
     $proveedor = fixture_proveedor(fixture_zona('Collana 1'));
 
     $this->actingAs($admin)->get(route('admin.proveedores.index'))
-        ->assertSee('No se elimina: el registro y su historial se conservan', false)
+        ->assertSee('Se conservan sus entregas, compras, controles de calidad, pagos y su historial.', false)
         ->assertSee(route('admin.proveedores.desactivar', $proveedor->id), false);
 });
 

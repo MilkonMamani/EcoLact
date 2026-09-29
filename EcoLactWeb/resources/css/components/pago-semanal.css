@@ -1,151 +1,80 @@
-/*
- * Pago semanal a proveedores: hoja del comprobante (A4, 794 x 1123 px) y su
- * escalado. La hoja se diseña siempre a tamaño real; la miniatura de la pantalla, las
- * páginas del modal y el papel solo cambian la escala (--pp-escala), así los tres
- * se ven idénticos.
- */
-
+﻿/* Documento único: listado, modal e impresión reutilizan _comprobante. */
 .pp-hoja {
-    --pp-navy: #12324a;
-    --pp-teal: #0f7c86;
-    --pp-teal-dark: #0b5961;
-    --pp-soft: #e8f5f3;
-    --pp-soft-2: #d5ece9;
-    --pp-line: #d2e4e3;
-    --pp-muted: #5b7284;
-
-    position: relative;
+    --pp-tinta: #17221e;
+    --pp-muted: #68716c;
+    --pp-linea: #d9dedb;
+    --pp-acento: #006146;
     box-sizing: border-box;
     width: 794px;
-    min-height: 1123px;
-    padding: 24px 38px 18px;
+    min-height: 1122px;
+    padding: 44px 48px 38px;
     background: #fff;
-    color: var(--pp-navy);
+    color: var(--pp-tinta);
     font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-    font-size: 14px;
-    line-height: 1.3;
+    font-size: 13px;
+    line-height: 1.45;
     transform-origin: top left;
     transform: scale(var(--pp-escala, 1));
 }
-
-.pp-hoja *,
-.pp-hoja *::before,
-.pp-hoja *::after { box-sizing: border-box; }
-
-.pp-hoja svg { display: block; flex-shrink: 0; }
-
-/* Contenedor que reserva el espacio ya escalado de la hoja. */
-.pp-escala {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    height: calc(1123px * var(--pp-escala, 1));
-}
-
+.pp-hoja *, .pp-hoja *::before, .pp-hoja *::after { box-sizing: border-box; }
+.pp-hoja p, .pp-hoja h1, .pp-hoja h2, .pp-hoja dl, .pp-hoja dd { margin: 0; }
+.pp-cabecera { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding-bottom: 22px; border-bottom: 2px solid var(--pp-acento); }
+.pp-marca strong { display: block; color: var(--pp-acento); font-size: 28px; font-weight: 700; letter-spacing: -.025em; }
+.pp-marca span { display: block; color: var(--pp-muted); font-size: 11px; }
+.pp-documento { text-align: right; }
+.pp-documento h1 { font-size: 19px; font-weight: 700; text-transform: uppercase; letter-spacing: .035em; }
+.pp-documento p { margin-top: 5px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.pp-hoja .pp-resumen { display: grid; grid-template-columns: 1fr .65fr 1.6fr; gap: 20px; margin-top: 20px; }
+.pp-resumen dt, .pp-etiqueta { color: var(--pp-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; }
+.pp-resumen dd { margin-top: 4px; font-weight: 500; }
+.pp-hoja .pp-pagado { margin-top: 9px; color: var(--pp-muted); font-size: 11px; }
+.pp-proveedor { margin-top: 23px; padding-top: 17px; border-top: 1px solid var(--pp-linea); }
+.pp-hoja .pp-proveedor-nombre { margin-top: 4px; font-size: 18px; font-weight: 600; }
+.pp-hoja .pp-proveedor-datos { display: flex; flex-wrap: wrap; gap: 12px 30px; margin-top: 8px; }
+.pp-proveedor-datos div { display: flex; gap: 10px; }
+.pp-proveedor-datos dt { color: var(--pp-muted); }
+.pp-seccion { margin-top: 25px; }
+.pp-tabla { width: 100%; margin-top: 9px; border-collapse: collapse; }
+.pp-tabla th { padding: 8px 6px; border-top: 1px solid var(--pp-tinta); border-bottom: 1px solid var(--pp-linea); text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .025em; }
+.pp-tabla td { padding: 9px 6px; border-bottom: 1px solid var(--pp-linea); vertical-align: top; overflow-wrap: anywhere; }
+.pp-tabla td:nth-child(2) { color: var(--pp-muted); font-size: 12px; }
+.pp-tabla th:first-child, .pp-tabla td:first-child { padding-left: 0; }
+.pp-tabla th:last-child, .pp-tabla td:last-child { padding-right: 0; }
+.pp-tabla .is-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pp-subtotal { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--pp-linea); font-size: 12px; }
+.pp-subtotal span { font-weight: 600; text-transform: uppercase; letter-spacing: .035em; }
+.pp-subtotal strong { font-variant-numeric: tabular-nums; }
+.pp-hoja .pp-nota, .pp-hoja .pp-sin-compras { margin-top: 8px; color: var(--pp-muted); font-size: 12px; }
+.pp-hoja .pp-sin-compras { padding: 10px 0; }
+.pp-cierre { margin-top: 23px; margin-left: auto; width: 370px; }
+.pp-totales dl { margin-top: 6px; }
+.pp-totales dl > div { display: flex; justify-content: space-between; gap: 20px; padding: 5px 0; font-variant-numeric: tabular-nums; }
+.pp-totales dt { color: var(--pp-muted); }
+.pp-totales dd { white-space: nowrap; }
+.pp-totales .is-total { align-items: baseline; margin-top: 8px; padding-top: 12px; border-top: 2px solid var(--pp-tinta); font-weight: 700; }
+.pp-totales .is-total dt { color: var(--pp-tinta); text-transform: uppercase; }
+.pp-totales .is-total dd { color: var(--pp-acento); font-size: 24px; }
+.pp-forma-pago { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; }
+.pp-firmas { display: grid; grid-template-columns: 1fr 1fr; gap: 65px; margin-top: 52px; }
+.pp-firma-linea { display: block; border-top: 1px solid var(--pp-tinta); }
+.pp-firma p { margin-top: 5px; color: var(--pp-muted); font-size: 11px; overflow-wrap: anywhere; }
+.pp-firma .pp-firma-titulo { margin-top: 9px; margin-bottom: 9px; color: var(--pp-tinta); font-size: 12px; font-weight: 600; }
+/* Solo la vista en pantalla se escala. La altura se mide también para muchas compras. */
+.pp-escala { position: relative; width: 100%; overflow: hidden; height: calc(1122px * var(--pp-escala, 1)); }
 .pp-escala > .pp-hoja { position: absolute; top: 0; left: 0; }
-
-/* Encabezado */
-.pp-cabecera { display: flex; align-items: center; justify-content: space-between; }
-.pp-marca { display: flex; align-items: center; gap: 12px; }
-.pp-marca img { width: 50px; height: 64px; }
-.pp-marca strong { display: block; font-size: 36px; font-weight: 600; line-height: 1; letter-spacing: -.02em; color: var(--pp-navy); }
-.pp-marca small { display: block; margin-top: 4px; font-size: 13px; color: var(--pp-navy); }
-.pp-lema { display: flex; align-items: center; gap: 12px; color: var(--pp-navy); font-size: 11.5px; line-height: 1.3; }
-.pp-lema span { max-width: 130px; text-align: right; }
-.pp-lema i { display: block; width: 1px; height: 38px; background: var(--pp-line); }
-.pp-lema svg { width: 28px; height: 28px; color: var(--pp-teal); }
-
-/* Título y semana */
-.pp-titulo-fila { display: flex; gap: 16px; margin-top: 10px; }
-.pp-titulo-caja { display: flex; flex: 1; align-items: center; gap: 14px; padding: 8px 14px; border-radius: 12px; background: var(--pp-soft); }
-.pp-icono-caja { display: flex; width: 56px; height: 56px; align-items: center; justify-content: center; border-radius: 12px; background: var(--pp-soft-2); color: var(--pp-navy); }
-.pp-icono-caja svg { width: 34px; height: 34px; }
-.pp-titulo-caja h1 { margin: 0; white-space: nowrap; font-size: 28px; font-weight: 600; line-height: 1.1; letter-spacing: -.015em; color: var(--pp-navy); }
-.pp-titulo-caja p { margin: 4px 0 0; white-space: nowrap; font-size: 12.5px; color: var(--pp-muted); }
-.pp-semana { display: flex; width: 214px; align-items: center; gap: 12px; padding: 8px 14px; border-radius: 12px; background: var(--pp-soft); }
-.pp-semana svg { width: 34px; height: 34px; color: var(--pp-navy); }
-.pp-semana strong { display: block; font-size: 19px; font-weight: 600; line-height: 1.15; }
-.pp-semana span { display: block; margin-top: 3px; white-space: nowrap; font-size: 12.5px; color: var(--pp-muted); }
-.pp-pagado-sello { display: inline-block; margin-top: 6px; border-radius: 999px; background: #e3f6ec; padding: 2px 9px; color: #1c7f5e; font-size: 11px; font-weight: 600; }
-
-/* Secciones */
-.pp-seccion { margin-top: 12px; overflow: hidden; border: 1px solid var(--pp-line); border-radius: 8px; background: #fff; }
-.pp-seccion-cabecera { display: flex; align-items: center; gap: 12px; padding: 6px 14px; background: var(--pp-soft); }
-.pp-seccion-icono { display: flex; width: 32px; height: 32px; align-items: center; justify-content: center; border-radius: 9px; background: var(--pp-soft-2); color: var(--pp-teal-dark); }
-.pp-seccion-icono svg { width: 20px; height: 20px; }
-.pp-seccion-cabecera h2 { margin: 0; font-size: 17px; font-weight: 600; color: var(--pp-navy); }
-.pp-seccion-cabecera p { margin: 1px 0 0; font-size: 12px; color: var(--pp-muted); }
-
-.pp-datos { display: grid; grid-template-columns: 1.35fr 1fr 1fr 1.05fr; padding: 8px 0 10px; }
-.pp-datos div { padding: 0 18px; border-left: 1px solid var(--pp-line); }
-.pp-datos div:first-child { border-left: 0; }
-.pp-datos dt { font-size: 12.5px; color: var(--pp-muted); }
-.pp-datos dd { margin: 3px 0 0; font-size: 17px; font-weight: 500; color: var(--pp-navy); }
-
-/* Tablas */
-.pp-tabla { width: 100%; border-collapse: collapse; }
-.pp-tabla th { padding: 6px 10px; border-bottom: 1px solid var(--pp-line); font-size: 12.5px; font-weight: 400; color: var(--pp-muted); text-align: center; line-height: 1.15; }
-.pp-tabla td { padding: 6px 10px; border-bottom: 1px solid var(--pp-line); font-size: 14px; text-align: center; }
-.pp-tabla th + th, .pp-tabla td + td { border-left: 1px solid var(--pp-line); }
-.pp-tabla tr:last-child td { border-bottom: 0; }
-.pp-tabla .pp-izq { padding-left: 14px; text-align: left; }
-.pp-tabla .pp-der { padding-right: 14px; text-align: right; }
-.pp-tabla .pp-suave { color: var(--pp-muted); }
-.pp-tabla .pp-importe { font-weight: 500; }
-.pp-tabla .pp-vacio { padding: 14px; color: var(--pp-muted); font-size: 13px; }
-
-.pp-subtotal { display: flex; align-items: center; justify-content: space-between; margin: 6px 9px 8px; padding: 6px 14px; border-radius: 8px; background: var(--pp-soft); }
-.pp-subtotal span { font-size: 16px; font-weight: 600; color: var(--pp-navy); }
-.pp-subtotal strong { font-size: 22px; font-weight: 600; color: var(--pp-teal-dark); }
-
-/* Monto final */
-.pp-total { display: flex; align-items: center; gap: 16px; margin-top: 11px; padding: 9px 20px 9px 14px; border-radius: 12px; background: var(--pp-soft); }
-.pp-total .pp-icono-caja { width: 48px; height: 48px; }
-.pp-total .pp-icono-caja svg { width: 34px; height: 34px; }
-.pp-total h3 { margin: 0; font-size: 21px; font-weight: 600; }
-.pp-total p { margin: 2px 0 0; font-size: 14px; color: var(--pp-muted); }
-.pp-total strong { margin-left: auto; font-size: 36px; font-weight: 600; letter-spacing: -.02em; }
-
-/* Firmas */
-.pp-firmas { display: grid; grid-template-columns: 1fr 1fr; margin-top: 14px; }
-.pp-firma { position: relative; padding: 0 22px 0 46px; }
-.pp-firma + .pp-firma { border-left: 1px solid var(--pp-line); }
-.pp-firma > svg { position: absolute; top: 2px; left: 4px; width: 30px; height: 30px; color: var(--pp-navy); }
-.pp-firma-linea { margin-left: 22px; height: 18px; border-bottom: 1px solid var(--pp-navy); }
-.pp-firma h4 { margin: 6px 0 4px 22px; font-size: 14px; font-weight: 400; }
-.pp-firma dl { margin: 0 0 0 22px; }
-.pp-firma dl div { display: flex; align-items: flex-end; gap: 6px; margin-top: 5px; font-size: 13px; color: var(--pp-muted); }
-.pp-firma dl dd { flex: 1; margin: 0; height: 14px; border-bottom: 1px solid var(--pp-navy); }
-.pp-firma dl dd.pp-fecha { flex: 0 0 auto; display: flex; gap: 6px; border: 0; height: auto; }
-.pp-firma dl dd.pp-fecha i { display: inline-block; width: 30px; height: 14px; border-bottom: 1px solid var(--pp-navy); }
-
-/* Pie */
-.pp-pie { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
-.pp-pie-frase { display: flex; align-items: center; gap: 10px; color: var(--pp-navy); }
-.pp-pie-frase svg { width: 30px; height: 30px; color: var(--pp-teal); }
-.pp-pie-frase p { margin: 0; max-width: 300px; font-family: 'Caveat', 'Segoe Script', 'Brush Script MT', cursive; font-size: 19px; line-height: 1.1; color: var(--pp-muted); }
-.pp-pie-marca { text-align: right; }
-.pp-pie-marca strong { display: block; font-size: 25px; font-weight: 600; line-height: 1; letter-spacing: -.02em; }
-.pp-pie-marca small { display: block; margin-top: 2px; font-size: 10px; }
-
-/* Muchas compras: se compacta para que la hoja siga cabiendo en una página. */
-.pp-hoja.pp-compacta .pp-tabla td { padding-top: 3px; padding-bottom: 3px; font-size: 13px; }
-.pp-hoja.pp-compacta .pp-firma-linea { height: 16px; }
-.pp-hoja.pp-compacta .pp-seccion { margin-top: 9px; }
-
-/* Miniatura de la pantalla principal */
-.pp-miniatura { border: 1px solid var(--color-text-muted, #68777d); border-color: #0000001a; border-radius: 6px; box-shadow: 0 1px 3px #0000001a; overflow: hidden; background: #fff; }
-
-/* Modal de vista previa de impresión */
-.pp-pagina-lista { display: flex; width: 100%; align-items: center; gap: 12px; padding: 8px; border: 1px solid transparent; border-radius: 10px; text-align: left; cursor: pointer; transition: background-color .15s, border-color .15s; }
-.pp-pagina-lista:hover { background: #ffffff; }
-.pp-pagina-lista.is-activa { border-color: var(--color-primary); background: #ffffff; box-shadow: 0 1px 4px #0f7c8626; }
+.pp-miniatura { overflow: hidden; border: 1px solid #d9dedb; background: #fff; }
+.pp-pagina-lista { display: flex; width: 100%; align-items: center; gap: 12px; padding: 8px; border: 1px solid transparent; border-radius: 4px; text-align: left; cursor: pointer; }
+.pp-pagina-lista:hover { background: #fff; }
+.pp-pagina-lista.is-activa { border-color: var(--color-primary); background: #fff; }
 .pp-pagina-lista .pp-miniatura { width: 62px; flex-shrink: 0; }
-
-/* Impresión de la página individual (/comprobante/{pago}) y del iframe de impresión */
-@page { size: A4; margin: 0; }
-
+@page { size: A4 portrait; margin: 0; }
+@page proveedores { size: A4 portrait; margin: 10mm 12mm; }
 @media print {
-    .pp-hoja { --pp-escala: 1 !important; transform: none; page-break-after: always; break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .pp-hoja:last-child { page-break-after: auto; break-after: auto; }
+    .pp-hoja { page: proveedores; width: 100%; min-height: 0; padding: 0; transform: none; --pp-escala: 1 !important; break-after: page; page-break-after: always; }
+    .pp-hoja:last-child { break-after: auto; page-break-after: auto; }
+    .pp-tabla thead { display: table-header-group; }
+    .pp-tabla tr, .pp-cabecera, .pp-proveedor, .pp-subtotal, .pp-cierre, .pp-firmas { break-inside: avoid; page-break-inside: avoid; }
+    .pp-etiqueta, .pp-nota { break-after: avoid; page-break-after: avoid; }
+    .pp-documento-individual { width: auto !important; border: 0; }
+    .pp-pantalla { overflow: visible !important; }
 }

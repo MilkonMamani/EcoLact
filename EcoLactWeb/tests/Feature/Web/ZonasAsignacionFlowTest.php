@@ -41,12 +41,14 @@ it('el panel lista las zonas desde la base de datos, resalta la seleccionada y m
     $response->assertOk()
         ->assertSee('Collana 1')
         ->assertSee('Collana 2')
-        ->assertSee('Sin asignar')
-        ->assertSee('Buscar proveedor por nombre o DNI')
-        ->assertSee('Ej. Ana Quispe o 12345678')
-        ->assertSeeInOrder(['Sandra Ccama Quispe', '72100012', 'Collana 1', 'Ver ubicación'])
-        ->assertSeeInOrder(['Wilson Poma Mamani', '72100013', 'Sin ubicación']);
-    $response->assertSee('data-selected="true"', false);
+        ->assertSee('Buscar zona por nombre o descripción...')
+        ->assertSee('Buscar proveedor por nombre o DNI...')
+        ->assertSeeInOrder(['Resumen', 'Proveedores', 'Acopiadores'])
+        ->assertSeeInOrder(['Sandra Ccama Quispe', '72100012', 'Registrada'])
+        ->assertSeeInOrder(['Wilson Poma Mamani', '72100013', 'Sin ubicación'])
+        ->assertDontSee('Proveedores sin zona');
+    $response->assertSee('data-ficha-id="'.$collana1->id.'" data-url-panel', false)
+        ->assertSee('is-selected', false);
     // "Ruta 01" sigue en el JSON del catálogo zona→ruta que usa el modal de
     // asignación (data-catalogo); lo que ya no debe verse es la card de
     // rutas ni su navegación a "Recorridos".
@@ -59,21 +61,25 @@ it('sin parámetro selecciona la primera zona y una zona inexistente cae a la pr
     fixture_zona('Bbb Segunda');
 
     $this->actingAs($admin)->get(route('admin.zonas.index'))
-        ->assertOk()->assertSee('data-seleccion="'.$primera->id.'"', false);
+        ->assertOk()->assertSee('data-fichas-contenido data-ficha-id="'.$primera->id.'"', false);
     $this->actingAs($admin)->get(route('admin.zonas.index', ['zona' => 9999]))
-        ->assertOk()->assertSee('data-seleccion="'.$primera->id.'"', false);
+        ->assertOk()->assertSee('data-fichas-contenido data-ficha-id="'.$primera->id.'"', false);
 });
 
-it('la entrada "Sin asignar" lista a los proveedores activos sin zona ni ruta con el lápiz para asignarlos', function () {
+it('el aviso "Proveedores sin zona" va aparte de la tabla y abre la lista con el lápiz para asignarlos', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Collana 1');
     $libre = fixture_proveedor($zona, '72100077');
     $libre->update(['nombres' => 'Diana', 'apellidos' => 'Choque']);
 
+    $this->actingAs($admin)->get(route('admin.zonas.index'))
+        ->assertSeeInOrder(['Proveedores sin zona', '1 proveedor pendiente de asignación.', 'Ver proveedores'])
+        ->assertSee(e(route('admin.zonas.index', ['zona' => 'sin-asignar'])), false);
+
     $response = $this->actingAs($admin)->get(route('admin.zonas.index', ['zona' => 'sin-asignar']));
 
     $response->assertOk()
-        ->assertSeeInOrder(['Diana Choque', '72100077', 'Sin zona', 'Sin ubicación'])
+        ->assertSeeInOrder(['Proveedores sin zona', 'Diana Choque', '72100077', 'Sin ubicación'])
         ->assertSee('Asignar a zona a');
 });
 
@@ -83,7 +89,7 @@ it('el fragmento del panel de una zona se sirve sin layout', function () {
 
     $this->actingAs($admin)->get(route('admin.zonas.panel', $zona->id))
         ->assertOk()
-        ->assertSee('Proveedores de la zona')
+        ->assertSee('Información de la zona')
         ->assertDontSee('<html', false);
     $this->actingAs($admin)->get(route('admin.zonas.panel.sin-asignar'))
         ->assertOk()
@@ -111,7 +117,7 @@ it('el mapa de la zona indica cuántos proveedores tienen ubicación registrada'
     app(AsignarProveedorARuta::class)->execute(rutaId: $ruta->id(), proveedorId: $sinUbicacion->id);
 
     $this->actingAs($admin)->get(route('admin.zonas.panel', $zona->id))
-        ->assertSee('1 de 2 proveedores con ubicación');
+        ->assertSeeInOrder(['Con coordenadas', '1', 'Sin coordenadas', '1']);
 });
 
 it('una zona sin proveedores con coordenadas muestra el estado vacío del mapa', function () {
@@ -181,11 +187,11 @@ it('la búsqueda devuelve nombre, DNI y la asignación actual para precargar el 
 it('crea una zona y deja seleccionada la nueva', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
 
-    $response = $this->actingAs($admin)->post(route('admin.zonas.store'), ['nombre' => 'Zona Norte', 'estado' => 'ACTIVO']);
+    $response = $this->actingAs($admin)->post(route('admin.zonas.store'), ['nombre' => 'Zona Norte', 'descripcion' => 'Zona de prueba']);
 
     $zona = ZonaModel::where('nombre', 'Zona Norte')->firstOrFail();
     $response->assertRedirect(route('admin.zonas.index', ['zona' => $zona->id]));
-    $this->assertDatabaseHas('zonas', ['nombre' => 'Zona Norte', 'estado' => 'ACTIVO']);
+    $this->assertDatabaseHas('zonas', ['nombre' => 'Zona Norte', 'descripcion' => 'Zona de prueba', 'estado' => 'ACTIVO']);
 });
 
 it('rechaza crear una zona con nombre duplicado o vacío', function () {

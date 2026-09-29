@@ -24,7 +24,7 @@ class RoleSeeder extends Seeder
         foreach ($roles as $nombre) {
             DB::table('roles')->updateOrInsert(
                 ['nombre' => $nombre],
-                ['es_remunerable' => $nombre !== 'PROVEEDOR', 'updated_at' => now(), 'created_at' => now()]
+                ['es_remunerable' => $nombre !== 'PROVEEDOR', 'controla_asistencia' => $nombre !== 'ADMINISTRADOR', 'updated_at' => now(), 'created_at' => now()]
             );
         }
     }

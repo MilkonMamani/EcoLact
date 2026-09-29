@@ -140,7 +140,7 @@
                     @foreach ($recorridos as $recorrido)
                         <tr class="border-b border-text-muted/5 last:border-0">
                             <td class="py-2 pr-4 text-text">{{ $recorrido->fechaOperativa()->format('d/m/Y') }}</td>
-                            <td class="py-2 pr-4"><x-ui.badge :status="$recorrido->estado()->value" /></td>
+                            <td class="py-2 pr-4"><x-ui.badge compact :status="$recorrido->estado()->value" /></td>
                             <td class="py-2 pl-4 text-right text-text-muted">#{{ $recorrido->id() }}</td>
                         </tr>
                     @endforeach

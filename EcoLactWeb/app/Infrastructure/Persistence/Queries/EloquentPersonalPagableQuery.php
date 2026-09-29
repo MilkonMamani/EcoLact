@@ -65,6 +65,7 @@ final class EloquentPersonalPagableQuery implements PersonalPagableQuery
                     rolId: $usuario->role_id,
                     nombre: trim($ficha->nombres.' '.$ficha->apellidos),
                     fechaAlta: DateTimeImmutable::createFromInterface($ficha->fecha_ingreso ?? $ficha->created_at),
+                    dni: $ficha->dni,
                 );
             })
             ->filter()

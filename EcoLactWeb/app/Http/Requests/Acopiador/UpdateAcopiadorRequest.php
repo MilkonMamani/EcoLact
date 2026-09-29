@@ -3,19 +3,19 @@
 namespace App\Http\Requests\Acopiador;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
- * Valida el formato de los datos HTTP para actualizar un acopiador:
- * nombres, apellidos, telefono, zona y motivo_cambio_zona.
+ * Valida el formato de los datos HTTP para actualizar un acopiador. Hay dos
+ * formularios separados que llegan aquí:
  *
- * NO incluye dni ni username: ActualizarAcopiador no los admite (el DNI es
- * la identidad operativa del acopiador y el username pertenece a la
- * gestión de credenciales, fuera de este flujo).
+ * - "Editar información personal": nombres, apellidos y telefono.
+ * - "Cambiar zona": zona_id y motivo_cambio_zona.
  *
- * NO incluye estado: el ciclo ACTIVO/INACTIVO del acopiador ya no pasa por
- * este formulario normal de edición — tiene sus propios Use Cases/Requests
- * dedicados (DesactivarAcopiador, ReactivarAcopiador + ReactivarAcopiadorRequest),
- * que además cierran/abren el historial de zona correspondiente.
+ * dni y fecha_ingreso están PROHIBIDOS (se rechazan con 422 aunque se envíen
+ * a mano): el DNI es la identidad operativa del acopiador y la fecha de
+ * ingreso la fija el sistema al registrarlo. Tampoco admite username (gestión
+ * de credenciales) ni estado (DesactivarAcopiador / ReactivarAcopiador).
  */
 class UpdateAcopiadorRequest extends FormRequest
 {
@@ -30,10 +30,12 @@ class UpdateAcopiadorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombres' => ['sometimes', 'string', 'max:100'],
-            'apellidos' => ['sometimes', 'string', 'max:150'],
-            'telefono' => ['sometimes', 'nullable', 'string', 'max:20'],
-            'zona_id' => ['sometimes', 'integer', 'exists:zonas,id'],
+            'fecha_ingreso' => ['prohibited'],
+            'dni' => ['prohibited'],
+            'nombres' => ['sometimes', 'required', 'string', 'max:100'],
+            'apellidos' => ['sometimes', 'required', 'string', 'max:150'],
+            'telefono' => ['sometimes', 'nullable', 'string', 'max:20', 'regex:/^\+?[0-9 ]{6,20}$/'],
+            'zona_id' => ['sometimes', 'required', 'integer', Rule::exists('zonas', 'id')->where('estado', 'ACTIVO')],
             'motivo_cambio_zona' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
@@ -44,7 +46,12 @@ class UpdateAcopiadorRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'zona_id.exists' => 'La zona seleccionada no existe.',
+            'fecha_ingreso.prohibited' => 'La fecha de ingreso la asigna el sistema y no se puede modificar.',
+            'dni.prohibited' => 'El DNI es el identificador del acopiador y no se edita.',
+            'nombres.required' => 'Los nombres son obligatorios.',
+            'apellidos.required' => 'Los apellidos son obligatorios.',
+            'telefono.regex' => 'El teléfono solo puede tener números (y opcionalmente + al inicio).',
+            'zona_id.exists' => 'La zona seleccionada no existe o no está activa.',
         ];
     }
 }

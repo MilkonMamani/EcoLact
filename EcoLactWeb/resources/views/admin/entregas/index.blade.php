@@ -108,7 +108,7 @@
                                     <td class="is-muted">{{ $fila['acopiadorNombre'] }}</td>
                                     <td class="is-num acopio-litros" data-entrega-litros="{{ $fila['id'] }}">{{ number_format($fila['litros'], 2) }} L</td>
                                     <td class="is-muted">{{ $fila['metodoIdentificacion'] }}</td>
-                                    <td><x-ui.badge :status="$fila['estado']" :icon="$iconoEstado">{{ $etiquetaEstado }}</x-ui.badge></td>
+                                    <td><x-ui.badge compact :status="$fila['estado']" :icon="$iconoEstado">{{ $etiquetaEstado }}</x-ui.badge></td>
                                     <td class="is-accion">
                                         <a href="{{ route('admin.entregas.show', $fila['id']) }}" class="acopio-ver" aria-label="Ver entrega" title="Ver entrega" data-entrega-ver data-url-detalle="{{ route('admin.entregas.detalle', $fila['id']) }}">
                                             <x-ui.icon name="eye" class="h-4 w-4" />
@@ -163,7 +163,7 @@
                                 <td class="py-3 pr-4 text-text-muted">Zona #{{ $entrega->zonaId() }}</td>
                                 <td class="py-3 pr-4 font-medium text-text">{{ number_format($entrega->litros(), 2) }} L</td>
                                 <td class="py-3 pr-4 text-text-muted">{{ $entrega->metodoIdentificacion() }}</td>
-                                <td class="py-3 pr-4"><x-ui.badge :status="$entrega->estado()->value" /></td>
+                                <td class="py-3 pr-4"><x-ui.badge compact :status="$entrega->estado()->value" /></td>
                                 <td class="py-3 pl-4">
                                     <x-tables.actions>
                                         <x-ui.action-button type="view" label="Ver entrega" :href="route('admin.entregas.show', $entrega->id())" />

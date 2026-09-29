@@ -1,4 +1,8 @@
 <div class="space-y-3">
+    @if (auth()->user()?->estaEnSoloConsulta())
+        <x-ui.alert variant="warning">{{ \App\Http\Support\SesionWeb::MENSAJE_SOLO_CONSULTA }}</x-ui.alert>
+    @endif
+
     @if (session('success'))
         <x-ui.alert variant="success">{{ session('success') }}</x-ui.alert>
     @endif

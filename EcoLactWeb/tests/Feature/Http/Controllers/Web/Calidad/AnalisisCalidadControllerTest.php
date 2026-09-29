@@ -11,7 +11,7 @@ require_once __DIR__.'/../../../../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
-it('index delega en EntregasCalidadListadoQuery y expone las entregas con su análisis a la vista', function () {
+it('index delega en EntregasCalidadListadoQuery y expone una página de entregas con su análisis a la vista', function () {
     $zona = fixture_zona();
     $proveedor = fixture_proveedor($zona);
     $acopiador = fixture_acopiador($zona);
@@ -27,9 +27,9 @@ it('index delega en EntregasCalidadListadoQuery y expone las entregas con su an�
     $view = app(AnalisisCalidadController::class)->index(crear_request_autenticado());
 
     expect($view->name())->toBe('admin.analisis-calidad.index');
-    expect($view->getData()['datos']->kpis['pendientes'])->toBe(1);
-    expect($view->getData()['datos']->kpis['analizadas'])->toBe(0);
-    expect($view->getData()['datos']->filas)->toHaveCount(1);
+    expect($view->getData()['datos']->filas->total())->toBe(1);
+    expect($view->getData()['datos']->filas->items()[0]['estado'])->toBe('BORRADOR');
+    expect($view->getData()['porPagina'])->toBe(25);
 });
 
 it('store llama a RegistrarAnalisisCalidad y redirige con éxito', function () {

@@ -7,7 +7,6 @@ use App\Domain\Pago\JornadaPersonalRepository;
 use App\Domain\Pago\ObligacionPago;
 use App\Domain\Pago\ObligacionPagoRepository;
 use App\Domain\Pago\PeriodoPago;
-use App\Domain\Shared\Enums\EstadoJornada;
 use App\Domain\Trabajador\Trabajador;
 use App\Domain\Trabajador\TrabajadorRepository;
 use DateTimeImmutable;
@@ -18,6 +17,11 @@ use DateTimeImmutable;
  * (asistencias, faltas, sueldo, valor por día, acumulado ya calculado por el
  * backend) y el calendario día a día del mes resuelto. Nunca recalcula el
  * dinero: los montos vienen tal cual del snapshot de la obligación.
+ *
+ * Antes de leer cierra los días ya cerrados (07:00) de ESTE trabajador
+ * (MarcarFaltasAutomaticas::paraTrabajador, idempotente), así un día pasado
+ * nunca se ve "Pendiente" aunque el scheduler no haya corrido: Pendiente
+ * (SIN_REGISTRO) solo existe para hoy antes de las 07:00.
  */
 final class ObtenerControlPeriodoTrabajador
 {
@@ -25,6 +29,9 @@ final class ObtenerControlPeriodoTrabajador
         private readonly ObligacionPagoRepository $obligaciones,
         private readonly TrabajadorRepository $trabajadores,
         private readonly JornadaPersonalRepository $jornadas,
+        private readonly ContarJornadasVigentes $contarJornadas,
+        private readonly MarcarFaltasAutomaticas $marcarFaltas,
+        private readonly VentanaAsistencia $ventana,
     ) {}
 
     /** @param  string|null  $mes  Formato "Y-m"; por defecto el mes del periodo abierto (o el más reciente). */
@@ -36,19 +43,26 @@ final class ObtenerControlPeriodoTrabajador
             return null;
         }
 
-        $hoy = DateTimeImmutable::createFromInterface(now())->setTime(0, 0);
+        $controlaAsistencia = $this->trabajadores->controlaAsistencia($trabajador->id());
+
+        if ($controlaAsistencia) {
+            $this->marcarFaltas->paraTrabajador($trabajador);
+        }
+
+        $hoy = $this->ventana->hoy();
         [$periodoInicio, $periodoFin, $obligacion] = $this->resolverPeriodo($userId, $mes, $hoy);
 
         $dias = $this->construirCalendario($trabajador, $periodoInicio, $periodoFin, $hoy);
 
-        $asistencias = $this->jornadas->contarEnPeriodo($trabajador->id(), $periodoInicio, $periodoFin, EstadoJornada::PRESENTE);
-        $faltas = $this->jornadas->contarEnPeriodo($trabajador->id(), $periodoInicio, $periodoFin, EstadoJornada::FALTA);
+        $conteo = $this->contarJornadas->execute($trabajador, $periodoInicio, $periodoFin);
+        $asistencias = $conteo['presentes'];
+        $faltas = $controlaAsistencia ? $conteo['faltas'] : 0;
         $esMesCompleto = $trabajador->estuvoVigenteTodoElRango($periodoInicio, $periodoFin);
 
         $sueldoMensual = $obligacion !== null ? (float) ($obligacion->baseCalculo()['sueldo_base'] ?? 0.0) : 0.0;
         $valorDia = $obligacion?->valorDia() ?? ($sueldoMensual > 0 ? round($sueldoMensual / JornadaPersonal::DIAS_BASE_PERIODO, 2) : 0.0);
         $acumulado = $obligacion?->acumulado() ?? 0.0;
-        $descuentoPorFaltas = $esMesCompleto ? max(0.0, round($sueldoMensual - $acumulado, 2)) : 0.0;
+        $descuentoPorFaltas = $esMesCompleto && $controlaAsistencia ? max(0.0, round($sueldoMensual - $acumulado, 2)) : 0.0;
 
         $mesActual = $periodoInicio->format('Y-m');
         $inicioMesActual = PeriodoPago::mesQueContiene($hoy)->inicio->format('Y-m');
@@ -78,6 +92,7 @@ final class ObtenerControlPeriodoTrabajador
             mesSiguienteValor: $mesActual < $inicioMesActual ? $periodoInicio->modify('+1 month')->format('Y-m') : null,
             dias: $dias,
             qrToken: $trabajador->qrToken(),
+            controlaAsistencia: $controlaAsistencia,
         );
     }
 

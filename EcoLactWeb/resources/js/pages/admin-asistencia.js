@@ -1,4 +1,5 @@
 import { getCsrfToken } from '../maps.js';
+import { iniciarListaEscalonada } from '../lista-escalonada.js';
 
 /**
  * Pantalla /admin/asistencia: lista del día + escaneo de QR (cámara nativa,
@@ -9,8 +10,29 @@ import { getCsrfToken } from '../maps.js';
 const pagina = document.querySelector('[data-asistencia-page]');
 
 if (pagina) {
+    iniciarListado(pagina);
     iniciarEscaneoQr(pagina);
     iniciarCorreccion(pagina);
+}
+
+// --------------------------------------------------------------- listado
+
+/** Skeleton + entrada escalonada (igual que Acopio). Cambiar rol o fecha filtra al instante. */
+function iniciarListado(pagina) {
+    const filtros = pagina.querySelector('[data-asistencia-filtros]');
+    const { mostrarSkeleton } = iniciarListaEscalonada(pagina.querySelector('[data-asistencia-tabla]'), {
+        fila: '[data-fila-asistencia]',
+        variable: '--asistencia-delay',
+        filtros,
+        enlaces: [...pagina.querySelectorAll('[data-asistencia-volver-hoy], .ecolact-pager a')],
+    });
+
+    filtros?.querySelectorAll('select[name="rol"], input[name="fecha"]').forEach((campo) => {
+        campo.addEventListener('change', () => {
+            mostrarSkeleton();
+            filtros.requestSubmit();
+        });
+    });
 }
 
 // --------------------------------------------------------------- escaneo QR
@@ -173,10 +195,28 @@ function iniciarCorreccion(pagina) {
 
     window.abrirModalCorreccionAsistencia = abrirModalCorreccion;
 
+    // Menú de acciones (⋮) de cada fila. Antes de las 07:00: "Editar asistencia" (con jornada) o
+    // "Registrar asistencia" (sin jornada), acciones reales del backend. Desde el cierre: solo
+    // "Ver detalle" (el backend también rechaza cualquier registro o corrección).
     pagina.addEventListener('click', (event) => {
-        const fila = event.target.closest('[data-fila-asistencia]');
+        const accion = event.target.closest('[data-asistencia-corregir], [data-asistencia-registrar], [data-asistencia-ver]');
+        const fila = accion?.closest('[data-fila-asistencia]');
 
-        if (!fila || fila.dataset.corregible !== 'true') {
+        if (!fila) {
+            return;
+        }
+
+        accion.closest('details')?.removeAttribute('open');
+
+        if (accion.matches('[data-asistencia-ver]')) {
+            abrirModalDetalle(fila);
+
+            return;
+        }
+
+        if (accion.matches('[data-asistencia-registrar]')) {
+            abrirModalRegistro(fila);
+
             return;
         }
 
@@ -188,6 +228,49 @@ function iniciarCorreccion(pagina) {
             estadoActual: fila.dataset.estado || null,
         });
     });
+
+    // Solo un menú de acciones abierto a la vez; se cierra al hacer clic fuera.
+    document.addEventListener('click', (event) => {
+        pagina.querySelectorAll('.asistencia-acciones[open]').forEach((menu) => {
+            if (!menu.contains(event.target)) {
+                menu.removeAttribute('open');
+            }
+        });
+    });
+
+    function abrirModalDetalle(fila) {
+        const modalDetalle = document.getElementById('modal-detalle-asistencia');
+
+        if (!modalDetalle) {
+            return;
+        }
+
+        modalDetalle.querySelector('[data-detalle-nombre]').textContent = fila.dataset.nombre;
+        modalDetalle.querySelector('[data-detalle-fecha]').textContent = fila.dataset.fechaEtiqueta || fila.dataset.fecha;
+        modalDetalle.querySelector('[data-detalle-estado]').textContent = fila.dataset.estadoEtiqueta || '—';
+        modalDetalle.querySelector('[data-detalle-hora]').textContent = fila.dataset.hora || '—';
+        modalDetalle.querySelector('[data-detalle-origen]').textContent = fila.dataset.origenEtiqueta || '—';
+
+        modalDetalle.classList.add('is-open');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function abrirModalRegistro(fila) {
+        const modalRegistro = document.getElementById('modal-registrar-asistencia');
+        const formRegistro = modalRegistro?.querySelector('form');
+
+        if (!formRegistro) {
+            return;
+        }
+
+        formRegistro.action = `${pagina.dataset.urlCorregirBase}/${fila.dataset.userId}/jornadas`;
+        formRegistro.querySelector('[name="fecha"]').value = fila.dataset.fecha;
+        modalRegistro.querySelector('[data-registrar-nombre]').textContent = fila.dataset.nombre;
+        modalRegistro.querySelector('[data-registrar-fecha]').textContent = fila.dataset.fechaEtiqueta || fila.dataset.fecha;
+
+        modalRegistro.classList.add('is-open');
+        document.body.classList.add('overflow-hidden');
+    }
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -230,7 +313,7 @@ function iniciarCorreccion(pagina) {
         form.action = `${pagina.dataset.urlCorregirBase}/${userId}/jornadas/${fecha}/corregir`;
         modal.querySelector('[data-corregir-nombre]').textContent = nombre;
         modal.querySelector('[data-corregir-fecha]').textContent = fecha;
-        modal.querySelector('[data-corregir-estado-actual]').textContent = estadoActual === 'FALTA' ? 'Falta' : estadoActual === 'PRESENTE' ? 'Asistió' : 'Sin registrar';
+        modal.querySelector('[data-corregir-estado-actual]').textContent = estadoActual === 'FALTA' ? 'Falta' : estadoActual === 'PRESENTE' ? 'Presente' : 'Pendiente';
 
         modal.classList.add('is-open');
         document.body.classList.add('overflow-hidden');

@@ -3,7 +3,7 @@
 @section('title', $ruta->nombre())
 
 @section('content')
-    <x-ui.button :href="route('admin.zonas.show', $zona->id)" variant="ghost" size="sm" as="a">&larr; {{ $zona->nombre }}</x-ui.button>
+    <x-ui.button :href="route('admin.zonas.index', ['zona' => $zona->id])" variant="ghost" size="sm" as="a">&larr; {{ $zona->nombre }}</x-ui.button>
 
     @include('admin.rutas._panel', [
         'ruta' => $ruta,

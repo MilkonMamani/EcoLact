@@ -57,6 +57,11 @@ return [
         'default_lat' => (float) env('GOOGLE_MAPS_DEFAULT_LAT', -15.8402),
         'default_lng' => (float) env('GOOGLE_MAPS_DEFAULT_LNG', -70.0219),
         'default_zoom' => (int) env('GOOGLE_MAPS_DEFAULT_ZOOM', 10),
+        // Vista inicial del mapa de Zonas y del editor de delimitaciones mientras no haya
+        // polígonos ni proveedores ubicados que encuadrar (por defecto Huata, Puno).
+        'zonas_lat' => (float) env('GOOGLE_MAPS_ZONAS_LAT', -15.6144),
+        'zonas_lng' => (float) env('GOOGLE_MAPS_ZONAS_LNG', -69.9711),
+        'zonas_zoom' => (int) env('GOOGLE_MAPS_ZONAS_ZOOM', 12),
     ],
 
 ];

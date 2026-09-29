@@ -54,7 +54,7 @@
                             <td class="py-3 pr-4 text-text-muted">{{ $fila['zonaNombre'] }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $fila['telefono'] ?? '—' }}</td>
                             <td class="py-3 pr-4 text-text">{{ $fila['advertencias'] }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$fila['estado']" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$fila['estado']" /></td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
                                     <x-ui.action-button type="view" label="Ver proveedor" :href="route('calidad.proveedores.show', $fila['id'])" />

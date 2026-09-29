@@ -1,25 +1,26 @@
 /**
- * Detalle del proveedor → "Ver pagos". Abre un modal sobre la MISMA pantalla: el historial
- * (filtrado por semana y estado, paginado) y el comprobante de cada pago llegan por fetch
- * como JSON con HTML ya renderizado, así que la URL del navegador nunca cambia.
+ * Proveedores → pestaña Compras → "Ver pagos". Abre un modal sobre la MISMA pantalla: el
+ * historial (filtrado por semana y estado, paginado) y el comprobante de cada pago llegan por
+ * fetch como JSON con HTML ya renderizado, así que la URL del navegador nunca cambia.
  *
+ * - Los modales son únicos en la página; las URLs y el título salen del panel del proveedor
+ *   seleccionado ([data-proveedor-pagos]), que admin-fichas.js reemplaza al cambiar de fila.
+ *   Por eso el botón se escucha por delegación y el estado se reinicia al cambiar de proveedor.
  * - Historial: #modal-pagos-proveedor. Los filtros aplicados y la página se conservan
- *   mientras la pantalla siga abierta (también al volver del detalle).
+ *   mientras se siga en el mismo proveedor (también al volver del detalle).
  * - Detalle: #modal-pago-detalle, apilado encima del historial. Cerrarlo devuelve al
  *   historial exactamente como estaba.
  */
 
 const ANCHO_HOJA = 794;
 
-const raiz = document.querySelector('[data-proveedor-pagos]');
-
-if (raiz) {
+if (document.getElementById('modal-pagos-proveedor')) {
     iniciar();
 }
 
 function iniciar() {
-    const urlHistorial = raiz.dataset.url;
-    const urlDetalle = raiz.dataset.urlDetalle;
+    let urlHistorial = null;
+    let urlDetalle = null;
     const modal = document.getElementById('modal-pagos-proveedor');
     const modalDetalle = document.getElementById('modal-pago-detalle');
     const formulario = modal.querySelector('[data-pagos-filtros]');
@@ -174,7 +175,29 @@ function iniciar() {
 
     /* -------------------------------------------------------------- eventos */
 
-    raiz.querySelector('[data-pagos-abrir]').addEventListener('click', () => {
+    document.addEventListener('click', (evento) => {
+        const boton = evento.target.closest('[data-pagos-abrir]');
+        const raiz = boton?.closest('[data-proveedor-pagos]');
+
+        if (!raiz) {
+            return;
+        }
+
+        // Otro proveedor: filtros, página y resultados vuelven a empezar.
+        if (raiz.dataset.url !== urlHistorial) {
+            urlHistorial = raiz.dataset.url;
+            urlDetalle = raiz.dataset.urlDetalle;
+            Object.assign(aplicado, { semana: 'todos', estado: 'todos', pagina: 1 });
+            selectEstado.value = 'todos';
+            resultado.replaceChildren();
+
+            const titulo = modal.querySelector('h2');
+            if (titulo && raiz.dataset.titulo) {
+                titulo.textContent = raiz.dataset.titulo;
+                modal.setAttribute('aria-label', raiz.dataset.titulo);
+            }
+        }
+
         abrir(modal);
         cargar();
     });

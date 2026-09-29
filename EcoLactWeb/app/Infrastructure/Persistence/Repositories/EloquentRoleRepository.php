@@ -38,6 +38,7 @@ class EloquentRoleRepository implements RoleRepository
             nombre: $model->nombre,
             descripcion: $model->descripcion,
             esRemunerable: (bool) $model->es_remunerable,
+            controlaAsistencia: $model->controla_asistencia === null || (bool) $model->controla_asistencia,
         );
     }
 }

@@ -43,7 +43,7 @@ it('Calidad muestra también las entregas sin análisis como Pendiente', functio
 
     $html = $this->actingAs($admin)->get(route('admin.analisis-calidad.index'))
         ->assertOk()
-        ->assertSeeInOrder(['Fecha', 'Proveedor', 'Entrega', 'Zona', 'Resultado', 'Estado', 'Acción'])
+        ->assertSeeInOrder(['Fecha', 'Proveedor', 'Entrega', 'Zona', 'Litros', 'Resultado', 'Estado', 'Analista', 'Acción'])
         ->assertSee('Luis Calcina Mamani')
         ->assertSee('Collana 1')
         ->assertSee('17/09/2026')
@@ -51,7 +51,7 @@ it('Calidad muestra también las entregas sin análisis como Pendiente', functio
         ->assertSee('14/09/2026')
         ->getContent();
 
-    expect(preg_match_all('/Pendiente\s*<\/span>/', $html))->toBe(2)
+    expect(substr_count($html, 'title="Pendiente de análisis"'))->toBe(2)
         ->and($html)->toContain(route('admin.entregas.analisis-calidad.index', $entregas['luis']))
         ->and($html)->toContain(route('admin.entregas.analisis-calidad.index', $entregas['milkon_pendiente']))
         ->and($html)->toContain(route('admin.analisis-calidad.show', AnalisisCalidadModel::firstOrFail()));
@@ -77,12 +77,13 @@ it('Acopio y Calidad cuentan lo mismo: 3 entregas, 2 pendientes y 1 analizada', 
         ->and($calidad->filas)->toHaveCount(3);
 });
 
-it('los KPIs de Calidad se dibujan con los conteos reales', function () {
+it('Calidad es un listado transaccional: sin tarjetas de KPIs y con el pie de paginación real', function () {
     [$admin] = tres_entregas_de_acopio();
 
     $this->actingAs($admin)->get(route('admin.analisis-calidad.index'))
         ->assertOk()
-        ->assertSeeInOrder(['Pendientes de análisis', '2', 'Analizadas', '1', 'Aceptadas', '1', 'Observadas', '0', 'Rechazadas', '0']);
+        ->assertDontSee('Pendientes de análisis')
+        ->assertSeeText('Mostrando 1 a 3 de 3 análisis');
 });
 
 it('una entrega anulada no aparece en Calidad', function () {

@@ -1,4 +1,4 @@
-@props(['controlPeriodo', 'trabajadorId', 'trabajadorNombre'])
+@props(['controlPeriodo', 'trabajadorId', 'trabajadorNombre', 'conQr' => true])
 
 {{--
     "Control del periodo" de un trabajador: compone el QR de asistencia, el
@@ -17,9 +17,20 @@
     <x-ui.profile-section title="Control del periodo" icon="calendar" data-control-periodo {{ $attributes }}>
         <p class="text-sm text-text-muted">Este usuario no tiene una identidad laboral registrada todavía.</p>
     </x-ui.profile-section>
+@elseif (! $controlPeriodo->controlaAsistencia)
+    {{-- Rol sin control de asistencia (ADMINISTRADOR): sin QR, calendario ni registro manual. --}}
+    <div data-control-periodo {{ $attributes }} class="space-y-5">
+        <x-ui.profile-section title="Asistencia" icon="calendar">
+            <p class="text-sm text-text-muted">No marca asistencia: cobra sueldo fijo mensual, sin faltas ni descuentos por asistencia.</p>
+        </x-ui.profile-section>
+
+        <x-pagos.attendance-summary :control-periodo="$controlPeriodo" />
+    </div>
 @else
     <div data-control-periodo {{ $attributes }} class="space-y-5">
-        <x-pagos.worker-qr :qr-token="$controlPeriodo->qrToken" :nombre="$trabajadorNombre" />
+        @if ($conQr)
+            <x-pagos.worker-qr :qr-token="$controlPeriodo->qrToken" :nombre="$trabajadorNombre" />
+        @endif
 
         <x-pagos.attendance-calendar :control-periodo="$controlPeriodo" :trabajador-user-id="$trabajadorId" :trabajador-nombre="$trabajadorNombre" :es-admin="$esAdmin" />
 

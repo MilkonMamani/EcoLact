@@ -11,6 +11,9 @@ use App\Domain\Pago\PeriodoPago;
  */
 interface PagosPendientesProveedorStore
 {
+    /** @return list<string> Inicios canónicos de semanas cerradas por un pago o liquidación previa. */
+    public function semanasCerradas(int $proveedorId): array;
+
     /**
      * Suelta las entregas de los pendientes del proveedor (para recalcularlas) y
      * devuelve los pendientes existentes como [inicio del periodo (Y-m-d) => id].

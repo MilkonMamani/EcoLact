@@ -2,6 +2,8 @@
 
 namespace App\Application\PersonalVentas;
 
+use App\Application\Trabajador\CambiarEstadoCuentaTrabajador;
+use App\Application\Trabajador\SincronizarTrabajadores;
 use App\Domain\PersonalVentas\PersonalVentas;
 use App\Domain\PersonalVentas\PersonalVentasRepository;
 use App\Domain\Shared\Enums\EstadoUsuario;
@@ -11,6 +13,8 @@ final class DesactivarPersonalVentas
 {
     public function __construct(
         private readonly PersonalVentasRepository $personal,
+        private readonly SincronizarTrabajadores $sincronizarTrabajadores,
+        private readonly CambiarEstadoCuentaTrabajador $cambiarEstadoCuenta,
     ) {}
 
     public function execute(int $personalId): PersonalVentas
@@ -25,7 +29,7 @@ final class DesactivarPersonalVentas
             throw new DomainException('El personal de ventas ya se encuentra inactivo.');
         }
 
-        return $this->personal->actualizar(new PersonalVentas(
+        $ficha = $this->personal->actualizar(new PersonalVentas(
             id: $personal->id(),
             userId: $personal->userId(),
             dni: $personal->dni(),
@@ -35,5 +39,11 @@ final class DesactivarPersonalVentas
             estado: EstadoUsuario::INACTIVO,
             fechaIngreso: $personal->fechaIngreso(),
         ));
+
+        $this->cambiarEstadoCuenta->execute($ficha->userId(), EstadoUsuario::INACTIVO);
+
+        $this->sincronizarTrabajadores->execute(soloUserId: $ficha->userId());
+
+        return $ficha;
     }
 }

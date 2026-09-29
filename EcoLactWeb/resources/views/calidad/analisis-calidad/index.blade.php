@@ -104,12 +104,12 @@
                                 <td class="py-3 pr-4 text-text-muted">{{ $fila['zonaNombre'] }}</td>
                                 <td class="py-3 pr-4">
                                     @if ($fila['resultado'])
-                                        <x-ui.badge :status="$fila['resultado']" />
+                                        <x-ui.badge compact :status="$fila['resultado']" />
                                     @else
                                         <span class="text-xs text-text-muted">—</span>
                                     @endif
                                 </td>
-                                <td class="py-3 pr-4"><x-ui.badge :status="$fila['estado']" /></td>
+                                <td class="py-3 pr-4"><x-ui.badge compact :status="$fila['estado']" /></td>
                                 <td class="py-3 pl-4 text-right"><a class="text-primary hover:underline" href="{{ route('calidad.analisis-calidad.show', $fila['id']) }}">Ver →</a></td>
                             </tr>
                         @endforeach

@@ -209,3 +209,22 @@ it('al generar la liquidación, descuenta automáticamente las compras a cuenta 
     expect($liquidacion->totalAjustes())->toBe(-90.0);
     expect($liquidacion->totalPagar())->toBe(80.0);
 });
+
+it('no permite venderle a un proveedor inactivo', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $producto = rvp_crearProducto();
+    $proveedor = fixture_proveedor(fixture_zona());
+    $proveedor->update(['estado' => 'INACTIVO']);
+
+    app(RegistrarProductoPrecio::class)->execute($producto->id, 'PROVEEDOR', 20.0, $admin->id);
+    fixture_ingreso_producto($producto->id, 10.0, $admin->id);
+
+    app(RegistrarVentaProducto::class)->execute(
+        productoId: $producto->id,
+        tipoCliente: 'PROVEEDOR',
+        cantidad: 1.0,
+        formaPago: 'CONTADO',
+        registradoPorUserId: $admin->id,
+        proveedorId: $proveedor->id,
+    );
+})->throws(DomainException::class, 'El proveedor está inactivo: no se le pueden registrar compras.');

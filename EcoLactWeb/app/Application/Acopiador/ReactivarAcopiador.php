@@ -3,6 +3,8 @@
 namespace App\Application\Acopiador;
 
 use App\Application\Shared\TransactionManager;
+use App\Application\Trabajador\CambiarEstadoCuentaTrabajador;
+use App\Application\Trabajador\SincronizarTrabajadores;
 use App\Domain\Acopiador\Acopiador;
 use App\Domain\Acopiador\AcopiadorRepository;
 use App\Domain\Acopiador\AcopiadorZonaHistorial;
@@ -26,6 +28,8 @@ final class ReactivarAcopiador
         private readonly ZonaRepository $zonas,
         private readonly AcopiadorZonaHistorialRepository $zonaHistorial,
         private readonly TransactionManager $transacciones,
+        private readonly SincronizarTrabajadores $sincronizarTrabajadores,
+        private readonly CambiarEstadoCuentaTrabajador $cambiarEstadoCuenta,
     ) {}
 
     public function execute(int $acopiadorId, int $zonaId): Acopiador
@@ -62,7 +66,7 @@ final class ReactivarAcopiador
                 motivo: 'Reactivación del acopiador.',
             ));
 
-            return $this->acopiadores->actualizar(new Acopiador(
+            $ficha = $this->acopiadores->actualizar(new Acopiador(
                 id: $acopiador->id(),
                 userId: $acopiador->userId(),
                 zonaId: $zonaId,
@@ -73,6 +77,12 @@ final class ReactivarAcopiador
                 estado: EstadoUsuario::ACTIVO,
                 fechaIngreso: $acopiador->fechaIngreso(),
             ));
+
+            $this->cambiarEstadoCuenta->execute($ficha->userId(), EstadoUsuario::ACTIVO);
+
+            $this->sincronizarTrabajadores->execute(soloUserId: $ficha->userId());
+
+            return $ficha;
         });
     }
 }

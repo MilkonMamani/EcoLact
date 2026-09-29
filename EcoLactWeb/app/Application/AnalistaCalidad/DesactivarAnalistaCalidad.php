@@ -2,6 +2,8 @@
 
 namespace App\Application\AnalistaCalidad;
 
+use App\Application\Trabajador\CambiarEstadoCuentaTrabajador;
+use App\Application\Trabajador\SincronizarTrabajadores;
 use App\Domain\AnalistaCalidad\AnalistaCalidad;
 use App\Domain\AnalistaCalidad\AnalistaCalidadRepository;
 use App\Domain\Shared\Enums\EstadoUsuario;
@@ -11,6 +13,8 @@ final class DesactivarAnalistaCalidad
 {
     public function __construct(
         private readonly AnalistaCalidadRepository $analistas,
+        private readonly SincronizarTrabajadores $sincronizarTrabajadores,
+        private readonly CambiarEstadoCuentaTrabajador $cambiarEstadoCuenta,
     ) {}
 
     public function execute(int $analistaId): AnalistaCalidad
@@ -25,7 +29,7 @@ final class DesactivarAnalistaCalidad
             throw new DomainException('El analista de calidad ya se encuentra inactivo.');
         }
 
-        return $this->analistas->actualizar(new AnalistaCalidad(
+        $ficha = $this->analistas->actualizar(new AnalistaCalidad(
             id: $analista->id(),
             userId: $analista->userId(),
             dni: $analista->dni(),
@@ -35,5 +39,11 @@ final class DesactivarAnalistaCalidad
             estado: EstadoUsuario::INACTIVO,
             fechaIngreso: $analista->fechaIngreso(),
         ));
+
+        $this->cambiarEstadoCuenta->execute($ficha->userId(), EstadoUsuario::INACTIVO);
+
+        $this->sincronizarTrabajadores->execute(soloUserId: $ficha->userId());
+
+        return $ficha;
     }
 }

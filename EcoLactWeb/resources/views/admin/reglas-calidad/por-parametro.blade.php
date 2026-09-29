@@ -23,12 +23,12 @@
                         <tr class="border-b border-text-muted/5 last:border-0">
                             <td class="py-3 pr-4 text-text-muted">{{ $regla->valorMinimo() ?? '—' }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $regla->valorMaximo() ?? '—' }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$regla->resultadoIncumplimiento()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$regla->resultadoIncumplimiento()->value" /></td>
                             <td class="py-3 pr-4 text-text-muted">{{ $regla->prioridad() }}</td>
                             <td class="py-3 pr-4 text-text-muted">
                                 {{ $regla->fechaInicio()->format('d/m/Y') }} – {{ $regla->fechaFin()?->format('d/m/Y') ?? 'vigente' }}
                             </td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$regla->estado()" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$regla->estado()" /></td>
                         </tr>
                     @endforeach
                 </tbody>

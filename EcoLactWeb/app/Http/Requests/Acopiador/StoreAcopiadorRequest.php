@@ -30,7 +30,7 @@ class StoreAcopiadorRequest extends FormRequest
             'zona_id' => ['required', 'integer', 'exists:zonas,id'],
             'username' => ['required', 'string', 'max:60', 'unique:users,username'],
             'password' => ['required', 'string', 'min:8'],
-            'fecha_ingreso' => ['nullable', 'date'],
+            'fecha_ingreso' => ['prohibited'],
         ];
     }
 

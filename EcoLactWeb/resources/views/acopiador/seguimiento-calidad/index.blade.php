@@ -64,10 +64,10 @@
                             <td class="py-3 pr-4 text-text">{{ $entrega->fechaHora()->format('d/m/Y H:i') }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $proveedoresPorId[$entrega->proveedorId()] ?? ('Proveedor #'.$entrega->proveedorId()) }}</td>
                             <td class="py-3 pr-4 font-medium text-text">{{ number_format($entrega->litros(), 2) }} L</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$entrega->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$entrega->estado()->value" /></td>
                             <td class="py-3 pr-4">
                                 @if ($analisis?->resultado())
-                                    <x-ui.badge :status="$analisis->resultado()->value" />
+                                    <x-ui.badge compact :status="$analisis->resultado()->value" />
                                 @else
                                     <span class="text-xs text-text-muted">Sin resultado</span>
                                 @endif

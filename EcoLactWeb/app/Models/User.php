@@ -127,10 +127,10 @@ class User extends Authenticatable
 
     /**
      * Un usuario está operativo si su cuenta está ACTIVA y, cuando el rol
-     * tiene un registro operativo vinculado (Acopiador o Proveedor), ese
-     * registro también está ACTIVO. DesactivarAcopiador (Application) solo
-     * cambia acopiadores.estado, no users.estado, así que ambos estados
-     * deben revisarse: no son la misma bandera.
+     * tiene un registro vinculado (proveedor, acopiador, analista de calidad,
+     * encargado de planta o personal de ventas), ese registro también está
+     * ACTIVO. Solo el administrador desactiva; desactivar al proveedor solo
+     * cambia su ficha, así que ambos estados se revisan: no son la misma bandera.
      */
     public function estaOperativo(): bool
     {
@@ -148,6 +148,34 @@ class User extends Authenticatable
                 && $this->proveedor->estado === EstadoUsuario::ACTIVO->value;
         }
 
-        return true;
+        // Analista de calidad, encargado de planta y personal de ventas: si tienen ficha, debe estar ACTIVA.
+        $ficha = match (true) {
+            $this->esCalidad() => $this->analistaCalidad,
+            $this->esEncargadoPlanta() => $this->encargadoPlanta,
+            $this->esVentas() => $this->personalVentas,
+            default => null,
+        };
+
+        return $ficha === null || $ficha->estado === EstadoUsuario::ACTIVO->value;
+    }
+
+    /**
+     * Trabajador o proveedor desactivado por el administrador: puede entrar y
+     * consultar todo lo que hizo antes, pero no registrar, editar ni eliminar
+     * nada (ver EnsureUserIsActive). Al reactivarlo vuelve a estar operativo.
+     * El administrador desactivado y las cuentas sin ficha real no entran.
+     */
+    public function estaEnSoloConsulta(): bool
+    {
+        if ($this->estaOperativo() || $this->esAdministrador()) {
+            return false;
+        }
+
+        return match (true) {
+            $this->esAcopiador() => $this->acopiador !== null,
+            $this->esProveedor() => $this->proveedor !== null,
+            $this->esCalidad(), $this->esEncargadoPlanta(), $this->esVentas() => true,
+            default => false,
+        };
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Application\Pago\GenerarObligacionesPersonal;
+use App\Application\Pago\MarcarFaltasAutomaticas;
 use App\Infrastructure\Persistence\Models\JornadaPersonalModel;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use App\Infrastructure\Persistence\Models\TrabajadorModel;
@@ -35,7 +36,7 @@ it('el administrador registra una jornada desde el perfil de un trabajador', fun
 
     $this->actingAs($admin)
         ->post(route('admin.trabajadores.jornadas.store', $trabajador->id), [
-            'fecha' => '2026-09-10',
+            'fecha' => '2026-09-20',
             'observacion' => 'Jornada completa',
         ])
         ->assertRedirect()
@@ -50,16 +51,16 @@ it('el administrador registra una jornada desde el perfil de un trabajador', fun
         'observacion' => 'Jornada completa',
         'registrado_por_user_id' => $admin->id,
     ]);
-    expect(JornadaPersonalModel::where('trabajador_id', $identidad->id)->firstOrFail()->fecha->format('Y-m-d'))->toBe('2026-09-10');
+    expect(JornadaPersonalModel::where('trabajador_id', $identidad->id)->where('estado', 'PRESENTE')->firstOrFail()->fecha->format('Y-m-d'))->toBe('2026-09-20');
 });
 
 it('rechaza registrar dos veces la misma fecha desde el formulario', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $trabajador = acopiador_con_ventana_abierta($admin);
 
-    $this->actingAs($admin)->post(route('admin.trabajadores.jornadas.store', $trabajador->id), ['fecha' => '2026-09-10']);
+    $this->actingAs($admin)->post(route('admin.trabajadores.jornadas.store', $trabajador->id), ['fecha' => '2026-09-20']);
     $this->actingAs($admin)
-        ->post(route('admin.trabajadores.jornadas.store', $trabajador->id), ['fecha' => '2026-09-10'])
+        ->post(route('admin.trabajadores.jornadas.store', $trabajador->id), ['fecha' => '2026-09-20'])
         ->assertSessionHasErrors('jornada');
 
     expect(ObligacionPagoModel::where('user_id', $trabajador->id)->firstOrFail()->dias_trabajados)->toBe(1);
@@ -92,38 +93,69 @@ it('un usuario no administrador no puede registrar ni ver jornadas', function (s
     expect(ObligacionPagoModel::where('user_id', $trabajador->id)->firstOrFail()->dias_trabajados)->toBe(0);
 })->with(['ACOPIADOR', 'PROVEEDOR', 'CALIDAD']);
 
-it('el administrador comparte la misma lógica de jornadas para su propio perfil ("Mi perfil")', function () {
+it('el administrador no marca asistencia: su perfil muestra sueldo fijo y no admite jornadas', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_configurar('ADMINISTRADOR', 1500, '2026-09-01', $admin);
     app(GenerarObligacionesPersonal::class)->execute(new DateTimeImmutable('2026-09-20'));
 
     $this->actingAs($admin)->get(route('admin.administrador.show'))
         ->assertOk()
-        ->assertSee('Código QR de asistencia')
+        ->assertSee('No marca asistencia: cobra sueldo fijo mensual, sin faltas ni descuentos por asistencia.')
         ->assertSee('Resumen del mes')
-        ->assertSee('Asistencias')
-        ->assertSee('Pago proporcional según los días trabajados desde su fecha de ingreso');
+        ->assertDontSee('Código QR de asistencia')
+        ->assertDontSee('Registrar asistencia manual')
+        ->assertDontSee('data-attendance-calendar', false);
 
-    // El alta del administrador (fecha de creación del usuario) cae en "hoy"
-    // (2026-09-20, congelado por travelTo): no estuvo activo todo septiembre,
-    // así que el día trabajado se registra dentro de su rango, no antes.
     $this->actingAs($admin)
-        ->post(route('admin.trabajadores.jornadas.store', $admin->id), ['fecha' => '2026-09-20'])
-        ->assertRedirect();
+        ->from(route('admin.administrador.show'))
+        ->post(route('admin.trabajadores.jornadas.store', $admin->id), ['fecha' => '2026-09-20']);
+
+    expect(JornadaPersonalModel::count())->toBe(0);
+});
+
+it('el administrador cobra por los días calendario vigentes aunque no tenga jornadas', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_configurar('ADMINISTRADOR', 1500, '2026-09-01', $admin);
+
+    // Ingresó "hoy" (20/09, travelTo): del 20 al 30 son 11 días a S/ 50 (1500 ÷ 30).
+    app(GenerarObligacionesPersonal::class)->execute(new DateTimeImmutable('2026-09-20'));
 
     $obligacion = ObligacionPagoModel::where('user_id', $admin->id)->where('tipo_beneficiario', 'PERSONAL')->firstOrFail();
-    expect((int) $obligacion->dias_trabajados)->toBe(1);
+    expect((int) $obligacion->dias_trabajados)->toBe(11)
+        ->and((float) $obligacion->acumulado)->toBe(550.0);
+});
+
+it('la falta automática y la lista diaria de asistencia excluyen al administrador', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_configurar('ADMINISTRADOR', 1500, '2026-09-01', $admin);
+    $acopiador = acopiador_con_ventana_abierta($admin, 'Milkon');
+    $identidadAdmin = TrabajadorModel::where('user_id', $admin->id)->firstOrFail();
+    $identidadAcopiador = TrabajadorModel::where('user_id', $acopiador->id)->firstOrFail();
+
+    app(MarcarFaltasAutomaticas::class)->execute(new DateTimeImmutable('2026-09-20'));
+
+    // 05:00 en Lima del 20: se cierran del 1 al 19 (el 20 sigue abierto hasta las 07:00).
+    expect(JornadaPersonalModel::where('trabajador_id', $identidadAdmin->id)->count())->toBe(0)
+        ->and(JornadaPersonalModel::where('trabajador_id', $identidadAcopiador->id)->where('estado', 'FALTA')->count())->toBe(19)
+        ->and(JornadaPersonalModel::where('trabajador_id', $identidadAcopiador->id)->whereDate('fecha', '2026-09-20')->exists())->toBeFalse();
+
+    $this->actingAs($admin)->get(route('admin.asistencia.index'))
+        ->assertOk()
+        ->assertSee($identidadAcopiador->nombres)
+        ->assertDontSee('data-trabajador-id="'.$identidadAdmin->id.'"', false);
 });
 
 it('el calendario del perfil marca los días con jornada real y nunca expone jerga técnica', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $trabajador = acopiador_con_ventana_abierta($admin, 'Milkon');
+    $trabajador = pagos_personal('CALIDAD', 'Milkon');
+    pagos_configurar('CALIDAD', 900, '2026-09-01', $admin);
+    app(GenerarObligacionesPersonal::class)->execute(new DateTimeImmutable('2026-09-20'));
     $identidad = TrabajadorModel::where('user_id', $trabajador->id)->firstOrFail();
     pagos_jornada($identidad->id, '2026-09-01', $admin->id);
 
-    $html = $this->actingAs($admin)->get(route('admin.acopiadores.show', $trabajador->acopiador->id))
+    $html = $this->actingAs($admin)->get(route('admin.analistas-calidad.panel', $trabajador->analistaCalidad->id))
         ->assertOk()
-        ->assertSee('Código QR de asistencia')
+        ->assertSee('Código QR')
         ->getContent();
 
     expect($html)->toContain('data-fecha="2026-09-01"')
@@ -134,13 +166,12 @@ it('el calendario del perfil marca los días con jornada real y nunca expone jer
 
 it('un trabajador que ingresó a mitad de mes ve "Pago proporcional" en su resumen', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $diana = pagos_personal('ACOPIADOR', 'Diana Nina', '2026-09-15');
-    pagos_configurar('ACOPIADOR', 1500, '2026-09-01', $admin);
+    $diana = pagos_personal('CALIDAD', 'Diana Nina', '2026-09-15');
+    pagos_configurar('CALIDAD', 1500, '2026-09-01', $admin);
     app(GenerarObligacionesPersonal::class)->execute(new DateTimeImmutable('2026-09-20'));
-    $identidad = TrabajadorModel::where('user_id', $diana->id)->firstOrFail();
 
     $this->actingAs($admin)
-        ->get(route('admin.acopiadores.show', $identidad->user->acopiador->id))
+        ->get(route('admin.analistas-calidad.panel', $diana->analistaCalidad->id))
         ->assertOk()
         ->assertSee('No correspondía')
         ->assertSee('Pago proporcional según los días trabajados desde su fecha de ingreso (15/09/2026)')

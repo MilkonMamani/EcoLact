@@ -37,7 +37,7 @@
                             <span class="block text-xs text-text-muted">{{ $fila['periodoRango'] }}</span>
                         </td>
                         <td class="whitespace-nowrap px-3 py-3 font-semibold text-[#12324a]">{{ $soles($fila['total']) }}</td>
-                        <td class="px-3 py-3"><x-ui.badge :status="$fila['estado']" :icon="$fila['pendiente'] ? 'clock' : 'check-circle'" class="rounded-full">{{ $fila['estadoEtiqueta'] }}</x-ui.badge></td>
+                        <td class="px-3 py-3"><x-ui.badge compact :status="$fila['estado']" :icon="$fila['pendiente'] ? 'clock' : 'check-circle'">{{ $fila['estadoEtiqueta'] }}</x-ui.badge></td>
                         <td class="px-3 py-3 text-right"><x-ui.action-button type="detail" :text="true" label="Ver detalle" data-pago-detalle="{{ $fila['id'] }}" /></td>
                     </tr>
                 @endforeach

@@ -7,7 +7,7 @@ namespace App\Application\Calidad;
  * ENTREGA válida, tenga o no análisis. Una entrega sin análisis se muestra como
  * PENDIENTE sin necesidad de crear un análisis vacío.
  *
- * @phpstan-type Fila array{entregaId: int, analisisId: ?int, fecha: string, proveedorNombre: string, proveedorDni: string, zonaNombre: string, resultado: ?string, estado: string, litros: float}
+ * @phpstan-type Fila array{entregaId: int, analisisId: ?int, fecha: string, proveedorNombre: string, proveedorDni: string, zonaNombre: string, resultado: ?string, estado: string, litros: float, analistaNombre: ?string}
  */
 final readonly class EntregasCalidadListadoData
 {

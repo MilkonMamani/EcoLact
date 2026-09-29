@@ -8,6 +8,7 @@ use App\Domain\Shared\Enums\EstadoObligacionPago;
 use App\Domain\Shared\Enums\PeriodicidadPago;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
+use App\Infrastructure\Persistence\Models\ProveedorModel;
 use DateTimeImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -64,6 +65,10 @@ class EloquentObligacionPagoRepository implements ObligacionPagoRepository
 
     public function buscarPorIdBloqueando(int $id): ?ObligacionPago
     {
+        $proveedorId = ObligacionPagoModel::whereKey($id)->value('proveedor_id');
+        if ($proveedorId !== null) {
+            ProveedorModel::whereKey($proveedorId)->lockForUpdate()->firstOrFail();
+        }
         $model = ObligacionPagoModel::whereKey($id)->lockForUpdate()->first();
 
         return $model ? $this->toEntity($model) : null;

@@ -16,8 +16,10 @@ use DomainException;
 /**
  * Corrección administrativa de una jornada ya existente (FALTA<->PRESENTE),
  * con motivo obligatorio. Deja rastro en `auditorias` (nunca se pierde la
- * trazabilidad de un cambio manual). No permite corregir una jornada cuya
- * obligación del mes ya está PAGADA: el histórico pagado es inmutable.
+ * trazabilidad de un cambio manual). Solo se corrige la jornada de hoy
+ * antes del cierre de las 07:00 (VentanaAsistencia): un día cerrado es solo
+ * consulta. Tampoco permite corregir una jornada cuya obligación del mes ya
+ * está PAGADA: el histórico pagado es inmutable.
  */
 final class CorregirJornada
 {
@@ -28,6 +30,7 @@ final class CorregirJornada
         private readonly RecalcularProgresoObligacionPersonal $recalcular,
         private readonly AuditoriaRepository $auditorias,
         private readonly TransactionManager $transacciones,
+        private readonly VentanaAsistencia $ventana,
     ) {}
 
     public function execute(int $jornadaId, EstadoJornada $nuevoEstado, string $motivo, int $adminUserId): JornadaPersonal
@@ -41,6 +44,8 @@ final class CorregirJornada
         return $this->transacciones->run(function () use ($jornadaId, $nuevoEstado, $motivo, $adminUserId): JornadaPersonal {
             $jornada = $this->jornadas->buscarPorId($jornadaId)
                 ?? throw new DomainException('La jornada indicada no existe.');
+
+            $this->ventana->exigirAbierta($jornada->fecha());
 
             if ($nuevoEstado === $jornada->estado()) {
                 throw new DomainException('La jornada ya está en ese estado.');
@@ -62,8 +67,8 @@ final class CorregirJornada
                 accion: 'CORRECCION_ASISTENCIA',
                 tablaAfectada: 'jornadas_personal',
                 registroId: $jornadaId,
-                datosAnteriores: ['estado' => $estadoAnterior->value],
-                datosNuevos: ['estado' => $nuevoEstado->value],
+                datosAnteriores: ['estado' => $estadoAnterior->value, 'origen' => $jornada->origen()->value, 'trabajador_id' => $jornada->trabajadorId(), 'fecha' => $jornada->fecha()->format('Y-m-d')],
+                datosNuevos: ['estado' => $nuevoEstado->value, 'origen' => OrigenJornada::CORREGIDO->value, 'trabajador_id' => $jornada->trabajadorId(), 'fecha' => $jornada->fecha()->format('Y-m-d')],
                 motivo: $motivo,
             );
 

@@ -32,6 +32,7 @@ final class CerrarNominaMensual
         private readonly JornadaPersonalRepository $jornadas,
         private readonly UsuarioRepository $usuarios,
         private readonly GenerarObligacionesPersonal $generarObligaciones,
+        private readonly ContarJornadasVigentes $contarJornadas,
     ) {}
 
     public function execute(?DateTimeImmutable $hoy = null, ?int $actorUserId = null): ResultadoCierreNomina
@@ -61,8 +62,7 @@ final class CerrarNominaMensual
         $sueldoBase = (float) ($obligacion->baseCalculo()['sueldo_base'] ?? 0.0);
         $valorDia = round($sueldoBase / JornadaPersonal::DIAS_BASE_PERIODO, 2);
 
-        $presentes = $this->jornadas->contarEnPeriodo($trabajador->id(), $obligacion->periodoInicio(), $obligacion->periodoFin(), EstadoJornada::PRESENTE);
-        $faltas = $this->jornadas->contarEnPeriodo($trabajador->id(), $obligacion->periodoInicio(), $obligacion->periodoFin(), EstadoJornada::FALTA);
+        ['presentes' => $presentes, 'faltas' => $faltas] = $this->contarJornadas->execute($trabajador, $obligacion->periodoInicio(), $obligacion->periodoFin());
 
         $acumulado = $trabajador->estuvoVigenteTodoElRango($obligacion->periodoInicio(), $obligacion->periodoFin())
             ? max(0.0, round($sueldoBase - $faltas * $valorDia, 2))
@@ -72,36 +72,32 @@ final class CerrarNominaMensual
         $resultado->cerradas++;
     }
 
+    /** Días del mes en que estuvo vigente (dentro de sus periodos de actividad) y quedaron sin jornada. */
     private function repararFaltasFaltantes(Trabajador $trabajador, ObligacionPago $obligacion): int
     {
-        $inicio = max($obligacion->periodoInicio(), $trabajador->fechaIngreso());
-        $fin = $trabajador->fechaSalida() !== null ? min($obligacion->periodoFin(), $trabajador->fechaSalida()) : $obligacion->periodoFin();
-
-        if ($inicio > $fin) {
-            return 0;
-        }
-
-        $rolId = $this->usuarios->buscarPorId($trabajador->userId())->roleId();
+        $registradas = array_flip($this->jornadas->fechasRegistradasEntre($trabajador->id(), $obligacion->periodoInicio(), $obligacion->periodoFin()));
+        $rolId = null;
         $reparadas = 0;
-        $fecha = $inicio;
 
-        while ($fecha <= $fin) {
-            if (! $this->jornadas->existeEnFecha($trabajador->id(), $fecha)) {
-                $this->jornadas->registrar(new JornadaPersonal(
-                    id: null,
-                    trabajadorId: $trabajador->id(),
-                    rolId: $rolId,
-                    fecha: $fecha,
-                    estado: EstadoJornada::FALTA,
-                    origen: OrigenJornada::AUTOMATICO,
-                    horaMarcacion: null,
-                    observacion: 'Reparación defensiva en el cierre mensual: no se generó falta automática en su momento.',
-                    registradoPorUserId: null,
-                ));
-                $reparadas++;
+        for ($fecha = $obligacion->periodoInicio(); $fecha <= $obligacion->periodoFin(); $fecha = $fecha->modify('+1 day')) {
+            if (isset($registradas[$fecha->format('Y-m-d')]) || ! $trabajador->estaVigenteEn($fecha)) {
+                continue;
             }
 
-            $fecha = $fecha->modify('+1 day');
+            $rolId ??= $this->usuarios->buscarPorId($trabajador->userId())->roleId();
+
+            $this->jornadas->registrar(new JornadaPersonal(
+                id: null,
+                trabajadorId: $trabajador->id(),
+                rolId: $rolId,
+                fecha: $fecha,
+                estado: EstadoJornada::FALTA,
+                origen: OrigenJornada::AUTOMATICO,
+                horaMarcacion: null,
+                observacion: 'Reparación defensiva en el cierre mensual: no se generó falta automática en su momento.',
+                registradoPorUserId: null,
+            ));
+            $reparadas++;
         }
 
         return $reparadas;

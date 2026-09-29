@@ -46,7 +46,7 @@ final class GenerarObligacionesPersonal
         $hoy = $hoy->setTime(0, 0);
         $resultado = new ResultadoGeneracionPagos;
 
-        $this->sincronizarTrabajadores->execute($hoy);
+        $this->sincronizarTrabajadores->execute();
 
         $periodo = PeriodoPago::mesQueContiene($hoy);
 

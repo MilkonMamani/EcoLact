@@ -165,12 +165,24 @@ it('25. las rutas de producción existen', function () {
 
 // 26-27: notificaciones -----------------------------------------------------
 
-it('26. notificaciones están detrás de auth + active', function () {
+it('26. notificaciones están detrás de auth + active: una cuenta desactivada solo consulta', function () {
     $this->getJson(route('notificaciones.index'))->assertStatus(401);
 
     $proveedor = fixture_proveedor(fixture_zona());
     $proveedor->user->update(['estado' => 'INACTIVO']);
-    $this->actingAs($proveedor->user)->get(route('notificaciones.index'))->assertStatus(403);
+    $this->actingAs($proveedor->user)->get(route('notificaciones.index'))->assertOk();
+    $notificacion = NotificacionModel::create([
+        'user_id' => $proveedor->user_id,
+        'tipo' => 'ENTREGA_REGISTRADA',
+        'titulo' => 'Entrega registrada',
+        'mensaje' => 'Se registró una entrega pendiente de análisis.',
+        'referencia_tipo' => 'ENTREGA',
+        'referencia_id' => null,
+        'leido' => false,
+        'fecha_lectura' => null,
+    ]);
+    $this->actingAs($proveedor->user)->patch(route('notificaciones.marcar-leida', $notificacion->id))->assertStatus(403);
+    expect($notificacion->fresh()->leido)->toBeFalsy();
 });
 
 it('27. marcar notificación leída NO usa GET', function () {

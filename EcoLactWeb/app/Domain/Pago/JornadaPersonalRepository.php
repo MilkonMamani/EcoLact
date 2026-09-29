@@ -21,6 +21,13 @@ interface JornadaPersonalRepository
 
     public function buscarEnFecha(int $trabajadorId, DateTimeImmutable $fecha): ?JornadaPersonal;
 
+    /**
+     * Fechas (Y-m-d) que ya tienen jornada en [inicio, fin], en una sola consulta.
+     *
+     * @return list<string>
+     */
+    public function fechasRegistradasEntre(int $trabajadorId, DateTimeImmutable $inicio, DateTimeImmutable $fin): array;
+
     public function contarEnPeriodo(int $trabajadorId, DateTimeImmutable $inicio, DateTimeImmutable $fin, ?EstadoJornada $estado = null): int;
 
     /**

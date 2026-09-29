@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Trabajador\TipoFichaPersonal;
 use App\Http\Controllers\Web\EncargadoPlantaController;
 use App\Infrastructure\Persistence\Models\EncargadoPlantaModel;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -21,34 +22,30 @@ function fixture_encargado_planta(): EncargadoPlantaModel
         'apellidos' => 'Test',
         'telefono' => null,
         'estado' => 'ACTIVO',
-        'fecha_ingreso' => now(),
     ]);
 }
 
-it('index delega en ObtenerEncargadosPlanta y expone el listado a la vista', function () {
-    $encargado = fixture_encargado_planta();
+it('index pinta la pantalla compartida con el listado y el panel del primero', function () {
+    $ficha = fixture_encargado_planta();
     $admin = fixture_usuario('ADMINISTRADOR');
 
     registrar_vistas_stub();
     $this->actingAs($admin);
 
-    $view = app(EncargadoPlantaController::class)->index();
+    $view = app(EncargadoPlantaController::class)->index(request());
 
-    expect($view->name())->toBe('admin.encargados-planta.index');
-    expect(collect($view->getData()['encargados'])->contains(fn ($e) => $e->id() === $encargado->id))->toBeTrue();
+    expect($view->name())->toBe('admin.fichas-personal.index');
+    expect($view->getData()['config']['tipo'])->toBe(TipoFichaPersonal::ENCARGADO_PLANTA);
+    expect(collect($view->getData()['filas']->items())->pluck('id')->all())->toBe([$ficha->id]);
+    expect($view->getData()['panel']->id)->toBe($ficha->id);
 });
 
-it('show delega en ObtenerEncargadoPlanta y expone el encargado a la vista', function () {
-    $encargado = fixture_encargado_planta();
+it('show ya no es una página aparte: redirige al listado con el registro seleccionado', function () {
+    $ficha = fixture_encargado_planta();
     $admin = fixture_usuario('ADMINISTRADOR');
 
-    registrar_vistas_stub();
-    $this->actingAs($admin);
-
-    $view = app(EncargadoPlantaController::class)->show($encargado);
-
-    expect($view->name())->toBe('admin.encargados-planta.show');
-    expect($view->getData()['encargado']->id())->toBe($encargado->id);
+    $this->actingAs($admin)->get(route('admin.encargados-planta.show', $ficha))
+        ->assertRedirect(route('admin.encargados-planta.index', ['encargado' => $ficha->id]));
 });
 
 it('store llama a RegistrarEncargadoPlanta y redirige con éxito', function () {
@@ -108,5 +105,5 @@ it('un ENCARGADO_PLANTA no puede listar a otros encargados de planta', function 
     registrar_vistas_stub();
     $this->actingAs($otroEncargado);
 
-    app(EncargadoPlantaController::class)->index();
+    app(EncargadoPlantaController::class)->index(request());
 })->throws(AuthorizationException::class);

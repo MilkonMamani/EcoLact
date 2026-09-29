@@ -38,6 +38,8 @@ final readonly class ControlPeriodoTrabajador
         public ?string $mesSiguienteValor,
         public array $dias,
         public ?string $qrToken,
+        /** false para roles sin control de asistencia (ADMINISTRADOR): sueldo fijo, sin calendario ni faltas. */
+        public bool $controlaAsistencia = true,
     ) {}
 
     public function estaEnCurso(): bool

@@ -1,0 +1,90 @@
+/*
+ * Comprobante de pago de trabajador (admin/pagos/trabajadores/{obligacion}/comprobante).
+ * Documento formal tipo invoice: blanco, texto oscuro, líneas finas. Color solo en el
+ * aviso de vista previa (ámbar) y en el total. Siempre UNA hoja A4 vertical: la hoja
+ * mide 210 × 297 mm y las firmas quedan al pie de esa misma hoja.
+ */
+.cp-pagina {
+    --cp-tinta: #111827;
+    --cp-gris: #4b5563;
+    --cp-gris-suave: #6b7280;
+    --cp-gris-claro: #9ca3af;
+    --cp-linea: #e5e7eb;
+    --cp-acento: #006146;
+    --cp-ambar: #b45309;
+    margin: 0;
+    background: #eceef1;
+    color: var(--cp-tinta);
+    font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Barra de pantalla (volver / imprimir); nunca se imprime. */
+.cp-toolbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .75rem 1.25rem; border-bottom: 1px solid var(--cp-linea); background: #fff; font-size: .875rem; }
+.cp-toolbar a { color: var(--cp-gris-suave); }
+.cp-toolbar a:hover { color: var(--cp-tinta); }
+.cp-toolbar button { padding: .5rem 1rem; border-radius: .375rem; background: var(--cp-tinta); color: #fff; font-weight: 600; cursor: pointer; }
+
+.cp-contenedor { overflow-x: auto; padding: 2rem 1rem; }
+
+/* ------------------------------------------------ hoja */
+.cp-hoja { box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; width: 210mm; height: 297mm; margin: 0 auto; padding: 12mm 18mm 16mm; overflow: hidden; background: #fff; font-size: 9.5pt; line-height: 1.45; }
+
+.cp-encabezado { display: flex; justify-content: space-between; gap: 8mm; padding-bottom: 2.5mm; border-bottom: 1px solid var(--cp-linea); color: var(--cp-gris-suave); font-size: 7.5pt; }
+
+.cp-titulo { margin-top: 9mm; }
+.cp-titulo h1 { font-size: 20pt; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.cp-numero { margin-top: 1mm; color: var(--cp-gris); font-size: 10.5pt; }
+
+.cp-aviso { margin-top: 5mm; padding: 2mm 3mm; border: 1px solid #f3d3a8; border-left: 3px solid var(--cp-ambar); background: #fffaf2; color: var(--cp-ambar); font-size: 8pt; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+
+.cp-resumen { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; gap: 8mm; margin-top: 7mm; }
+.cp-resumen dt, .cp-etiqueta, .cp-trabajador-datos dt { color: var(--cp-gris-suave); font-size: 7pt; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.cp-resumen dd { margin-top: 1mm; font-size: 10pt; font-weight: 500; }
+.cp-resumen dd small { display: block; color: var(--cp-gris-claro); font-size: 8pt; font-weight: 400; }
+.cp-resumen .is-total { text-align: right; }
+.cp-resumen .is-total dd { font-size: 17pt; font-weight: 700; line-height: 1.15; }
+
+/* ------------------------------------------------ trabajador */
+.cp-trabajador { margin-top: 8mm; padding-top: 5mm; border-top: 1px solid var(--cp-tinta); }
+.cp-trabajador-nombre { margin-top: 1mm; font-size: 14pt; font-weight: 600; }
+.cp-trabajador-datos { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4mm; margin-top: 3.5mm; }
+.cp-trabajador-datos dd { margin-top: .6mm; overflow-wrap: anywhere; }
+
+/* ------------------------------------------------ tabla de conceptos */
+.cp-tabla { width: 100%; margin-top: 9mm; border-collapse: collapse; }
+.cp-tabla th { padding: 2.3mm 2mm; border-top: 1px solid var(--cp-tinta); border-bottom: 1px solid var(--cp-tinta); font-size: 7pt; font-weight: 700; letter-spacing: .09em; text-align: left; text-transform: uppercase; }
+.cp-tabla td { padding: 2.4mm 2mm; border-bottom: 1px solid var(--cp-linea); vertical-align: top; }
+.cp-tabla td:first-child { font-weight: 600; }
+.cp-tabla td:nth-child(2) { color: var(--cp-gris-suave); }
+.cp-tabla th:first-child, .cp-tabla td:first-child { padding-left: 0; }
+.cp-tabla th:last-child, .cp-tabla td:last-child { padding-right: 0; }
+.cp-tabla .is-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cp-tabla .is-acumulado td { border-top: 1px solid #cbd0d6; font-weight: 600; }
+.cp-tabla .is-acumulado td:nth-child(2) { font-weight: 400; }
+.cp-tabla .is-negativo { color: #b42318; }
+
+/* ------------------------------------------------ notas + totales */
+.cp-cierre { display: grid; grid-template-columns: minmax(0, 1fr) 70mm; gap: 10mm; margin-top: 6mm; }
+.cp-notas p { margin-bottom: 2mm; font-size: 8.5pt; }
+.cp-notas span { display: block; color: var(--cp-gris-suave); font-size: 7pt; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.cp-totales > div { display: flex; justify-content: space-between; gap: 4mm; padding: 1.4mm 0; font-variant-numeric: tabular-nums; }
+.cp-totales dt { color: var(--cp-gris-suave); font-size: 7pt; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.cp-totales .is-total { margin-top: 2mm; padding-top: 3mm; border-top: 2px solid var(--cp-tinta); }
+.cp-totales .is-total dt { color: var(--cp-tinta); font-size: 10pt; font-weight: 700; }
+.cp-totales .is-total dd { color: var(--cp-acento); font-size: 16pt; font-weight: 700; }
+
+/* ------------------------------------------------ firmas: al pie de la MISMA hoja */
+.cp-firmas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24mm; padding-top: 10mm; }
+.cp-firmas span { display: block; border-top: 1px solid var(--cp-tinta); }
+.cp-firmas p { margin-top: 2mm; color: var(--cp-gris); font-size: 8pt; text-align: center; }
+
+/* ------------------------------------------------ impresión: solo la hoja, una página A4 */
+@media print {
+    html, body.cp-pagina { width: 210mm; height: 297mm; margin: 0; background: #fff; }
+    .cp-toolbar { display: none !important; }
+    .cp-contenedor { overflow: visible; padding: 0; }
+    /* 1 mm menos de alto: evita que el redondeo del navegador genere una segunda hoja en blanco. */
+    .cp-hoja { height: 296mm; margin: 0; break-after: avoid; page-break-after: avoid; break-inside: avoid; page-break-inside: avoid; }
+    .cp-tabla tr, .cp-cierre, .cp-firmas { break-inside: avoid; page-break-inside: avoid; }
+}

@@ -2,7 +2,11 @@
 
 namespace App\Application\Pago;
 
-/** Comprobante individual de pago de un trabajador: la misma hoja para la vista previa y la página imprimible. */
+/**
+ * Comprobante individual de pago de un trabajador (hoja A4 imprimible). Todos los
+ * montos vienen del snapshot de la obligación (obligaciones_pago); esta clase solo
+ * agrupa los datos del documento y deriva su número, nunca recalcula dinero.
+ */
 final class ComprobantePagoTrabajador
 {
     public function __construct(
@@ -30,11 +34,28 @@ final class ComprobantePagoTrabajador
         public readonly ?string $pagadoEl,
         public readonly ?string $pagadoPor,
         public readonly ?string $metodoPago,
-        public readonly int $anioFirma,
+        /** Zona del trabajador (hoy solo los acopiadores tienen zona). */
+        public readonly ?string $zona,
+        /** d/m/Y: fecha en que se registró el pago; si aún no se paga, la fecha en que se genera la vista previa. */
+        public readonly string $fechaEmision,
+        /** d/m/Y, H:i (hora del negocio): cabecera breve del documento impreso. */
+        public readonly string $fechaHoraEmision,
+        public readonly ?string $numeroOperacion,
     ) {}
 
     public function estaPagado(): bool
     {
         return $this->estado === 'PAGADO';
+    }
+
+    /**
+     * Número del comprobante: P-{año del periodo}-{id de la obligación, 4 dígitos}.
+     * La obligación es única por trabajador y mes (clave beneficiario+periodo), así
+     * que el número es estable: la vista previa y el comprobante pagado del mismo
+     * mes siempre muestran el mismo número, sin tabla de correlativos aparte.
+     */
+    public function numero(): string
+    {
+        return sprintf('P-%s-%04d', substr($this->periodoInicio, 0, 4), $this->obligacionId);
     }
 }

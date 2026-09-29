@@ -41,7 +41,7 @@
                             <td class="py-3 pr-4 text-text">{{ $fila['liquidacion']->fechaCalculo()->format('d/m/Y') }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ number_format($fila['liquidacion']->totalLitrosPagables(), 2) }} L</td>
                             <td class="py-3 pr-4 font-medium text-text">S/ {{ number_format($fila['liquidacion']->totalPagar(), 2) }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$fila['liquidacion']->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$fila['liquidacion']->estado()->value" /></td>
                             <td class="py-3 pr-4 text-text-muted">S/ {{ number_format($fila['saldoPendiente'], 2) }}</td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>

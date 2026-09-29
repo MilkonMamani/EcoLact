@@ -47,7 +47,7 @@ it('el detalle muestra los datos de la entrega, el proveedor y los parámetros a
     $response->assertSee('Confirmar análisis');
 });
 
-it('la pantalla principal muestra los KPIs y la fila del análisis confirmado', function () {
+it('la pantalla principal muestra la fila del análisis confirmado sin tarjetas de KPIs', function () {
     $zona = fixture_zona('Zona Sur');
     $proveedor = fixture_proveedor($zona);
     $acopiador = fixture_acopiador($zona);
@@ -58,11 +58,11 @@ it('la pantalla principal muestra los KPIs y la fila del análisis confirmado', 
     $response = $this->actingAs($admin)->get(route('admin.analisis-calidad.index'));
 
     $response->assertOk();
-    $response->assertSee('Pendientes de análisis');
-    $response->assertSee('Analizadas');
+    $response->assertDontSee('Pendientes de análisis');
     $response->assertSee($proveedor->nombres);
     $response->assertSee('Zona Sur');
-    $response->assertSee('OBSERVADA');
+    $response->assertSee('calidad-resultado is-observada', false);
+    $response->assertSee('Observada');
 });
 
 it('la pantalla principal filtra por zona', function () {

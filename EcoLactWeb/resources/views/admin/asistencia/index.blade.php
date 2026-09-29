@@ -1,118 +1,169 @@
 @extends('layouts.admin')
 
-@section('title', 'Control de asistencia')
+@section('title', $esHoy ? 'Asistencia de hoy' : 'Asistencia')
+@section('body-class', 'admin-acopio-page')
+@section('contenedor', 'max-w-[1400px]')
 
 @php
-    use Carbon\CarbonImmutable;
-
-    $fechaCarbon = CarbonImmutable::instance($fecha);
-    $fechaEtiqueta = ($esHoy ? 'Hoy, ' : '').$fechaCarbon->locale('es')->translatedFormat('d \d\e F \d\e Y');
+    $filas = $datos->filas;
+    $resumen = $datos->resumen;
+    $filtrosActivos = request()->anyFilled(['q', 'rol']);
+    $estados = [
+        'PRESENTE' => ['Presente', 'check-circle'],
+        'FALTA' => ['Falta', 'x-circle'],
+    ];
+    $origenes = [
+        'QR' => ['QR', 'qr-code'],
+        'MANUAL' => ['Manual', 'user'],
+        'AUTOMATICO' => ['Automático', 'clock'],
+        'CORREGIDO' => ['Corregido', 'pen-line'],
+    ];
+    $plural = fn (int $n, string $uno, string $varios): string => $n === 1 ? $uno : $varios;
 @endphp
 
 @section('content')
-    <div data-asistencia-page data-url-qr="{{ route('api.admin.asistencia.qr') }}" data-url-corregir-base="{{ url('admin/trabajadores') }}" class="space-y-5">
-        <x-layout.breadcrumbs :items="[['Control de asistencia', null]]" />
-
-        <div class="flex flex-wrap items-start justify-between gap-4">
-            <div class="flex items-start gap-4">
+    <div class="fichas asistencia" data-asistencia-page data-url-qr="{{ route('api.admin.asistencia.qr') }}" data-url-corregir-base="{{ url('admin/trabajadores') }}">
+        <header class="fichas-header">
+            <div class="flex min-w-0 items-start gap-3">
                 <button type="button" data-sidebar-toggle aria-label="Abrir menú" class="rounded-lg p-2 text-text transition hover:bg-text-muted/10 lg:hidden">
                     <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
                 </button>
-                <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary-dark">
-                    <x-ui.icon name="qr-code" class="h-7 w-7" />
-                </span>
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight text-text">Control de asistencia</h1>
-                    <p class="mt-1.5 max-w-2xl text-sm text-label">Registra y consulta la asistencia diaria de los trabajadores.</p>
+                <div class="min-w-0">
+                    <x-layout.breadcrumbs :items="[['Dashboard', null], ['Asistencia', null]]" />
+                    <h1 class="fichas-title">{{ $esHoy ? 'Asistencia de hoy' : 'Consulta de asistencia' }}</h1>
+                    <p class="fichas-subtitle">Registra y consulta la asistencia diaria del personal.</p>
+                    <p class="asistencia-fecha">
+                        <x-ui.icon name="calendar" class="h-4 w-4" />
+                        <span>{{ $fechaEtiqueta }}</span>
+                    </p>
                 </div>
             </div>
 
-            <x-ui.button type="button" data-modal-open="modal-escanear-qr" class="shadow-sm">
-                <x-ui.icon name="qr-code" class="h-4 w-4" /> Escanear QR
-            </x-ui.button>
-        </div>
-
-        <x-ui.card>
-            <form method="GET" action="{{ route('admin.asistencia.index') }}" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_auto] lg:items-end">
-                <x-forms.input name="q" label="Buscar trabajador" placeholder="Nombre o DNI" :value="request('q')" :sticky="false" />
-                <x-forms.select name="rol" label="Rol" :options="collect($roles)->pluck('nombre', 'id')->all()" :value="request('rol')" placeholder="Todos" :sticky="false" />
-                <x-forms.input name="fecha" type="date" label="Fecha" :value="$fecha->format('Y-m-d')" max="{{ now()->toDateString() }}" :sticky="false" />
-                <x-ui.button type="submit">Filtrar</x-ui.button>
-            </form>
-        </x-ui.card>
-
-        <div class="flex items-center gap-2 text-sm font-medium text-text">
-            <x-ui.icon name="calendar" class="h-4 w-4 text-text-muted" />
-            {{ ucfirst($fechaEtiqueta) }}
-        </div>
-
-        <x-ui.card :padded="false">
-            @if (count($filas) === 0)
-                <div class="p-5">
-                    <x-ui.empty-state title="No se encontraron trabajadores" description="Prueba con otros filtros o con otra fecha." />
-                </div>
+            @if ($asistenciaAbierta)
+                <button type="button" data-modal-open="modal-escanear-qr" class="fichas-btn is-primary">
+                    <x-ui.icon name="qr-code" class="h-4 w-4" /> Escanear QR
+                </button>
+            @elseif ($esHoy)
+                <span class="asistencia-cerrada" data-asistencia-cerrada><x-ui.icon name="clock" class="h-4 w-4" /> Cerrada a las {{ $horaCierre }} a. m.</span>
             @else
-                <div class="ecolact-table-scroll">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="border-b border-text-muted/10 text-[11px] font-medium uppercase tracking-wider text-label">
-                                <th class="py-3 pl-5 pr-3">Trabajador</th>
-                                <th class="px-3 py-3">Rol</th>
-                                <th class="px-3 py-3">DNI</th>
-                                <th class="px-3 py-3">Asistencia</th>
-                                <th class="px-3 py-3">Hora</th>
-                                <th class="py-3 pl-3 pr-5">Origen</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($filas as $fila)
-                                @php
-                                    $estadoVisual = $fila->estado ?? ($fila->esHoy ? 'PENDIENTE_REGISTRO' : 'SIN_REGISTRO');
-                                    $estadoTexto = match (true) {
-                                        $fila->estado === 'PRESENTE' => 'Asistió',
-                                        $fila->estado === 'FALTA' => 'Falta',
-                                        $fila->esHoy => 'Pendiente de registro',
-                                        default => 'Sin registrar',
-                                    };
-                                    $badgeStatus = $fila->estado ?? 'SIN_REGISTRO';
-                                @endphp
-                                <tr
-                                    data-fila-asistencia
-                                    data-trabajador-id="{{ $fila->trabajadorId }}"
-                                    data-user-id="{{ $fila->userId }}"
-                                    data-nombre="{{ $fila->nombre }}"
-                                    data-fecha="{{ $fecha->format('Y-m-d') }}"
-                                    data-estado="{{ $fila->estado ?? '' }}"
-                                    data-corregible="{{ $fila->estado !== null ? 'true' : 'false' }}"
-                                    title="{{ $fila->estado !== null ? 'Clic para corregir esta asistencia' : '' }}"
-                                    class="border-b border-text-muted/5 transition-colors last:border-0 hover:bg-background/50 {{ $fila->estado !== null ? 'cursor-pointer' : '' }}"
-                                >
-                                    <td class="py-3 pl-5 pr-3">
-                                        <div class="flex items-center gap-2.5">
-                                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-sm font-semibold text-primary-dark">{{ $fila->iniciales }}</span>
-                                            <p class="truncate font-medium text-text">{{ $fila->nombre }}</p>
-                                        </div>
-                                    </td>
-                                    <td class="whitespace-nowrap px-3 py-3 text-text-muted">{{ $fila->rol }}</td>
-                                    <td class="whitespace-nowrap px-3 py-3 text-text-muted">{{ $fila->dni ?? '—' }}</td>
-                                    <td class="whitespace-nowrap px-3 py-3">
-                                        <x-ui.badge :status="$badgeStatus" :icon="$fila->estado === 'PRESENTE' ? 'check-circle' : ($fila->estado === 'FALTA' ? 'x-circle' : 'clock')">{{ $estadoTexto }}</x-ui.badge>
-                                    </td>
-                                    <td class="whitespace-nowrap px-3 py-3 text-text-muted">{{ $fila->horaMarcacion ?? '—' }}</td>
-                                    <td class="whitespace-nowrap py-3 pl-3 pr-5 text-text-muted">{{ $fila->origenEtiqueta ?? '—' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                <a href="{{ route('admin.asistencia.index', array_filter(['q' => request('q'), 'rol' => request('rol')])) }}" class="fichas-btn is-outline" data-asistencia-volver-hoy>Volver a hoy</a>
             @endif
-        </x-ui.card>
+        </header>
 
-        <p class="flex flex-wrap items-center gap-4 text-xs text-text-muted">
-            <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-success"></span> Asistió</span>
-            <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-danger"></span> Falta</span>
-            <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-text-muted/40"></span> Sin registrar / Pendiente de registro</span>
-        </p>
+        <div class="asistencia-resumen" aria-label="Resumen de asistencia">
+            <span class="asistencia-dato"><x-ui.icon name="users" class="h-4 w-4 is-total" /><strong>{{ $resumen->trabajadores }}</strong> {{ $plural($resumen->trabajadores, 'trabajador', 'trabajadores') }}</span>
+            <span class="asistencia-dato"><x-ui.icon name="check-circle" class="h-4 w-4 is-presente" /><strong>{{ $resumen->presentes }}</strong> {{ $plural($resumen->presentes, 'presente', 'presentes') }}</span>
+            <span class="asistencia-dato"><x-ui.icon name="x-circle" class="h-4 w-4 is-falta" /><strong>{{ $resumen->faltas }}</strong> {{ $plural($resumen->faltas, 'falta', 'faltas') }}</span>
+            <span class="asistencia-dato"><x-ui.icon name="clock" class="h-4 w-4 is-pendiente" /><strong>{{ $resumen->sinRegistro }}</strong> {{ $plural($resumen->sinRegistro, 'pendiente', 'pendientes') }}</span>
+        </div>
+
+        <form method="GET" action="{{ route('admin.asistencia.index') }}" class="asistencia-filtros" data-asistencia-filtros>
+            <x-forms.input name="q" label="Buscar trabajador" placeholder="Nombre o DNI..." :value="request('q')" :sticky="false" autocomplete="off" />
+            <x-forms.select name="rol" label="Rol" :options="collect($roles)->pluck('nombre', 'id')->all()" :value="request('rol')" placeholder="Todos" :sticky="false" />
+            <x-forms.input name="fecha" type="date" label="Fecha" :value="$fecha->format('Y-m-d')" max="{{ now()->toDateString() }}" :sticky="false" />
+            <button type="submit" class="fichas-btn is-dark">Filtrar</button>
+        </form>
+
+        @if ($filas->total() === 0)
+            <div class="fichas-vacio">
+                <x-ui.icon name="users" class="h-6 w-6" />
+                <div>
+                    <p class="font-semibold text-text">{{ $filtrosActivos ? 'Ningún trabajador coincide con los filtros' : 'No hay personal que marque asistencia en esta fecha' }}</p>
+                    <p>{{ $filtrosActivos ? 'Prueba con otra búsqueda, otro rol u otra fecha.' : 'Registra trabajadores desde Personal → Trabajadores.' }}</p>
+                </div>
+            </div>
+        @else
+            <div class="fichas-tabla asistencia-tabla is-loading" data-asistencia-tabla>
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Trabajador</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Asistencia</th>
+                            <th scope="col">Hora</th>
+                            <th scope="col">Origen</th>
+                            <th scope="col" class="is-accion"><span class="sr-only">Acciones</span></th>
+                        </tr>
+                    </thead>
+                    <tbody class="fichas-skeleton" aria-hidden="true">
+                        @for ($i = 0; $i < min(8, $filas->count()); $i++)
+                            <tr>
+                                <td><span class="flex items-center gap-2.5"><span class="fichas-bone is-avatar-sm"></span><span class="fichas-bone is-lg"></span></span></td>
+                                @foreach (['is-md', 'is-md', 'is-pill', 'is-xs', 'is-md', 'is-dot'] as $ancho)
+                                    <td><span class="fichas-bone {{ $ancho }}"></span></td>
+                                @endforeach
+                            </tr>
+                        @endfor
+                    </tbody>
+                    <tbody data-fichas-filas>
+                        @forelse ($filas as $fila)
+                            @php
+                                [$estadoTexto, $estadoIcono] = $estados[$fila->estado] ?? ($asistenciaAbierta ? ['Pendiente', 'clock'] : ['Sin registro', 'clock']);
+                                [$origenTexto, $origenIcono] = $origenes[$fila->origen] ?? [null, null];
+                            @endphp
+                            <tr
+                                data-fila-asistencia
+                                data-trabajador-id="{{ $fila->trabajadorId }}"
+                                data-user-id="{{ $fila->userId }}"
+                                data-nombre="{{ $fila->nombre }}"
+                                data-fecha="{{ $fecha->format('Y-m-d') }}"
+                                data-fecha-etiqueta="{{ $fechaEtiqueta }}"
+                                data-estado="{{ $fila->estado ?? '' }}"
+                                data-estado-etiqueta="{{ $estadoTexto }}"
+                                data-hora="{{ $fila->horaMarcacion ?? '' }}"
+                                data-origen-etiqueta="{{ $origenTexto ?? '' }}"
+                            >
+                                <td>
+                                    <span class="asistencia-trabajador">
+                                        <span class="asistencia-avatar" aria-hidden="true">{{ $fila->iniciales }}</span>
+                                        <span class="fichas-nombre">{{ $fila->nombre }}</span>
+                                    </span>
+                                </td>
+                                <td class="is-muted">{{ $fila->rol }}</td>
+                                <td class="is-muted">{{ $fila->dni ?? '—' }}</td>
+                                <td><x-ui.badge compact :status="$fila->estado ?? 'SIN_REGISTRO'" :icon="$estadoIcono">{{ $estadoTexto }}</x-ui.badge></td>
+                                <td class="asistencia-hora">{{ $fila->horaMarcacion ?? '—' }}</td>
+                                <td class="is-muted">
+                                    @if ($origenTexto)
+                                        <span class="asistencia-origen"><x-ui.icon :name="$origenIcono" class="h-3.5 w-3.5" /> {{ $origenTexto }}</span>
+                                    @else
+                                        —
+                                    @endif
+                                </td>
+                                <td class="is-accion">
+                                    <details class="asistencia-acciones">
+                                        <summary aria-label="Acciones para {{ $fila->nombre }}" title="Acciones">
+                                            <x-ui.icon name="ellipsis" class="h-4 w-4 rotate-90" />
+                                        </summary>
+                                        <div class="asistencia-menu" role="menu">
+                                            @if (! $asistenciaAbierta)
+                                                <button type="button" role="menuitem" data-asistencia-ver>
+                                                    <x-ui.icon name="eye" class="h-4 w-4" /> Ver detalle
+                                                </button>
+                                            @elseif ($fila->estado !== null)
+                                                <button type="button" role="menuitem" data-asistencia-corregir>
+                                                    <x-ui.icon name="pen-line" class="h-4 w-4" /> Editar asistencia
+                                                </button>
+                                            @else
+                                                <button type="button" role="menuitem" data-asistencia-registrar>
+                                                    <x-ui.icon name="user" class="h-4 w-4" /> Registrar asistencia
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </details>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="7" class="fichas-sin-pagina">No hay trabajadores en esta página. <a href="{{ $filas->url(1) }}">Ir a la primera página</a></td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <noscript><style>.fichas-tabla.is-loading [data-fichas-filas] { display: table-row-group; } .fichas-tabla.is-loading .fichas-skeleton { display: none; }</style></noscript>
+
+            <x-tables.pagination :paginator="$filas" noun="trabajadores" class="fichas-pager" />
+        @endif
     </div>
 
     <x-ui.modal id="modal-escanear-qr" title="Registrar asistencia por QR">
@@ -150,13 +201,45 @@
             <x-ui.data-field label="Fecha" muted><span data-corregir-fecha></span></x-ui.data-field>
             <x-ui.data-field label="Estado actual" muted><span data-corregir-estado-actual></span></x-ui.data-field>
 
-            <x-forms.select name="estado" label="Nuevo estado" required :options="['PRESENTE' => 'Asistió', 'FALTA' => 'Falta']" placeholder="" :sticky="false" data-corregir-estado />
+            <x-forms.select name="estado" label="Nuevo estado" required :options="['PRESENTE' => 'Presente', 'FALTA' => 'Falta']" placeholder="" :sticky="false" data-corregir-estado />
             <x-forms.textarea name="motivo" label="Motivo" placeholder="Explica el motivo de la corrección" :rows="2" maxlength="255" required :sticky="false" />
             <p data-corregir-error hidden class="text-sm text-danger"></p>
 
             <div class="flex justify-end gap-2 pt-2">
                 <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>
                 <x-ui.button type="submit" data-corregir-submit>Guardar corrección</x-ui.button>
+            </div>
+        </form>
+    </x-ui.modal>
+
+    {{-- Detalle de solo lectura (día ya cerrado a las 07:00); lo rellena admin-asistencia.js con los data-* de la fila. --}}
+    <x-ui.modal id="modal-detalle-asistencia" title="Detalle de asistencia">
+        <div class="space-y-3">
+            <x-ui.data-field label="Trabajador"><span data-detalle-nombre></span></x-ui.data-field>
+            <x-ui.data-field label="Fecha" muted><span data-detalle-fecha></span></x-ui.data-field>
+            <div class="grid grid-cols-3 gap-3">
+                <x-ui.data-field label="Estado"><span data-detalle-estado></span></x-ui.data-field>
+                <x-ui.data-field label="Hora"><span data-detalle-hora></span></x-ui.data-field>
+                <x-ui.data-field label="Origen"><span data-detalle-origen></span></x-ui.data-field>
+            </div>
+            <p class="text-xs text-text-muted">La asistencia se registra o corrige solo antes de las {{ $horaCierre }} a. m.; este día ya está cerrado.</p>
+            <div class="flex justify-end pt-1">
+                <x-ui.button type="button" data-modal-close variant="ghost">Cerrar</x-ui.button>
+            </div>
+        </div>
+    </x-ui.modal>
+
+    {{-- Registro manual (admin.trabajadores.jornadas.store → RegistrarJornadaTrabajador); la acción y la fecha las pone admin-asistencia.js. --}}
+    <x-ui.modal id="modal-registrar-asistencia" title="Registrar asistencia manual">
+        <form method="POST" action="" class="space-y-4">
+            @csrf
+            <input type="hidden" name="fecha" value="{{ $fecha->format('Y-m-d') }}">
+            <x-ui.data-field label="Trabajador"><span data-registrar-nombre></span></x-ui.data-field>
+            <x-ui.data-field label="Fecha" muted><span data-registrar-fecha></span></x-ui.data-field>
+            <x-forms.textarea name="observacion" id="registrar-observacion" label="Observación (opcional)" :rows="2" maxlength="500" :sticky="false" />
+            <div class="flex justify-end gap-2 pt-2">
+                <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>
+                <x-ui.button type="submit">Registrar como presente</x-ui.button>
             </div>
         </form>
     </x-ui.modal>

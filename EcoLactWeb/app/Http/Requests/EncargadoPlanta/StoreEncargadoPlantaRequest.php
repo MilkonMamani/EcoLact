@@ -23,7 +23,7 @@ class StoreEncargadoPlantaRequest extends FormRequest
             'telefono' => ['nullable', 'string', 'max:20'],
             'username' => ['required', 'string', 'max:60', 'unique:users,username'],
             'password' => ['required', 'string', 'min:8'],
-            'fecha_ingreso' => ['nullable', 'date'],
+            'fecha_ingreso' => ['prohibited'],
         ];
     }
 

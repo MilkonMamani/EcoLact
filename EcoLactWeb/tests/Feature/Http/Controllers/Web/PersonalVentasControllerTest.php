@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Trabajador\TipoFichaPersonal;
 use App\Http\Controllers\Web\PersonalVentasController;
 use App\Infrastructure\Persistence\Models\PersonalVentasModel;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -21,34 +22,30 @@ function fixture_personal_ventas(): PersonalVentasModel
         'apellidos' => 'Test',
         'telefono' => null,
         'estado' => 'ACTIVO',
-        'fecha_ingreso' => now(),
     ]);
 }
 
-it('index delega en ObtenerListaPersonalVentas y expone el listado a la vista', function () {
-    $personal = fixture_personal_ventas();
+it('index pinta la pantalla compartida con el listado y el panel del primero', function () {
+    $ficha = fixture_personal_ventas();
     $admin = fixture_usuario('ADMINISTRADOR');
 
     registrar_vistas_stub();
     $this->actingAs($admin);
 
-    $view = app(PersonalVentasController::class)->index();
+    $view = app(PersonalVentasController::class)->index(request());
 
-    expect($view->name())->toBe('admin.personal-ventas.index');
-    expect(collect($view->getData()['personal'])->contains(fn ($p) => $p->id() === $personal->id))->toBeTrue();
+    expect($view->name())->toBe('admin.fichas-personal.index');
+    expect($view->getData()['config']['tipo'])->toBe(TipoFichaPersonal::PERSONAL_VENTAS);
+    expect(collect($view->getData()['filas']->items())->pluck('id')->all())->toBe([$ficha->id]);
+    expect($view->getData()['panel']->id)->toBe($ficha->id);
 });
 
-it('show delega en ObtenerPersonalVentas y expone el registro a la vista', function () {
-    $personal = fixture_personal_ventas();
+it('show ya no es una página aparte: redirige al listado con el registro seleccionado', function () {
+    $ficha = fixture_personal_ventas();
     $admin = fixture_usuario('ADMINISTRADOR');
 
-    registrar_vistas_stub();
-    $this->actingAs($admin);
-
-    $view = app(PersonalVentasController::class)->show($personal);
-
-    expect($view->name())->toBe('admin.personal-ventas.show');
-    expect($view->getData()['personal']->id())->toBe($personal->id);
+    $this->actingAs($admin)->get(route('admin.personal-ventas.show', $ficha))
+        ->assertRedirect(route('admin.personal-ventas.index', ['personal' => $ficha->id]));
 });
 
 it('store llama a RegistrarPersonalVentas y redirige con éxito', function () {
@@ -108,5 +105,5 @@ it('un miembro de VENTAS no puede listar a otro personal de ventas', function ()
     registrar_vistas_stub();
     $this->actingAs($otroVentas);
 
-    app(PersonalVentasController::class)->index();
+    app(PersonalVentasController::class)->index(request());
 })->throws(AuthorizationException::class);

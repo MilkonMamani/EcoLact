@@ -26,6 +26,7 @@ use App\Http\Controllers\Web\Comunicacion\NotificacionController;
 use App\Http\Controllers\Web\EncargadoPlantaController;
 use App\Http\Controllers\Web\EntregaController;
 use App\Http\Controllers\Web\Liquidacion\LiquidacionController;
+use App\Http\Controllers\Web\NuevoTrabajadorController;
 use App\Http\Controllers\Web\Pago\ConfiguracionPagoController;
 use App\Http\Controllers\Web\Pago\ControlAsistenciaController;
 use App\Http\Controllers\Web\Pago\JornadaPersonalController;
@@ -105,6 +106,8 @@ Route::middleware(['auth', 'active'])->group(function () {
         // Proveedores
         Route::get('proveedores', [ProveedorController::class, 'index'])->name('proveedores.index');
         Route::get('proveedores/{proveedor}', [ProveedorController::class, 'show'])->name('proveedores.show');
+        // Panel derecho de la pantalla de Proveedores (fragmento HTML pedido por fetch).
+        Route::get('proveedores/{proveedor}/panel', [ProveedorController::class, 'panel'])->name('proveedores.panel');
         Route::post('proveedores', [ProveedorController::class, 'store'])->name('proveedores.store');
         Route::match(['put', 'patch'], 'proveedores/{proveedor}', [ProveedorController::class, 'update'])->name('proveedores.update');
         Route::patch('proveedores/{proveedor}/desactivar', [ProveedorController::class, 'desactivar'])->name('proveedores.desactivar');
@@ -118,6 +121,8 @@ Route::middleware(['auth', 'active'])->group(function () {
         // Acopiadores
         Route::get('acopiadores', [AcopiadorController::class, 'index'])->name('acopiadores.index');
         Route::get('acopiadores/{acopiador}', [AcopiadorController::class, 'show'])->name('acopiadores.show');
+        // Panel derecho de la pantalla de Acopiadores (fragmento HTML pedido por fetch).
+        Route::get('acopiadores/{acopiador}/panel', [AcopiadorController::class, 'panel'])->name('acopiadores.panel');
         Route::post('acopiadores', [AcopiadorController::class, 'store'])->name('acopiadores.store');
         Route::patch('acopiadores/{acopiador}', [AcopiadorController::class, 'update'])->name('acopiadores.update');
         Route::patch('acopiadores/{acopiador}/desactivar', [AcopiadorController::class, 'desactivar'])->name('acopiadores.desactivar');
@@ -167,6 +172,8 @@ Route::middleware(['auth', 'active'])->group(function () {
         // Análisis de calidad: lectura global + operación administrativa.
         Route::get('analisis-calidad', [AnalisisCalidadController::class, 'index'])->name('analisis-calidad.index');
         Route::get('entregas/{entrega}/analisis-calidad', [AnalisisCalidadController::class, 'porEntrega'])->name('entregas.analisis-calidad.index');
+        // Fragmento del modal "Ver análisis" del listado de Calidad.
+        Route::get('entregas/{entrega}/analisis-calidad/detalle', [AnalisisCalidadController::class, 'detalle'])->name('entregas.analisis-calidad.detalle');
         Route::get('analisis-calidad/{analisis}', [AnalisisCalidadController::class, 'show'])->name('analisis-calidad.show');
         Route::post('analisis-calidad', [AnalisisCalidadController::class, 'store'])->name('analisis-calidad.store');
         Route::patch('analisis-calidad/{analisis}/finalizar', [AnalisisCalidadController::class, 'finalizar'])->name('analisis-calidad.finalizar');
@@ -208,12 +215,15 @@ Route::middleware(['auth', 'active'])->group(function () {
         // ajustables por trabajador mientras esté PENDIENTE (tabla + panel lateral).
         Route::get('pagos/trabajadores', [PagoTrabajadorController::class, 'index'])->name('pagos.trabajadores.index');
         Route::get('pagos/trabajadores/{obligacion}/panel', [PagoTrabajadorController::class, 'panel'])->name('pagos.trabajadores.panel');
+        Route::get('pagos/trabajadores/sin-sueldo/{trabajador}/panel', [PagoTrabajadorController::class, 'panelSinSueldo'])->name('pagos.trabajadores.sin-sueldo');
         Route::post('pagos/trabajadores/{obligacion}/ajuste', [PagoTrabajadorController::class, 'ajustar'])->name('pagos.trabajadores.ajuste');
         Route::post('pagos/trabajadores/{obligacion}/pagar', [PagoTrabajadorController::class, 'registrarPago'])->name('pagos.trabajadores.pagar');
         Route::get('pagos/trabajadores/{obligacion}/comprobante', [PagoTrabajadorController::class, 'comprobante'])->name('pagos.trabajadores.comprobante');
 
         // Control de días trabajados: una sola ruta reutilizada por los 5 perfiles de
         // personal y por el panel de "Pagar a trabajadores".
+        // Trabajadores → Nuevo trabajador: un formulario que envía al alta existente de cada rol.
+        Route::get('trabajadores/nuevo', NuevoTrabajadorController::class)->name('trabajadores.create');
         Route::get('trabajadores/{trabajador}/jornadas', [JornadaPersonalController::class, 'index'])->name('trabajadores.jornadas.index');
         Route::post('trabajadores/{trabajador}/jornadas', [JornadaPersonalController::class, 'store'])->name('trabajadores.jornadas.store');
         Route::post('trabajadores/{trabajador}/jornadas/{fecha}/corregir', [JornadaPersonalController::class, 'corregir'])->name('trabajadores.jornadas.corregir');
@@ -296,6 +306,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         // ADMINISTRADOR sigue creándose solo por seeder, no por esta interfaz).
         Route::get('encargados-planta', [EncargadoPlantaController::class, 'index'])->name('encargados-planta.index');
         Route::get('encargados-planta/{encargado}', [EncargadoPlantaController::class, 'show'])->name('encargados-planta.show');
+        Route::get('encargados-planta/{encargado}/panel', [EncargadoPlantaController::class, 'panel'])->name('encargados-planta.panel');
         Route::post('encargados-planta', [EncargadoPlantaController::class, 'store'])->name('encargados-planta.store');
         Route::patch('encargados-planta/{encargado}', [EncargadoPlantaController::class, 'update'])->name('encargados-planta.update');
         Route::patch('encargados-planta/{encargado}/desactivar', [EncargadoPlantaController::class, 'desactivar'])->name('encargados-planta.desactivar');
@@ -303,6 +314,7 @@ Route::middleware(['auth', 'active'])->group(function () {
 
         Route::get('personal-ventas', [PersonalVentasController::class, 'index'])->name('personal-ventas.index');
         Route::get('personal-ventas/{personalVenta}', [PersonalVentasController::class, 'show'])->name('personal-ventas.show');
+        Route::get('personal-ventas/{personalVenta}/panel', [PersonalVentasController::class, 'panel'])->name('personal-ventas.panel');
         Route::post('personal-ventas', [PersonalVentasController::class, 'store'])->name('personal-ventas.store');
         Route::patch('personal-ventas/{personalVenta}', [PersonalVentasController::class, 'update'])->name('personal-ventas.update');
         Route::patch('personal-ventas/{personalVenta}/desactivar', [PersonalVentasController::class, 'desactivar'])->name('personal-ventas.desactivar');
@@ -310,6 +322,7 @@ Route::middleware(['auth', 'active'])->group(function () {
 
         Route::get('analistas-calidad', [AnalistaCalidadController::class, 'index'])->name('analistas-calidad.index');
         Route::get('analistas-calidad/{analista}', [AnalistaCalidadController::class, 'show'])->name('analistas-calidad.show');
+        Route::get('analistas-calidad/{analista}/panel', [AnalistaCalidadController::class, 'panel'])->name('analistas-calidad.panel');
         Route::post('analistas-calidad', [AnalistaCalidadController::class, 'store'])->name('analistas-calidad.store');
         Route::patch('analistas-calidad/{analista}', [AnalistaCalidadController::class, 'update'])->name('analistas-calidad.update');
         Route::patch('analistas-calidad/{analista}/desactivar', [AnalistaCalidadController::class, 'desactivar'])->name('analistas-calidad.desactivar');

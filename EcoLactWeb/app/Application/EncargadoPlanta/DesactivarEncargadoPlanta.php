@@ -2,6 +2,8 @@
 
 namespace App\Application\EncargadoPlanta;
 
+use App\Application\Trabajador\CambiarEstadoCuentaTrabajador;
+use App\Application\Trabajador\SincronizarTrabajadores;
 use App\Domain\EncargadoPlanta\EncargadoPlanta;
 use App\Domain\EncargadoPlanta\EncargadoPlantaRepository;
 use App\Domain\Shared\Enums\EstadoUsuario;
@@ -11,6 +13,8 @@ final class DesactivarEncargadoPlanta
 {
     public function __construct(
         private readonly EncargadoPlantaRepository $encargados,
+        private readonly SincronizarTrabajadores $sincronizarTrabajadores,
+        private readonly CambiarEstadoCuentaTrabajador $cambiarEstadoCuenta,
     ) {}
 
     public function execute(int $encargadoId): EncargadoPlanta
@@ -25,7 +29,7 @@ final class DesactivarEncargadoPlanta
             throw new DomainException('El encargado de planta ya se encuentra inactivo.');
         }
 
-        return $this->encargados->actualizar(new EncargadoPlanta(
+        $ficha = $this->encargados->actualizar(new EncargadoPlanta(
             id: $encargado->id(),
             userId: $encargado->userId(),
             dni: $encargado->dni(),
@@ -35,5 +39,11 @@ final class DesactivarEncargadoPlanta
             estado: EstadoUsuario::INACTIVO,
             fechaIngreso: $encargado->fechaIngreso(),
         ));
+
+        $this->cambiarEstadoCuenta->execute($ficha->userId(), EstadoUsuario::INACTIVO);
+
+        $this->sincronizarTrabajadores->execute(soloUserId: $ficha->userId());
+
+        return $ficha;
     }
 }

@@ -17,13 +17,23 @@
         <div data-sidebar-backdrop class="fixed inset-0 z-40 bg-text/40 lg:hidden"></div>
 
         <x-layout.sidebar>
+            <p class="ecolact-sidebar-heading">Dashboard</p>
             <x-layout.sidebar-link icon="home" :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">Inicio</x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="qr-code" :href="route('admin.asistencia.index')" :active="request()->routeIs('admin.asistencia.*')">Asistencia</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Operación</p>
             <x-layout.sidebar-link icon="milk" :href="route('admin.entregas.index')" :active="request()->routeIs('admin.entregas.*')">Acopio</x-layout.sidebar-link>
             <x-layout.sidebar-link icon="users" :href="route('admin.proveedores.index')" :active="request()->routeIs('admin.proveedores.*')">Proveedores</x-layout.sidebar-link>
-            <x-layout.sidebar-link icon="users" :href="route('admin.acopiadores.index')" :active="request()->routeIs('admin.acopiadores.*')">Acopiadores</x-layout.sidebar-link>
             <x-layout.sidebar-link icon="pin" :href="route('admin.zonas.index')" :active="request()->routeIs('admin.zonas.*')">Zonas</x-layout.sidebar-link>
+
+            <p class="ecolact-sidebar-heading">Personal</p>
+            <x-layout.sidebar-group label="Trabajadores" icon="users" :active="request()->routeIs('admin.trabajadores.create', 'admin.acopiadores.*', 'admin.analistas-calidad.*', 'admin.encargados-planta.*', 'admin.personal-ventas.*')">
+                <x-layout.sidebar-link :href="route('admin.trabajadores.create')" :active="request()->routeIs('admin.trabajadores.create')">Nuevo trabajador</x-layout.sidebar-link>
+                <x-layout.sidebar-link :href="route('admin.acopiadores.index')" :active="request()->routeIs('admin.acopiadores.*')">Acopiadores</x-layout.sidebar-link>
+                <x-layout.sidebar-link :href="route('admin.analistas-calidad.index')" :active="request()->routeIs('admin.analistas-calidad.*')">Analistas de calidad</x-layout.sidebar-link>
+                <x-layout.sidebar-link :href="route('admin.encargados-planta.index')" :active="request()->routeIs('admin.encargados-planta.*')">Encargados de planta</x-layout.sidebar-link>
+                <x-layout.sidebar-link :href="route('admin.personal-ventas.index')" :active="request()->routeIs('admin.personal-ventas.*')">Personal de ventas</x-layout.sidebar-link>
+            </x-layout.sidebar-group>
 
             <p class="ecolact-sidebar-heading">Calidad</p>
             <x-layout.sidebar-link icon="quality" :href="route('admin.analisis-calidad.index')" :active="request()->routeIs('admin.analisis-calidad.*')">Calidad</x-layout.sidebar-link>
@@ -55,10 +65,6 @@
             <x-layout.sidebar-link icon="chat" :href="route('admin.comunicados.index')" :active="request()->routeIs('admin.comunicados.*')">Comunicados</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Administración</p>
-            <x-layout.sidebar-link icon="qr-code" :href="route('admin.asistencia.index')" :active="request()->routeIs('admin.asistencia.*')">Control de asistencia</x-layout.sidebar-link>
-            <x-layout.sidebar-link icon="users" :href="route('admin.encargados-planta.index')" :active="request()->routeIs('admin.encargados-planta.*')">Encargados de planta</x-layout.sidebar-link>
-            <x-layout.sidebar-link icon="users" :href="route('admin.personal-ventas.index')" :active="request()->routeIs('admin.personal-ventas.*')">Personal de ventas</x-layout.sidebar-link>
-            <x-layout.sidebar-link icon="users" :href="route('admin.analistas-calidad.index')" :active="request()->routeIs('admin.analistas-calidad.*')">Analistas de calidad</x-layout.sidebar-link>
             {{-- Pendiente: la tabla auditorias ya registra correcciones de asistencia (CorregirJornada), pero todavía no hay una pantalla de consulta general. --}}
             <x-layout.sidebar-link icon="audit" disabled>Auditoría</x-layout.sidebar-link>
         </x-layout.sidebar>

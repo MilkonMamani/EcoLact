@@ -3,10 +3,8 @@
 namespace App\Application\Pago;
 
 use App\Domain\Pago\JornadaPersonal;
-use App\Domain\Pago\JornadaPersonalRepository;
 use App\Domain\Pago\ObligacionPago;
 use App\Domain\Pago\ObligacionPagoRepository;
-use App\Domain\Shared\Enums\EstadoJornada;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use App\Domain\Trabajador\TrabajadorRepository;
 
@@ -22,14 +20,17 @@ use App\Domain\Trabajador\TrabajadorRepository;
  * - Trabajador activo TODO el mes (ingresó antes o el día 1 y sigue activo
  *   al cierre): acumulado = sueldo_mensual - faltas*valor_dia (nunca menos
  *   por tener el mes 28/29/31 días).
- * - Trabajador parcial (ingresó o salió durante el mes): acumulado =
- *   min(sueldo_mensual, presentes*valor_dia) — nunca más que el sueldo
- *   mensual aunque el mes tenga 31 días.
+ * - Trabajador parcial (ingresó, salió o estuvo inactivo parte del mes, según
+ *   sus periodos de actividad): acumulado = min(sueldo_mensual,
+ *   presentes*valor_dia) — solo días realmente trabajados; los días inactivos
+ *   no son falta ni día pagable.
+ *
+ * Presentes/faltas solo cuentan dentro de sus periodos (ContarJornadasVigentes).
  */
 final class RecalcularProgresoObligacionPersonal
 {
     public function __construct(
-        private readonly JornadaPersonalRepository $jornadas,
+        private readonly ContarJornadasVigentes $contarJornadas,
         private readonly ObligacionPagoRepository $obligaciones,
         private readonly TrabajadorRepository $trabajadores,
     ) {}
@@ -49,8 +50,20 @@ final class RecalcularProgresoObligacionPersonal
         $sueldoBase = (float) ($obligacion->baseCalculo()['sueldo_base'] ?? 0.0);
         $valorDia = round($sueldoBase / JornadaPersonal::DIAS_BASE_PERIODO, 2);
 
-        $presentes = $this->jornadas->contarEnPeriodo($trabajador->id(), $obligacion->periodoInicio(), $obligacion->periodoFin(), EstadoJornada::PRESENTE);
-        $faltas = $this->jornadas->contarEnPeriodo($trabajador->id(), $obligacion->periodoInicio(), $obligacion->periodoFin(), EstadoJornada::FALTA);
+        // Rol sin control de asistencia (ADMINISTRADOR): no hay jornadas ni faltas; cobra el mes
+        // completo o, si ingresó/salió a mitad de mes, los días calendario en que estuvo vigente.
+        if (! $this->trabajadores->controlaAsistencia($trabajador->id())) {
+            $diasVigentes = $trabajador->diasVigentesEn($obligacion->periodoInicio(), $obligacion->periodoFin());
+            $acumulado = $trabajador->estuvoVigenteTodoElRango($obligacion->periodoInicio(), $obligacion->periodoFin())
+                ? $sueldoBase
+                : min($sueldoBase, round($diasVigentes * $valorDia, 2));
+
+            $this->obligaciones->actualizarProgresoPersonal($obligacion->id(), $diasVigentes, $valorDia, $acumulado);
+
+            return;
+        }
+
+        ['presentes' => $presentes, 'faltas' => $faltas] = $this->contarJornadas->execute($trabajador, $obligacion->periodoInicio(), $obligacion->periodoFin());
 
         $acumulado = $trabajador->estuvoVigenteTodoElRango($obligacion->periodoInicio(), $obligacion->periodoFin())
             ? max(0.0, round($sueldoBase - $faltas * $valorDia, 2))

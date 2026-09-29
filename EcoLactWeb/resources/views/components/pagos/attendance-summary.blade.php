@@ -14,10 +14,12 @@
     @if (! $cp->tieneObligacion())
         <p class="text-sm text-text-muted">No hay registro de nómina para este mes.</p>
     @else
-        <div class="grid gap-4 sm:grid-cols-2">
-            <x-ui.data-field label="Asistencias">{{ $cp->asistencias }}</x-ui.data-field>
-            <x-ui.data-field label="Faltas">{{ $cp->faltas }}</x-ui.data-field>
-        </div>
+        @if ($cp->controlaAsistencia)
+            <div class="grid gap-4 sm:grid-cols-2">
+                <x-ui.data-field label="Asistencias">{{ $cp->asistencias }}</x-ui.data-field>
+                <x-ui.data-field label="Faltas">{{ $cp->faltas }}</x-ui.data-field>
+            </div>
+        @endif
 
         <div class="mt-4 grid gap-4 sm:grid-cols-2">
             <x-ui.data-field label="Sueldo mensual">{{ $soles($cp->sueldoMensual) }}</x-ui.data-field>
@@ -34,7 +36,9 @@
             <x-ui.data-field label="Acumulado">
                 {{ $soles($cp->acumulado) }}
                 <p class="mt-0.5 text-xs font-normal text-text-muted">
-                    @if ($cp->esMesCompleto)
+                    @if (! $cp->controlaAsistencia)
+                        {{ $cp->esMesCompleto ? 'Sueldo fijo mensual (sin control de asistencia).' : 'Sueldo fijo proporcional a los días desde su fecha de ingreso ('.$cp->fechaIngresoEtiqueta.').' }}
+                    @elseif ($cp->esMesCompleto)
                         Sueldo mensual menos faltas registradas.
                     @else
                         Pago proporcional según los días trabajados desde su fecha de ingreso ({{ $cp->fechaIngresoEtiqueta }}).

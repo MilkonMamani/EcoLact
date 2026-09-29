@@ -21,7 +21,7 @@
                         <tr class="border-b border-text-muted/5 last:border-0">
                             <td class="py-3 pr-4 text-text">{{ $pago->fechaPago()->format('d/m/Y') }}</td>
                             <td class="py-3 pr-4 font-medium text-text">S/ {{ number_format($pago->monto(), 2) }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$pago->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$pago->estado()->value" /></td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
                                     <x-ui.action-button type="view" label="Ver pago" :href="route('proveedor.pagos.show', $pago->id())" />

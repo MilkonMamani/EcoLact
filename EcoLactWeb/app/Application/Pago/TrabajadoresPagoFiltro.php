@@ -13,6 +13,8 @@ final class TrabajadoresPagoFiltro
         public readonly ?string $periodo,
         public readonly ?EstadoObligacionPago $estado,
         public readonly int $porPagina,
+        /** Solo trabajadores cuyo rol no tiene sueldo configurado (estado=SIN_SUELDO). */
+        public readonly bool $soloSinSueldo = false,
     ) {}
 
     public static function resolver(
@@ -25,6 +27,13 @@ final class TrabajadoresPagoFiltro
         $busqueda = $busqueda !== null && trim($busqueda) !== '' ? trim($busqueda) : null;
         $periodo = $periodo !== null && preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $periodo) === 1 ? $periodo : null;
 
-        return new self($busqueda, $rolId, $periodo, $estado !== null ? EstadoObligacionPago::tryFrom($estado) : null, $porPagina);
+        return new self(
+            $busqueda,
+            $rolId,
+            $periodo,
+            $estado !== null ? EstadoObligacionPago::tryFrom($estado) : null,
+            $porPagina,
+            $estado === TrabajadorPagoFila::SIN_SUELDO,
+        );
     }
 }

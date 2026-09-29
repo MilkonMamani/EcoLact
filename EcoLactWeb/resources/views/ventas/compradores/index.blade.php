@@ -30,7 +30,7 @@
                             <td class="py-3 pr-4 text-text-muted">{{ $comprador->documento() ?? '—' }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $comprador->telefono() ?? '—' }}</td>
                             <td class="py-3 pr-4 text-text-muted">{{ ucfirst(strtolower($comprador->tipoCliente())) }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$comprador->estado()" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$comprador->estado()" /></td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -80,7 +80,7 @@
                             </td>
                             <td class="py-3 pr-4 text-text-muted">{{ number_format($fila['cantidad'], 2) }}</td>
                             <td class="py-3 pr-4 font-medium text-text">S/ {{ number_format($fila['importeTotal'], 2) }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$fila['estado']" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$fila['estado']" /></td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
                                     <x-ui.action-button type="view" label="Ver venta" :href="route('ventas.ventas.show', $fila['id'])" />

@@ -486,7 +486,7 @@ it('un pago PAGADO es inmutable: las entregas nuevas forman otro pendiente y no 
         ->and($pagos[0]->detalles)->toHaveCount(1)
         ->and($pagos[1]->estado)->toBe('PENDIENTE')
         ->and((float) $pagos[1]->monto_calculado)->toBe(34.0)
-        ->and($pagos[1]->periodo_inicio->format('Y-m-d'))->toBe($pagos[0]->periodo_inicio->format('Y-m-d'));
+        ->and($pagos[1]->periodo_inicio->format('Y-m-d'))->toBe('2026-09-17');
 });
 
 it('un análisis posterior no modifica un pago ya realizado', function () {

@@ -88,6 +88,11 @@ it('si falla la sincronización del pago, la entrega y el stock tampoco se guard
     [, $proveedor, $acopiador] = escenario_de_acopio();
     $this->app->bind(PagosPendientesProveedorStore::class, fn () => new class implements PagosPendientesProveedorStore
     {
+        public function semanasCerradas(int $proveedorId): array
+        {
+            return [];
+        }
+
         public function liberarPendientes(int $proveedorId): array
         {
             return [];
@@ -151,7 +156,7 @@ it('escenario completo: pago histórico intacto y saldo pendiente correcto con e
     expect((float) $primero->monto_calculado)->toBe(51.0)
         ->and(pendiente_total())->toBe(51.0);
 
-    app(RegistrarPagoObligacion::class)->execute($primero->id, MetodoPago::EFECTIVO, null, new DateTimeImmutable('2026-09-15'), null, null, $admin->id, null, new DateTimeImmutable('2026-09-20'));
+    app(RegistrarPagoObligacion::class)->execute($primero->id, MetodoPago::EFECTIVO, null, new DateTimeImmutable('2026-09-16'), null, null, $admin->id, null, new DateTimeImmutable('2026-09-20'));
     expect(pendiente_total())->toBe(0.0);
 
     // Entrega 2: 20 L de la misma semana -> otro pendiente de S/ 34; el pagado no cambia.
@@ -180,7 +185,7 @@ it('los KPIs de Pagos salen de las obligaciones reales: pendientes por proveedor
     registrar_entrega_de($otro, $acopiador->user, 20.0, '2026-09-17 10:00');
     registrar_entrega_de($proveedor, $acopiador->user, 30.0, '2026-09-14 10:00');
     $pagado = ObligacionPagoModel::where('proveedor_id', $proveedor->id)->firstOrFail();
-    app(RegistrarPagoObligacion::class)->execute($pagado->id, MetodoPago::EFECTIVO, null, new DateTimeImmutable('2026-09-15'), null, null, $admin->id, null, new DateTimeImmutable('2026-09-20'));
+    app(RegistrarPagoObligacion::class)->execute($pagado->id, MetodoPago::EFECTIVO, null, new DateTimeImmutable('2026-09-16'), null, null, $admin->id, null, new DateTimeImmutable('2026-09-20'));
 
     $this->actingAs($admin)->get(route('admin.pagos.index'))
         ->assertOk()

@@ -1,119 +1,178 @@
 @extends('layouts.admin')
 
-@section('title', 'Pagar a trabajadores')
+@section('title', 'Pagos a trabajadores')
+@section('body-class', 'admin-fichas-page')
+@section('contenedor', 'max-w-[1600px]')
 
+{{--
+    Pagos a trabajadores: mismo patrón "listado + panel" que Proveedores/Acopiadores
+    (admin-fichas.js: skeleton, entrada escalonada, panel por fetch con ?trabajador=ID).
+    Todo lo que se pinta sale de TrabajadorPagoFila (snapshot de obligaciones_pago +
+    faltas de jornadas_personal); aquí no se calcula dinero. Bonificación, descuento y
+    registrar pago siguen en admin-pago-trabajadores.js.
+--}}
 @php
     $soles = fn ($valor): string => 'S/ '.number_format((float) $valor, 2);
     $hayFiltrosDeBusqueda = request()->anyFilled(['q', 'rol', 'estado']);
-    $hayFiltros = $hayFiltrosDeBusqueda || request('periodo') !== null;
+    $filtrosPanel = array_filter(request()->only(['q', 'rol', 'periodo', 'estado']), fn ($valor) => $valor !== null && $valor !== '');
+    $seleccionadaClave = $seleccion?->clave();
 @endphp
 
 @section('content')
-    <div data-pago-trabajadores data-url-panel="{{ route('admin.pagos.trabajadores.panel', '__ID__') }}" data-url-ajuste="{{ route('admin.pagos.trabajadores.ajuste', '__ID__') }}" class="space-y-5">
-        <x-layout.breadcrumbs :items="[['Pagos', null], ['Pagar a trabajadores', null]]" />
+    <div class="fichas pagos-trabajadores" data-fichas-page data-fichas-param="trabajador" data-pago-trabajadores data-url-ajuste="{{ route('admin.pagos.trabajadores.ajuste', '__ID__') }}">
+        <div class="fichas-layout">
+            <section class="fichas-lista" aria-label="Pagos a trabajadores">
+                <header class="fichas-header">
+                    <div class="flex min-w-0 items-start gap-3">
+                        <button type="button" data-sidebar-toggle aria-label="Abrir menú" class="rounded-lg p-2 text-text transition hover:bg-text-muted/10 lg:hidden">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
+                        </button>
+                        <div class="min-w-0">
+                            <x-layout.breadcrumbs :items="[['Finanzas', null], ['Pagos', null], ['Trabajadores', null]]" />
+                            <h1 class="fichas-title">Pagos a trabajadores</h1>
+                            <p class="fichas-subtitle">Gestiona los pagos individuales de los trabajadores correspondientes al mes seleccionado.</p>
+                        </div>
+                    </div>
+                </header>
 
-        <div class="flex items-start gap-4">
-            <button type="button" data-sidebar-toggle aria-label="Abrir menú" class="rounded-lg p-2 text-text transition hover:bg-text-muted/10 lg:hidden">
-                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
-            </button>
-            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary-dark">
-                <x-ui.icon name="users" class="h-7 w-7" />
-            </span>
-            <div>
-                <h1 class="text-3xl font-bold tracking-tight text-text">Pago a trabajadores</h1>
-                <p class="mt-1.5 max-w-2xl text-sm text-label">Gestiona aquí los pagos individuales de los trabajadores de tu planta, correspondientes al mes seleccionado.</p>
-            </div>
-        </div>
+                {{-- Buscador en su propia fila y filtros compactos debajo, siempre dentro de la columna izquierda. --}}
+                <form method="GET" action="{{ route('admin.pagos.trabajadores.index') }}" class="fichas-filtros pagos-filtros" data-fichas-filtros>
+                    <label class="fichas-search pagos-buscador">
+                        <span class="sr-only">Buscar trabajador por nombre o DNI</span>
+                        <x-ui.icon name="magnifying-glass" class="h-5 w-5" />
+                        <input id="filtro-q" type="search" name="q" value="{{ request('q') }}" placeholder="Buscar por nombre o DNI..." autocomplete="off">
+                    </label>
 
-        <div class="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_23rem]">
-            <div class="min-w-0 space-y-4">
-                <x-ui.card>
-                    <form method="GET" action="{{ route('admin.pagos.trabajadores.index') }}" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_1.4fr_auto] lg:items-end">
-                        <x-forms.select name="rol" label="Rol" :options="collect($roles)->pluck('nombre', 'id')->all()" :value="request('rol')" placeholder="Todos" :sticky="false" />
+                    <div class="pagos-filtros-fila">
+                        <div class="pagos-filtro is-mes">
+                            <label for="filtro-periodo">Mes</label>
+                            <input id="filtro-periodo" type="month" name="periodo" value="{{ $periodo }}" max="{{ now()->format('Y-m') }}">
+                        </div>
+                        <div class="pagos-filtro is-rol">
+                            <x-forms.select name="rol" id="filtro-rol" label="Rol" :sticky="false" :options="collect($roles)->pluck('nombre', 'id')->all()" :value="request('rol')" placeholder="Todos" />
+                        </div>
+                        <div class="pagos-filtro is-estado">
+                            <x-forms.select name="estado" id="filtro-estado" label="Estado" :sticky="false" :options="['EN_CURSO' => 'En curso', 'PENDIENTE' => 'Pendiente', 'PAGADO' => 'Pagado', 'SIN_SUELDO' => 'Sin sueldo configurado']" :value="request('estado')" placeholder="Todos" />
+                        </div>
+                        <div class="fichas-filtros-acciones">
+                            <button type="submit" class="fichas-btn is-dark">Filtrar</button>
+                            <a href="{{ route('admin.pagos.trabajadores.index') }}" class="fichas-btn is-outline">Limpiar</a>
+                        </div>
+                    </div>
+                </form>
+
+                @if ($filas->total() === 0)
+                    <div class="fichas-vacio">
+                        <x-ui.icon name="users" class="h-6 w-6" />
                         <div>
-                            <x-forms.input name="periodo" type="month" label="Mes" :value="$periodo" :sticky="false" />
-                            <p class="mt-1 text-xs text-text-muted">{{ $periodoEtiqueta }}</p>
-                        </div>
-                        <x-forms.select name="estado" label="Estado" :options="['EN_CURSO' => 'En curso', 'PENDIENTE' => 'Pendiente de pago', 'PAGADO' => 'Pagado']" :value="request('estado')" placeholder="Todos" :sticky="false" />
-                        <x-forms.input name="q" label="Buscar trabajador" placeholder="Nombre del trabajador" :value="request('q')" :sticky="false" />
-                        <div class="flex items-center gap-2">
-                            <x-ui.button type="submit">Filtrar</x-ui.button>
-                            @if ($hayFiltros)
-                                <x-ui.button :href="route('admin.pagos.trabajadores.index')" variant="ghost">Limpiar</x-ui.button>
-                            @endif
-                        </div>
-                    </form>
-                </x-ui.card>
-
-                <x-ui.card :padded="false">
-                    @if ($filas->count() === 0)
-                        <div class="p-5">
                             @if ($hayFiltrosDeBusqueda)
-                                <x-ui.empty-state title="No se encontraron trabajadores" description="Prueba con otros filtros." />
+                                <p class="font-semibold text-text">No se encontraron trabajadores</p>
+                                <p>Prueba con otros filtros.</p>
                             @else
-                                <x-ui.empty-state :title="$diagnostico?->mensaje() ?? 'Aún no hay pagos generados para este periodo.'" :description="'Periodo: '.$periodoEtiqueta.'.'" />
+                                <p class="font-semibold text-text">{{ $diagnostico?->mensaje() ?? 'Aún no hay pagos generados para este periodo.' }}</p>
+                                <p>Periodo: {{ $periodoEtiqueta }}.</p>
                             @endif
                         </div>
-                    @else
-                        <div class="ecolact-table-scroll">
-                            <table class="w-full text-left text-sm" data-tabla-trabajadores>
-                                <thead>
-                                    <tr class="border-b border-text-muted/10 text-[11px] font-medium uppercase tracking-wider text-label">
-                                        <th class="py-3 pl-5 pr-3">Trabajador</th>
-                                        <th class="px-3 py-3">DNI</th>
-                                        <th class="px-3 py-3">Asistencia</th>
-                                        <th class="px-3 py-3">Faltas</th>
-                                        <th class="px-3 py-3 text-right">Sueldo mensual</th>
-                                        <th class="px-3 py-3 text-right">Acumulado</th>
-                                        <th class="px-3 py-3">Mes</th>
-                                        <th class="px-3 py-3 text-right">Total</th>
-                                        <th class="py-3 pl-3 pr-5">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($filas as $fila)
-                                        @php
-                                            $seleccionada = $seleccion?->id === $fila->id;
-                                        @endphp
-                                        <tr
-                                            data-fila-trabajador
-                                            data-id="{{ $fila->id }}"
-                                            data-selected="{{ $seleccionada ? 'true' : 'false' }}"
-                                            class="cursor-pointer border-b border-text-muted/5 transition-colors last:border-0 hover:bg-background/50 data-[selected=true]:bg-primary-soft/40"
-                                        >
-                                            <td class="py-3 pl-5 pr-3">
-                                                <div class="flex items-center gap-2.5">
-                                                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-soft text-sm font-semibold text-primary-dark">{{ $fila->iniciales }}</span>
-                                                    <div class="min-w-0">
-                                                        <p class="truncate font-medium text-text">{{ $fila->nombre }}</p>
-                                                        <p class="truncate text-xs text-text-muted">{{ $fila->rol }}</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-text-muted">{{ $fila->dni ?? '—' }}</td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->diasTrabajados }} {{ $fila->diasTrabajados === 1 ? 'asistencia' : 'asistencias' }}</td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->faltas }} {{ $fila->faltas === 1 ? 'falta' : 'faltas' }}</td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-right text-text">{{ $soles($fila->sueldoBase) }}</td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-right text-text">{{ $soles($fila->acumulado) }}</td>
-                                            <td class="whitespace-nowrap px-3 py-3 text-text">{{ $fila->periodoEtiqueta }}</td>
-                                            <td data-celda-total class="whitespace-nowrap px-3 py-3 text-right font-semibold text-text">{{ $soles($fila->total) }}</td>
-                                            <td class="whitespace-nowrap py-3 pl-3 pr-5"><x-ui.badge :status="$fila->estado" :icon="$fila->estado === 'PAGADO' ? 'check-circle' : 'clock'">{{ $fila->estadoEtiqueta }}</x-ui.badge></td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="px-5 pb-5">
-                            <x-ui.pagination :paginator="$filas" />
+                    </div>
+                @else
+                    @if ($diagnostico)
+                        <div class="fichas-vacio" data-diagnostico-sueldos>
+                            <x-ui.icon name="users" class="h-6 w-6" />
+                            <div>
+                                <p class="font-semibold text-text">{{ $diagnostico->mensaje() }}</p>
+                                <p>Los trabajadores cuyo rol no tiene sueldo se muestran sin montos. <a href="{{ route('admin.configuracion-pagos.index') }}" class="font-semibold text-primary-dark hover:underline">Configurar sueldos →</a></p>
+                            </div>
                         </div>
                     @endif
-                </x-ui.card>
-            </div>
+                    <div class="fichas-tabla pagos-tabla is-loading" data-fichas-tabla>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Trabajador</th>
+                                    <th scope="col">Rol</th>
+                                    <th scope="col" class="is-num">Asistencias</th>
+                                    <th scope="col" class="is-num">Faltas</th>
+                                    <th scope="col" class="is-num">Sueldo mensual</th>
+                                    <th scope="col" class="is-num">Valor día</th>
+                                    <th scope="col" class="is-num">Acumulado</th>
+                                    <th scope="col" class="is-num">Total</th>
+                                    <th scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fichas-skeleton" aria-hidden="true">
+                                @for ($i = 0; $i < min(8, max(1, $filas->count())); $i++)
+                                    <tr>
+                                        <td><span class="flex items-center gap-2.5"><span class="fichas-bone is-avatar-sm"></span><span class="fichas-bone is-lg"></span></span></td>
+                                        @foreach (['is-md', 'is-xs', 'is-xs', 'is-sm', 'is-sm', 'is-sm', 'is-sm', 'is-pill'] as $ancho)
+                                            <td><span class="fichas-bone {{ $ancho }}"></span></td>
+                                        @endforeach
+                                    </tr>
+                                @endfor
+                            </tbody>
+                            <tbody data-fichas-filas>
+                                @forelse ($filas as $fila)
+                                    @php
+                                        $urlPanel = $fila->sinSueldo()
+                                            ? route('admin.pagos.trabajadores.sin-sueldo', ['trabajador' => $fila->trabajadorId, 'periodo' => $periodo] + $filtrosPanel)
+                                            : route('admin.pagos.trabajadores.panel', ['obligacion' => $fila->id] + $filtrosPanel);
+                                        $seleccionada = $fila->clave() === $seleccionadaClave;
+                                    @endphp
+                                    <tr
+                                        data-fichas-fila
+                                        data-ficha-id="{{ $fila->clave() }}"
+                                        data-url-panel="{{ $urlPanel }}"
+                                        tabindex="0"
+                                        aria-selected="{{ $seleccionada ? 'true' : 'false' }}"
+                                        @class(['is-selected' => $seleccionada, 'is-sin-sueldo' => $fila->sinSueldo()])
+                                    >
+                                        <td>
+                                            <span class="pagos-trabajador">
+                                                <span class="pagos-avatar" aria-hidden="true">{{ $fila->iniciales }}</span>
+                                                <span class="min-w-0">
+                                                    <a href="{{ request()->fullUrlWithQuery(['trabajador' => $fila->clave()]) }}" class="fichas-nombre" data-fichas-seleccionar tabindex="-1">{{ $fila->nombre }}</a>
+                                                    <span class="pagos-dni">{{ $fila->dni ? 'DNI '.$fila->dni : 'Sin DNI' }}</span>
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td class="is-muted">{{ $fila->rol }}</td>
+                                        <td class="is-num">{{ $fila->diasTrabajados }}</td>
+                                        <td @class(['is-num', 'pagos-faltas' => $fila->faltas > 0])>{{ $fila->faltas }}</td>
+                                        @if ($fila->sinSueldo())
+                                            <td class="is-num is-muted">—</td>
+                                            <td class="is-num is-muted">—</td>
+                                            <td class="is-num is-muted">—</td>
+                                            <td class="is-num is-muted" data-celda-total>—</td>
+                                        @else
+                                            <td class="is-num">{{ $soles($fila->sueldoBase) }}</td>
+                                            <td class="is-num is-muted">{{ $soles($fila->valorDia) }}</td>
+                                            <td class="is-num">{{ $soles($fila->acumulado) }}</td>
+                                            <td class="is-num pagos-total" data-celda-total>{{ $soles($fila->total) }}</td>
+                                        @endif
+                                        <td><x-pagos.estado-pago :estado="$fila->estado" /></td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="9" class="fichas-sin-pagina">No hay trabajadores en esta página. <a href="{{ $filas->url(1) }}">Ir a la primera página</a></td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <noscript><style>.fichas-tabla.is-loading [data-fichas-filas] { display: table-row-group; } .fichas-tabla.is-loading .fichas-skeleton { display: none; }</style></noscript>
 
-            <aside class="xl:sticky xl:top-4 xl:self-start" data-panel-trabajador>
+                    <x-tables.pagination :paginator="$filas" noun="trabajadores" class="fichas-pager" />
+                @endif
+            </section>
+
+            <aside class="fichas-panel" data-fichas-panel aria-live="polite" aria-label="Resumen del trabajador">
                 @include('admin.pagos.trabajadores._panel')
             </aside>
         </div>
+
+        <template data-fichas-panel-vacio>
+            @include('admin.pagos.trabajadores._panel', ['seleccion' => null])
+        </template>
+
+        <template data-fichas-panel-skeleton>
+            <x-fichas.panel-skeleton />
+        </template>
     </div>
 @endsection

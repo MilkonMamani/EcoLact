@@ -14,10 +14,12 @@ class RoleModel extends Model
         'nombre',
         'descripcion',
         'es_remunerable',
+        'controla_asistencia',
     ];
 
     protected $casts = [
         'es_remunerable' => 'boolean',
+        'controla_asistencia' => 'boolean',
     ];
 
     public function users(): HasMany

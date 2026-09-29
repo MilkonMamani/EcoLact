@@ -70,20 +70,25 @@ it('rechaza cuenta inactiva y elimina sesión y cookie persistente', function ()
     $user->update(['estado' => 'INACTIVO']);
     $this->withSession(['dato_anterior' => 'privado']);
     $this->from('/login')->post('/login', ['username' => $user->username, 'password' => 'secret', 'remember' => true])
-        ->assertRedirect('/login')->assertSessionHasErrors(['username' => 'Tu cuenta se encuentra inactiva. Comunícate con el administrador.'])
+        ->assertRedirect('/login')->assertSessionHasErrors(['username' => 'Acceso no permitido: tu cuenta está desactivada. Comunícate con el administrador.'])
         ->assertSessionMissing('dato_anterior')->assertCookieMissing(Auth::guard('web')->getRecallerName());
     $this->assertGuest();
 });
 
-it('rechaza perfiles operativos ausentes o inactivos', function (string $rol, bool $ausente) {
-    $user = $ausente ? fixture_usuario($rol) : usuario_login($rol);
-    if (! $ausente) {
-        ($rol === 'ACOPIADOR' ? $user->acopiador : $user->proveedor)->update(['estado' => 'INACTIVO']);
-    }
+it('rechaza perfiles operativos ausentes', function (string $rol) {
+    $user = fixture_usuario($rol);
     $this->from('/login')->post('/login', ['username' => $user->username, 'password' => 'secret'])
         ->assertRedirect('/login')->assertSessionHasErrors('username');
     $this->assertGuest();
-})->with([['ACOPIADOR', true], ['ACOPIADOR', false], ['PROVEEDOR', true], ['PROVEEDOR', false]]);
+})->with(['ACOPIADOR', 'PROVEEDOR']);
+
+it('deja entrar en solo consulta a perfiles operativos inactivos', function (string $rol) {
+    $user = usuario_login($rol);
+    ($rol === 'ACOPIADOR' ? $user->acopiador : $user->proveedor)->update(['estado' => 'INACTIVO']);
+    $this->post('/login', ['username' => $user->username, 'password' => 'secret'])
+        ->assertRedirectToRoute(strtolower($rol).'.dashboard');
+    $this->assertAuthenticated();
+})->with(['ACOPIADOR', 'PROVEEDOR']);
 
 it('rechaza un rol desconocido tras autenticar sin sesión residual', function () {
     $user = fixture_usuario('DESCONOCIDO');
@@ -201,5 +206,6 @@ it('mantiene la autorización entre roles después del login', function () {
     $this->get(route('admin.dashboard'))->assertForbidden();
     $user->acopiador->update(['estado' => 'INACTIVO']);
     Auth::forgetGuards();
-    $this->get(route('acopiador.entregas.index'))->assertForbidden();
+    $this->get(route('acopiador.entregas.index'))->assertOk();
+    $this->post(route('acopiador.entregas.store'), [])->assertForbidden();
 });

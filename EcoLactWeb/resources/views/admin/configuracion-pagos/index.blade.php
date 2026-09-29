@@ -103,7 +103,7 @@
                             </td>
                             <td data-label="Periodicidad" class="py-4 pr-4 text-text">Semanal</td>
                             <td data-label="Estado" class="py-4 pr-4">
-                                <x-ui.badge :status="$proveedor['estado']">{{ $etiquetasEstado[$proveedor['estado']] }}</x-ui.badge>
+                                <x-ui.badge compact :status="$proveedor['estado']">{{ $etiquetasEstado[$proveedor['estado']] }}</x-ui.badge>
                                 @if ($configuracion)
                                     <span class="mt-1 block text-xs text-label">Desde {{ $configuracion->fechaInicio()->format('d/m/Y') }}</span>
                                 @endif
@@ -170,7 +170,7 @@
                                 </td>
                                 <td data-label="Periodicidad" class="py-4 pr-4 text-text">Día 1 de cada mes</td>
                                 <td data-label="Estado" class="py-4 pr-4">
-                                    <x-ui.badge :status="$fila['estado']">{{ $etiquetasEstado[$fila['estado']] }}</x-ui.badge>
+                                    <x-ui.badge compact :status="$fila['estado']">{{ $etiquetasEstado[$fila['estado']] }}</x-ui.badge>
                                     @if ($configuracion)
                                         <span class="mt-1 block text-xs text-label">Desde {{ $configuracion->fechaInicio()->format('d/m/Y') }}</span>
                                     @endif

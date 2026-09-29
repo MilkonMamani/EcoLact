@@ -231,7 +231,7 @@
                                 <tr>
                                     <td><a href="{{ route('admin.produccion.show', $lote['id']) }}" class="dash-link is-plain">{{ $lote['codigo'] }}</a></td>
                                     <td class="dash-cell-truncate" title="{{ implode(', ', $lote['productos']) }}">{{ $lote['productos'] !== [] ? implode(', ', $lote['productos']) : 'Sin productos' }}</td>
-                                    <td class="text-right"><x-ui.badge :status="$lote['estado']">{{ $estadoLote($lote['estado']) }}</x-ui.badge></td>
+                                    <td class="text-right"><x-ui.badge compact :status="$lote['estado']">{{ $estadoLote($lote['estado']) }}</x-ui.badge></td>
                                 </tr>
                             @endforeach
                         </tbody>

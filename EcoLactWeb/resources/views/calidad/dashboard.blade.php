@@ -96,7 +96,7 @@
                                 <td class="py-2 pr-4 text-text">{{ $fila['proveedorNombre'] }}</td>
                                 <td class="py-2 pr-4">
                                     @if ($fila['resultado'])
-                                        <x-ui.badge :status="$fila['resultado']" />
+                                        <x-ui.badge compact :status="$fila['resultado']" />
                                     @else
                                         <span class="text-xs text-text-muted">—</span>
                                     @endif

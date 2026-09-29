@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Application\Acopiador\ObtenerAcopiadores;
-use App\Application\Proveedor\ObtenerProveedores;
 use App\Application\Ruta\GuardarAsignacionProveedor;
-use App\Application\Ruta\ObtenerRutasPorZona;
 use App\Application\Shared\CampoActualizable;
 use App\Application\Zona\ActualizarZona;
+use App\Application\Zona\Contracts\ZonaPanelQuery;
 use App\Application\Zona\Contracts\ZonaProveedoresQuery;
 use App\Application\Zona\Contracts\ZonasListadoQuery;
 use App\Application\Zona\EliminarZona;
-use App\Application\Zona\ObtenerZona;
-use App\Application\Zona\ObtenerZonas;
+use App\Application\Zona\GuardarDelimitacionZona;
+use App\Application\Zona\ProveedorAsignadoFila;
 use App\Application\Zona\RegistrarZona;
+use App\Application\Zona\ZonaMapService;
+use App\Application\Zona\ZonaPanelData;
 use App\Application\Zona\ZonasFiltro;
 use App\Domain\Ruta\RutaRepository;
 use App\Http\Controllers\Controller;
@@ -30,87 +30,91 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
+/**
+ * Puente HTTP -> Application para Zonas. La pantalla es de dos columnas (igual
+ * que Proveedores y Acopiadores): zonas paginadas a la izquierda y el panel de
+ * la seleccionada a la derecha, pintado en el servidor en la carga inicial
+ * (?zona=ID) y pedido por fetch a panel() al elegir otra fila.
+ *
+ * El switch de estado del listado y el menú del panel usan el MISMO update()
+ * (ActualizarZona conserva su regla: no se desactiva una zona con acopiadores
+ * o proveedores activos asignados).
+ */
 final class ZonaController extends Controller
 {
     /**
-     * Clave de la entrada especial "Sin asignar" del panel de zonas: agrupa
-     * a los proveedores activos que todavía no tienen zona ni ruta.
+     * Clave del panel especial de proveedores activos que todavía no tienen
+     * zona ni ruta (se abre desde el aviso "Proveedores sin zona").
      */
     private const SIN_ASIGNAR = 'sin-asignar';
+
+    private const POR_PAGINA = 12;
 
     public function __construct(
         private readonly RegistrarZona $registrarZona,
         private readonly ActualizarZona $actualizarZona,
         private readonly EliminarZona $eliminarZona,
-        private readonly ObtenerZona $obtenerZona,
-        private readonly ObtenerZonas $obtenerZonas,
         private readonly ZonasListadoQuery $zonasListadoQuery,
+        private readonly ZonaPanelQuery $zonaPanelQuery,
         private readonly ZonaProveedoresQuery $zonaProveedoresQuery,
-        private readonly ObtenerProveedores $obtenerProveedores,
-        private readonly ObtenerAcopiadores $obtenerAcopiadores,
-        private readonly ObtenerRutasPorZona $obtenerRutasPorZona,
         private readonly RutaRepository $rutas,
         private readonly GuardarAsignacionProveedor $guardarAsignacionProveedor,
+        private readonly GuardarDelimitacionZona $guardarDelimitacionZona,
+        private readonly ZonaMapService $zonaMapService,
     ) {}
 
     /**
-     * Pantalla maestro-detalle: panel de zonas a la izquierda y, a la
-     * derecha, la tabla de proveedores de la zona seleccionada (parámetro
-     * ?zona=<id>|sin-asignar; por defecto la primera zona).
+     * Sin ?zona= se selecciona la primera de la página; ?zona=sin-asignar abre el panel de proveedores sin zona.
+     * El mapa general usa el mismo filtro que la tabla, pero con todas las zonas (no solo la página).
      */
     public function index(Request $request): View
     {
         Gate::authorize('viewAny', ZonaModel::class);
 
-        $datos = $this->zonasListadoQuery->obtener(ZonasFiltro::resolver(busqueda: null, estado: null));
+        $filtro = ZonasFiltro::resolver(
+            busqueda: $request->string('q')->toString() ?: null,
+            estado: $request->string('estado')->toString() ?: null,
+        );
+        $filas = $this->zonasListadoQuery->paginar($filtro, self::POR_PAGINA);
 
-        $seleccion = $this->resolverSeleccion($request->string('zona')->toString(), $datos->filas);
+        $solicitada = $request->string('zona')->toString();
+        $seleccion = match (true) {
+            $solicitada === self::SIN_ASIGNAR => self::SIN_ASIGNAR,
+            $solicitada !== '' && ZonaModel::whereKey((int) $solicitada)->exists() => (int) $solicitada,
+            default => $filas->first()['id'] ?? null,
+        };
 
         return view('admin.zonas.index', [
-            'datos' => $datos,
+            'filas' => $filas,
+            'mapaZonas' => $this->zonaMapService->obtener($filtro),
             'sinAsignar' => $this->zonaProveedoresQuery->contarSinAsignar(),
-            'catalogo' => $this->catalogoParaModal($datos->filas),
-            ...$this->datosPanel($seleccion, $datos->filas),
+            'catalogo' => $this->catalogoParaModal(),
+            ...$this->datosPanel($seleccion),
         ]);
     }
 
-    public function show(ZonaModel $zona): View
+    /** Ya no hay página de detalle aparte: la zona se ve en el panel del listado. */
+    public function show(ZonaModel $zona): RedirectResponse
     {
         Gate::authorize('view', $zona);
 
-        return view('admin.zonas.show', [
-            'zona' => $this->obtenerZona->execute($zona->id),
-            'proveedores' => $this->obtenerProveedores->execute($zona->id),
-            'acopiadores' => $this->obtenerAcopiadores->execute($zona->id),
-            'rutas' => $this->obtenerRutasPorZona->execute($zona->id),
-        ]);
+        return redirect()->route('admin.zonas.index', ['zona' => $zona->id]);
     }
 
-    /**
-     * Fragmento HTML (sin layout) del panel derecho de una zona: cabecera,
-     * rutas y tabla de proveedores. Es el mismo parcial que renderiza el
-     * index, así la selección de zona y el refresco tras reordenar no
-     * recargan la página completa.
-     */
+    /** Fragmento HTML del panel derecho (lo pide admin-fichas.js al elegir una fila). */
     public function panel(ZonaModel $zona): View
     {
         Gate::authorize('view', $zona);
 
-        $datos = $this->zonasListadoQuery->obtener(ZonasFiltro::resolver(busqueda: null, estado: null));
-
-        return view('admin.zonas._panel', $this->datosPanel($zona->id, $datos->filas));
+        return view('admin.zonas._panel', $this->datosPanel($zona->id));
     }
 
-    /**
-     * Fragmento HTML del panel de proveedores activos sin zona ni ruta.
-     */
+    /** Fragmento HTML del panel de proveedores activos sin zona ni ruta. */
     public function panelSinAsignar(): View
     {
         Gate::authorize('viewAny', ZonaModel::class);
 
-        $datos = $this->zonasListadoQuery->obtener(ZonasFiltro::resolver(busqueda: null, estado: null));
-
-        return view('admin.zonas._panel', $this->datosPanel(self::SIN_ASIGNAR, $datos->filas));
+        return view('admin.zonas._panel', $this->datosPanel(self::SIN_ASIGNAR));
     }
 
     /**
@@ -127,6 +131,7 @@ final class ZonaController extends Controller
         return response()->json(array_map(fn ($fila): array => $fila->paraModal(), $filas));
     }
 
+    /** Una zona nueva nace siempre ACTIVA: el formulario ya no pregunta el estado. */
     public function store(StoreZonaRequest $request): RedirectResponse
     {
         Gate::authorize('create', ZonaModel::class);
@@ -136,7 +141,7 @@ final class ZonaController extends Controller
         $zona = $this->registrarZona->execute(
             nombre: $datos['nombre'],
             descripcion: $datos['descripcion'] ?? null,
-            estado: $datos['estado'],
+            estado: 'ACTIVO',
         );
 
         return redirect()->route('admin.zonas.index', ['zona' => $zona->id()])
@@ -147,24 +152,55 @@ final class ZonaController extends Controller
      * descripcion es nullable en el esquema: "no enviada" (conservar) y
      * "enviada como null" (limpiar) son casos distintos que ActualizarZona
      * distingue vía CampoActualizable (ver Etapa 07.2). $request->has()
-     * detecta si la clave llegó en la petición, aunque su valor sea null;
-     * $request->input()/validated() por sí solos no permiten esa distinción.
+     * detecta si la clave llegó en la petición, aunque su valor sea null.
+     *
+     * Responde JSON al switch del listado (admin-estado-switch.js) y
+     * redirección a los formularios. Una regla de negocio incumplida (p. ej.
+     * desactivar con proveedores o acopiadores activos) es un 422 con su
+     * mensaje, o un flash de error; nunca un 500.
      */
-    public function update(UpdateZonaRequest $request, ZonaModel $zona): RedirectResponse
+    public function update(UpdateZonaRequest $request, ZonaModel $zona): JsonResponse|RedirectResponse
     {
         Gate::authorize('update', $zona);
 
         $datos = $request->validated();
 
-        $this->actualizarZona->execute(
-            zonaId: $zona->id,
-            nombre: $datos['nombre'] ?? null,
-            descripcion: $request->has('descripcion') ? CampoActualizable::conValor($datos['descripcion'] ?? null) : null,
-            estado: $datos['estado'] ?? null,
-        );
+        try {
+            $actualizada = $this->actualizarZona->execute(
+                zonaId: $zona->id,
+                nombre: $datos['nombre'] ?? null,
+                descripcion: $request->has('descripcion') ? CampoActualizable::conValor($datos['descripcion'] ?? null) : null,
+                estado: $datos['estado'] ?? null,
+            );
 
-        return redirect()->route('admin.zonas.index', ['zona' => $zona->id])
-            ->with('success', 'Zona actualizada correctamente.');
+            // "Editar delimitación" envía el color y el polígono junto con el formulario de la zona.
+            if ($request->has('color_mapa')) {
+                $this->guardarDelimitacionZona->execute(
+                    zonaId: $zona->id,
+                    colorMapa: $datos['color_mapa'],
+                    poligonoGeoJson: $datos['poligono_geojson'] ?? null,
+                );
+            }
+        } catch (DomainException $error) {
+            return $request->expectsJson()
+                ? response()->json(['message' => $error->getMessage()], 422)
+                : redirect()->route('admin.zonas.index', ['zona' => $zona->id])->with('error', $error->getMessage());
+        }
+
+        $mensaje = match (true) {
+            ($datos['estado'] ?? $zona->estado) === $zona->estado => 'Zona actualizada correctamente.',
+            $datos['estado'] === 'ACTIVO' => 'Zona activada correctamente.',
+            default => 'Zona desactivada correctamente.',
+        };
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => $mensaje,
+                'zona' => ['id' => $actualizada->id(), 'estado' => $actualizada->estado()],
+            ]);
+        }
+
+        return redirect()->route('admin.zonas.index', ['zona' => $zona->id])->with('success', $mensaje);
     }
 
     public function destroy(ZonaModel $zona): RedirectResponse
@@ -218,55 +254,28 @@ final class ZonaController extends Controller
     }
 
     /**
-     * @param  list<array<string, mixed>>  $filas
-     * @return array{seleccion: int|string, zonaSeleccionada: ?array<string, mixed>, proveedores: array}
+     * @return array{panel: ?ZonaPanelData, proveedoresSinZona: ?list<ProveedorAsignadoFila>}
      */
-    private function datosPanel(int|string $seleccion, array $filas): array
+    private function datosPanel(int|string|null $seleccion): array
     {
-        $sinAsignar = $seleccion === self::SIN_ASIGNAR;
-
         return [
-            'seleccion' => $seleccion,
-            'zonaSeleccionada' => $sinAsignar ? null : collect($filas)->firstWhere('id', $seleccion),
-            'proveedores' => $sinAsignar
-                ? $this->zonaProveedoresQuery->sinAsignar()
-                : $this->zonaProveedoresQuery->deZona($seleccion),
+            'panel' => is_int($seleccion) ? $this->zonaPanelQuery->obtener($seleccion) : null,
+            'proveedoresSinZona' => $seleccion === self::SIN_ASIGNAR ? $this->zonaProveedoresQuery->sinAsignar() : null,
         ];
     }
 
     /**
-     * @param  list<array<string, mixed>>  $filas
-     * @return int|string zona id, o SIN_ASIGNAR
-     */
-    private function resolverSeleccion(string $solicitada, array $filas): int|string
-    {
-        if ($solicitada === self::SIN_ASIGNAR) {
-            return self::SIN_ASIGNAR;
-        }
-
-        $ids = array_column($filas, 'id');
-
-        if ($solicitada !== '' && in_array((int) $solicitada, $ids, true)) {
-            return (int) $solicitada;
-        }
-
-        return $ids[0] ?? self::SIN_ASIGNAR;
-    }
-
-    /**
      * Zonas activas con sus rutas activas, listas para los selectores
-     * dependientes del modal. Una sola consulta de rutas para todas las
-     * zonas (sin N+1).
+     * dependientes del modal de asignación. Una sola consulta de rutas para
+     * todas las zonas (sin N+1).
      *
-     * @param  list<array<string, mixed>>  $filas
      * @return list<array{id: int, nombre: string, rutas: list<array{id: int, nombre: string}>}>
      */
-    private function catalogoParaModal(array $filas): array
+    private function catalogoParaModal(): array
     {
         $rutasPorZona = collect($this->rutas->listarActivas())->groupBy(fn ($ruta) => $ruta->zonaId());
 
-        return collect($filas)
-            ->where('estado', 'ACTIVO')
+        return collect($this->zonasListadoQuery->obtener(ZonasFiltro::resolver(busqueda: null, estado: 'ACTIVO'))->filas)
             ->map(fn (array $zona): array => [
                 'id' => $zona['id'],
                 'nombre' => $zona['nombre'],

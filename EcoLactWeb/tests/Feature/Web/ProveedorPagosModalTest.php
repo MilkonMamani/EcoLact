@@ -179,7 +179,7 @@ it('el detalle de un pago pendiente muestra el comprobante con los datos del pro
     $json = $this->actingAs($e['admin'])->getJson(route('admin.proveedores.pagos.show', [$e['milkon']->id, $e['sem39']->id]))->assertOk()->json();
 
     expect($json['estado'])->toBe('PENDIENTE')->and($json['semana'])->toBe('Semana 39')
-        ->and($json['html'])->toContain('Milkon Mamani')->toContain('Collana 1')->toContain('17/09/2026 - 23/09/2026')->toContain('S/ 17.00');
+        ->and($json['html'])->toContain('Milkon Mamani')->toContain('Collana 1')->toContain('17/09/2026 – 23/09/2026')->toContain('S/ 17.00');
 });
 
 // CASO 9
@@ -246,13 +246,12 @@ it('solo el administrador consulta el historial de pagos de un proveedor', funct
     $this->getJson(route('admin.proveedores.pagos.index', $e['milkon']->id))->assertUnauthorized();
 });
 
-it('el detalle del proveedor abre "Ver pagos" en un modal sin enlazar al módulo de pagos', function () {
+it('el panel del proveedor abre "Ver pagos" en un modal sin enlazar al módulo de pagos', function () {
     $e = modal_pagos_escenario();
 
-    $html = $this->actingAs($e['admin'])->get(route('admin.proveedores.show', $e['milkon']->id))->assertOk()
+    $html = $this->actingAs($e['admin'])->get(route('admin.proveedores.index', ['proveedor' => $e['milkon']->id]))->assertOk()
         ->assertSee('Pagos de Milkon Mamani')
         ->assertSee('Historial de pagos realizados al proveedor. Consulta los comprobantes por semana.')
-        ->assertSee('Este proveedor tiene 4 pagos registrados (2 pendientes de pago).')
         ->assertSee('data-pagos-abrir', false)
         ->assertSee('modal-pago-detalle', false)
         ->assertSee(route('admin.proveedores.pagos.index', $e['milkon']->id), false)
@@ -264,5 +263,8 @@ it('el detalle del proveedor abre "Ver pagos" en un modal sin enlazar al módulo
     $etiqueta = substr($html, $inicioEtiqueta, strpos($html, '>', $posicion) - $inicioEtiqueta);
     expect($etiqueta)->toStartWith('<button')->not->toContain('href=');
 
-    $this->get(route('admin.proveedores.show', $e['juana']->id))->assertSee('Pagos de Juana Quispe')->assertSee('Este proveedor tiene 1 pago registrado.');
+    // Al cambiar de proveedor, el panel trae la URL y el título de SU historial.
+    $this->get(route('admin.proveedores.panel', $e['juana']->id))
+        ->assertSee('data-titulo="Pagos de Juana Quispe"', false)
+        ->assertSee(route('admin.proveedores.pagos.index', $e['juana']->id), false);
 });

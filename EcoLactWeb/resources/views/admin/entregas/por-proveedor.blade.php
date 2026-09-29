@@ -23,7 +23,7 @@
                             <td class="py-3 pr-4 text-text">{{ $entrega->fechaHora()->format('d/m/Y H:i') }}</td>
                             <td class="py-3 pr-4 font-medium text-text">{{ number_format($entrega->litros(), 2) }} L</td>
                             <td class="py-3 pr-4 text-text-muted">{{ $entrega->metodoIdentificacion() }}</td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$entrega->estado()->value" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$entrega->estado()->value" /></td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
                                     <x-ui.action-button type="view" label="Ver entrega" :href="route('admin.entregas.show', $entrega->id())" />

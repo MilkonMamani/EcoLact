@@ -289,6 +289,11 @@ final class EloquentPagoSemanalProveedoresQuery implements PagoSemanalProveedore
         return [
             'id' => $obligacion->id,
             'proveedor' => $obligacion->beneficiario_nombre,
+            'pagable' => $obligacion->estado === EstadoObligacionPago::PENDIENTE->value
+                && PeriodoPago::semanaQueContiene(DateTimeImmutable::createFromInterface($obligacion->periodo_inicio))->fechaPagoProgramada()->format('Y-m-d')
+                    <= CarbonImmutable::now(config('app.zona_horaria_negocio'))->format('Y-m-d'),
+            'fechaPagoProgramada' => PeriodoPago::semanaQueContiene(DateTimeImmutable::createFromInterface($obligacion->periodo_inicio))->fechaPagoProgramada()->format('d/m/Y'),
+            'dni' => $obligacion->pago?->comprobante_snapshot['dni'] ?? $proveedor?->dni ?? '',
             'zona' => $obligacion->pago?->comprobante_snapshot['zona'] ?? $zona?->nombre ?? 'Sin zona',
             'zonaDetalle' => $zona?->descripcion !== null ? Str::limit(trim($zona->descripcion), 24) : null,
             'zonaId' => $zona?->id,
@@ -408,7 +413,7 @@ final class EloquentPagoSemanalProveedoresQuery implements PagoSemanalProveedore
     private function detallePenalidad(ObligacionPagoModel $obligacion, float $penalidad): string
     {
         if (abs($penalidad) < 0.005) {
-            return 'Sin penalidad';
+            return 'Sin bonificación ni penalidad';
         }
 
         $resultados = $obligacion->detalles
@@ -420,7 +425,7 @@ final class EloquentPagoSemanalProveedoresQuery implements PagoSemanalProveedore
 
         $causa = $resultados->isNotEmpty() ? ' ('.$resultados->implode(', ').')' : '';
 
-        return ($penalidad < 0 ? 'Ajuste por calidad' : 'Bonificación por calidad').$causa;
+        return ($penalidad < 0 ? 'Penalidad por calidad' : 'Bonificación por calidad').$causa;
     }
 
     /**

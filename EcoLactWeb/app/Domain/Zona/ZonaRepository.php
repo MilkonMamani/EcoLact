@@ -24,6 +24,9 @@ interface ZonaRepository
 
     public function buscarPorNombre(string $nombre): ?Zona;
 
+    /** Color del mapa y delimitación operativa (null la quita). */
+    public function guardarDelimitacion(int $zonaId, string $colorMapa, ?DelimitacionZona $delimitacion): void;
+
     /**
      * @return Zona[]
      */

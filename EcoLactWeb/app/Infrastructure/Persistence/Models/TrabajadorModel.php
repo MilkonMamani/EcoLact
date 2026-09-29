@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Models;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrabajadorModel extends Model
 {
@@ -30,5 +31,11 @@ class TrabajadorModel extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /** Periodos en que estuvo ACTIVO (historial de desactivaciones/reactivaciones). */
+    public function periodos(): HasMany
+    {
+        return $this->hasMany(TrabajadorPeriodoActividadModel::class, 'trabajador_id')->orderBy('fecha_inicio');
     }
 }

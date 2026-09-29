@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Pago\VentanaAsistencia;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -16,15 +17,16 @@ Schedule::command('ecolact:generar-pagos')
     ->withoutOverlapping()
     ->onOneServer();
 
-// Falta automática: a quien no marcó asistencia (QR o manual) hoy, se le
-// marca FALTA a las 12:05 hora de Perú (hora límite de asistencia: 12:00,
-// con 5 minutos de margen para evitar problemas de simultaneidad).
-// ->timezone() corre este horario en America/Lima sin cambiar el timezone
-// global de la app (config('app.timezone') se queda en UTC, que es lo que
-// esperan now()/today() en el resto del sistema).
+// Cierre de asistencia (regla única, App\Application\Pago\VentanaAsistencia):
+// la asistencia del día se registra o corrige solo antes de las 07:00 hora de
+// Perú; a las 07:00 el día queda cerrado y a quien debía asistir y no registró
+// nada se le marca FALTA automática. Idempotente: si corre más de una vez (o si
+// una pantalla ya cerró el día al abrirse) nunca duplica.
+// ->timezone() corre este horario en la zona del negocio sin cambiar el
+// timezone global de la app (config('app.timezone') se queda en UTC).
 Schedule::command('ecolact:marcar-faltas')
-    ->dailyAt('12:05')
-    ->timezone('America/Lima')
+    ->dailyAt(VentanaAsistencia::HORA_CIERRE)
+    ->timezone(config('app.zona_horaria_negocio'))
     ->withoutOverlapping()
     ->onOneServer();
 

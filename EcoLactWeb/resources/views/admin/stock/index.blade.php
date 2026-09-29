@@ -75,7 +75,7 @@
                                     <span class="ml-1" title="Disponible">🟢</span>
                                 @endif
                             </td>
-                            <td class="py-3 pr-4"><x-ui.badge :status="$item->estado()" /></td>
+                            <td class="py-3 pr-4"><x-ui.badge compact :status="$item->estado()" /></td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
                                     <x-ui.action-button type="view" label="Ver movimiento de stock" :href="route('admin.stock.show', [strtolower($item->tipo()), $item->id()])" />

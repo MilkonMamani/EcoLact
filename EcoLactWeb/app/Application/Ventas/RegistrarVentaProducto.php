@@ -10,6 +10,7 @@ use App\Domain\Produccion\ProductoMovimientoRepository;
 use App\Domain\Produccion\ProductoRepository;
 use App\Domain\Produccion\ProductoStockRepository;
 use App\Domain\Proveedor\ProveedorRepository;
+use App\Domain\Shared\Enums\EstadoUsuario;
 use App\Domain\Ventas\CompradorRepository;
 use App\Domain\Ventas\ProductoPrecioRepository;
 use App\Domain\Ventas\VentaProducto;
@@ -53,8 +54,14 @@ final class RegistrarVentaProducto
         }
 
         if ($tipoCliente === 'PROVEEDOR') {
-            if ($proveedorId === null || $this->proveedores->buscarPorId($proveedorId) === null) {
+            $proveedor = $proveedorId !== null ? $this->proveedores->buscarPorId($proveedorId) : null;
+
+            if ($proveedor === null) {
                 throw new DomainException('El proveedor indicado no existe.');
+            }
+
+            if ($proveedor->estado() !== EstadoUsuario::ACTIVO) {
+                throw new DomainException('El proveedor está inactivo: no se le pueden registrar compras.');
             }
         } elseif ($compradorId !== null && $this->compradores->buscarPorId($compradorId) === null) {
             throw new DomainException('El comprador indicado no existe.');

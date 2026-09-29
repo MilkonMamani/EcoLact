@@ -96,7 +96,7 @@
                                     <span class="block text-xs text-text-muted">{{ $fila['rango'] }}</span>
                                 </td>
                                 <td data-label="Monto" class="py-4 pr-4 text-right font-semibold text-text whitespace-nowrap">{{ $soles($fila['monto']) }}</td>
-                                <td data-label="Estado" class="py-4 pr-4"><x-ui.badge :status="$fila['estado']" :icon="$pendiente ? 'clock' : 'check-circle'">{{ $fila['estadoEtiqueta'] }}</x-ui.badge></td>
+                                <td data-label="Estado" class="py-4 pr-4"><x-ui.badge compact :status="$fila['estado']" :icon="$pendiente ? 'clock' : 'check-circle'">{{ $fila['estadoEtiqueta'] }}</x-ui.badge></td>
                                 <td data-label="Acción" class="py-4 pl-4">
                                     <x-tables.actions>
                                         @if ($pendiente)

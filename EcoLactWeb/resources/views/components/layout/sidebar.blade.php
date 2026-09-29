@@ -34,7 +34,7 @@
     </div>
     <div class="ecolact-sidebar-scroll">
         <nav class="ecolact-sidebar-nav" aria-label="Navegación por módulos">
-            <p class="ecolact-sidebar-heading">Dashboard</p>
+            
             {{ $slot }}
         </nav>
     </div>

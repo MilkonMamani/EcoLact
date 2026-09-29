@@ -28,6 +28,9 @@ use Illuminate\View\View;
  */
 final class AnalisisCalidadController extends Controller
 {
+    /** Tamaños de página que el administrador puede elegir en el listado. */
+    private const POR_PAGINA = [25, 50, 100];
+
     public function __construct(
         private readonly RegistrarAnalisisCalidad $registrarAnalisisCalidad,
         private readonly FinalizarAnalisisCalidad $finalizarAnalisisCalidad,
@@ -37,9 +40,9 @@ final class AnalisisCalidadController extends Controller
     ) {}
 
     /**
-     * Listado general de ENTREGAS con su análisis (todas las zonas): las que aún
-     * no tienen análisis aparecen como Pendiente. Exclusivo de ADMINISTRADOR,
-     * quien entra vía Gate::before.
+     * Listado general de ENTREGAS con su análisis (todas las zonas), paginado en
+     * el servidor: las que aún no tienen análisis aparecen como Pendiente.
+     * Exclusivo de ADMINISTRADOR, quien entra vía Gate::before.
      */
     public function index(Request $request): View
     {
@@ -53,10 +56,35 @@ final class AnalisisCalidadController extends Controller
             fecha: $request->string('fecha')->toString() ?: null,
             desde: $request->string('desde')->toString() ?: null,
             hasta: $request->string('hasta')->toString() ?: null,
+            analistaUserId: $request->filled('analista_id') ? $request->integer('analista_id') : null,
+            orden: $request->string('orden')->toString() ?: null,
+            direccion: $request->string('dir')->toString() ?: null,
         );
 
+        $porPagina = in_array($request->integer('por_pagina'), self::POR_PAGINA, true) ? $request->integer('por_pagina') : self::POR_PAGINA[0];
+
         return view('admin.analisis-calidad.index', [
-            'datos' => $this->entregasCalidadListadoQuery->obtener($filtro),
+            'datos' => $this->entregasCalidadListadoQuery->paginar($filtro, $porPagina),
+            'filtro' => $filtro,
+            'porPagina' => $porPagina,
+            'opcionesPorPagina' => self::POR_PAGINA,
+        ]);
+    }
+
+    /**
+     * Fragmento (sin layout) del modal "Ver análisis" del listado: datos de la
+     * entrega y, si ya tiene análisis, sus parámetros tal como se registraron
+     * (analisis_calidad_detalles → parametros_calidad, sin campos fijos).
+     */
+    public function detalle(EntregaModel $entrega): View
+    {
+        Gate::authorize('view', $entrega);
+
+        $entrega->load(['proveedor', 'zona', 'analisisCalidad.detalles.parametro', 'analisisCalidad.confirmadoPor.analistaCalidad']);
+
+        return view('admin.analisis-calidad._detalle', [
+            'entrega' => $entrega,
+            'analisis' => $entrega->analisisCalidad,
         ]);
     }
 

@@ -1,4 +1,4 @@
-import QRCode from 'qrcode';
+import { pintarQrs } from './qr.js';
 
 if (document.querySelector('[data-admin-dashboard]')) {
     import('./pages/admin-dashboard.js');
@@ -44,11 +44,23 @@ if (document.querySelector('[data-pago-trabajadores]')) {
     import('./pages/admin-pago-trabajadores.js');
 }
 
-if (document.querySelector('[data-proveedor-pagos]')) {
+if (document.querySelector('[data-fichas-page]')) {
+    import('./pages/admin-fichas.js');
+}
+
+if (document.querySelector('[data-nuevo-trabajador]')) {
+    import('./pages/admin-nuevo-trabajador.js');
+}
+
+if (document.querySelector('[data-estado-switch]')) {
+    import('./pages/admin-estado-switch.js');
+}
+
+if (document.querySelector('[data-proveedor-pagos], #modal-pagos-proveedor')) {
     import('./pages/admin-proveedor-pagos.js');
 }
 
-if (document.querySelector('[data-control-periodo]')) {
+if (document.querySelector('[data-control-periodo], [data-acopiadores-page]')) {
     import('./pages/admin-jornadas.js');
 }
 
@@ -72,20 +84,7 @@ document.addEventListener('click', (event) => {
     }
 });
 
-document.querySelectorAll('[data-qr-code]').forEach((canvas) => {
-    const qrValue = atob(canvas.dataset.qrCode);
-
-    QRCode.toCanvas(canvas, qrValue, {
-        width: 240,
-        margin: 2,
-        color: { dark: '#143b39', light: '#ffffff' },
-    }).catch(() => {
-        canvas.replaceWith(Object.assign(document.createElement('p'), {
-            className: 'text-sm text-danger',
-            textContent: 'No se pudo generar el código QR.',
-        }));
-    });
-});
+pintarQrs();
 
 document.querySelectorAll('[data-provider-search]').forEach((search) => {
     const input = search.querySelector('[data-provider-search-input]');
@@ -231,17 +230,32 @@ function openModal(id) {
         return;
     }
 
+    modal.classList.remove('is-closing');
     modal.classList.add('is-open');
     document.body.classList.add('overflow-hidden');
     modal.querySelector('[autofocus]')?.focus();
 }
 
-function closeModal(modal) {
-    modal.classList.remove('is-open');
+const MODAL_CIERRE_MS = 150;
 
-    if (!document.querySelector('[data-modal].is-open')) {
-        document.body.classList.remove('overflow-hidden');
+/** Cierre con fade + scale inverso (misc.css); sin animación si el usuario prefiere menos movimiento. */
+function closeModal(modal) {
+    const quitar = () => {
+        modal.classList.remove('is-open', 'is-closing');
+
+        if (!document.querySelector('[data-modal].is-open')) {
+            document.body.classList.remove('overflow-hidden');
+        }
+    };
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !modal.classList.contains('is-open')) {
+        quitar();
+
+        return;
     }
+
+    modal.classList.add('is-closing');
+    window.setTimeout(quitar, MODAL_CIERRE_MS);
 }
 
 function activateTab(tabsRoot, targetId) {

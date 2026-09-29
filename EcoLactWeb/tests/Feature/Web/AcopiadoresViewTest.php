@@ -8,7 +8,7 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
-it('la pantalla principal de acopiadores muestra los KPIs y el conteo de entregas', function () {
+it('la pantalla principal de acopiadores muestra el conteo de entregas y selecciona al primero', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Zona Norte');
     $acopiador = fixture_acopiador($zona, '11112222');
@@ -18,8 +18,9 @@ it('la pantalla principal de acopiadores muestra los KPIs y el conteo de entrega
     $response = $this->actingAs($admin)->get(route('admin.acopiadores.index'));
 
     $response->assertOk();
-    $response->assertSee('Acopiadores activos');
-    $response->assertSee('11112222');
+    $response->assertSeeInOrder(['#', 'Nombre', 'DNI', 'Teléfono', 'Zona', 'Entregas', 'Estado']);
+    $response->assertSeeInOrder(['11112222', 'Zona Norte', '1']);
+    $response->assertSee('data-ficha-id="'.$acopiador->id.'"', false);
 });
 
 it('el perfil del acopiador muestra sus entregas y el historial de zona', function () {
@@ -36,9 +37,12 @@ it('el perfil del acopiador muestra sus entregas y el historial de zona', functi
         motivoCambioZona: 'Reasignación operativa',
     );
 
-    $response = $this->actingAs($admin)->get(route('admin.acopiadores.show', $acopiador->id));
+    $this->actingAs($admin)->get(route('admin.acopiadores.show', $acopiador->id))
+        ->assertRedirect(route('admin.acopiadores.index', ['acopiador' => $acopiador->id]));
+
+    $response = $this->get(route('admin.acopiadores.index', ['acopiador' => $acopiador->id]));
 
     $response->assertOk();
-    $response->assertSee('Entregas registradas: 1');
+    $response->assertSeeInOrder(['Entregas registradas', '1', 'Litros acopiados', '30.00 L']);
     $response->assertSee('Reasignación operativa');
 });
