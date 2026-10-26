@@ -158,13 +158,23 @@ function cerrarPanel() {
     pintarPanel(plantillaVacio.innerHTML);
 }
 
+/**
+ * Fila del registro en la tabla. Una pantalla sin tabla (Zonas: se elige en el mapa) declara
+ * [data-fichas-url-panel] con __ID__ y recibe una "fila" mínima con lo que seleccionar() usa.
+ */
 function filaPorId(id) {
-    return tabla?.querySelector(`[data-fichas-fila][data-ficha-id="${id}"]`) ?? null;
+    const fila = tabla?.querySelector(`[data-fichas-fila][data-ficha-id="${id}"]`) ?? null;
+
+    if (fila || !pagina.dataset.fichasUrlPanel || !/^\d+$/.test(String(id ?? ''))) {
+        return fila;
+    }
+
+    return { dataset: { fichaId: String(id), urlPanel: pagina.dataset.fichasUrlPanel.replace('__ID__', id) } };
 }
 
-/** Controles propios dentro de la fila (p. ej. el switch de estado): no seleccionan la fila. */
+/** Controles propios dentro de la fila (p. ej. el switch de estado o un menú ⋮): no seleccionan la fila. */
 function esControlInterno(elemento) {
-    return Boolean(elemento.closest('button, input, select, textarea, a:not([data-fichas-seleccionar])'));
+    return Boolean(elemento.closest('button, input, select, textarea, summary, details, a:not([data-fichas-seleccionar])'));
 }
 
 tabla?.addEventListener('click', (event) => {
@@ -203,7 +213,8 @@ document.addEventListener('fichas:recargar', (event) => {
     }
 });
 
-// Otro script pide seleccionar un registro (detail: { id, desplazar }), p. ej. el mapa general de Zonas.
+// Otro script pide seleccionar un registro (detail: { id, desplazar, forzar }), p. ej. el mapa general de
+// Zonas (forzar: volver a pedirlo aunque ya esté a la vista, tras mover un proveedor).
 // Si la fila no está en la página actual de la tabla, se navega a la URL con ese registro seleccionado.
 document.addEventListener('fichas:seleccionar', (event) => {
     const id = event.detail?.id;
@@ -215,7 +226,7 @@ document.addEventListener('fichas:seleccionar', (event) => {
     const fila = filaPorId(id);
 
     if (fila) {
-        seleccionar(fila, { desplazar: event.detail.desplazar ?? true });
+        seleccionar(fila, { desplazar: event.detail.desplazar ?? true, forzar: event.detail.forzar ?? false });
 
         return;
     }

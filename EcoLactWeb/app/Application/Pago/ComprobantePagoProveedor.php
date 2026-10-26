@@ -40,11 +40,71 @@ final class ComprobantePagoProveedor
         public readonly ?string $pagadoEl,
         public readonly int $anioFirma,
         public readonly ?string $pagadoPor = null,
+        /** Peor resultado de calidad de la semana (ACEPTADA, OBSERVADA, RECHAZADA o SIN_ANALISIS); null en comprobantes guardados antes de existir. */
+        public readonly ?string $resultadoSemanal = null,
+        /** Litros entregados en la semana (en una semana RECHAZADA, $litros pagables es 0). */
+        public readonly ?float $litrosSemana = null,
+        /** Ajuste de calidad por litro aplicado a todos los litros de la semana (p. ej. -0.20). */
+        public readonly ?float $ajusteLitro = null,
+        public readonly ?float $precioAplicado = null,
     ) {}
 
     public function estaPagado(): bool
     {
         return $this->estado === 'PAGADO';
+    }
+
+    public function esNoPagable(): bool
+    {
+        return $this->estado === 'NO_PAGABLE' || $this->resultadoSemanal() === 'RECHAZADA';
+    }
+
+    /**
+     * Resultado de la semana. Los comprobantes pagados antes de guardarlo se leen
+     * de sus propias cifras: una penalidad solo pudo venir de una entrega observada.
+     */
+    public function resultadoSemanal(): ?string
+    {
+        return $this->resultadoSemanal ?? ($this->penalidad <= -0.005 ? 'OBSERVADA' : 'ACEPTADA');
+    }
+
+    public function litrosDeLaSemana(): float
+    {
+        return $this->litrosSemana ?? $this->litros;
+    }
+
+    public function ajustePorLitro(): float
+    {
+        return $this->ajusteLitro ?? ($this->litros > 0.0 ? round($this->penalidad / $this->litros, 4) : 0.0);
+    }
+
+    public function precioAplicadoPorLitro(): float
+    {
+        if ($this->esNoPagable()) {
+            return 0.0;
+        }
+
+        return $this->precioAplicado ?? ($this->litros > 0.0 ? round($this->subtotalLeche / $this->litros, 4) : $this->precioLitro);
+    }
+
+    /** Etiqueta del resultado semanal para la pantalla y el papel. */
+    public function etiquetaResultado(): string
+    {
+        return match ($this->resultadoSemanal()) {
+            'OBSERVADA' => 'Observada',
+            'RECHAZADA' => 'Rechazada',
+            'SIN_ANALISIS' => 'Sin análisis',
+            default => 'Aceptada',
+        };
+    }
+
+    public function etiquetaEstado(): string
+    {
+        return match (true) {
+            $this->estaPagado() => 'Pagado',
+            $this->esNoPagable() => 'No pagable',
+            default => 'Pendiente',
+        };
     }
 
     /**
@@ -140,6 +200,10 @@ final class ComprobantePagoProveedor
             pagadoEl: $pagadoEl ?? ($datos['pagadoEl'] ?? null),
             anioFirma: (int) $datos['anioFirma'],
             pagadoPor: $pagadoPor ?? ($datos['pagadoPor'] ?? null),
+            resultadoSemanal: $datos['resultadoSemanal'] ?? null,
+            litrosSemana: isset($datos['litrosSemana']) ? (float) $datos['litrosSemana'] : null,
+            ajusteLitro: isset($datos['ajusteLitro']) ? (float) $datos['ajusteLitro'] : null,
+            precioAplicado: isset($datos['precioAplicado']) ? (float) $datos['precioAplicado'] : null,
         );
     }
 }

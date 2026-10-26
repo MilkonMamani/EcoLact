@@ -1,42 +1,47 @@
 /*
- * Modal "Nueva producción": la persona elige producto + cantidad y el servidor calcula
- * los insumos (receta x cantidad, sumados entre productos, con la leche primero). Este
- * archivo SOLO pinta lo que el servidor responde: no contiene reglas de negocio ni cálculo
- * de recetas. Abrir el modal, agregar productos, cambiar cantidades y previsualizar NUNCA
- * descuentan inventario; el descuento ocurre únicamente al enviar el formulario.
+ * Modal "Nueva producción": la persona elige producto + cantidad y, en cuanto ambos están
+ * completos, el servidor calcula los insumos (receta x cantidad, sumados entre productos, con
+ * la leche primero) y si alcanza el stock. Este archivo SOLO pinta lo que el servidor responde:
+ * no contiene reglas de negocio ni cálculo de recetas. Elegir, cambiar cantidades y previsualizar
+ * NUNCA descuentan inventario; el descuento ocurre únicamente al enviar el formulario.
  */
 const raiz = document.querySelector('[data-produccion-nueva]');
 const formulario = raiz?.querySelector('[data-produccion-form]');
 
 if (raiz && formulario) {
     const modal = raiz.closest('[data-modal]');
-    const selector = raiz.querySelector('[data-producto-select]');
-    const cantidadInput = raiz.querySelector('[data-cantidad-input]');
-    const botonAgregar = raiz.querySelector('[data-agregar]');
-    const tablaLineas = raiz.querySelector('[data-tabla-lineas]');
-    const cuerpoLineas = raiz.querySelector('[data-lineas]');
-    const vacio = raiz.querySelector('[data-lineas-vacio]');
+    const contenedorLineas = raiz.querySelector('[data-lineas]');
+    const botonAgregarLinea = raiz.querySelector('[data-agregar-linea]');
     const inputsOcultos = raiz.querySelector('[data-inputs-ocultos]');
+    const sinCalculo = raiz.querySelector('[data-sin-calculo]');
     const avisos = raiz.querySelector('[data-avisos]');
     const calculando = raiz.querySelector('[data-calculando]');
     const panelRecursos = raiz.querySelector('[data-recursos]');
+    const resumenLineas = raiz.querySelector('[data-resumen-lineas]');
     const cuerpoRecursos = raiz.querySelector('[data-recursos-cuerpo]');
     const botonIniciar = raiz.querySelector('[data-iniciar]');
-    const errorCantidad = raiz.querySelector('[data-error-cantidad]');
 
     const urlRequerimientos = raiz.dataset.urlRequerimientos;
     const productos = JSON.parse(raiz.dataset.productos || '[]');
     const token = formulario.querySelector('input[name="_token"]')?.value ?? '';
 
     const numero = (valor) => Number(valor).toLocaleString('es-PE', { maximumFractionDigits: 4 });
-    const productoPorId = (id) => productos.find((p) => String(p.id) === String(id));
+    const conUnidad = (valor, unidad) => {
+        if (unidad === 'unidad') {
+            return `${numero(valor)} ${Number(valor) === 1 ? 'unidad' : 'unidades'}`;
+        }
+
+        return `${numero(valor)} ${unidad}`;
+    };
     const icono = (nombre) => raiz.querySelector(`template[data-icono="${nombre}"]`)?.content.cloneNode(true);
 
-    let lineas = JSON.parse(raiz.dataset.lineasIniciales || '[]').map((l) => ({
-        producto_id: Number(l.producto_id),
-        cantidad: Number(l.cantidad),
+    const iniciales = JSON.parse(raiz.dataset.lineasIniciales || '[]').map((l) => ({
+        producto_id: String(l.producto_id ?? ''),
+        cantidad: String(l.cantidad ?? ''),
     }));
+    let lineas = iniciales.length > 0 ? iniciales : [{ producto_id: '', cantidad: '' }];
     let secuencia = 0;
+    let temporizador = null;
     let enviando = false;
 
     const crear = (tag, clases, texto) => {
@@ -46,75 +51,93 @@ if (raiz && formulario) {
         return el;
     };
 
-    function miniatura(producto) {
-        if (producto?.imagen) {
-            const imagen = crear('img', 'h-10 w-10 shrink-0 rounded-lg border border-text-muted/10 object-cover');
-            imagen.src = producto.imagen;
-            imagen.alt = producto.nombre;
-            imagen.loading = 'lazy';
+    const claseCampo = 'w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary';
 
-            return imagen;
-        }
-
-        const vacia = crear('span', 'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-dashed border-text-muted/25 bg-primary-soft/40 text-xs text-text-muted', '—');
-        vacia.setAttribute('role', 'img');
-        vacia.setAttribute('aria-label', 'Sin imagen');
-
-        return vacia;
-    }
+    const lineasCompletas = () => lineas.filter((l) => Number(l.producto_id) > 0 && Number(l.cantidad) > 0);
 
     function pintarLineas() {
-        cuerpoLineas.replaceChildren();
-        inputsOcultos.replaceChildren();
-        vacio.hidden = lineas.length > 0;
-        tablaLineas.hidden = lineas.length === 0;
+        contenedorLineas.replaceChildren();
 
         lineas.forEach((linea, indice) => {
-            const producto = productoPorId(linea.producto_id);
-            const fila = crear('tr', 'border-b border-text-muted/5 last:border-0');
+            const fila = crear('div', 'grid gap-3 sm:grid-cols-12 sm:items-end');
 
-            const celdaImagen = crear('td', 'py-2 pr-3');
-            celdaImagen.append(miniatura(producto));
+            const campoProducto = crear('div', 'sm:col-span-7');
+            const idProducto = `produccion-producto-${indice}`;
+            const etiquetaProducto = crear('label', 'mb-1 block text-sm font-medium text-text', 'Producto');
+            etiquetaProducto.htmlFor = idProducto;
+            const selector = crear('select', claseCampo);
+            selector.id = idProducto;
+            selector.append(new Option('Elegir un producto', ''));
 
-            const celdaProducto = crear('td', 'py-2 pr-3 font-medium text-text', producto?.nombre ?? 'Producto');
+            // Un producto ya elegido en otra fila no se repite: se cambia su cantidad.
+            const elegidosEnOtras = lineas.filter((_, i) => i !== indice).map((l) => l.producto_id);
+            productos.forEach((producto) => {
+                const opcion = new Option(producto.etiqueta ?? producto.nombre, String(producto.id));
+                opcion.disabled = elegidosEnOtras.includes(String(producto.id));
+                selector.append(opcion);
+            });
+            selector.value = linea.producto_id;
+            selector.addEventListener('change', () => {
+                linea.producto_id = selector.value;
+                pintarLineas();
+                programarCalculo();
+            });
+            campoProducto.append(etiquetaProducto, selector);
 
-            const celdaCantidad = crear('td', 'py-2 pr-3');
-            const cantidad = crear('input', 'w-24 rounded-lg border border-text-muted/25 bg-surface px-2 py-1.5 text-sm text-text focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary');
+            const campoCantidad = crear('div', lineas.length > 1 ? 'sm:col-span-4' : 'sm:col-span-5');
+            const idCantidad = `produccion-cantidad-${indice}`;
+            const etiquetaCantidad = crear('label', 'mb-1 block text-sm font-medium text-text', 'Cantidad a producir');
+            etiquetaCantidad.htmlFor = idCantidad;
+            const cantidad = crear('input', claseCampo);
+            cantidad.id = idCantidad;
             cantidad.type = 'number';
+            cantidad.inputMode = 'decimal';
             cantidad.step = 'any';
             cantidad.min = '0';
+            cantidad.placeholder = 'Ej. 10';
             cantidad.value = linea.cantidad;
-            cantidad.setAttribute('aria-label', `Cantidad de ${producto?.nombre ?? 'producto'}`);
-            cantidad.addEventListener('change', () => {
-                const nueva = Number(cantidad.value);
-
-                if (!(nueva > 0)) {
-                    cantidad.value = linea.cantidad;
-                    return;
+            cantidad.addEventListener('input', () => {
+                linea.cantidad = cantidad.value;
+                pintarOcultos();
+                programarCalculo();
+            });
+            cantidad.addEventListener('keydown', (evento) => {
+                if (evento.key === 'Enter') {
+                    evento.preventDefault();
                 }
-
-                linea.cantidad = nueva;
-                pintarLineas();
-                actualizar();
             });
-            celdaCantidad.append(cantidad);
+            campoCantidad.append(etiquetaCantidad, cantidad);
 
-            const celdaAccion = crear('td', 'py-2 pl-3 text-right');
-            const quitar = crear('button', 'inline-flex h-8 w-8 items-center justify-center rounded-lg bg-danger text-white transition hover:brightness-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary');
-            quitar.type = 'button';
-            quitar.title = `Quitar ${producto?.nombre ?? 'producto'}`;
-            quitar.setAttribute('aria-label', `Quitar ${producto?.nombre ?? 'producto'}`);
-            quitar.append(icono('trash') ?? document.createTextNode('✕'));
-            quitar.addEventListener('click', () => {
-                lineas.splice(indice, 1);
-                pintarLineas();
-                actualizar();
-            });
-            celdaAccion.append(quitar);
+            fila.append(campoProducto, campoCantidad);
 
-            fila.append(celdaImagen, celdaProducto, celdaCantidad, celdaAccion);
-            cuerpoLineas.append(fila);
+            if (lineas.length > 1) {
+                const celdaQuitar = crear('div', 'flex justify-end sm:col-span-1');
+                const quitar = crear('button', 'inline-flex h-9 w-9 items-center justify-center rounded-lg text-danger ring-1 ring-inset ring-danger/30 transition hover:bg-danger/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary');
+                quitar.type = 'button';
+                quitar.title = 'Quitar producto';
+                quitar.setAttribute('aria-label', 'Quitar producto');
+                quitar.append(icono('trash') ?? document.createTextNode('✕'));
+                quitar.addEventListener('click', () => {
+                    lineas.splice(indice, 1);
+                    pintarLineas();
+                    programarCalculo();
+                });
+                celdaQuitar.append(quitar);
+                fila.append(celdaQuitar);
+            }
 
+            contenedorLineas.append(fila);
+        });
+
+        botonAgregarLinea.hidden = lineas.length >= productos.length;
+        pintarOcultos();
+    }
+
+    /** Solo se envían las filas completas: lo que se previsualizó es lo que se inicia. */
+    function pintarOcultos() {
+        inputsOcultos.replaceChildren();
+
+        lineasCompletas().forEach((linea, indice) => {
             [['producto_id', linea.producto_id], ['cantidad', linea.cantidad]].forEach(([campo, valor]) => {
                 const oculto = document.createElement('input');
                 oculto.type = 'hidden';
@@ -125,8 +148,16 @@ if (raiz && formulario) {
         });
     }
 
-    function pintarAviso(clase, texto) {
-        avisos.append(crear('div', `rounded-lg border px-3 py-2 text-sm text-text ${clase}`, texto));
+    function pintarAviso(texto) {
+        const aviso = crear('div', 'flex items-start gap-2 rounded-lg border border-danger/30 bg-danger/10 px-3 py-2 text-sm text-danger');
+        const marca = icono('alerta');
+
+        if (marca) {
+            aviso.append(marca);
+        }
+
+        aviso.append(crear('span', 'text-text', texto));
+        avisos.append(aviso);
     }
 
     function badgeEstado(suficiente) {
@@ -147,23 +178,54 @@ if (raiz && formulario) {
 
     function pintarResultado(datos) {
         avisos.replaceChildren();
+        resumenLineas.replaceChildren();
         cuerpoRecursos.replaceChildren();
 
-        datos.insumos.forEach((insumo) => {
-            const fila = crear('tr', 'border-b border-text-muted/5 last:border-0');
-            fila.append(crear('td', 'py-2 pr-3 font-medium text-text', insumo.nombre));
-            fila.append(crear('td', 'py-2 pr-3 whitespace-nowrap text-text', `${numero(insumo.necesario)} ${insumo.unidad}`));
-            fila.append(crear('td', 'py-2 pr-3 whitespace-nowrap text-text-muted', `${numero(insumo.disponible)} ${insumo.unidad}`));
-            const celdaEstado = crear('td', 'py-2 pr-3');
-            celdaEstado.append(badgeEstado(insumo.suficiente));
-            fila.append(celdaEstado);
+        datos.lineas.forEach((linea) => {
+            const fila = crear('div', 'flex flex-wrap items-baseline justify-between gap-x-3');
+            fila.append(crear('p', 'text-sm font-semibold text-text', linea.etiqueta ?? linea.producto));
+            fila.append(crear('p', 'text-sm text-text-muted', `Cantidad planificada: ${conUnidad(linea.cantidad, linea.unidad)}`));
+            resumenLineas.append(fila);
+        });
+
+        datos.insumos.forEach((insumo, indice) => {
+            const esLeche = indice === 0 && insumo.nombre.toLowerCase() === 'leche';
+            const fila = crear('li', 'flex flex-col gap-2 py-2.5 sm:flex-row sm:items-center sm:gap-4');
+
+            const nombre = crear('div', 'flex min-w-0 items-center gap-2 sm:w-1/3');
+            if (esLeche) {
+                const gota = crear('span', 'text-info');
+                gota.append(icono('leche') ?? document.createTextNode(''));
+                nombre.append(gota);
+            }
+            nombre.append(crear('span', 'font-medium text-text', insumo.nombre));
+            if (esLeche) {
+                nombre.append(crear('span', 'text-xs text-text-muted', 'desde Acopio'));
+            }
+
+            const cifras = crear('div', 'grid flex-1 grid-cols-2 gap-3 text-sm');
+            const necesario = crear('p', 'text-text-muted');
+            necesario.append('Necesario: ', crear('span', 'font-semibold text-text', `${numero(insumo.necesario)} ${insumo.unidad}`));
+            const disponible = crear('p', 'text-text-muted');
+            disponible.append('Disponible: ', crear('span', insumo.suficiente ? 'text-text' : 'font-semibold text-danger', `${numero(insumo.disponible)} ${insumo.unidad}`));
+            cifras.append(necesario, disponible);
+
+            const estado = crear('div', 'sm:shrink-0');
+            estado.append(badgeEstado(insumo.suficiente));
+
+            fila.append(nombre, cifras, estado);
             cuerpoRecursos.append(fila);
         });
 
-        panelRecursos.hidden = datos.insumos.length === 0;
+        if (datos.insumos.length === 0) {
+            cuerpoRecursos.append(crear('li', 'py-2 text-sm text-text-muted', 'La receta no tiene insumos registrados.'));
+        }
+
+        panelRecursos.hidden = false;
+        sinCalculo.hidden = true;
 
         // Los mensajes vienen ya redactados por el servidor (misma redacción que el bloqueo real).
-        datos.mensajes.forEach((mensaje) => pintarAviso('border-danger/30 bg-danger/10', mensaje));
+        datos.mensajes.forEach((mensaje) => pintarAviso(mensaje));
 
         botonIniciar.disabled = !datos.puede_iniciar || enviando;
     }
@@ -171,18 +233,26 @@ if (raiz && formulario) {
     function limpiarResultado(mensaje) {
         avisos.replaceChildren();
         panelRecursos.hidden = true;
+        sinCalculo.hidden = Boolean(mensaje);
         botonIniciar.disabled = true;
 
         if (mensaje) {
-            pintarAviso('border-danger/30 bg-danger/10', mensaje);
+            pintarAviso(mensaje);
         }
+    }
+
+    function programarCalculo() {
+        clearTimeout(temporizador);
+        botonIniciar.disabled = true;
+        temporizador = setTimeout(actualizar, 300);
     }
 
     async function actualizar() {
         const solicitud = ++secuencia;
+        const completas = lineasCompletas();
         botonIniciar.disabled = true;
 
-        if (lineas.length === 0) {
+        if (completas.length === 0) {
             calculando.hidden = true;
             limpiarResultado();
             return;
@@ -199,7 +269,7 @@ if (raiz && formulario) {
                     'X-CSRF-TOKEN': token,
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({ productos: lineas }),
+                body: JSON.stringify({ productos: completas.map((l) => ({ producto_id: Number(l.producto_id), cantidad: Number(l.cantidad) })) }),
             });
 
             if (solicitud !== secuencia) {
@@ -225,42 +295,14 @@ if (raiz && formulario) {
         }
     }
 
-    botonAgregar.addEventListener('click', () => {
-        errorCantidad.textContent = '';
-        const productoId = Number(selector.value);
-        const cantidad = Number(cantidadInput.value);
-
-        if (!productoId) {
-            errorCantidad.textContent = 'Elige un producto.';
-            return;
-        }
-
-        if (!(cantidad > 0)) {
-            errorCantidad.textContent = 'Escribe una cantidad mayor que cero.';
-            return;
-        }
-
-        if (lineas.some((l) => l.producto_id === productoId)) {
-            errorCantidad.textContent = 'Este producto ya fue agregado. Cambia su cantidad en la tabla.';
-            return;
-        }
-
-        lineas.push({ producto_id: productoId, cantidad });
-        selector.value = '';
-        cantidadInput.value = '';
+    botonAgregarLinea.addEventListener('click', () => {
+        lineas.push({ producto_id: '', cantidad: '' });
         pintarLineas();
-        actualizar();
-    });
-
-    cantidadInput.addEventListener('keydown', (evento) => {
-        if (evento.key === 'Enter') {
-            evento.preventDefault();
-            botonAgregar.click();
-        }
+        contenedorLineas.querySelector(`#produccion-producto-${lineas.length - 1}`)?.focus();
     });
 
     formulario.addEventListener('submit', (evento) => {
-        if (enviando || lineas.length === 0 || botonIniciar.disabled) {
+        if (enviando || lineasCompletas().length === 0 || botonIniciar.disabled) {
             evento.preventDefault();
             return;
         }

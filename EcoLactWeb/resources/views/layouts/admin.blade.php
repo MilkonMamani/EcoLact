@@ -39,8 +39,7 @@
             <x-layout.sidebar-link icon="quality" :href="route('admin.analisis-calidad.index')" :active="request()->routeIs('admin.analisis-calidad.*')">Calidad</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Configuración</p>
-            <x-layout.sidebar-link icon="quality" :href="route('admin.parametros-calidad.index')" :active="request()->routeIs('admin.parametros-calidad.*')">Parámetros de calidad</x-layout.sidebar-link>
-            <x-layout.sidebar-link icon="quality" :href="route('admin.reglas-calidad.index')" :active="request()->routeIs('admin.reglas-calidad.*')">Reglas de calidad</x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="quality" :href="route('admin.parametros-calidad.index')" :active="request()->routeIs('admin.parametros-calidad.*', 'admin.reglas-calidad.*')">Parámetros de calidad</x-layout.sidebar-link>
             <x-layout.sidebar-link icon="payment" :href="route('admin.configuracion-pagos.index')" :active="request()->routeIs('admin.configuracion-pagos.*')">Configuración de pagos</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Finanzas</p>

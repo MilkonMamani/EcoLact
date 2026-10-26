@@ -190,7 +190,7 @@ it('el menú lateral del administrador sigue la estructura pedida', function () 
         'Dashboard', 'Inicio', 'Asistencia', 'Operación', 'Acopio', 'Proveedores', 'Zonas',
         'Personal', 'Trabajadores', 'Nuevo trabajador', 'Acopiadores', 'Analistas de calidad', 'Encargados de planta', 'Personal de ventas',
         'Calidad', 'Configuración',
-        'Parámetros de calidad', 'Reglas de calidad', 'Configuración de pagos', 'Finanzas', 'Pagos',
+        'Parámetros de calidad', 'Configuración de pagos', 'Finanzas', 'Pagos',
         'Producción', 'Recetas', 'Producción', 'Inventario', 'Insumos', 'Productos', 'Ventas', 'Ventas', 'Compradores',
         'Comunicación', 'Comunicados', 'Administración', 'Auditoría',
     ]);

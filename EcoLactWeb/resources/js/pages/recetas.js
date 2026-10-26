@@ -1,22 +1,25 @@
 /*
  * Módulo Recetas. Una receta es solo configuración y es el ORIGEN del producto:
- * este archivo arma el formulario (datos del producto, imagen con
- * previsualización, ingredientes con su unidad autocompletada) y muestra en
- * vivo el producto y el nombre de receta que se generarán. No calcula ni
- * descuenta inventario; el nombre real lo genera el servidor.
+ * este archivo arma el modal único de Nueva / Editar receta (producto, imagen
+ * con previsualización, fórmula e ingredientes con su unidad autocompletada).
+ * No calcula ni descuenta inventario; el nombre real de producto y receta lo
+ * genera el servidor.
  */
 const pagina = document.querySelector('[data-recetas-page]');
 
 if (pagina) {
     const modal = document.getElementById('modal-receta');
     const formulario = modal.querySelector('[data-receta-form]');
+    const cuerpo = formulario.querySelector('[data-modal-cuerpo]');
     const titulo = formulario.querySelector('[data-receta-titulo]');
     const nota = formulario.querySelector('[data-nota-modo]');
+    const notaInventario = formulario.querySelector('[data-nota-inventario]');
     const metodo = formulario.querySelector('[data-metodo]');
     const productoExistente = formulario.querySelector('[data-producto-existente]');
     const bloqueDatos = formulario.querySelector('[data-datos-producto]');
     const productoFijo = formulario.querySelector('[data-producto-fijo]');
-    const productoFijoNombre = formulario.querySelector('[data-producto-fijo-nombre]');
+    const formulaProducto = formulario.querySelector('[data-formula-producto]');
+    const formulaAyuda = formulario.querySelector('[data-formula-ayuda]');
     const campos = {
         tipo: formulario.querySelector('[name="tipo_producto"]'),
         nombre: formulario.querySelector('[name="nombre_producto"]'),
@@ -25,28 +28,31 @@ if (pagina) {
         descripcion: formulario.querySelector('[name="descripcion"]'),
     };
     const imagenInput = formulario.querySelector('[data-imagen-input]');
+    const imagenCaja = formulario.querySelector('[data-imagen-caja]');
     const imagenVista = formulario.querySelector('[data-imagen-vista]');
     const imagenVacia = formulario.querySelector('[data-imagen-vacia]');
     const imagenError = formulario.querySelector('[data-imagen-error]');
-    const etiquetaImagen = formulario.querySelector('label[for="imagen"]');
-    const resultadoTexto = formulario.querySelector('[data-resultado-texto]');
-    const recetaNombre = formulario.querySelector('[data-receta-nombre]');
+    const etiquetaImagen = formulario.querySelector('[data-etiqueta-imagen]');
+    const botonImagen = formulario.querySelector('[data-imagen-boton]');
     const filas = formulario.querySelector('[data-ingredientes]');
+    const ingredientesError = formulario.querySelector('[data-ingredientes-error]');
     const botonAgregar = formulario.querySelector('[data-agregar-ingrediente]');
     const botonGuardar = formulario.querySelector('[data-guardar]');
 
     const insumos = JSON.parse(pagina.dataset.insumos || '[]');
+    const errores = JSON.parse(pagina.dataset.errores || '{}');
     const urlStore = pagina.dataset.urlStore;
     const urlUpdate = pagina.dataset.urlUpdate;
     const MAX_BYTES = 2 * 1024 * 1024;
     const TIPOS_MIME = ['image/jpeg', 'image/png', 'image/webp'];
+    const TEXTO_SIN_PRODUCTO = 'Completa el producto y la presentación para definir la fórmula.';
 
-    // Nombre del producto ya existente (modo editar / configurar): reemplaza a los campos del producto.
-    let productoActual = null;
     let urlVistaPrevia = null;
+    // Presentación del producto fijo (Editar / Configurar); en Nueva se lee de los campos.
+    let productoActual = null;
 
-    const numero = (valor) => Number(valor).toLocaleString('es-PE', { maximumFractionDigits: 4 });
     const insumoPorId = (id) => insumos.find((i) => String(i.id) === String(id));
+    const numero = (valor) => Number(valor).toLocaleString('es-PE', { maximumFractionDigits: 4 });
 
     const crear = (tag, clases, texto) => {
         const el = document.createElement(tag);
@@ -60,12 +66,31 @@ if (pagina) {
     function abrir() {
         modal.classList.add('is-open');
         document.body.classList.add('overflow-hidden');
+        cuerpo.scrollTop = 0;
     }
+
+    /* ---------------------------------------------------------------- fórmula dinámica */
+
+    // "Queso Paria · 1 kg" + "Las cantidades siguientes corresponden a una unidad de 1 kg."
+    function actualizarFormula() {
+        const nombre = productoActual ? productoActual.nombre : campos.nombre.value.trim().replace(/\s+/g, ' ');
+        const presentacion = productoActual
+            ? productoActual.presentacion
+            : (Number(campos.cantidad.value) > 0 && campos.unidad.value ? `${numero(campos.cantidad.value)} ${campos.unidad.value}` : '');
+        const completo = productoActual ? Boolean(nombre) : Boolean(nombre && presentacion);
+
+        formulaProducto.textContent = completo ? [nombre, presentacion].filter(Boolean).join(' · ') : TEXTO_SIN_PRODUCTO;
+        formulaProducto.classList.toggle('is-pendiente', !completo);
+        formulaAyuda.textContent = presentacion
+            ? `Define los insumos necesarios para producir una unidad. Las cantidades siguientes corresponden a una unidad de ${presentacion}.`
+            : 'Define los insumos necesarios para producir una unidad.';
+    }
+
+    /* ---------------------------------------------------------------- ingredientes */
 
     function opcionesUnidad(select, insumoId, elegida) {
         select.replaceChildren();
         const insumo = insumoPorId(insumoId);
-        const disponibles = insumo ? insumo.compatibles : {};
 
         if (!insumo) {
             const vacia = crear('option', '', '—');
@@ -74,7 +99,8 @@ if (pagina) {
             return;
         }
 
-        Object.entries(disponibles).forEach(([codigo, etiqueta]) => {
+        // Solo unidades de la misma magnitud; por defecto la unidad base del insumo.
+        Object.entries(insumo.compatibles).forEach(([codigo, etiqueta]) => {
             const opcion = crear('option', '', etiqueta);
             opcion.value = codigo;
             opcion.selected = codigo === (elegida ?? insumo.unidad_base);
@@ -82,43 +108,47 @@ if (pagina) {
         });
     }
 
-    function nombreCompleto() {
-        if (productoActual) {
-            return productoActual.nombre;
-        }
+    // Un insumo ya elegido en otra fila no se puede volver a elegir (el servidor también lo rechaza).
+    function bloquearRepetidos() {
+        const selects = [...filas.querySelectorAll('[data-insumo-select]')];
+        const elegidos = selects.map((select) => select.value).filter(Boolean);
 
-        const base = campos.nombre.value.trim().replace(/\s+/g, ' ');
-        const cantidad = campos.cantidad.value;
-        const unidad = campos.unidad.value;
-
-        if (!base || !cantidad || !unidad) {
-            return '';
-        }
-
-        return `${base} ${Number(cantidad)} ${unidad}`;
+        selects.forEach((select) => {
+            [...select.options].forEach((opcion) => {
+                opcion.disabled = opcion.value !== '' && opcion.value !== select.value && elegidos.includes(opcion.value);
+            });
+        });
     }
 
-    function actualizarResultado() {
-        const nombre = nombreCompleto();
-        const base = productoActual ? productoActual.nombre : campos.nombre.value.trim();
-        const presentacion = productoActual ? '' : `${campos.cantidad.value} ${campos.unidad.value}`.trim();
+    // Errores del servidor de esa fila (ingredientes.N.campo), junto a la fila y con el campo marcado.
+    function marcarErroresFila(fila, indice, controles) {
+        const mensajes = [];
 
-        resultadoTexto.textContent = nombre
-            ? (productoActual ? `1 ${productoActual.nombre}` : `1 ${base} de ${presentacion}`)
-            : '—';
-        recetaNombre.textContent = nombre ? `Receta ${nombre}` : '—';
+        Object.entries(controles).forEach(([clave, control]) => {
+            const propios = errores[`ingredientes.${indice}.${clave}`] ?? [];
+
+            if (propios.length > 0) {
+                control.classList.replace('border-text-muted/25', 'border-danger');
+                control.setAttribute('aria-invalid', 'true');
+                mensajes.push(...propios);
+            }
+        });
+
+        const error = crear('p', 'recetas-ingrediente-error', [...new Set(mensajes)].join(' '));
+        error.setAttribute('role', 'alert');
+        fila.append(error);
     }
 
-    function agregarFila(datos = {}) {
-        const indice = Number(filas.dataset.contador || 0);
-        filas.dataset.contador = String(indice + 1);
+    function agregarFila(datos = {}, indiceServidor = null) {
+        const indice = indiceServidor ?? Number(filas.dataset.contador || 0);
+        filas.dataset.contador = String(Math.max(Number(filas.dataset.contador || 0), Number(indice) + 1));
 
-        const fila = crear('div', 'grid grid-cols-12 items-start gap-2');
+        const fila = crear('div', 'recetas-ingrediente');
 
-        const celdaInsumo = crear('div', 'col-span-12 sm:col-span-3');
         const insumoSelect = crear('select', claseCampo);
         insumoSelect.name = `ingredientes[${indice}][insumo_id]`;
         insumoSelect.required = true;
+        insumoSelect.dataset.insumoSelect = '';
         insumoSelect.setAttribute('aria-label', 'Insumo');
         const placeholder = crear('option', '', 'Elija un insumo');
         placeholder.value = '';
@@ -129,51 +159,66 @@ if (pagina) {
             opcion.selected = String(insumo.id) === String(datos.insumo_id ?? '');
             insumoSelect.append(opcion);
         });
-        celdaInsumo.append(insumoSelect);
 
-        const celdaCantidad = crear('div', 'col-span-6 sm:col-span-2');
         const cantidad = crear('input', claseCampo);
         cantidad.type = 'number';
         cantidad.step = 'any';
-        cantidad.min = '0';
+        cantidad.min = '0.0001';
         cantidad.required = true;
+        cantidad.inputMode = 'decimal';
         cantidad.name = `ingredientes[${indice}][cantidad]`;
-        cantidad.placeholder = 'Cantidad';
+        cantidad.placeholder = '0';
         cantidad.setAttribute('aria-label', 'Cantidad');
         cantidad.value = datos.cantidad ?? '';
-        celdaCantidad.append(cantidad);
 
-        const celdaUnidad = crear('div', 'col-span-6 sm:col-span-2');
         const unidad = crear('select', claseCampo);
         unidad.name = `ingredientes[${indice}][unidad]`;
         unidad.required = true;
         unidad.setAttribute('aria-label', 'Unidad');
         opcionesUnidad(unidad, datos.insumo_id, datos.unidad);
-        celdaUnidad.append(unidad);
 
-        const celdaObservacion = crear('div', 'col-span-10 sm:col-span-4');
         const observacion = crear('input', claseCampo);
         observacion.type = 'text';
         observacion.maxLength = 200;
         observacion.name = `ingredientes[${indice}][observacion]`;
-        observacion.placeholder = 'Observación (opcional)';
+        observacion.placeholder = 'Opcional';
         observacion.setAttribute('aria-label', 'Observación');
         observacion.value = datos.observacion ?? '';
-        celdaObservacion.append(observacion);
 
-        const celdaQuitar = crear('div', 'col-span-2 sm:col-span-1 sm:text-right');
-        const quitar = crear('button', 'inline-flex h-9 w-9 items-center justify-center rounded-lg bg-danger/10 text-danger ring-1 ring-inset ring-danger/30 hover:brightness-95', '✕');
+        const quitar = crear('button', 'recetas-icono recetas-ingrediente-quitar');
         quitar.type = 'button';
-        quitar.title = 'Quitar ingrediente';
-        quitar.setAttribute('aria-label', 'Quitar ingrediente');
-        quitar.addEventListener('click', () => fila.remove());
-        celdaQuitar.append(quitar);
+        quitar.title = 'Eliminar ingrediente';
+        quitar.setAttribute('aria-label', 'Eliminar ingrediente');
+        quitar.innerHTML = '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 18 18 6M6 6l12 12"/></svg>';
+        quitar.addEventListener('click', () => {
+            fila.remove();
+            bloquearRepetidos();
+        });
 
-        // La unidad se autocompleta con la unidad base del insumo elegido.
-        insumoSelect.addEventListener('change', () => opcionesUnidad(unidad, insumoSelect.value));
+        insumoSelect.addEventListener('change', () => {
+            opcionesUnidad(unidad, insumoSelect.value);
+            bloquearRepetidos();
+        });
 
-        fila.append(celdaInsumo, celdaCantidad, celdaUnidad, celdaObservacion, celdaQuitar);
+        fila.append(insumoSelect, cantidad, unidad, observacion, quitar);
+
+        if (indiceServidor !== null) {
+            marcarErroresFila(fila, indice, { insumo_id: insumoSelect, cantidad, unidad, observacion });
+        }
+
         filas.append(fila);
+        bloquearRepetidos();
+
+        return fila;
+    }
+
+    /* ---------------------------------------------------------------- imagen */
+
+    function mostrarVista(url) {
+        imagenVista.src = url;
+        imagenVista.classList.remove('hidden');
+        imagenVacia.classList.add('hidden');
+        imagenCaja.classList.add('tiene-imagen');
     }
 
     function limpiarImagen() {
@@ -186,15 +231,7 @@ if (pagina) {
         imagenVista.removeAttribute('src');
         imagenVista.classList.add('hidden');
         imagenVacia.classList.remove('hidden');
-        imagenError.textContent = '';
-    }
-
-    function mostrarImagenActual(url) {
-        if (url) {
-            imagenVista.src = url;
-            imagenVista.classList.remove('hidden');
-            imagenVacia.classList.add('hidden');
-        }
+        imagenCaja.classList.remove('tiene-imagen');
     }
 
     imagenInput.addEventListener('change', () => {
@@ -222,12 +259,35 @@ if (pagina) {
         }
 
         urlVistaPrevia = URL.createObjectURL(archivo);
-        imagenVista.src = urlVistaPrevia;
-        imagenVista.classList.remove('hidden');
-        imagenVacia.classList.add('hidden');
+        mostrarVista(urlVistaPrevia);
+        botonImagen.textContent = 'Cambiar imagen';
     });
 
+    /* ---------------------------------------------------------------- modos */
+
+    // Los errores pintados por el servidor solo valen para el primer formulario reabierto.
+    function limpiarErroresServidor() {
+        formulario.querySelectorAll('[data-error-servidor], p.text-danger:not([data-imagen-error]):not([data-ingredientes-error])').forEach((el) => el.remove());
+        formulario.querySelectorAll('.border-danger').forEach((el) => el.classList.replace('border-danger', 'border-text-muted/25'));
+        imagenError.textContent = '';
+        ingredientesError.textContent = '';
+    }
+
+    function pintarProductoFijo({ tipo = '', nombre = '', presentacion = '' }) {
+        const valores = { tipo, nombre, presentacion };
+
+        productoFijo.querySelectorAll('[data-fijo]').forEach((fila) => {
+            const valor = valores[fila.dataset.fijo];
+            fila.hidden = !valor;
+            fila.querySelector('dd').textContent = valor || '';
+        });
+    }
+
     function preparar({ modo, receta = null, producto = null, viejo = null }) {
+        if (!viejo) {
+            limpiarErroresServidor();
+        }
+
         formulario.reset();
         filas.replaceChildren();
         filas.dataset.contador = '0';
@@ -235,46 +295,55 @@ if (pagina) {
         productoActual = null;
 
         formulario.querySelector('[name="_modo"]').value = modo;
-        formulario.querySelector('[name="_receta_id"]').value = receta?.id ?? '';
+        formulario.querySelector('[name="_receta_id"]').value = receta?.id ?? viejo?._receta_id ?? '';
         metodo.disabled = modo !== 'editar';
         productoExistente.disabled = modo !== 'existente';
         productoExistente.value = modo === 'existente' ? producto.id : '';
 
+        // Editar o configurar trabajan sobre un producto que ya existe: nunca se crea otro
+        // y sus datos no se modifican (el servidor los rechaza), así que se muestran como texto.
         const conProducto = modo !== 'crear';
-        bloqueDatos.classList.toggle('hidden', conProducto);
+        bloqueDatos.hidden = conProducto;
+        productoFijo.hidden = !conProducto;
         Object.values(campos).forEach((campo) => {
             if (campo !== campos.descripcion) {
                 campo.disabled = conProducto;
             }
         });
-        productoFijo.classList.toggle('hidden', !conProducto);
 
         if (modo === 'crear') {
             titulo.textContent = 'Nueva receta';
-            nota.textContent = 'Define el producto y los ingredientes necesarios para producir una unidad base.';
+            nota.textContent = 'Define el producto y su fórmula de producción.';
             formulario.action = urlStore;
-            etiquetaImagen.textContent = 'Imagen del producto';
             botonGuardar.textContent = 'Guardar receta';
+            notaInventario.textContent = 'Guardar una receta no descuenta inventario.';
         } else if (modo === 'existente') {
-            productoActual = { nombre: producto.nombre };
-            productoFijoNombre.textContent = producto.nombre;
+            productoActual = { nombre: producto.nombre, presentacion: '' };
             titulo.textContent = 'Configurar receta';
-            nota.textContent = 'Este producto ya existe pero todavía no tiene fórmula. Al guardar se crea su primera receta, sin duplicar el producto.';
+            nota.textContent = producto.nombre;
             formulario.action = urlStore;
-            etiquetaImagen.textContent = 'Imagen del producto';
             botonGuardar.textContent = 'Guardar receta';
+            notaInventario.textContent = 'Guardar una receta no descuenta inventario.';
+            pintarProductoFijo({ nombre: producto.nombre });
         } else {
-            productoActual = { nombre: receta.producto };
-            productoFijoNombre.textContent = receta.producto;
-            titulo.textContent = `Editar ${receta.nombre}`;
-            nota.textContent = receta.enUso
-                ? `Esta receta ya se usó en producciones: se conservará tal como está y se creará la versión ${receta.version + 1}. El producto y su imagen siguen siendo los mismos.`
-                : 'Esta receta todavía no se usó en ninguna producción, por eso se edita directamente.';
-            formulario.action = urlUpdate.replace('__ID__', receta.id);
-            etiquetaImagen.textContent = 'Cambiar imagen del producto (opcional)';
-            mostrarImagenActual(receta.imagenUrl);
-            botonGuardar.textContent = receta.enUso ? 'Guardar como nueva versión' : 'Guardar cambios';
+            productoActual = receta
+                ? { nombre: receta.presentacion ? receta.productoNombreBase : receta.producto, presentacion: receta.presentacion ?? '' }
+                : { nombre: '', presentacion: '' };
+            titulo.textContent = 'Editar receta';
+            nota.textContent = [productoActual.nombre, productoActual.presentacion].filter(Boolean).join(' · ');
+            formulario.action = urlUpdate.replace('__ID__', receta?.id ?? viejo?._receta_id);
+            botonGuardar.textContent = 'Guardar cambios';
+            notaInventario.textContent = 'Guardar cambios no descuenta inventario.';
+            pintarProductoFijo({ tipo: receta?.tipo, nombre: productoActual.nombre, presentacion: productoActual.presentacion });
+
+            if (receta?.imagenUrl) {
+                mostrarVista(receta.imagenUrl);
+            }
         }
+
+        const tieneImagen = modo === 'editar' && Boolean(receta?.imagenUrl);
+        etiquetaImagen.textContent = tieneImagen ? 'Imagen actual' : 'Imagen del producto';
+        botonImagen.textContent = tieneImagen ? 'Cambiar imagen' : 'Seleccionar imagen';
 
         const origen = viejo ?? receta;
 
@@ -289,27 +358,53 @@ if (pagina) {
             campos.unidad.value = viejo.presentacion_unidad ?? '';
         }
 
-        const ingredientes = viejo
-            ? Object.values(viejo.ingredientes ?? {})
-            : (receta ? receta.ingredientes.map((i) => ({ insumo_id: i.insumoId, cantidad: i.cantidad, unidad: i.unidad, observacion: i.observacion })) : []);
+        if (viejo) {
+            // Se conservan los índices originales para ubicar cada error en su fila.
+            Object.entries(viejo.ingredientes ?? {}).forEach(([indice, ingrediente]) => agregarFila(ingrediente, indice));
+        } else if (receta) {
+            receta.ingredientes.forEach((i) => agregarFila({ insumo_id: i.insumoId, cantidad: i.cantidad, unidad: i.unidad, observacion: i.observacion }));
+        }
 
-        if (ingredientes.length > 0) {
-            ingredientes.forEach((ingrediente) => agregarFila(ingrediente));
-        } else {
+        if (filas.children.length === 0) {
             agregarFila();
         }
 
-        actualizarResultado();
+        actualizarFormula();
         abrir();
+
+        if (viejo) {
+            irAlPrimerError();
+        }
+    }
+
+    function irAlPrimerError() {
+        const primero = [...formulario.querySelectorAll('[data-error-servidor], .border-danger, p.text-danger, .recetas-ingrediente-error')]
+            .find((el) => el.textContent.trim() !== '' || el.classList.contains('border-danger'));
+
+        if (primero) {
+            requestAnimationFrame(() => primero.scrollIntoView({ block: 'center' }));
+        }
     }
 
     [campos.nombre, campos.cantidad, campos.unidad].forEach((campo) => {
-        campo.addEventListener('input', actualizarResultado);
-        campo.addEventListener('change', actualizarResultado);
+        campo.addEventListener('input', actualizarFormula);
+        campo.addEventListener('change', actualizarFormula);
     });
-    botonAgregar.addEventListener('click', () => agregarFila());
+
+    botonAgregar.addEventListener('click', () => {
+        const fila = agregarFila();
+        fila.scrollIntoView({ block: 'nearest' });
+        fila.querySelector('select')?.focus();
+    });
 
     document.addEventListener('click', (evento) => {
+        // Menú "más acciones" (⋮): solo uno abierto a la vez y se cierra al hacer clic fuera.
+        pagina.querySelectorAll('[data-recetas-menu][open]').forEach((menu) => {
+            if (!menu.contains(evento.target)) {
+                menu.open = false;
+            }
+        });
+
         const disparador = evento.target.closest('[data-receta-accion]');
 
         if (!disparador || !pagina.contains(disparador)) {
@@ -322,6 +417,14 @@ if (pagina) {
         });
     });
 
+    document.addEventListener('keydown', (evento) => {
+        if (evento.key === 'Escape') {
+            pagina.querySelectorAll('[data-recetas-menu][open]').forEach((menu) => {
+                menu.open = false;
+            });
+        }
+    });
+
     // Producto histórico sin receta: se abre directamente para configurarlo.
     if (pagina.dataset.configurar) {
         preparar({ modo: 'existente', producto: JSON.parse(pagina.dataset.configurar) });
@@ -330,8 +433,8 @@ if (pagina) {
     // Si el servidor rechazó el formulario, se vuelve a abrir con lo que la persona había escrito.
     const viejo = pagina.dataset.old ? JSON.parse(pagina.dataset.old) : null;
 
-    if (viejo && viejo.ingredientes) {
-        const modo = viejo._modo || 'crear';
+    if (viejo && viejo._modo) {
+        const modo = viejo._modo;
         const indice = JSON.parse(pagina.dataset.recetasIndice || '{}');
         const receta = viejo._receta_id ? indice[viejo._receta_id] ?? null : null;
         const producto = modo === 'existente' && viejo.producto_existente_id ? { id: viejo.producto_existente_id, nombre: 'Producto' } : null;

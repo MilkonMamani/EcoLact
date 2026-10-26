@@ -19,6 +19,9 @@ use Illuminate\Database\UniqueConstraintViolationException;
 
 final class EloquentPagosPendientesProveedorStore implements PagosPendientesProveedorStore
 {
+    /** Liquidaciones que todavía se recalculan desde las entregas (nunca un PAGADO). */
+    private const ESTADOS_ABIERTOS = [EstadoObligacionPago::PENDIENTE->value, EstadoObligacionPago::NO_PAGABLE->value];
+
     public function liberarPendientes(int $proveedorId): array
     {
         ProveedorModel::whereKey($proveedorId)->lockForUpdate()->firstOrFail();
@@ -62,10 +65,12 @@ final class EloquentPagosPendientesProveedorStore implements PagosPendientesProv
             ->unique()->values()->all();
     }
 
-    public function guardarPendiente(?int $existenteId, int $proveedorId, string $nombre, ?int $configuracionId, PeriodoPago $periodo, float $monto, array $baseCalculo, array $detalles, ?int $actorUserId): bool
+    public function guardarPendiente(?int $existenteId, int $proveedorId, string $nombre, ?int $configuracionId, PeriodoPago $periodo, float $monto, array $baseCalculo, array $detalles, ?int $actorUserId, EstadoObligacionPago $estado = EstadoObligacionPago::PENDIENTE): bool
     {
         $claveAbierta = 'PROVEEDOR:'.$proveedorId.':'.$periodo->clave();
         $datos = [
+            // Una semana abierta puede pasar de PENDIENTE a NO_PAGABLE (o volver) al recalcularse.
+            'estado' => $estado->value,
             'clave_abierta' => $claveAbierta,
             'periodo_inicio' => $periodo->inicio->format('Y-m-d'),
             'periodo_fin' => $periodo->fin->format('Y-m-d'),
@@ -90,7 +95,6 @@ final class EloquentPagosPendientesProveedorStore implements PagosPendientesProv
                     'periodo_inicio' => $periodo->inicio->format('Y-m-d'),
                     'periodo_fin' => $periodo->fin->format('Y-m-d'),
                     'periodicidad' => $periodo->periodicidad->value,
-                    'estado' => EstadoObligacionPago::PENDIENTE->value,
                     'clave_unicidad' => $claveAbierta,
                     'clave_abierta' => $claveAbierta,
                     'creado_por_user_id' => $actorUserId,
@@ -130,7 +134,7 @@ final class EloquentPagosPendientesProveedorStore implements PagosPendientesProv
         }
 
         $obsoletas = ObligacionPagoModel::whereIn('id', $ids)
-            ->where('estado', EstadoObligacionPago::PENDIENTE->value)
+            ->whereIn('estado', self::ESTADOS_ABIERTOS)
             ->whereNull('liquidacion_id')->get();
         foreach ($obsoletas as $obsoleta) {
             AuditoriaModel::create([
@@ -142,9 +146,10 @@ final class EloquentPagosPendientesProveedorStore implements PagosPendientesProv
         }
     }
 
-    public function descuentosDisponibles(int $proveedorId, PeriodoPago $periodo): array
+    public function descuentosDisponibles(int $proveedorId, PeriodoPago $periodo, array $semanasSinPago = []): array
     {
-        $cerradas = array_fill_keys($this->semanasCerradas($proveedorId), true);
+        // Semanas que no pueden recibir el descuento: ya pagadas o sin pago (RECHAZADA).
+        $cerradas = array_fill_keys([...$this->semanasCerradas($proveedorId), ...$semanasSinPago], true);
 
         $consumidos = AjusteLiquidacionModel::query()
             ->whereNotNull('venta_producto_id')
@@ -186,7 +191,7 @@ final class EloquentPagosPendientesProveedorStore implements PagosPendientesProv
         return ObligacionPagoModel::query()
             ->where('tipo_beneficiario', TipoBeneficiarioPago::PROVEEDOR->value)
             ->where('proveedor_id', $proveedorId)
-            ->where('estado', EstadoObligacionPago::PENDIENTE->value)
+            ->whereIn('estado', self::ESTADOS_ABIERTOS)
             ->whereNull('liquidacion_id');
     }
 }

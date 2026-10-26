@@ -64,4 +64,16 @@ return [
         'zonas_zoom' => (int) env('GOOGLE_MAPS_ZONAS_ZOOM', 12),
     ],
 
+    /*
+    | OCR local del ticket del analizador de leche (Calidad > Registrar análisis).
+    | Por defecto se ejecuta `tesseract` desde el PATH; TESSERACT_PATH solo hace
+    | falta si el proceso de PHP no lo encuentra (p. ej. una terminal abierta
+    | antes de instalarlo). TESSERACT_LANG usa `eng` porque la instalación no
+    | trae `spa`; el ticket se imprime sin tildes, así que `eng` basta.
+    */
+    'tesseract' => [
+        'binario' => env('TESSERACT_PATH') ?: 'tesseract',
+        'idioma' => env('TESSERACT_LANG') ?: 'eng',
+    ],
+
 ];

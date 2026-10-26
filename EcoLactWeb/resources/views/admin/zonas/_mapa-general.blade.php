@@ -2,8 +2,9 @@
     Mapa general de Zonas: las zonas que pasan el filtro con su delimitación operativa (polígono
     GeoJSON guardado en zonas.poligono_geojson), una etiqueta "nombre + N proveedores" en el punto
     representativo del polígono y un pin (lágrima) por proveedor con coordenadas. Lo pinta admin-zonas.js
-    desde [data-zonas-mapa-general-datos]; click en zona, etiqueta o leyenda selecciona la zona
-    en la tabla y en el panel (mismo estado que hacer click en la fila).
+    desde [data-zonas-mapa-general-datos]; click en zona, etiqueta o leyenda abre esa zona en el panel.
+    Los pines nunca se arrastran salvo en "Mover ubicación" (barra [data-zonas-mover-barra]), y solo
+    el del proveedor seleccionado.
 
     @var \App\Application\Zona\ZonasMapaData $mapaZonas
 --}}
@@ -15,6 +16,26 @@
 
     <div class="zonas-mapa-general-marco">
         <div class="zonas-mapa-general-lienzo" data-zonas-mapa-general-lienzo role="application" aria-label="Mapa general con las zonas de acopio"></div>
+
+        {{-- Mientras carga Google Maps: "Cargando mapa..."; si no se puede usar, el aviso de EcoLact con Reintentar. --}}
+        <div class="zonas-mapa-estado" role="status" aria-live="polite" data-zonas-mapa-estado>
+            <x-ui.icon name="map" class="h-6 w-6" />
+            <p data-zonas-mapa-estado-texto>Cargando mapa...</p>
+            <button type="button" class="fichas-btn is-outline is-sm" data-zonas-mapa-reintentar hidden>
+                <x-ui.icon name="refresh" class="h-3.5 w-3.5" /> Reintentar
+            </button>
+        </div>
+
+        <div class="zonas-mover-barra" role="status" aria-live="polite" data-zonas-mover-barra hidden>
+            <div class="min-w-0">
+                <p class="zonas-mover-titulo">Moviendo ubicación · <strong data-zonas-mover-nombre></strong></p>
+                <p class="zonas-mover-ayuda" data-zonas-mover-ayuda>Arrastra el marcador a su nueva ubicación.</p>
+            </div>
+            <div class="zonas-mover-acciones">
+                <button type="button" class="fichas-btn is-outline is-sm" data-zonas-mover-cancelar>Cancelar</button>
+                <button type="button" class="fichas-btn is-primary is-sm" data-zonas-mover-guardar disabled>Guardar</button>
+            </div>
+        </div>
 
         <ul class="zonas-leyenda" aria-label="Leyenda de zonas">
             <li class="zonas-leyenda-titulo" aria-hidden="true">Leyenda</li>
@@ -31,8 +52,6 @@
             </li>
         </ul>
     </div>
-
-    <p class="zonas-mapa-aviso" data-zonas-mapa-general-aviso hidden></p>
 
     @php
         $pendientes = array_column(array_filter($mapaZonas->zonas, fn (array $zona): bool => $zona['geometry'] === null), 'nombre');

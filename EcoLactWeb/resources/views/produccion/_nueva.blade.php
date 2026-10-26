@@ -1,27 +1,20 @@
 {{--
     MODAL "Nueva producción" (ADMINISTRADOR y ENCARGADO_PLANTA). Se abre desde el historial de Producción;
-    no es una página. La persona elige QUÉ producto y CUÁNTO; el servidor calcula los insumos con la receta.
-    Abrir, agregar, cambiar cantidades y previsualizar NUNCA descuentan nada: solo "Iniciar producción".
-    Variables: $leche (Insumo), $productos (id, nombre, unidad, imagen), $rutas (requerimientos, recetas, store),
+    no es una página. La persona elige QUÉ producto y CUÁNTO; en cuanto ambos están completos se muestran
+    los requerimientos que calcula el SERVIDOR con la receta activa (aquí no se calcula nada).
+    Elegir, cambiar cantidades y previsualizar NUNCA descuentan nada: solo "Iniciar producción".
+    Variables: $leche (Insumo), $productos (id, nombre, etiqueta, unidad, imagen), $rutas (requerimientos, recetas, store),
     $puedeConfigurarRecetas, $abrirModal (bool).
 --}}
-<x-ui.modal id="modal-nueva-produccion" title="Nueva producción" size="lg">
+<x-ui.modal id="modal-nueva-produccion" title="Nueva producción" subtitle="Selecciona qué fabricar. EcoLact calculará automáticamente los insumos necesarios." size="lg">
     <div
-        class="space-y-5"
+        class="mt-5 space-y-5"
         data-produccion-nueva
         data-url-requerimientos="{{ $rutas['requerimientos'] }}"
         data-productos="{{ json_encode($productos) }}"
         data-lineas-iniciales="{{ json_encode(collect(old('productos', []))->values()) }}"
         data-abrir="{{ $abrirModal ? '1' : '0' }}"
     >
-        <p class="-mt-3 text-sm text-text-muted">Selecciona los productos a fabricar. Los insumos se descuentan al iniciar la producción.</p>
-
-        <p class="inline-flex items-center gap-2 rounded-lg bg-info/10 px-3 py-2 text-sm text-primary-dark">
-            <x-ui.icon name="droplet" class="h-5 w-5" />
-            <span>Leche disponible:</span>
-            <strong class="font-semibold">{{ rtrim(rtrim(number_format($leche->stockActual(), 2), '0'), '.') }} {{ $leche->unidadBase() }}</strong>
-        </p>
-
         @if (count($productos) === 0)
             <div class="rounded-xl border border-dashed border-text-muted/30 bg-primary-soft/30 p-6 text-center">
                 <p class="text-sm font-semibold text-text">No hay productos disponibles para producir.</p>
@@ -38,71 +31,47 @@
                 @csrf
 
                 {{-- Íconos que usa el JavaScript (se dibujan aquí para reutilizar el catálogo de EcoLact). --}}
-                <template data-icono="trash"><x-ui.icon name="trash" class="h-[1.125rem] w-[1.125rem]" /></template>
+                <template data-icono="trash"><x-ui.icon name="trash" class="h-4 w-4" /></template>
                 <template data-icono="check"><x-ui.icon name="check-circle" class="h-4 w-4" /></template>
                 <template data-icono="alerta"><x-ui.icon name="alert-circle" class="h-4 w-4" /></template>
+                <template data-icono="leche"><x-ui.icon name="droplet" class="h-4 w-4" /></template>
 
-                <section class="space-y-3">
-                    <h3 class="text-sm font-semibold text-text">Agregar productos</h3>
-                    <div class="grid gap-3 sm:grid-cols-12 sm:items-end">
-                        <div class="sm:col-span-6">
-                            <x-forms.select name="producto_picker" id="producto_picker" label="Producto" :options="collect($productos)->mapWithKeys(fn ($p) => [$p['id'] => $p['nombre']])->all()" placeholder="Elegir un producto" :sticky="false" data-producto-select />
-                        </div>
-                        <div class="sm:col-span-3">
-                            <x-forms.input name="cantidad_picker" id="cantidad_picker" type="number" step="any" min="0" label="Cantidad" placeholder="Ej. 100" :sticky="false" data-cantidad-input />
-                        </div>
-                        <div class="sm:col-span-3">
-                            <x-ui.button type="button" variant="secondary" class="w-full" data-agregar>
-                                <x-ui.icon name="plus" class="h-4 w-4" /> Agregar
-                            </x-ui.button>
-                        </div>
-                    </div>
-                    <p class="text-xs text-danger" data-error-cantidad role="alert"></p>
-
-                    <div data-tabla-lineas hidden>
-                        <x-tables.table>
-                            <thead>
-                                <tr class="border-b border-text-muted/10 text-xs uppercase tracking-wide text-text-muted">
-                                    <th class="py-2 pr-3">Imagen</th>
-                                    <th class="py-2 pr-3">Producto</th>
-                                    <th class="py-2 pr-3">Cantidad</th>
-                                    <th class="py-2 pl-3 text-right">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody data-lineas></tbody>
-                        </x-tables.table>
-                    </div>
-                    <p class="rounded-lg bg-primary-soft/40 py-4 text-center text-sm text-text-muted" data-lineas-vacio>Todavía no agregaste ningún producto.</p>
+                {{-- 1 y 2: qué y cuánto. Las filas las arma el JavaScript con los productos de recetas activas. --}}
+                <section class="space-y-3" aria-label="Qué vas a fabricar">
+                    <div class="space-y-3" data-lineas></div>
+                    <button type="button" class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark" data-agregar-linea>
+                        <x-ui.icon name="plus" class="h-4 w-4" /> Agregar otro producto
+                    </button>
                     <div data-inputs-ocultos></div>
                 </section>
+
+                <p class="rounded-lg bg-primary-soft/40 py-4 text-center text-sm text-text-muted" data-sin-calculo>
+                    Elige un producto y la cantidad para ver los insumos necesarios.
+                </p>
 
                 <p class="flex items-center gap-2 text-sm text-text-muted" data-calculando hidden role="status">
                     <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></span>
                     Calculando insumos...
                 </p>
 
-                <div class="space-y-2" data-avisos aria-live="polite"></div>
+                {{-- 3 y 4: qué insumos se necesitan y si alcanza el stock (calculado por el servidor). --}}
+                <section class="space-y-3 rounded-xl border border-text-muted/15 p-4" data-recursos hidden aria-live="polite">
+                    <div class="space-y-1" data-resumen-lineas></div>
 
-                <section class="space-y-3" data-recursos hidden>
-                    <h3 class="text-sm font-semibold text-text">Resumen de insumos requeridos</h3>
-                    <x-tables.table>
-                        <thead>
-                            <tr class="border-b border-text-muted/10 text-xs uppercase tracking-wide text-text-muted">
-                                <th class="py-2 pr-3">Insumo</th>
-                                <th class="py-2 pr-3">Necesario</th>
-                                <th class="py-2 pr-3">Disponible</th>
-                                <th class="py-2 pr-3">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody data-recursos-cuerpo></tbody>
-                    </x-tables.table>
+                    <h3 class="pt-1 text-xs font-semibold uppercase tracking-wide text-text-muted">Requerimientos</h3>
+                    <ul class="divide-y divide-text-muted/10" data-recursos-cuerpo></ul>
                 </section>
+
+                <div class="space-y-2" data-avisos aria-live="polite"></div>
 
                 <x-forms.textarea name="observacion" label="Observación (opcional)" :rows="2" placeholder="Producción turno tarde." />
 
-                <div class="flex flex-wrap items-center justify-end gap-2 border-t border-text-muted/10 pt-4">
-                    <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>
-                    <x-ui.button type="submit" disabled data-iniciar>Iniciar producción</x-ui.button>
+                <div class="flex flex-col-reverse gap-3 border-t border-text-muted/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-xs text-text-muted">Al iniciar se descuentan estos insumos. El producto se suma al stock cuando finalices el lote.</p>
+                    <div class="flex shrink-0 justify-end gap-2">
+                        <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>
+                        <x-ui.button type="submit" disabled data-iniciar>Iniciar producción</x-ui.button>
+                    </div>
                 </div>
             </form>
         @endif

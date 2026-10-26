@@ -13,6 +13,10 @@
 @import './pages/admin-acopio.css';
 @import './pages/admin-pagos-proveedores.css';
 @import './pages/admin-fichas.css';
+@import './pages/admin-pagos-trabajadores.css';
+@import './pages/admin-recetas.css';
+@import './pages/admin-parametros-calidad.css';
+@import './pages/admin-configuracion-pagos.css';
 @import './pages/admin-nuevo-trabajador.css';
 
 @theme {

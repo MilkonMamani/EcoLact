@@ -90,6 +90,26 @@ it('no permite desactivar un parámetro que tiene una regla de calidad activa as
     'No se puede desactivar el parámetro: tiene reglas de calidad activas asociadas. Desactívelas primero.'
 );
 
+it('una regla activa que ya venció es solo historial y no impide desactivar el parámetro', function () {
+    $parametro = app(RegistrarParametroCalidad::class)->execute(
+        codigo: 'SALES',
+        nombre: 'Sales',
+        unidad: '%',
+        estado: 'ACTIVO',
+    );
+
+    $regla = fixture_regla_calidad($parametro->id(), 0.6, 0.8, 'OBSERVADA', new DateTimeImmutable('2026-01-01'));
+    $regla->update(['fecha_fin' => (new DateTimeImmutable('yesterday'))->format('Y-m-d')]);
+
+    $desactivado = app(ActualizarParametroCalidad::class)->execute(
+        parametroId: $parametro->id(),
+        estado: 'INACTIVO',
+    );
+
+    expect($desactivado->estado())->toBe('INACTIVO');
+    $this->assertDatabaseHas('reglas_calidad', ['id' => $regla->id, 'estado' => 'ACTIVO']);
+});
+
 it('rechaza actualizar un parámetro de calidad que no existe', function () {
     app(ActualizarParametroCalidad::class)->execute(parametroId: 999999, nombre: 'X');
 })->throws(DomainException::class, 'El parámetro de calidad indicado no existe.');

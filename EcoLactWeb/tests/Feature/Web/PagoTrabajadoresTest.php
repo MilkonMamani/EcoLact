@@ -109,15 +109,16 @@ it('CASO 2: visitar la pantalla varias veces no duplica obligaciones', function 
 
 // --------------------------------------------- CASO 3 y 4: sin configurar
 
-it('CASO 3: un rol remunerable sin sueldo configurado no genera obligación, pero el trabajador igual se muestra "Sin sueldo"', function () {
+it('CASO 3: un rol remunerable sin sueldo configurado no genera obligación, pero el trabajador igual se muestra "Sin configurar"', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_personal('CALIDAD', 'David Lopez');
 
     $response = visitar_pagar_a_trabajadores($admin);
 
     $response->assertOk()
-        ->assertSeeInOrder(['David Lopez', 'Analista de calidad', 'Sin sueldo'])
-        ->assertSee('No hay sueldos configurados para este periodo.');
+        ->assertSeeInOrder(['David Lopez', 'Analista de calidad', 'Sin configurar'])
+        ->assertSee('No hay sueldos configurados para este periodo.')
+        ->assertDontSee('Configurar sueldo');
 
     expect(ObligacionPagoModel::count())->toBe(0);
 });
@@ -263,9 +264,11 @@ it('CASO 12: pagar una obligación ya pagada falla correctamente', function () {
 
 // --------------------------------------------------- estados vacíos (CASO 28)
 
-it('sin trabajadores activos para el rol configurado muestra el mensaje correspondiente', function () {
+it('si los trabajadores con sueldo configurado ya no están activos muestra el mensaje correspondiente', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
+    $julio = pagos_personal('ACOPIADOR', 'Julio');
     pagos_configurar('ACOPIADOR', 1500, '2026-09-01', $admin);
+    $julio->update(['estado' => 'INACTIVO']);
 
     visitar_pagar_a_trabajadores($admin)
         ->assertOk()
@@ -274,7 +277,7 @@ it('sin trabajadores activos para el rol configurado muestra el mensaje correspo
 
 // ----------------------------------------------------------------- panel
 
-it('el panel de un trabajador se sirve sin layout con su resumen de pago', function () {
+it('el panel de un trabajador se sirve sin layout con su comprobante', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $obligacion = trabajador_pendiente($admin, 'Julio', 1200);
 
@@ -393,7 +396,7 @@ it('imprime el comprobante individual de un trabajador pendiente o pagado', func
         ->assertOk()
         ->assertSee('Julio Apellido')
         ->assertSee('Comprobante de pago')
-        ->assertSee('Vista previa');
+        ->assertSeeInOrder(['Fecha de pago', '—', 'Total a pagar', 'Estado', 'Pendiente']);
 
     $this->actingAs($admin)->post(route('admin.pagos.trabajadores.pagar', $obligacion->id), [
         'metodo_pago' => 'EFECTIVO',
@@ -402,8 +405,7 @@ it('imprime el comprobante individual de un trabajador pendiente o pagado', func
 
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.comprobante', $obligacion->id))
         ->assertOk()
-        ->assertSeeInOrder(['Fecha de pago', '20/09/2026'])
-        ->assertDontSee('Vista previa');
+        ->assertSeeInOrder(['Fecha de pago', '20/09/2026', 'Total pagado', 'Estado', 'Pagado']);
 });
 
 it('un trabajador pagado sigue visible en el historial', function () {
@@ -570,30 +572,31 @@ it('la tabla muestra trabajador con DNI, rol legible y las columnas del cálculo
 
     $html = visitar_pagar_a_trabajadores($admin)
         ->assertOk()
-        ->assertSeeInOrder(['Finanzas', 'Pagos', 'Trabajadores', 'Pagos a trabajadores', 'Gestiona los pagos individuales de los trabajadores correspondientes al mes seleccionado.'])
-        ->assertSeeInOrder(['Trabajador', 'Rol', 'Asistencias', 'Faltas', 'Sueldo mensual', 'Valor día', 'Acumulado', 'Total', 'Estado'])
+        ->assertSeeInOrder(['Finanzas', 'Pagos', 'Trabajadores', 'Pagos a trabajadores', 'Revisa los pagos mensuales del personal y registra la entrega correspondiente.'])
+        ->assertSeeInOrder(['Trabajador', 'Rol', 'Asistencias', 'Faltas', 'Sueldo mensual', 'Valor/día', 'Acumulado', 'Total', 'Estado'])
         ->assertSeeInOrder(['Rusman Torres', 'DNI '.$persona->acopiador->dni, 'Acopiador', 'S/ 1,500.00', 'S/ 50.00'])
         ->getContent();
 
+    // Sin botones por fila: el único "Imprimir comprobante" es el del panel derecho.
     expect($html)->not->toContain('>ACOPIADOR<')
-        ->not->toContain('Imprimir comprobante')
-        ->not->toContain('Generar reporte del mes');
+        ->and(substr_count($html, 'data-imprimir-comprobante'))->toBe(1)
+        ->and($html)->not->toContain('Generar reporte del mes');
 });
 
-it('el estado se muestra con su etiqueta y color propio: En curso, Pendiente y Pagado', function () {
+it('el estado se muestra compacto (ícono + etiqueta) con su color propio: En curso, Pendiente y Pagado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $pendiente = trabajador_pendiente($admin, 'Julio', 900);
     pagos_personal('ACOPIADOR', 'Otro');
     visitar_pagar_a_trabajadores($admin);
 
     $html = visitar_pagar_a_trabajadores($admin)->getContent();
-    expect($html)->toContain('class="pago-estado is-pendiente" data-pago-estado="PENDIENTE">Pendiente</span>')
-        ->toContain('class="pago-estado is-en-curso" data-pago-estado="EN_CURSO">En curso</span>');
+    expect($html)->toMatch('/class="pago-estado is-pendiente" data-pago-estado="PENDIENTE">\s*<svg[^>]*>.*?<\/svg>\s*<span>Pendiente<\/span>/s')
+        ->toMatch('/class="pago-estado is-en-curso" data-pago-estado="EN_CURSO">\s*<svg[^>]*>.*?<\/svg>\s*<span>En curso<\/span>/s');
 
     $this->actingAs($admin)->post(route('admin.pagos.trabajadores.pagar', $pendiente->id), ['metodo_pago' => 'EFECTIVO', 'fecha_pago' => '2026-09-20']);
 
     expect(visitar_pagar_a_trabajadores($admin, ['estado' => 'PAGADO'])->getContent())
-        ->toContain('class="pago-estado is-pagado" data-pago-estado="PAGADO">Pagado</span>')
+        ->toMatch('/class="pago-estado is-pagado" data-pago-estado="PAGADO">\s*<svg[^>]*>.*?<\/svg>\s*<span>Pagado<\/span>/s')
         ->not->toContain('data-pago-estado="EN_CURSO"');
 });
 
@@ -611,19 +614,19 @@ it('las faltas de la tabla solo cuentan días en que el trabajador estaba activo
     // 05:00 del 20 en Lima: cerrados del 15 al 19 sin asistencia => 5 faltas válidas.
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.panel', $obligacion->id))
         ->assertOk()
-        ->assertSeeInOrder(['Resumen de asistencia', 'Asistencias', '0', 'Faltas', '5']);
+        ->assertSeeInOrder(['Detalle del pago', 'Asistencias', '0 días', 'Faltas', '5 días']);
 });
 
-it('el panel resume asistencia y detalle de pago; pendiente permite registrar pago y en curso no', function () {
+it('el panel es la vista previa del comprobante; pendiente permite imprimir y registrar pago, en curso solo imprimir', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $pendiente = trabajador_pendiente($admin, 'Julio', 900);
 
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.panel', $pendiente->id))
         ->assertOk()
-        ->assertSeeInOrder(['Julio Apellido', 'Acopiador', 'Periodo', 'Septiembre 2026', 'Resumen de asistencia', 'Asistencias', 'Faltas', 'Detalle de pago', 'Sueldo mensual', 'S/ 900.00', 'Valor por día', 'S/ 30.00', 'Acumulado', 'Bonificaciones', 'Descuentos', 'Total final', 'S/ 900.00', 'Estado del pago', 'Pendiente'])
-        ->assertSee('data-form-confirmar-pago', false)
-        ->assertSee('Registrar pago')
-        ->assertDontSee('Imprimir comprobante');
+        ->assertSeeInOrder(['Comprobante del trabajador', 'Vista previa del comprobante del trabajador seleccionado.'])
+        ->assertSeeInOrder(['Comprobante de pago', 'Periodo', 'Septiembre 2026', 'Datos del trabajador', 'Julio Apellido', 'Acopiador', 'Detalle del pago', 'Sueldo mensual', 'S/ 900.00', 'Valor por día', 'S/ 30.00', 'Asistencias', 'Faltas', 'Acumulado', 'Bonificaciones', 'Descuentos', 'Total a pagar', 'S/ 900.00', 'Estado', 'Pendiente'])
+        ->assertSeeInOrder(['Imprimir comprobante', 'Registrar pago'])
+        ->assertSee('data-form-confirmar-pago', false);
 
     pagos_personal('ACOPIADOR', 'Otro');
     visitar_pagar_a_trabajadores($admin);
@@ -631,9 +634,10 @@ it('el panel resume asistencia y detalle de pago; pendiente permite registrar pa
 
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.panel', $enCurso->id))
         ->assertOk()
-        ->assertSee('El mes aún no ha sido cerrado')
-        ->assertDontSee('data-form-confirmar-pago', false)
-        ->assertDontSee('Imprimir comprobante');
+        ->assertSee('El mes aún está en curso')
+        ->assertSee('Imprimir comprobante')
+        ->assertDontSee('data-registrar-pago', false)
+        ->assertDontSee('data-form-confirmar-pago', false);
 });
 
 it('el listado no hace consultas por fila (sin N+1) aunque crezcan los trabajadores', function () {
@@ -664,7 +668,7 @@ it('el listado no hace consultas por fila (sin N+1) aunque crezcan los trabajado
 
 // ------------------------------------------------------- comprobante tipo factura
 
-it('el comprobante de un mes en curso es una vista previa con número, emisión, periodo, datos del trabajador y total a pagar', function () {
+it('el comprobante de un mes en curso muestra número, emisión, periodo, datos del trabajador, detalle y total a pagar', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Faon');
     $persona = pagos_personal('ACOPIADOR', 'Rusman Torres', '2026-09-14');
@@ -676,11 +680,13 @@ it('el comprobante de un mes en curso es una vista previa con número, emisión,
 
     $html = $this->actingAs($admin)->get(route('admin.pagos.trabajadores.comprobante', $obligacion->id))
         ->assertOk()
-        ->assertSeeInOrder(['Comprobante de pago', 'N.° P-2026-'.str_pad((string) $obligacion->id, 4, '0', STR_PAD_LEFT), 'Vista previa', 'Fecha de emisión', '20/09/2026', 'Periodo', 'Septiembre 2026', 'Total a pagar', 'S/ '.number_format((float) $obligacion->monto_calculado, 2)])
-        ->assertSeeInOrder(['Rusman Torres', 'DNI', $persona->acopiador->dni, 'Rol', 'Acopiador', 'Zona', 'Faon', 'Fecha de ingreso', '14/09/2026'])
-        ->assertSeeInOrder(['Concepto', 'Detalle', 'Cantidad', 'Monto (S/)', 'Sueldo mensual', 'S/ 1,500.00', 'Valor por día', 'S/ 50.00', 'Asistencias', 'Faltas', 'Acumulado del periodo', 'Bonificaciones', 'Descuentos'])
-        ->assertSeeInOrder(['Subtotal', 'Bonificaciones', 'Descuentos', 'Total'])
-        ->assertDontSee('Fecha de pago')
+        ->assertSeeInOrder(['EcoLact', 'Comprobante de pago', 'N.° P-2026-'.str_pad((string) $obligacion->id, 4, '0', STR_PAD_LEFT), 'Fecha de emisión', '20/09/2026', 'Periodo', 'Septiembre 2026', 'Fecha de pago', '—'])
+        ->assertSeeInOrder(['Datos del trabajador', 'Nombre', 'Rusman Torres', 'DNI', $persona->acopiador->dni, 'Rol', 'Acopiador', 'Fecha de ingreso', '14/09/2026'])
+        ->assertSeeInOrder(['Detalle del pago', 'Sueldo mensual', 'S/ 1,500.00', 'Valor por día', 'S/ 50.00', 'Asistencias', 'Faltas', 'Acumulado', 'Bonificaciones', 'Descuentos', 'Total a pagar', 'S/ '.number_format((float) $obligacion->monto_calculado, 2)])
+        ->assertSeeInOrder(['Estado', 'En curso', 'El mes aún no ha cerrado'])
+        // Sin reglas internas ni datos de configuración dentro del documento.
+        ->assertDontSee('Configuración de pagos')
+        ->assertDontSee('÷ 30')
         ->getContent();
 
     // Documento, no dashboard: sin sidebar, avatar, badges, QR ni botones dentro de la hoja.
@@ -689,7 +695,10 @@ it('el comprobante de un mes en curso es una vista previa con número, emisión,
         ->and($hoja)->not->toContain('<button')
         ->not->toContain('data-qr-code')
         ->not->toContain('pago-estado')
-        ->not->toContain('avatar');
+        ->not->toContain('avatar')
+        // Sin logo gráfico: ni imagen ni SVG en la hoja.
+        ->not->toContain('<img')
+        ->not->toContain('<svg');
 });
 
 it('el comprobante pagado muestra bonificación, descuento, fecha de pago y un total que cuadra con el acumulado', function () {
@@ -701,29 +710,26 @@ it('el comprobante pagado muestra bonificación, descuento, fecha de pago y un t
 
     $this->get(route('admin.pagos.trabajadores.comprobante', $obligacion->id))
         ->assertOk()
-        ->assertDontSee('Vista previa')
-        ->assertSeeInOrder(['Fecha de emisión', '20/09/2026', 'Periodo', 'Septiembre 2026', 'Fecha de pago', '20/09/2026', 'Total pagado', 'S/ 1,000.00'])
-        ->assertSeeInOrder(['Acumulado del periodo', 'S/ 900.00', 'Bonificaciones', 'S/ 150.00', 'Descuentos', '− S/ 50.00'])
-        ->assertSeeInOrder(['Subtotal', 'S/ 900.00', 'Bonificaciones', 'S/ 150.00', 'Descuentos', '− S/ 50.00', 'Total', 'S/ 1,000.00'])
-        ->assertSeeInOrder(['Método de pago', 'Efectivo']);
+        ->assertSeeInOrder(['Fecha de emisión', '20/09/2026', 'Periodo', 'Septiembre 2026', 'Fecha de pago', '20/09/2026'])
+        ->assertSeeInOrder(['Acumulado', 'S/ 900.00', 'Bonificaciones', '+ S/ 150.00', 'Descuentos', '− S/ 50.00', 'Total pagado', 'S/ 1,000.00'])
+        ->assertSeeInOrder(['Estado', 'Pagado', 'Método de pago', 'Efectivo', 'Registrado por', $admin->username]);
 });
 
-it('el comprobante es un documento sobrio: cabecera con fecha/hora e identificador, sin bloque corporativo, con firmas al pie', function () {
+it('el comprobante es un documento formal sin logo: cabecera de texto, número y firmas del trabajador y autorizada al pie', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $obligacion = trabajador_pendiente($admin, 'Julio', 900);
     $numero = 'P-2026-'.str_pad((string) $obligacion->id, 4, '0', STR_PAD_LEFT);
 
     $html = $this->actingAs($admin)->get(route('admin.pagos.trabajadores.comprobante', $obligacion->id))
         ->assertOk()
-        ->assertSeeInOrder(['20/09/2026, 05:00', 'Comprobante '.$numero.' - Julio Apellido', 'Comprobante de pago', 'N.° '.$numero])
-        ->assertSee('Vista previa - pago aún no registrado')
-        ->assertDontSee('mes en curso: montos parciales')
-        ->assertSeeInOrder(['Trabajador', 'Julio Apellido', 'DNI', 'Rol', 'Zona', 'Fecha de ingreso', 'Periodo'])
-        ->assertSeeInOrder(['Recibí conforme - Julio Apellido', 'Entregado por - EcoLact'])
+        ->assertSeeInOrder(['EcoLact', 'Comprobante de pago', 'N.° '.$numero])
+        ->assertSeeInOrder(['Firma del trabajador', 'Julio Apellido', 'Firma autorizada', 'EcoLact'])
         ->assertDontSee('Gestión integral')
+        ->assertDontSee('Vista previa - pago aún no registrado')
         ->getContent();
 
-    expect($html)->not->toContain('cp-empresa');
+    expect($html)->not->toContain('cp-empresa')
+        ->not->toContain('logo');
 });
 
 it('la impresión es una sola hoja A4 vertical: sin márgenes de navegador, sin barra y sin saltos de página', function () {
@@ -739,29 +745,37 @@ it('la impresión es una sola hoja A4 vertical: sin márgenes de navegador, sin 
     expect($css)->toContain('width: 210mm; height: 297mm;')
         ->and($print)->toContain('.cp-toolbar { display: none !important; }')
         ->toContain('.cp-hoja { height: 296mm; margin: 0; break-after: avoid;')
-        ->toContain('.cp-tabla tr, .cp-cierre, .cp-firmas { break-inside: avoid;');
+        ->toContain('.cp-seccion, .cp-total, .cp-firmas { break-inside: avoid;');
+
+    // Imprimir desde la pantalla (Ctrl+P) deja solo la hoja: sin sidebar, filtros, tabla ni botones.
+    $pantalla = file_get_contents(resource_path('css/pages/admin-pagos-trabajadores.css'));
+    expect(substr($pantalla, strpos($pantalla, '@media print')))
+        ->toContain('body.pagos-trabajadores-page * { visibility: hidden !important; }')
+        ->toContain('.pt-escala .cp-hoja * { visibility: visible !important; }');
 });
 
-it('el panel ofrece imprimir el comprobante pagado y, antes del pago, solo la vista previa', function () {
+it('un pago pendiente ofrece imprimir y registrar pago; uno pagado solo imprimir, nunca registrarlo otra vez', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $obligacion = trabajador_pendiente($admin, 'Julio', 900);
     $url = e(route('admin.pagos.trabajadores.comprobante', $obligacion->id));
 
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.panel', $obligacion->id))
-        ->assertSee('Imprimir vista previa')
-        ->assertDontSee('Imprimir comprobante')
-        ->assertSee('href="'.$url.'"', false);
+        ->assertSee('href="'.$url.'"', false)
+        ->assertSee('data-imprimir-comprobante', false)
+        ->assertSee('data-registrar-pago', false);
 
     $this->post(route('admin.pagos.trabajadores.pagar', $obligacion->id), ['metodo_pago' => 'EFECTIVO', 'fecha_pago' => '2026-09-20']);
 
     $this->get(route('admin.pagos.trabajadores.panel', $obligacion->id))
         ->assertSee('Imprimir comprobante')
-        ->assertSee('data-imprimir-comprobante', false);
+        ->assertSee('Pagado el 20/09/2026')
+        ->assertDontSee('data-registrar-pago', false)
+        ->assertDontSee('data-form-confirmar-pago', false);
 });
 
 // ------------------------------------------- todos los trabajadores se ven (sin sueldo)
 
-it('todos los trabajadores del mes se ven: con sueldo configurado su pago, y sin sueldo marcados como "Sin sueldo"', function () {
+it('todos los trabajadores del mes se ven: con sueldo configurado su pago, y sin sueldo marcados como "Sin configurar"', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_configurar('ACOPIADOR', 1500, '2026-09-01', $admin);
     pagos_personal('ACOPIADOR', 'Vanessa Huanca');
@@ -772,9 +786,10 @@ it('todos los trabajadores del mes se ven: con sueldo configurado su pago, y sin
     visitar_pagar_a_trabajadores($admin)
         ->assertOk()
         ->assertSeeInOrder(['Vanessa Huanca', 'Acopiador', 'S/ 1,500.00', 'En curso'])
-        ->assertSeeInOrder(['Abel Quispe', 'Encargado de planta', 'Sin sueldo'])
-        ->assertSeeInOrder(['David Lopez', 'Analista de calidad', 'Sin sueldo'])
-        ->assertSeeInOrder(['Elena Ramos', 'Personal de ventas', 'Sin sueldo']);
+        ->assertSeeInOrder(['Abel Quispe', 'Encargado de planta', 'Sin configurar'])
+        ->assertSeeInOrder(['David Lopez', 'Analista de calidad', 'Sin configurar'])
+        ->assertSeeInOrder(['Elena Ramos', 'Personal de ventas', 'Sin configurar'])
+        ->assertSee('Los trabajadores sin sueldo configurado se muestran sin monto.');
 
     // No se inventa dinero: solo el rol con sueldo tiene obligación.
     expect(ObligacionPagoModel::count())->toBe(1);
@@ -785,7 +800,7 @@ it('todos los trabajadores del mes se ven: con sueldo configurado su pago, y sin
         ->assertSee('Vanessa Huanca')->assertDontSee('Abel Quispe');
 });
 
-it('el panel de un trabajador sin sueldo explica cómo configurarlo y no permite pagar ni imprimir', function () {
+it('el panel de un trabajador sin sueldo dice "Pago no disponible" e indica dónde se configura, sin botones ni enlaces para configurar', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $abel = pagos_personal('ENCARGADO_PLANTA', 'Abel Quispe');
     visitar_pagar_a_trabajadores($admin);
@@ -793,13 +808,101 @@ it('el panel de un trabajador sin sueldo explica cómo configurarlo y no permite
 
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.sin-sueldo', ['trabajador' => $trabajador->id, 'periodo' => '2026-09']))
         ->assertOk()
-        ->assertSeeInOrder(['Abel Quispe', 'Encargado de planta', 'Resumen de asistencia', 'Estado del pago', 'Sin sueldo'])
-        ->assertSee('no tiene sueldo configurado')
-        ->assertSee(route('admin.configuracion-pagos.index'), false)
+        ->assertSeeInOrder(['Abel Quispe', 'Encargado de planta', 'Pago no disponible', 'No existe una configuración salarial vigente para este trabajador', 'Configúrala desde: Configuración &gt; Configuración de pagos.'], false)
+        ->assertDontSee(route('admin.configuracion-pagos.index'), false)
+        ->assertDontSee('Configurar sueldo')
+        ->assertDontSee('<a ', false)
         ->assertDontSee('data-form-confirmar-pago', false)
         ->assertDontSee('data-imprimir-comprobante', false);
 
     visitar_pagar_a_trabajadores($admin, ['trabajador' => 's'.$trabajador->id])
         ->assertSee('data-ficha-id="s'.$trabajador->id.'"', false)
-        ->assertSee('no tiene sueldo configurado');
+        ->assertSee('Pago no disponible');
+});
+
+// ------------------------------------------- rediseño: comprobante a la derecha
+
+it('el sueldo es por trabajador: un compañero del mismo rol con sueldo no oculta a quien todavía no lo tiene', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_personal('CALIDAD', 'David Lopez');
+    $ana = pagos_personal('CALIDAD', 'Ana Rojas');
+    pagos_configurar_trabajador($ana->id, 1800, '2026-09-01', $admin);
+
+    visitar_pagar_a_trabajadores($admin)
+        ->assertOk()
+        ->assertSeeInOrder(['Ana Rojas', 'Analista de calidad', 'S/ 1,800.00', 'S/ 60.00'])
+        ->assertSeeInOrder(['David Lopez', 'Analista de calidad', 'Sin configurar']);
+
+    expect(ObligacionPagoModel::where('user_id', $ana->id)->count())->toBe(1)
+        ->and(ObligacionPagoModel::count())->toBe(1);
+});
+
+it('la franja de métricas resume trabajadores, pendientes, pagados y total pendiente con los mismos filtros del listado', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    trabajador_pendiente($admin, 'Julio', 900);
+    pagos_personal('ACOPIADOR', 'Otro');
+    pagos_personal('CALIDAD', 'David Lopez');
+    visitar_pagar_a_trabajadores($admin)->assertOk()->assertSee('Total pendiente');
+
+    $resumen = fn (array $filtros = []) => app(TrabajadoresPagoListadoQuery::class)
+        ->resumen(TrabajadoresPagoFiltro::resolver(...['periodo' => '2026-09'] + $filtros));
+
+    // Trabajadores = las mismas filas del listado (incluye a los "Sin configurar", p. ej. el administrador).
+    $filas = app(TrabajadoresPagoListadoQuery::class)->obtener(TrabajadoresPagoFiltro::resolver(periodo: '2026-09'));
+    expect($filas->total())->toBeGreaterThanOrEqual(3);
+
+    expect($resumen())
+        ->trabajadores->toBe($filas->total())
+        ->pendientes->toBe(1)
+        ->pagados->toBe(0)
+        ->totalPendiente->toBe(900.0)
+        ->and($resumen(['estado' => 'EN_CURSO']))
+        ->trabajadores->toBe(1)
+        ->pendientes->toBe(0);
+});
+
+it('Registrar pago abre un modal de confirmación con trabajador, periodo, total y Efectivo por defecto', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $obligacion = trabajador_pendiente($admin, 'Julio', 900);
+
+    $this->actingAs($admin)->get(route('admin.pagos.trabajadores.panel', $obligacion->id))
+        ->assertOk()
+        ->assertSee('data-modal-open="modal-registrar-pago"', false)
+        ->assertSee('id="modal-registrar-pago"', false)
+        ->assertSeeInOrder(['Registrar pago', 'Trabajador', 'Julio Apellido', 'Periodo', 'Septiembre 2026', 'Total', 'S/ 900.00'])
+        ->assertSee('<option value="EFECTIVO" selected>Efectivo</option>', false)
+        ->assertSee('name="monto" value="900.00"', false)
+        ->assertSee('name="fecha_pago" type="date" required max="2026-09-20"', false)
+        ->assertSeeInOrder(['Observación', 'Cancelar', 'Confirmar pago']);
+});
+
+it('no registra el pago si el total confirmado ya no coincide con el calculado (comprobante desactualizado)', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $obligacion = trabajador_pendiente($admin, 'Julio', 900);
+
+    $this->actingAs($admin)
+        ->post(route('admin.pagos.trabajadores.pagar', $obligacion->id), ['metodo_pago' => 'EFECTIVO', 'fecha_pago' => '2026-09-20', 'monto' => '800.00'])
+        ->assertSessionHasErrors('pago');
+
+    expect($obligacion->fresh()->estado)->toBe('PENDIENTE');
+    $this->assertDatabaseCount('pagos', 0);
+});
+
+it('el pago congela lo que mostró el comprobante: una corrección de asistencia posterior no cambia sus faltas', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $obligacion = trabajador_pendiente($admin, 'Julio', 900);
+    $faltasAlPagar = app(TrabajadoresPagoListadoQuery::class)->buscarFila($obligacion->id)->faltas;
+    expect($faltasAlPagar)->toBeGreaterThan(0);
+
+    $this->actingAs($admin)->post(route('admin.pagos.trabajadores.pagar', $obligacion->id), ['metodo_pago' => 'EFECTIVO', 'fecha_pago' => '2026-09-20'])
+        ->assertSessionHasNoErrors();
+
+    expect(DB::table('pagos')->where('obligacion_pago_id', $obligacion->id)->value('comprobante_snapshot'))
+        ->json()->faltas->toBe($faltasAlPagar)->sueldo_mensual->toEqual(900)->total->toEqual(900);
+
+    // Corrección de asistencia después del pago: las faltas del mes pasan a "presente".
+    DB::table('jornadas_personal')->update(['estado' => 'PRESENTE']);
+
+    $this->get(route('admin.pagos.trabajadores.panel', $obligacion->id))
+        ->assertSeeInOrder(['Faltas', $faltasAlPagar.' días', 'Total pagado', 'S/ 900.00']);
 });

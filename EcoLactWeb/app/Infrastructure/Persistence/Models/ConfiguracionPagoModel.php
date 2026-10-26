@@ -14,6 +14,7 @@ class ConfiguracionPagoModel extends Model
     protected $fillable = [
         'tipo_beneficiario',
         'rol_id',
+        'user_id',
         'tipo_calculo',
         'monto_base',
         'periodicidad',
@@ -35,6 +36,12 @@ class ConfiguracionPagoModel extends Model
     public function rol(): BelongsTo
     {
         return $this->belongsTo(RoleModel::class, 'rol_id');
+    }
+
+    /** Trabajador dueño del sueldo (null: proveedor o configuración histórica por rol). */
+    public function trabajador(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function creadoPor(): BelongsTo

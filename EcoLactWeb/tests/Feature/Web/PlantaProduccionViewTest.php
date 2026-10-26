@@ -33,14 +33,14 @@ it('Nueva producción es un modal del historial, con la leche disponible en una 
     $response = $this->actingAs($encargado)->get(route('planta.produccion.index'));
 
     $response->assertOk();
-    $response->assertSee('Gestiona los lotes de producción y consulta su estado.');
-    $response->assertSee('Leche disponible:');
+    $response->assertSee('Gestiona los lotes de producción y registra los productos obtenidos.');
+    $response->assertSee('Leche disponible');
     $response->assertSee('40 L');
     $response->assertDontSee('Stock de leche');
     $response->assertDontSee('La leche sube sola');
     $response->assertSee('data-modal-open="modal-nueva-produccion"', false);
     $response->assertSee('id="modal-nueva-produccion"', false);
-    $response->assertSee('Selecciona los productos a fabricar. Los insumos se descuentan al iniciar la producción.');
+    $response->assertSee('Selecciona qué fabricar. EcoLact calculará automáticamente los insumos necesarios.');
     $response->assertSee('Iniciar producción');
     // No hay una página visible de "crear": la ruta antigua redirige al historial abriendo el modal.
     $this->actingAs($encargado)->get(route('planta.produccion.create'))->assertRedirect(route('planta.produccion.index', ['nueva' => 1]));
@@ -74,7 +74,7 @@ it('un encargado de planta elige producto y cantidad, inicia la producción y lu
 
     $detalle = $this->actingAs($encargado)->get(route('planta.produccion.show', $lote->id));
     $detalle->assertOk();
-    $detalle->assertSee('Registrar resultado y finalizar');
+    $detalle->assertSee('Finalizar producción');
     $detalle->assertSee('Queso Paria');
 
     $fila = ProduccionDetalleModel::where('lote_produccion_id', $lote->id)->firstOrFail();
@@ -101,8 +101,8 @@ it('avisa con un mensaje claro cuando falta stock y no descuenta nada', function
 
     $response->assertRedirect(route('planta.produccion.index'));
     $response->assertSessionHas('error', fn (string $mensaje) => str_contains($mensaje, 'No hay suficiente Azúcar')
-        && str_contains($mensaje, 'Necesitas 10 kg')
-        && str_contains($mensaje, 'solo hay 6 kg disponibles'));
+        && str_contains($mensaje, 'Se necesitan 10 kg')
+        && str_contains($mensaje, 'hay 6 kg disponibles'));
     expect(LoteProduccionModel::count())->toBe(0);
 });
 

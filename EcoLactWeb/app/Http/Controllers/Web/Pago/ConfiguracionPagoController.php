@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Pago;
 
 use App\Application\Pago\ActualizarConfiguracionPago;
+use App\Application\Pago\Contracts\SueldosTrabajadoresQuery;
 use App\Application\Pago\ObtenerConfiguracionesPago;
 use App\Application\Pago\RegistrarConfiguracionPago;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
@@ -13,28 +14,52 @@ use App\Infrastructure\Persistence\Models\ConfiguracionPagoModel;
 use DateTimeImmutable;
 use DomainException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 /**
- * Configuración de pagos: define cuánto y cómo se paga (precio base por litro y
- * ajustes por calidad del proveedor; sueldo mensual por rol del personal). NO
- * registra dinero ni crea pagos; solo guarda reglas vigentes con historial.
+ * Configuración de pagos: define los VALORES BASE que usa Pagos, en dos pestañas.
+ *
+ * - Trabajadores: el sueldo mensual de cada trabajador registrado (tabla + panel
+ *   lateral; ?trabajador=ID deja uno seleccionado y el panel se pide por fetch).
+ * - Proveedores: la configuración general (precio por litro y descuento por la
+ *   semana OBSERVADA).
+ *
+ * NO registra dinero, ni asistencia, ni pagos; solo guarda vigencias con historial.
  */
 final class ConfiguracionPagoController extends Controller
 {
+    private const PESTANAS = ['trabajadores', 'proveedores'];
+
     public function __construct(
         private readonly ObtenerConfiguracionesPago $obtenerConfiguraciones,
+        private readonly SueldosTrabajadoresQuery $sueldos,
         private readonly RegistrarConfiguracionPago $registrarConfiguracion,
         private readonly ActualizarConfiguracionPago $actualizarConfiguracion,
     ) {}
 
-    public function index(): View
+    public function index(Request $request): View
     {
         Gate::authorize('viewAny', ConfiguracionPagoModel::class);
 
+        $hoy = DateTimeImmutable::createFromInterface(today());
+        $pestana = in_array($request->query('tab'), self::PESTANAS, true) ? $request->query('tab') : 'trabajadores';
+
         return view('admin.configuracion-pagos.index', [
-            'datos' => $this->obtenerConfiguraciones->execute(DateTimeImmutable::createFromInterface(today())),
+            'datos' => $this->obtenerConfiguraciones->execute($hoy),
+            'pestana' => $pestana,
+            'trabajador' => $request->filled('trabajador') ? $this->sueldos->detalle($request->integer('trabajador'), $hoy) : null,
+        ]);
+    }
+
+    /** Fragmento HTML del panel de un trabajador (lo pide admin-fichas.js al elegir una fila). */
+    public function panelTrabajador(int $userId): View
+    {
+        Gate::authorize('viewAny', ConfiguracionPagoModel::class);
+
+        return view('admin.configuracion-pagos._panel-trabajador', [
+            'trabajador' => $this->sueldos->detalle($userId, DateTimeImmutable::createFromInterface(today())),
         ]);
     }
 
@@ -43,25 +68,27 @@ final class ConfiguracionPagoController extends Controller
         Gate::authorize('create', ConfiguracionPagoModel::class);
 
         $datos = $request->validated();
+        $tipo = TipoBeneficiarioPago::from($datos['tipo_beneficiario']);
 
         try {
-            $this->registrarConfiguracion->execute(
-                tipo: TipoBeneficiarioPago::from($datos['tipo_beneficiario']),
-                rolId: isset($datos['rol_id']) ? (int) $datos['rol_id'] : null,
+            $configuracion = $this->registrarConfiguracion->execute(
+                tipo: $tipo,
+                userId: isset($datos['user_id']) ? (int) $datos['user_id'] : null,
                 montoBase: isset($datos['monto_base']) ? (float) $datos['monto_base'] : null,
-                aplicaCalidad: (bool) ($datos['aplica_calidad'] ?? false),
+                aplicaCalidad: true,
                 fechaInicio: new DateTimeImmutable($datos['fecha_inicio']),
                 observacion: $datos['observacion'] ?? null,
                 // El actor es siempre el usuario autenticado.
                 creadoPorUserId: $request->user()->id,
                 precioBaseLitro: isset($datos['precio_base_litro']) ? (float) $datos['precio_base_litro'] : null,
-                ajustes: $datos['ajustes'] ?? null,
+                ajustes: $this->ajustes($datos),
             );
         } catch (DomainException $exception) {
             return back()->withInput()->withErrors(['configuracion' => $exception->getMessage()]);
         }
 
-        return redirect()->route('admin.configuracion-pagos.index')->with('success', 'Configuración de pago guardada correctamente.');
+        return $this->volver($configuracion->tipoBeneficiario(), $configuracion->userId())
+            ->with('success', $tipo === TipoBeneficiarioPago::PERSONAL ? 'Sueldo configurado correctamente.' : 'Configuración de proveedores guardada correctamente.');
     }
 
     public function update(UpdateConfiguracionPagoRequest $request, ConfiguracionPagoModel $configuracion): RedirectResponse
@@ -71,20 +98,44 @@ final class ConfiguracionPagoController extends Controller
         $datos = $request->validated();
 
         try {
-            $this->actualizarConfiguracion->execute(
+            $actualizada = $this->actualizarConfiguracion->execute(
                 configuracionId: $configuracion->id,
                 montoBase: isset($datos['monto_base']) ? (float) $datos['monto_base'] : null,
-                aplicaCalidad: (bool) ($datos['aplica_calidad'] ?? false),
+                aplicaCalidad: true,
                 fechaInicio: new DateTimeImmutable($datos['fecha_inicio']),
                 observacion: $datos['observacion'] ?? null,
                 actorUserId: $request->user()->id,
                 precioBaseLitro: isset($datos['precio_base_litro']) ? (float) $datos['precio_base_litro'] : null,
-                ajustes: $datos['ajustes'] ?? null,
+                ajustes: $this->ajustes($datos),
             );
         } catch (DomainException $exception) {
             return back()->withInput()->withErrors(['configuracion' => $exception->getMessage()]);
         }
 
-        return redirect()->route('admin.configuracion-pagos.index')->with('success', 'Configuración de pago actualizada. Los pagos ya generados conservan su monto.');
+        return $this->volver($actualizada->tipoBeneficiario(), $actualizada->userId())
+            ->with('success', 'Configuración actualizada. Los pagos ya generados conservan su monto.');
+    }
+
+    /**
+     * El descuento de la semana OBSERVADA llega en positivo (S/ por litro) y se
+     * guarda como ajuste negativo. Sin descuento enviado se conserva el vigente.
+     *
+     * @param  array<string, mixed>  $datos
+     * @return array<string, array{tipo_ajuste: string, valor_ajuste: float}>|null
+     */
+    private function ajustes(array $datos): ?array
+    {
+        if (! isset($datos['descuento_observada'])) {
+            return null;
+        }
+
+        return ['OBSERVADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => -abs((float) $datos['descuento_observada'])]];
+    }
+
+    private function volver(TipoBeneficiarioPago $tipo, ?int $userId): RedirectResponse
+    {
+        return redirect()->route('admin.configuracion-pagos.index', $tipo === TipoBeneficiarioPago::PERSONAL
+            ? ['tab' => 'trabajadores', 'trabajador' => $userId]
+            : ['tab' => 'proveedores']);
     }
 }

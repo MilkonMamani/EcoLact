@@ -10,6 +10,7 @@ use App\Application\Zona\Contracts\ZonaProveedoresQuery;
 use App\Application\Zona\Contracts\ZonasListadoQuery;
 use App\Application\Zona\EliminarZona;
 use App\Application\Zona\GuardarDelimitacionZona;
+use App\Application\Zona\MoverProveedorDeZona;
 use App\Application\Zona\ProveedorAsignadoFila;
 use App\Application\Zona\RegistrarZona;
 use App\Application\Zona\ZonaMapService;
@@ -18,6 +19,7 @@ use App\Application\Zona\ZonasFiltro;
 use App\Domain\Ruta\RutaRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Zona\GuardarAsignacionProveedorRequest;
+use App\Http\Requests\Zona\MoverProveedorDeZonaRequest;
 use App\Http\Requests\Zona\StoreZonaRequest;
 use App\Http\Requests\Zona\UpdateZonaRequest;
 use App\Infrastructure\Persistence\Models\ProveedorModel;
@@ -31,14 +33,14 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 /**
- * Puente HTTP -> Application para Zonas. La pantalla es de dos columnas (igual
- * que Proveedores y Acopiadores): zonas paginadas a la izquierda y el panel de
- * la seleccionada a la derecha, pintado en el servidor en la carga inicial
- * (?zona=ID) y pedido por fetch a panel() al elegir otra fila.
+ * Puente HTTP -> Application para Zonas. La pantalla es de dos columnas: a la
+ * izquierda el buscador de proveedores y el mapa general (el centro del módulo:
+ * se elige una zona tocando su polígono, etiqueta o leyenda) y a la derecha el
+ * panel de la zona seleccionada, pintado en el servidor en la carga inicial
+ * (?zona=ID) y pedido por fetch a panel() al elegir otra.
  *
- * El switch de estado del listado y el menú del panel usan el MISMO update()
- * (ActualizarZona conserva su regla: no se desactiva una zona con acopiadores
- * o proveedores activos asignados).
+ * El menú del panel activa/desactiva con update() (ActualizarZona conserva su
+ * regla: no se desactiva una zona con acopiadores o proveedores activos).
  */
 final class ZonaController extends Controller
 {
@@ -47,8 +49,6 @@ final class ZonaController extends Controller
      * zona ni ruta (se abre desde el aviso "Proveedores sin zona").
      */
     private const SIN_ASIGNAR = 'sin-asignar';
-
-    private const POR_PAGINA = 12;
 
     public function __construct(
         private readonly RegistrarZona $registrarZona,
@@ -61,32 +61,28 @@ final class ZonaController extends Controller
         private readonly GuardarAsignacionProveedor $guardarAsignacionProveedor,
         private readonly GuardarDelimitacionZona $guardarDelimitacionZona,
         private readonly ZonaMapService $zonaMapService,
+        private readonly MoverProveedorDeZona $moverProveedorDeZona,
     ) {}
 
     /**
-     * Sin ?zona= se selecciona la primera de la página; ?zona=sin-asignar abre el panel de proveedores sin zona.
-     * El mapa general usa el mismo filtro que la tabla, pero con todas las zonas (no solo la página).
+     * Sin ?zona= se selecciona la primera zona (por nombre); ?zona=sin-asignar abre el panel de
+     * proveedores sin zona. ?proveedor=ID lo lee admin-zonas.js para volver a enfocar ese pin.
      */
     public function index(Request $request): View
     {
         Gate::authorize('viewAny', ZonaModel::class);
 
-        $filtro = ZonasFiltro::resolver(
-            busqueda: $request->string('q')->toString() ?: null,
-            estado: $request->string('estado')->toString() ?: null,
-        );
-        $filas = $this->zonasListadoQuery->paginar($filtro, self::POR_PAGINA);
+        $mapaZonas = $this->zonaMapService->obtener(ZonasFiltro::resolver(busqueda: null, estado: null));
 
         $solicitada = $request->string('zona')->toString();
         $seleccion = match (true) {
             $solicitada === self::SIN_ASIGNAR => self::SIN_ASIGNAR,
             $solicitada !== '' && ZonaModel::whereKey((int) $solicitada)->exists() => (int) $solicitada,
-            default => $filas->first()['id'] ?? null,
+            default => $mapaZonas->zonas[0]['id'] ?? null,
         };
 
         return view('admin.zonas.index', [
-            'filas' => $filas,
-            'mapaZonas' => $this->zonaMapService->obtener($filtro),
+            'mapaZonas' => $mapaZonas,
             'sinAsignar' => $this->zonaProveedoresQuery->contarSinAsignar(),
             'catalogo' => $this->catalogoParaModal(),
             ...$this->datosPanel($seleccion),
@@ -250,6 +246,42 @@ final class ZonaController extends Controller
         return response()->json([
             'ok' => true,
             'redirect' => route('admin.zonas.index', ['zona' => (int) $datos['zona_id']]),
+        ]);
+    }
+
+    /**
+     * "Mover ubicación" de un pin del mapa general. MoverProveedorDeZona vuelve a calcular la
+     * zona con las delimitaciones guardadas (misma zona: solo coordenadas; otra zona: cambio de
+     * ruta y zona, auditado y en una transacción). La respuesta trae el mapa recalculado para
+     * que la pantalla actualice pines, colores y contadores sin recargar.
+     */
+    public function moverProveedor(MoverProveedorDeZonaRequest $request, ProveedorModel $proveedor): JsonResponse
+    {
+        Gate::authorize('update', $proveedor);
+
+        $datos = $request->validated();
+
+        try {
+            $movimiento = $this->moverProveedorDeZona->execute(
+                proveedorId: $proveedor->id,
+                latitud: (float) $datos['latitud'],
+                longitud: (float) $datos['longitud'],
+                rutaDestinoId: isset($datos['ruta_id']) ? (int) $datos['ruta_id'] : null,
+                zonaEsperadaId: isset($datos['zona_id']) ? (int) $datos['zona_id'] : null,
+                userId: $request->user()->id,
+                ip: $request->ip(),
+                userAgent: $request->userAgent(),
+            );
+        } catch (DomainException $error) {
+            return response()->json(['message' => $error->getMessage()], 422);
+        }
+
+        return response()->json([
+            'message' => $movimiento->cambioZona()
+                ? "{$movimiento->proveedorNombre} pasó de {$movimiento->zonaAnteriorNombre} a {$movimiento->zonaNuevaNombre}."
+                : "Ubicación de {$movimiento->proveedorNombre} actualizada.",
+            'movimiento' => $movimiento->toArray(),
+            'mapa' => $this->zonaMapService->obtener(ZonasFiltro::resolver(busqueda: null, estado: null))->toArray(),
         ]);
     }
 

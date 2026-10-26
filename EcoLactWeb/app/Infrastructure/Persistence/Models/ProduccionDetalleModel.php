@@ -16,11 +16,13 @@ class ProduccionDetalleModel extends Model
         'receta_version',
         'cantidad_planificada',
         'cantidad_obtenida',
+        'merma',
     ];
 
     protected $casts = [
         'cantidad_planificada' => 'decimal:2',
         'cantidad_obtenida' => 'decimal:2',
+        'merma' => 'decimal:2',
     ];
 
     public function loteProduccion(): BelongsTo

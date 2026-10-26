@@ -2,6 +2,7 @@
 
 use App\Application\Liquidacion\ValorizarEntrega;
 use App\Application\Pago\CerrarNominaMensual;
+use App\Application\Pago\Contracts\PersonalPagableQuery;
 use App\Application\Pago\RegistrarConfiguracionPago;
 use App\Application\Pago\RegistrarJornadaTrabajador;
 use App\Application\Trabajador\SincronizarTrabajadores;
@@ -26,25 +27,60 @@ require_once __DIR__.'/EcoLactFixtures.php';
 
 if (! function_exists('pagos_configurar')) {
     /**
-     * Configura el pago del personal (sueldo fijo mensual de un rol, por nombre) o del proveedor
-     * ('PROVEEDOR': por litros; el precio base es el vigente en precios_leche, o $precio si se indica).
+     * Configura el pago del proveedor ('PROVEEDOR': por litros; el precio base es el vigente en
+     * precios_leche, o $precio si se indica) o el sueldo de los trabajadores de un rol (por nombre).
+     *
+     * El sueldo se configura POR TRABAJADOR: con un rol, se configura cada trabajador real (con
+     * ficha activa) de ese rol que ya exista, y también los que pagos_personal() cree después en
+     * el mismo test. Un rol sin ficha (administrador) no es un trabajador: no recibe sueldo.
      *
      * @param  array<string, array{tipo_ajuste?: string, valor_ajuste?: float|string}>|null  $ajustes
      */
     function pagos_configurar(string $destino, ?float $sueldo, string $desde, User $admin, bool $aplicaCalidad = true, ?float $precio = null, ?array $ajustes = null): void
     {
-        $esProveedor = $destino === 'PROVEEDOR';
+        if ($destino === 'PROVEEDOR') {
+            app(RegistrarConfiguracionPago::class)->execute(
+                tipo: TipoBeneficiarioPago::PROVEEDOR,
+                userId: null,
+                montoBase: null,
+                aplicaCalidad: $aplicaCalidad,
+                fechaInicio: new DateTimeImmutable($desde),
+                observacion: null,
+                creadoPorUserId: $admin->id,
+                precioBaseLitro: $precio ?? PrecioLecheModel::orderByDesc('fecha_inicio')->value('precio_litro') ?? 2.10,
+                ajustes: $ajustes,
+            );
 
+            return;
+        }
+
+        // El contenedor se reconstruye en cada test: el registro no se filtra a otros tests.
+        $porRol = app()->bound('tests.sueldos_por_rol') ? app('tests.sueldos_por_rol') : [];
+        $porRol[$destino] = ['sueldo' => $sueldo, 'desde' => $desde, 'admin' => $admin];
+        app()->instance('tests.sueldos_por_rol', $porRol);
+
+        foreach (User::where('role_id', fixture_rol($destino)->id)->pluck('id') as $userId) {
+            if (app(PersonalPagableQuery::class)->trabajadorActivo($userId) !== null) {
+                pagos_configurar_trabajador($userId, $sueldo, $desde, $admin);
+            }
+        }
+    }
+}
+
+if (! function_exists('pagos_configurar_trabajador')) {
+    /**
+     * Sueldo mensual de UN trabajador (Configuración de pagos > Trabajadores).
+     */
+    function pagos_configurar_trabajador(int $userId, ?float $sueldo, string $desde, User $admin): void
+    {
         app(RegistrarConfiguracionPago::class)->execute(
-            tipo: $esProveedor ? TipoBeneficiarioPago::PROVEEDOR : TipoBeneficiarioPago::PERSONAL,
-            rolId: $esProveedor ? null : fixture_rol($destino)->id,
+            tipo: TipoBeneficiarioPago::PERSONAL,
+            userId: $userId,
             montoBase: $sueldo,
-            aplicaCalidad: $aplicaCalidad,
+            aplicaCalidad: false,
             fechaInicio: new DateTimeImmutable($desde),
             observacion: null,
             creadoPorUserId: $admin->id,
-            precioBaseLitro: $esProveedor ? ($precio ?? PrecioLecheModel::orderByDesc('fecha_inicio')->value('precio_litro') ?? 2.10) : null,
-            ajustes: $ajustes,
         );
     }
 }
@@ -76,6 +112,13 @@ if (! function_exists('pagos_personal')) {
             'VENTAS' => PersonalVentasModel::create($ficha),
             default => null,
         };
+
+        // Si el test ya configuró el sueldo de este rol (pagos_configurar), el trabajador nuevo también lo recibe.
+        $sueldoDelRol = (app()->bound('tests.sueldos_por_rol') ? app('tests.sueldos_por_rol') : [])[$rol] ?? null;
+
+        if ($sueldoDelRol !== null && app(PersonalPagableQuery::class)->trabajadorActivo($usuario->id) !== null) {
+            pagos_configurar_trabajador($usuario->id, $sueldoDelRol['sueldo'], $sueldoDelRol['desde'], $sueldoDelRol['admin']);
+        }
 
         return $usuario;
     }

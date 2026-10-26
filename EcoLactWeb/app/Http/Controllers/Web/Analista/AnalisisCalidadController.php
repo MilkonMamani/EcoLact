@@ -96,7 +96,7 @@ final class AnalisisCalidadController extends Controller
         Gate::authorize('view', $entrega);
 
         return view('calidad.analisis.por-entrega', [
-            'entrega' => $entrega,
+            'entrega' => $entrega->load(['proveedor', 'zona', 'acopiador']),
             'analisis' => $this->obtenerAnalisisCalidad->porEntrega($entrega->id),
             'parametros' => array_values(array_filter(
                 $this->obtenerParametrosCalidad->execute(),
@@ -111,15 +111,17 @@ final class AnalisisCalidadController extends Controller
 
         $datos = $request->validated();
 
+        // Sin archivo, se usa la foto que ya guardó "Escanear ticket".
         $imagenPath = $request->hasFile('imagen')
             ? $request->file('imagen')->store('analisis-calidad', 'public')
-            : null;
+            : ($datos['ticket_path'] ?? null);
 
         $this->registrarAnalisisCalidad->execute(
             entregaId: (int) $datos['entrega_id'],
             valores: $datos['valores'],
             imagenPath: $imagenPath,
             observacion: $datos['observacion'] ?? null,
+            origenes: $datos['origenes'] ?? [],
         );
 
         return redirect()->back()->with('success', 'Análisis de calidad registrado correctamente.');

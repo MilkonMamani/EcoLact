@@ -17,6 +17,7 @@ class LoteProduccionModel extends Model
         'fecha_hora_fin',
         'estado',
         'observacion',
+        'observacion_cierre',
         'registrado_por_user_id',
     ];
 

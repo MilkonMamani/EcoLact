@@ -20,11 +20,13 @@ use DomainException;
  *   - valida que el lote esté EN_PROCESO (bloqueado FOR UPDATE, así dos
  *     personas no pueden finalizarlo a la vez ni ingresar el producto dos
  *     veces),
- *   - guarda la cantidad obtenida de cada producto,
+ *   - guarda la cantidad obtenida de cada producto y su merma
+ *     (planificado - obtenido),
  *   - genera un movimiento INGRESO_PRODUCCION por cada producto con cantidad
  *     obtenida mayor que cero (el saldo del producto es la suma de sus
  *     movimientos),
- *   - marca el lote FINALIZADO.
+ *   - marca el lote FINALIZADO con su fecha de fin y la observación de
+ *     cierre (opcional).
  */
 final class FinalizarProduccion
 {
@@ -43,8 +45,11 @@ final class FinalizarProduccion
         array $cantidadesObtenidas,
         int $registradoPorUserId,
         ?DateTimeImmutable $fechaHoraFin = null,
+        ?string $observacion = null,
     ): LoteProduccion {
-        return $this->transacciones->run(function () use ($loteId, $cantidadesObtenidas, $registradoPorUserId, $fechaHoraFin): LoteProduccion {
+        $observacion = $observacion !== null && trim($observacion) !== '' ? trim($observacion) : null;
+
+        return $this->transacciones->run(function () use ($loteId, $cantidadesObtenidas, $registradoPorUserId, $fechaHoraFin, $observacion): LoteProduccion {
             $lote = $this->lotes->bloquearPorId($loteId)
                 ?? throw new DomainException('El lote de producción indicado no existe.');
 
@@ -98,6 +103,7 @@ final class FinalizarProduccion
                 estado: LoteProduccion::ESTADO_FINALIZADO,
                 registradoPorUserId: $lote->registradoPorUserId(),
                 observacion: $lote->observacion(),
+                observacionCierre: $observacion,
             ));
         });
     }

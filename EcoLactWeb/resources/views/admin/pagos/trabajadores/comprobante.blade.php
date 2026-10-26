@@ -24,7 +24,7 @@
 <body class="cp-pagina">
     <div class="cp-toolbar" data-comprobante-toolbar>
         <a href="{{ route('admin.pagos.trabajadores.index', ['trabajador' => $c->obligacionId]) }}">&larr; Volver a Pagos a trabajadores</a>
-        <button type="button" onclick="window.print()">{{ $c->estaPagado() ? 'Imprimir comprobante' : 'Imprimir vista previa' }}</button>
+        <button type="button" onclick="window.print()">Imprimir comprobante</button>
     </div>
 
     <main class="cp-contenedor">

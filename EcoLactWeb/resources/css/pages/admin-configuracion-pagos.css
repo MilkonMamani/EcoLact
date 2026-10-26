@@ -1,0 +1,77 @@
+/*
+ * Configuración de pagos: pestañas Trabajadores / Proveedores sobre el patrón .fichas
+ * (admin-fichas.css). Blanco, verde EcoLact, bordes suaves y sin sombras fuertes.
+ */
+
+/* ------------------------------------------------------------ pestañas */
+.config-pagos-tabs { display: flex; gap: .25rem; margin-top: 1.25rem; border-bottom: 1px solid var(--fichas-border); }
+.config-pagos-tabs button { position: relative; padding: .65rem .9rem .75rem; color: var(--fichas-muted); font-size: .9rem; font-weight: 500; cursor: pointer; transition: color .15s; }
+.config-pagos-tabs button:hover { color: var(--fichas-ink); }
+.config-pagos-tabs button[aria-selected="true"] { color: var(--fichas-green); font-weight: 600; }
+.config-pagos-tabs button[aria-selected="true"]::after { content: ""; position: absolute; inset: auto .5rem -1px; height: 2px; border-radius: 2px; background: var(--fichas-green); }
+.config-pagos-tabs button:focus-visible { outline: 2px solid var(--fichas-green-strong); outline-offset: -2px; border-radius: .4rem; }
+
+.config-pagos-ayuda { margin-top: 1rem; color: var(--fichas-muted); font-size: .82rem; }
+.config-pagos-error { margin-top: 1rem; padding: .6rem .8rem; border-left: 3px solid #d94c4c; border-radius: .35rem; background: #fef3f2; color: #b42318; font-size: .85rem; }
+
+/* ------------------------------------------------------------ tabla de trabajadores */
+.config-pagos .fichas-tabla { margin-top: .75rem; }
+.config-pagos .fichas-tabla table { min-width: 0; }
+.config-pagos .fichas-tabla td { height: 3.5rem; }
+.config-pagos .fichas-tabla .is-num { text-align: right; font-variant-numeric: tabular-nums; }
+.config-pagos .fichas-tabla .is-accion { width: 1%; text-align: right; }
+.config-pagos .fichas-tabla td.is-trabajador { white-space: normal; }
+.config-pagos-meta { margin-top: .15rem; color: var(--fichas-soft-text); font-size: .75rem; }
+.config-pagos-chevron { color: var(--fichas-soft-text); }
+
+.config-pagos-estado { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 500; white-space: nowrap; }
+.config-pagos-estado::before { content: ""; width: .45rem; height: .45rem; border-radius: 999px; background: currentColor; }
+.config-pagos-estado.is-activo { color: var(--fichas-green); }
+.config-pagos-estado.is-programado { color: #2f6fb0; }
+.config-pagos-estado.is-pendiente { color: #b54708; }
+.config-pagos-estado.is-inactivo { color: var(--fichas-soft-text); }
+
+/* ------------------------------------------------------------ panel */
+.config-pagos-panel-rol { margin-top: .3rem; color: var(--fichas-muted); font-size: .85rem; }
+.config-pagos-sin-sueldo { display: grid; justify-items: center; gap: .25rem; }
+.config-pagos-historial { display: grid; gap: .4rem; margin-top: .25rem; font-size: .82rem; }
+.config-pagos-historial li { display: flex; justify-content: space-between; gap: 1rem; padding: .45rem .6rem; border-radius: .45rem; background: #f7f9fa; color: var(--fichas-muted); }
+.config-pagos-historial li .is-num { color: var(--fichas-ink); font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------ modales */
+.config-pagos-campos { display: grid; gap: 1rem 1.25rem; }
+.config-pagos-etiqueta { color: var(--fichas-ink, #1d2939); font-size: .875rem; font-weight: 500; }
+.config-pagos-calculado { display: flex; align-items: center; height: 2.6rem; margin-top: .35rem; padding-inline: .8rem; border-radius: .5rem; background: var(--fichas-green-soft); color: var(--fichas-green); font-weight: 600; font-variant-numeric: tabular-nums; }
+.config-pagos-nota { color: var(--fichas-muted, #667085); font-size: .74rem; line-height: 1.4; }
+.config-pagos-modal-pie { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e7ebee; }
+
+/* ------------------------------------------------------------ proveedores */
+.config-proveedores { max-width: 46rem; margin-top: 1.25rem; }
+.config-proveedores-bloque { padding: 1.25rem 1.5rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; }
+.config-proveedores-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.1rem; }
+.config-proveedores-head h2 { color: var(--fichas-ink); font-size: 1.05rem; font-weight: 600; }
+.config-proveedores-head p { margin-top: .15rem; color: var(--fichas-muted); font-size: .82rem; }
+.config-proveedores-subtitulo { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 1px solid var(--fichas-border); color: var(--fichas-muted); font-size: .72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
+
+.config-calidad { display: grid; gap: .5rem; margin-top: .75rem; }
+.config-calidad li { display: grid; grid-template-columns: 7rem 1fr auto; align-items: center; gap: .75rem; padding: .65rem .8rem; border: 1px solid var(--fichas-border); border-radius: .6rem; font-size: .875rem; }
+.config-calidad-resultado { font-weight: 600; }
+.config-calidad-resultado.is-aceptada { color: var(--fichas-green); }
+.config-calidad-resultado.is-observada { color: #b54708; }
+.config-calidad-resultado.is-rechazada { color: #b42318; }
+.config-calidad-regla { display: grid; color: var(--fichas-ink); }
+.config-calidad-regla small { color: var(--fichas-muted); font-size: .74rem; }
+.config-calidad-precio { color: var(--fichas-ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+@media (min-width: 640px) {
+    .config-pagos-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .config-pagos-campos > .is-ancho { grid-column: 1 / -1; }
+}
+
+/* Móvil: lista compacta (nombre, rol, sueldo, >); el resto queda en el panel. */
+@media (max-width: 639px) {
+    .config-pagos .fichas-tabla td, .config-pagos .fichas-tabla th { padding-inline: .6rem; }
+    .config-proveedores-bloque { padding: 1rem; }
+    .config-calidad li { grid-template-columns: 1fr auto; }
+    .config-calidad-regla { grid-column: 1 / -1; grid-row: 2; }
+}

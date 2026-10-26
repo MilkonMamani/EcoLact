@@ -110,25 +110,30 @@ final class ProduccionController extends Controller
         }
 
         return redirect()->route('admin.produccion.show', $lote->id())
-            ->with('success', "Producción {$lote->codigo()} iniciada. Los insumos ya fueron descontados.");
+            ->with('success', "Producción {$lote->codigo()} iniciada. Los insumos fueron descontados.");
     }
 
     public function finalizar(FinalizarProduccionRequest $request, LoteProduccionModel $lote): RedirectResponse
     {
         Gate::authorize('update', $lote);
 
+        $datos = $request->validated();
+
         try {
-            $this->finalizarProduccion->execute(
+            $finalizado = $this->finalizarProduccion->execute(
                 loteId: $lote->id,
-                cantidadesObtenidas: $request->validated()['obtenido'],
+                cantidadesObtenidas: $datos['obtenido'],
                 registradoPorUserId: $request->user()->id,
+                observacion: $datos['observacion'] ?? null,
             );
         } catch (DomainException $e) {
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
 
+        $detalle = $this->obtenerDetalleLoteProduccion->execute($lote->id);
+
         return redirect()->route('admin.produccion.show', $lote->id)
-            ->with('success', 'Producción finalizada. Los productos obtenidos ya están en el inventario.');
+            ->with('success', "Producción {$finalizado->codigo()} finalizada. ".$detalle?->resumenStockIncorporado());
     }
 
     /**

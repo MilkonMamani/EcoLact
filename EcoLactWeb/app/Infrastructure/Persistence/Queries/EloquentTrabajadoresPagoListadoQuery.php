@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Queries;
 use App\Application\Pago\ComprobantePagoTrabajador;
 use App\Application\Pago\Contracts\TrabajadoresPagoListadoQuery;
 use App\Application\Pago\TrabajadoresPagoFiltro;
+use App\Application\Pago\TrabajadoresPagoResumen;
 use App\Application\Pago\TrabajadorPagoFila;
 use App\Domain\Auth\Role;
 use App\Domain\Pago\JornadaPersonal;
@@ -36,9 +37,14 @@ use Illuminate\Support\Facades\DB;
  * acumulado. Trabajadores y jornadas se cargan por lote para toda la página
  * (contexto()), nunca con una consulta por fila.
  *
- * Todo trabajador vigente en el mes se ve: si su rol no tiene sueldo configurado
- * (no hay obligación que pagar) aparece igual como fila SIN_SUELDO, con su
- * asistencia real y sin montos, en vez de desaparecer de la pantalla.
+ * Todo trabajador vigente en el mes se ve: si no tiene un sueldo propio vigente
+ * en Configuración de pagos (el sueldo es por trabajador, no por rol) y no hay
+ * obligación que pagar, aparece igual como fila SIN_SUELDO, con su asistencia
+ * real y sin montos, en vez de desaparecer de la pantalla.
+ *
+ * Un pago ya registrado muestra las faltas congeladas en su comprobante
+ * (pagos.comprobante_snapshot), no las de hoy: corregir la asistencia después
+ * nunca reescribe un comprobante histórico.
  */
 final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoListadoQuery
 {
@@ -72,6 +78,30 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
 
         return (new LengthAwarePaginatorConcreto($filas, $items->count(), $filtro->porPagina, $pagina, ['path' => Paginator::resolveCurrentPath()]))
             ->withQueryString();
+    }
+
+    public function resumen(TrabajadoresPagoFiltro $filtro): TrabajadoresPagoResumen
+    {
+        $totales = $filtro->soloSinSueldo ? null : $this->filtrar(
+            ObligacionPagoModel::query()->where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value),
+            $filtro,
+        )
+            ->selectRaw('COUNT(*) AS filas')
+            ->selectRaw('SUM(CASE WHEN estado = ? THEN 1 ELSE 0 END) AS pendientes', [EstadoObligacionPago::PENDIENTE->value])
+            ->selectRaw('SUM(CASE WHEN estado = ? THEN 1 ELSE 0 END) AS pagados', [EstadoObligacionPago::PAGADO->value])
+            ->selectRaw('SUM(CASE WHEN estado = ? THEN monto_calculado ELSE 0 END) AS total_pendiente', [EstadoObligacionPago::PENDIENTE->value])
+            ->toBase()
+            ->first();
+        $sinSueldo = $filtro->periodo !== null && $filtro->estado === null
+            ? $this->trabajadoresSinSueldo($filtro->periodo, $filtro->busqueda, $filtro->rolId)->count()
+            : 0;
+
+        return new TrabajadoresPagoResumen(
+            trabajadores: (int) ($totales->filas ?? 0) + $sinSueldo,
+            pendientes: (int) ($totales->pendientes ?? 0),
+            pagados: (int) ($totales->pagados ?? 0),
+            totalPendiente: round((float) ($totales->total_pendiente ?? 0), 2),
+        );
     }
 
     public function buscarSinSueldo(int $trabajadorId, string $periodo): ?TrabajadorPagoFila
@@ -139,7 +169,15 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
 
     private function consulta(TrabajadoresPagoFiltro $filtro): Builder
     {
-        return $this->base()
+        return $this->filtrar($this->base(), $filtro)
+            ->orderByRaw("CASE estado WHEN 'PENDIENTE' THEN 0 WHEN 'EN_CURSO' THEN 1 ELSE 2 END")
+            ->orderBy('beneficiario_nombre');
+    }
+
+    /** Búsqueda, rol, mes y estado sobre obligaciones de personal (sin orden: también sirve para agregados). */
+    private function filtrar(Builder $query, TrabajadoresPagoFiltro $filtro): Builder
+    {
+        return $query
             ->when($filtro->busqueda !== null, function (Builder $query) use ($filtro): void {
                 $patron = '%'.$filtro->busqueda.'%';
                 $userIdsPorDni = $this->userIdsPorDni($filtro->busqueda);
@@ -157,9 +195,7 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
                 $mes = CarbonImmutable::createFromFormat('Y-m-d', $filtro->periodo.'-01');
                 $query->whereBetween('periodo_inicio', [$mes->toDateString(), $mes->endOfMonth()->toDateString()]);
             })
-            ->when($filtro->estado !== null, fn (Builder $query) => $query->where('estado', $filtro->estado->value))
-            ->orderByRaw("CASE estado WHEN 'PENDIENTE' THEN 0 WHEN 'EN_CURSO' THEN 1 ELSE 2 END")
-            ->orderBy('beneficiario_nombre');
+            ->when($filtro->estado !== null, fn (Builder $query) => $query->where('estado', $filtro->estado->value));
     }
 
     private function base(): Builder
@@ -207,23 +243,26 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
     }
 
     /**
-     * Trabajadores vigentes en algún día del mes, de un rol remunerable SIN sueldo
-     * activo en Configuración de pagos y sin obligación en ese mes. Son los que antes
-     * desaparecían de la pantalla.
+     * Trabajadores vigentes en algún día del mes, de un rol remunerable, SIN un sueldo
+     * propio (configuraciones_pago.user_id) activo y vigente en algún día de ese mes, y
+     * sin obligación en ese mes. El sueldo es por trabajador: que un compañero del mismo
+     * rol tenga sueldo no oculta a quien todavía no lo tiene.
      */
     private function trabajadoresSinSueldo(string $periodo, ?string $busqueda, ?int $rolId): Builder
     {
         [$inicioMes, $finMes] = $this->rangoDelMes($periodo);
-        $rolesConSueldo = ConfiguracionPagoModel::query()
+        $usuariosConSueldo = ConfiguracionPagoModel::query()
             ->where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value)
             ->where('estado', 'ACTIVO')
-            ->whereNotNull('rol_id')
-            ->select('rol_id');
+            ->whereNotNull('user_id')
+            ->whereDate('fecha_inicio', '<=', $finMes)
+            ->where(fn (Builder $vigencia) => $vigencia->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', $inicioMes))
+            ->select('user_id');
 
         return TrabajadorModel::query()
             ->with(['user.role', 'periodos'])
+            ->whereNotIn('user_id', $usuariosConSueldo)
             ->whereHas('user', fn (Builder $usuario) => $usuario
-                ->whereNotIn('role_id', $rolesConSueldo)
                 ->whereHas('role', fn (Builder $rol) => $rol->where('es_remunerable', true))
                 ->when($rolId !== null, fn (Builder $query) => $query->where('role_id', $rolId)))
             ->whereHas('periodos', fn (Builder $periodoActividad) => $periodoActividad
@@ -322,7 +361,10 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
         $acumulado = (float) ($obligacion->acumulado ?? $sueldoBase);
         $trabajador = $contexto['trabajadores'][(int) $obligacion->user_id] ?? null;
         $esMesCompleto = $trabajador?->estuvoVigenteTodoElRango($inicio, $fin) ?? true;
-        $faltas = $this->contarVigentes($contexto['faltas'], $trabajador, $inicio->format('Y-m-d'), $fin->format('Y-m-d'));
+        $congeladas = $pago?->comprobante_snapshot['faltas'] ?? null;
+        $faltas = $congeladas !== null
+            ? (int) $congeladas
+            : $this->contarVigentes($contexto['faltas'], $trabajador, $inicio->format('Y-m-d'), $fin->format('Y-m-d'));
 
         return new TrabajadorPagoFila(
             id: $obligacion->id,

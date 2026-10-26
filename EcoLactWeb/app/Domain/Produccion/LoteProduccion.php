@@ -23,6 +23,7 @@ final class LoteProduccion
         private readonly string $estado,
         private readonly int $registradoPorUserId,
         private readonly ?string $observacion = null,
+        private readonly ?string $observacionCierre = null,
     ) {
         if (trim($codigo) === '') {
             throw new InvalidArgumentException('El código del lote de producción es obligatorio.');
@@ -67,5 +68,13 @@ final class LoteProduccion
     public function observacion(): ?string
     {
         return $this->observacion;
+    }
+
+    /**
+     * Nota opcional registrada al finalizar el lote.
+     */
+    public function observacionCierre(): ?string
+    {
+        return $this->observacionCierre;
     }
 }

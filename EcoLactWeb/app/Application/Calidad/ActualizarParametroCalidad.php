@@ -6,21 +6,25 @@ use App\Application\Shared\CampoActualizable;
 use App\Domain\Calidad\ParametroCalidad;
 use App\Domain\Calidad\ParametroCalidadRepository;
 use App\Domain\Calidad\ReglaCalidadRepository;
+use DateTimeImmutable;
 use DomainException;
 
 /**
- * Actualiza nombre/unidad/estado de un parámetro de calidad existente.
+ * Actualiza nombre/unidad/descripción/estado de un parámetro de calidad existente.
  *
  * El código técnico (codigo) NUNCA se admite como editable en este flujo:
  * es el identificador estable que da significado histórico a los análisis
  * y reglas ya registrados (GRASA no puede convertirse después en PROTEINA).
  *
  * Si se intenta dejar el parámetro INACTIVO mientras tiene reglas de
- * calidad en estado ACTIVO asociadas, se rechaza: primero deben
- * desactivarse esas reglas, para no dejar una configuración incoherente
- * (una regla evaluando un parámetro que ya no se mide).
+ * calidad en estado ACTIVO que aún pueden aplicarse (vigentes o futuras), se
+ * rechaza: primero deben desactivarse esas reglas, para no dejar una
+ * configuración incoherente (una regla evaluando un parámetro que ya no se
+ * mide). Las reglas cuya fecha_fin ya pasó son solo historial (no se muestran
+ * en Parámetros de calidad) y no bloquean.
  *
  * @param  CampoActualizable<string|null>|null  $unidad
+ * @param  CampoActualizable<string|null>|null  $descripcion
  */
 final class ActualizarParametroCalidad
 {
@@ -34,6 +38,7 @@ final class ActualizarParametroCalidad
         ?string $nombre = null,
         ?CampoActualizable $unidad = null,
         ?string $estado = null,
+        ?CampoActualizable $descripcion = null,
     ): ParametroCalidad {
         $parametro = $this->parametros->buscarPorId($parametroId);
 
@@ -44,9 +49,11 @@ final class ActualizarParametroCalidad
         $nuevoEstado = $estado ?? $parametro->estado();
 
         if ($nuevoEstado === 'INACTIVO') {
+            $hoy = new DateTimeImmutable('today');
             $reglasActivas = array_filter(
                 $this->reglasCalidad->listarPorParametro($parametroId),
-                fn ($regla): bool => $regla->estado() === 'ACTIVO',
+                fn ($regla): bool => $regla->estado() === 'ACTIVO'
+                    && ($regla->fechaFin() === null || $regla->fechaFin() >= $hoy),
             );
 
             if ($reglasActivas !== []) {
@@ -62,6 +69,7 @@ final class ActualizarParametroCalidad
             nombre: $nombre ?? $parametro->nombre(),
             unidad: CampoActualizable::resolver($unidad, $parametro->unidad()),
             estado: $nuevoEstado,
+            descripcion: CampoActualizable::resolver($descripcion, $parametro->descripcion()),
         ));
     }
 }

@@ -1,11 +1,14 @@
 /**
- * Pago semanal a proveedores: selección de proveedores, miniatura del comprobante,
- * modal de vista previa de impresión e impresión. Abrir la vista previa NO marca
- * nada como pagado: el pago solo se envía cuando el administrador confirma, después
- * de imprimir (formulario [data-form-pagar]).
+ * Pago semanal a proveedores. Dos acciones distintas que no se mezclan:
  *
- * Un proveedor PAGADO es histórico: su fila se ve y se puede abrir su comprobante en
- * la hoja lateral, pero nunca entra en la selección para volver a pagarse.
+ * - Clic (o Enter) en una fila = VER su comprobante en el panel derecho, con sus acciones
+ *   (Imprimir comprobante, y Registrar pago solo si está pendiente y ya es pagable).
+ * - Checkbox = MARCAR la fila para el pago masivo ("Revisar seleccionados").
+ *
+ * Registrar pago (uno) y Revisar seleccionados (varios) usan el mismo modal de vista previa:
+ * abrirlo NO marca nada como pagado; el pago solo se envía cuando el administrador confirma,
+ * después de imprimir (formulario [data-form-pagar]). Un proveedor PAGADO o NO PAGABLE se ve
+ * y se imprime, pero nunca entra en un pago.
  */
 
 const ANCHO_HOJA = 794;
@@ -19,15 +22,58 @@ if (raiz) {
     iniciar();
 }
 
+/**
+ * Select nativo de semana: cerrado muestra solo "Semana 40"; abierto, cada opción muestra
+ * "Semana 40 · 24/09/2026 - 30/09/2026". Solo cambia el texto visible: el value (lo que
+ * viaja al backend) nunca se toca. Al abrir (mouse, toque o teclado) se ponen los textos
+ * largos y al cerrar o salir del campo el seleccionado vuelve al corto.
+ */
+function iniciarSelectorSemana(select) {
+    if (!select) {
+        return;
+    }
+
+    const opciones = [...select.options];
+    const mostrarLargas = () => opciones.forEach((opcion) => { opcion.textContent = opcion.dataset.larga; });
+    const mostrarCorta = () => {
+        mostrarLargas();
+        const elegida = select.options[select.selectedIndex];
+
+        if (elegida) {
+            elegida.textContent = elegida.dataset.corta;
+        }
+    };
+
+    select.addEventListener('mousedown', mostrarLargas);
+    select.addEventListener('touchstart', mostrarLargas, { passive: true });
+    select.addEventListener('keydown', (evento) => {
+        if ([' ', 'Enter', 'F4'].includes(evento.key) || (evento.altKey && evento.key.startsWith('Arrow'))) {
+            mostrarLargas();
+        } else if (evento.key === 'Escape') {
+            mostrarCorta();
+        }
+    });
+    select.addEventListener('change', mostrarCorta);
+    select.addEventListener('blur', mostrarCorta);
+    mostrarCorta();
+}
+
 function iniciar() {
     const filas = [...raiz.querySelectorAll('[data-fila]')];
     const filaPorId = new Map(filas.map((fila) => [fila.dataset.id, fila]));
     const urlPreview = raiz.dataset.previewUrl;
     const modal = document.getElementById('modal-vista-previa');
 
-    const botonImprimirYMarcar = raiz.querySelector('[data-abrir-vista-previa]');
-    const kpiSeleccionados = raiz.querySelector('[data-kpi-seleccionados]');
+    const botonRevisarSeleccionados = raiz.querySelector('[data-abrir-vista-previa]');
+    const contadorSeleccion = raiz.querySelector('[data-contador-seleccion]');
     const marcarTodos = raiz.querySelector('[data-marcar-todos]');
+    const panel = raiz.querySelector('[data-panel-comprobante]');
+    const acciones = {
+        bloque: raiz.querySelector('[data-acciones]'),
+        nota: raiz.querySelector('[data-acciones-nota]'),
+        imprimir: raiz.querySelector('[data-imprimir-comprobante]'),
+        pagar: raiz.querySelector('[data-registrar-pago]'),
+    };
     const buscador = raiz.querySelector('[data-buscar]');
     const espejosBusqueda = document.querySelectorAll('[data-buscar-espejo]');
     const resumenTabla = raiz.querySelector('[data-resumen-tabla]');
@@ -39,9 +85,9 @@ function iniciar() {
         hoja: raiz.querySelector('[data-mini-hoja]'),
     };
 
-    /** ids seleccionados (solo pendientes) en el orden en que se marcaron */
+    /** ids marcados para el pago masivo (solo pendientes pagables) */
     let seleccion = [];
-    /** id del pago que muestra la hoja lateral: el último marcado o la fila pagada abierta */
+    /** id de la fila cuyo comprobante se ve en el panel derecho (independiente de la selección) */
     let vistaId = raiz.dataset.verId ?? null;
     let vistaMostrada = null;
     let texto = '';
@@ -100,9 +146,10 @@ function iniciar() {
 
     function pintarSeleccion() {
         filas.forEach((fila) => {
-            const marcada = seleccion.includes(fila.dataset.id);
-            fila.querySelector('[data-marcar]').checked = marcada;
-            fila.classList.toggle('bg-info-soft', marcada || fila.dataset.id === vistaId);
+            const vista = fila.dataset.id === vistaId;
+            fila.querySelector('[data-marcar]').checked = seleccion.includes(fila.dataset.id);
+            fila.classList.toggle('is-vista', vista);
+            fila.setAttribute('aria-selected', String(vista));
         });
 
         const candidatas = coincidentes().filter((fila) => fila.dataset.pendiente === '1');
@@ -111,16 +158,19 @@ function iniciar() {
         marcarTodos.indeterminate = marcadas > 0 && marcadas < candidatas.length;
         marcarTodos.disabled = candidatas.length === 0;
 
-        kpiSeleccionados.textContent = String(seleccion.length);
+        if (contadorSeleccion) {
+            contadorSeleccion.textContent = String(seleccion.length);
+        }
 
-        if (botonImprimirYMarcar) {
-            botonImprimirYMarcar.disabled = seleccion.length === 0;
+        if (botonRevisarSeleccionados) {
+            botonRevisarSeleccionados.disabled = seleccion.length === 0;
         }
 
         mostrarMiniatura();
+        pintarAcciones();
     }
 
-    /** Un pago PAGADO nunca entra en la selección, aunque se intente marcar. */
+    /** Solo un pago pendiente y ya pagable entra en la selección: nunca un PAGADO o NO PAGABLE. */
     function alternar(id, marcar) {
         const fila = filaPorId.get(id);
 
@@ -132,9 +182,34 @@ function iniciar() {
 
         if (marcar) {
             seleccion.push(id);
-            vistaId = id;
-        } else if (vistaId === id) {
-            vistaId = seleccion[seleccion.length - 1] ?? null;
+        }
+    }
+
+    /** Acciones del panel según el estado de la fila vista; nunca permite pagar dos veces. */
+    function pintarAcciones() {
+        const fila = filaPorId.get(vistaId);
+
+        acciones.bloque.hidden = !fila;
+
+        if (!fila) {
+            return;
+        }
+
+        const estado = fila.dataset.estado;
+        const pagable = fila.dataset.pendiente === '1';
+        const notas = {
+            PAGADO: ['Pagado', 'is-pagado'],
+            NO_PAGABLE: ['No pagable: la semana tiene una entrega rechazada.', 'is-no-pagable'],
+        };
+        const [texto, clase] = notas[estado] ?? (fila.dataset.disponible ? [`Pendiente: el pago estará disponible el ${fila.dataset.disponible}.`, ''] : [null, '']);
+
+        acciones.imprimir.href = fila.dataset.urlComprobante;
+        acciones.nota.hidden = !texto;
+        acciones.nota.textContent = texto ?? '';
+        acciones.nota.className = `pp-panel-nota ${clase}`;
+
+        if (acciones.pagar) {
+            acciones.pagar.hidden = !pagable;
         }
     }
 
@@ -148,17 +223,13 @@ function iniciar() {
 
     const limpiar = () => {
         seleccion = [];
-
-        if (filaPorId.get(vistaId)?.dataset.pendiente === '1') {
-            vistaId = null;
-        }
-
         pintarSeleccion();
     };
 
-    /** Abre la hoja lateral de cualquier fila (pendiente o pagada) sin tocar la selección. */
+    /** Muestra el comprobante de cualquier fila sin tocar la selección masiva. */
     function verFila(id) {
         vistaId = id;
+        panel.classList.add('is-abierto');
         pintarSeleccion();
     }
 
@@ -332,13 +403,14 @@ function iniciar() {
         });
     }
 
-    async function abrirVistaPrevia() {
-        if (seleccion.length === 0) {
+    /** @param {string[]} elegidos pagos a imprimir y confirmar (uno desde el panel, o los marcados) */
+    async function abrirVistaPrevia(elegidos) {
+        if (elegidos.length === 0) {
             return;
         }
 
         // Orden de impresión = orden de la tabla (alfabético por proveedor).
-        const ids = filas.map((fila) => fila.dataset.id).filter((id) => seleccion.includes(id));
+        const ids = filas.map((fila) => fila.dataset.id).filter((id) => elegidos.includes(id));
 
         vp.formulario.hidden = true;
         vp.imprimir.disabled = true;
@@ -465,24 +537,34 @@ function iniciar() {
 
     filas.forEach((fila) => {
         fila.addEventListener('click', (evento) => {
-            if (evento.target.closest('input, a, button')) {
+            if (evento.target.closest('input, a, button, .is-check')) {
                 return;
             }
 
-            if (fila.dataset.pendiente !== '1') {
+            verFila(fila.dataset.id);
+        });
+
+        fila.addEventListener('keydown', (evento) => {
+            if (evento.key === 'Enter' && evento.target === fila) {
+                evento.preventDefault();
                 verFila(fila.dataset.id);
-
-                return;
             }
-
-            alternar(fila.dataset.id, !seleccion.includes(fila.dataset.id));
-            pintarSeleccion();
         });
 
         fila.querySelector('[data-marcar]').addEventListener('change', (evento) => {
             alternar(fila.dataset.id, evento.target.checked);
             pintarSeleccion();
         });
+    });
+
+    raiz.querySelector('[data-cerrar-panel]').addEventListener('click', () => {
+        panel.classList.remove('is-abierto');
+    });
+
+    acciones.pagar?.addEventListener('click', () => {
+        if (filaPorId.get(vistaId)?.dataset.pendiente === '1') {
+            abrirVistaPrevia([vistaId]);
+        }
     });
 
     marcarTodos.addEventListener('change', () => {
@@ -500,6 +582,8 @@ function iniciar() {
     raiz.querySelector('[data-filtros]').querySelectorAll('select').forEach((campo) => {
         campo.addEventListener('change', () => campo.form.submit());
     });
+
+    iniciarSelectorSemana(raiz.querySelector('[data-semana-select]'));
 
     function aplicarBusqueda() {
         texto = normalizar(buscador.value);
@@ -525,7 +609,7 @@ function iniciar() {
         aplicarBusqueda();
     });
 
-    botonImprimirYMarcar?.addEventListener('click', abrirVistaPrevia);
+    botonRevisarSeleccionados?.addEventListener('click', () => abrirVistaPrevia(seleccion));
     vp.imprimir.addEventListener('click', imprimir);
     vp.anterior.addEventListener('click', () => { actual = Math.max(0, actual - 1); pintarPagina(); });
     vp.siguiente.addEventListener('click', () => { actual = Math.min(hojas.length - 1, actual + 1); pintarPagina(); });

@@ -13,11 +13,11 @@ use InvalidArgumentException;
 /**
  * Cambia una configuración de pago SIN reescribir el pasado.
  *
- * - Si la configuración todavía no generó ningún pago, se corrige en el
- *   mismo registro (aún no hay historia que proteger).
- * - Si ya generó pagos, se cierra su vigencia el día anterior a la nueva
- *   fecha de inicio y se abre una NUEVA vigencia con los valores nuevos. Los
- *   pagos ya generados conservan el monto de su periodo.
+ * - Con una fecha de inicio POSTERIOR a la vigente se cierra la vigencia actual
+ *   el día anterior y se abre una NUEVA con los valores nuevos: el historial
+ *   queda completo y los pagos ya generados conservan el monto de su periodo.
+ * - Con la MISMA fecha (o anterior) solo se corrige el mismo registro, y solo si
+ *   todavía no generó ningún pago (es una corrección, no un cambio de valor).
  */
 final class ActualizarConfiguracionPago
 {
@@ -27,6 +27,9 @@ final class ActualizarConfiguracionPago
         private readonly TransactionManager $transacciones,
     ) {}
 
+    /**
+     * @param  array<string, array{tipo_ajuste?: string|null, valor_ajuste?: float|string|null}>|null  $ajustes
+     */
     public function execute(
         int $configuracionId,
         ?float $montoBase,
@@ -44,18 +47,18 @@ final class ActualizarConfiguracionPago
             $esProveedor = $actual->tipoBeneficiario() === TipoBeneficiarioPago::PROVEEDOR;
             $fechaInicio = $fechaInicio->setTime(0, 0);
             $observacion = $observacion !== null && trim($observacion) !== '' ? trim($observacion) : null;
-            $tieneHistoria = $this->configuraciones->tieneObligaciones($configuracionId);
+            $nuevaVigencia = $fechaInicio > $actual->fechaInicio();
 
-            if ($tieneHistoria && $fechaInicio <= $actual->fechaInicio()) {
+            if (! $nuevaVigencia && $this->configuraciones->tieneObligaciones($configuracionId)) {
                 throw new DomainException(sprintf(
                     'Esta configuración ya generó pagos desde el %s. Indica una fecha de inicio posterior para la nueva vigencia.',
                     $actual->fechaInicio()->format('d/m/Y'),
                 ));
             }
 
-            $solapadas = $this->configuraciones->listarSolapadas(
-                $actual->tipoBeneficiario(), $actual->rolId(), $fechaInicio, $actual->fechaFin(), $configuracionId,
-            );
+            $solapadas = $actual->userId() !== null
+                ? $this->configuraciones->listarSolapadasDeTrabajador($actual->userId(), $fechaInicio, $actual->fechaFin(), $configuracionId)
+                : $this->configuraciones->listarSolapadas($actual->tipoBeneficiario(), $actual->rolId(), $fechaInicio, $actual->fechaFin(), $configuracionId);
 
             if ($solapadas !== []) {
                 throw new DomainException(sprintf(
@@ -66,7 +69,7 @@ final class ActualizarConfiguracionPago
 
             try {
                 $nueva = new ConfiguracionPago(
-                    id: $tieneHistoria ? null : $actual->id(),
+                    id: $nuevaVigencia ? null : $actual->id(),
                     tipoBeneficiario: $actual->tipoBeneficiario(),
                     rolId: $actual->rolId(),
                     tipoCalculo: $actual->tipoCalculo(),
@@ -78,6 +81,7 @@ final class ActualizarConfiguracionPago
                     estado: 'ACTIVO',
                     observacion: $observacion,
                     creadoPorUserId: $actorUserId,
+                    userId: $actual->userId(),
                 );
             } catch (InvalidArgumentException $e) {
                 throw new DomainException($e->getMessage());
@@ -91,7 +95,7 @@ final class ActualizarConfiguracionPago
                 $this->precioYAjustes->execute($precioBaseLitro, $nueva->aplicaCalidad(), $ajustes, $fechaInicio, $actorUserId);
             }
 
-            if (! $tieneHistoria) {
+            if (! $nuevaVigencia) {
                 return $this->configuraciones->actualizar($nueva);
             }
 

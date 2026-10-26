@@ -12,7 +12,7 @@ use App\Infrastructure\Persistence\Models\RecetaModel;
 final class EloquentRecetasListadoQuery implements RecetasListadoQuery
 {
     /**
-     * @param  array{producto_id?: int|null, estado?: string|null, busqueda?: string|null}  $filtros
+     * @param  array{producto_id?: int|null, estado?: string|null, busqueda?: string|null, solo_vigente?: bool}  $filtros
      */
     public function obtener(array $filtros = []): RecetasListadoData
     {
@@ -23,6 +23,12 @@ final class EloquentRecetasListadoQuery implements RecetasListadoQuery
             ->select('recetas.*')
             ->orderBy('productos.nombre')
             ->orderByDesc('recetas.version');
+
+        if (! empty($filtros['solo_vigente'])) {
+            $consulta->whereRaw(
+                "recetas.id = (select vigente.id from recetas as vigente where vigente.producto_id = recetas.producto_id order by case when vigente.estado = 'ACTIVA' then 0 else 1 end, vigente.version desc limit 1)"
+            );
+        }
 
         if (! empty($filtros['producto_id'])) {
             $consulta->where('recetas.producto_id', (int) $filtros['producto_id']);

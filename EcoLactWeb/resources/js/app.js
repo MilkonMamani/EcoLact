@@ -24,6 +24,10 @@ if (document.querySelector('[data-produccion-nueva]')) {
     import('./pages/produccion-nueva.js');
 }
 
+if (document.querySelector('[data-produccion-finalizar]')) {
+    import('./pages/produccion-finalizar.js');
+}
+
 if (document.querySelector('[data-recetas-page]')) {
     import('./pages/recetas.js');
 }
@@ -46,6 +50,18 @@ if (document.querySelector('[data-pago-trabajadores]')) {
 
 if (document.querySelector('[data-fichas-page]')) {
     import('./pages/admin-fichas.js');
+}
+
+if (document.querySelector('[data-parametros-calidad-page]')) {
+    import('./pages/admin-parametros-calidad.js');
+}
+
+if (document.querySelector('[data-config-pagos-page]')) {
+    import('./pages/admin-configuracion-pagos.js');
+}
+
+if (document.querySelector('[data-ticket-analizador]')) {
+    import('./pages/ticket-analizador.js');
 }
 
 if (document.querySelector('[data-nuevo-trabajador]')) {
@@ -81,6 +97,8 @@ document.addEventListener('click', (event) => {
     if (fila) {
         fila.hidden = !fila.hidden;
         boton.setAttribute('aria-expanded', String(!fila.hidden));
+        // La fila que abrió el detalle queda resaltada mientras esté desplegado.
+        boton.closest('tr')?.classList.toggle('is-expanded', !fila.hidden);
     }
 });
 

@@ -28,6 +28,7 @@ final class RecetaController extends Controller
                 'producto_id' => $request->integer('producto') ?: null,
                 'estado' => $request->query('estado'),
                 'busqueda' => $request->query('q'),
+                'solo_vigente' => true,
             ]),
         ]);
     }

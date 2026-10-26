@@ -46,7 +46,7 @@ final class ObligacionPago
             throw new InvalidArgumentException('El monto calculado no puede ser negativo.');
         }
 
-        if ($montoCalculado === 0.0 && $estado !== EstadoObligacionPago::EN_CURSO) {
+        if ($montoCalculado === 0.0 && ! in_array($estado, [EstadoObligacionPago::EN_CURSO, EstadoObligacionPago::NO_PAGABLE], true)) {
             throw new InvalidArgumentException('El monto de un pago pendiente debe ser mayor a cero.');
         }
 

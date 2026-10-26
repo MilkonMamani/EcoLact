@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 
 /**
  * Valida el formato de los datos HTTP para actualizar un parámetro de
- * calidad: nombre, unidad y estado.
+ * calidad: nombre, unidad, descripción y estado.
  *
  * NO incluye codigo: es el identificador técnico estable del parámetro
  * (GRASA no puede convertirse después en PROTEINA) y ActualizarParametroCalidad
@@ -28,6 +28,7 @@ class UpdateParametroCalidadRequest extends FormRequest
         return [
             'nombre' => ['sometimes', 'string', 'max:100'],
             'unidad' => ['sometimes', 'nullable', 'string', 'max:30'],
+            'descripcion' => ['sometimes', 'nullable', 'string', 'max:200'],
             'estado' => ['sometimes', 'string', Rule::in(['ACTIVO', 'INACTIVO'])],
         ];
     }

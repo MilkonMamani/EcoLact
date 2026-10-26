@@ -68,6 +68,7 @@ class EloquentParametroCalidadRepository implements ParametroCalidadRepository
             nombre: $model->nombre,
             unidad: $model->unidad,
             estado: $model->estado,
+            descripcion: $model->descripcion,
         );
     }
 
@@ -81,6 +82,7 @@ class EloquentParametroCalidadRepository implements ParametroCalidadRepository
             'nombre' => $parametro->nombre(),
             'unidad' => $parametro->unidad(),
             'estado' => $parametro->estado(),
+            'descripcion' => $parametro->descripcion(),
         ];
     }
 }

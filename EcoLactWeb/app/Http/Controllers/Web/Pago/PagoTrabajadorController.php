@@ -28,12 +28,13 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 /**
- * Pagar a trabajadores: sueldo mensual del personal (generado desde
- * Configuración de pagos), con bonificaciones/descuentos ajustables por
- * trabajador mientras el pago esté PENDIENTE. Reutiliza el mismo
- * RegistrarPagoObligacion y el mismo comprobante subido que la pantalla
- * general de Pagos; solo cambia la presentación (tabla + panel lateral) y el
- * filtrado (aquí siempre es personal, nunca proveedores).
+ * Pagar a trabajadores: la tabla sirve para REVISAR el mes de cada trabajador y
+ * el panel derecho para MOSTRAR su comprobante (vista previa real de la hoja A4).
+ * El sueldo nunca se configura aquí (Configuración de pagos > Trabajadores) y la
+ * asistencia tampoco (Control de asistencia): esta pantalla solo lee la obligación
+ * del mes, registra el pago (modal con confirmación, bonificación/descuento
+ * opcionales mientras está PENDIENTE) e imprime el comprobante. Reutiliza el
+ * mismo RegistrarPagoObligacion que la pantalla general de Pagos.
  */
 final class PagoTrabajadorController extends Controller
 {
@@ -93,12 +94,14 @@ final class PagoTrabajadorController extends Controller
 
         return view('admin.pagos.trabajadores.index', [
             'filas' => $filas,
+            'resumen' => $this->listado->resumen($filtro),
             'filtro' => $filtro,
             'periodo' => $periodo,
             'periodoEtiqueta' => PeriodoPago::mesQueContiene($fechaDelPeriodo)->etiqueta(),
             'diagnostico' => $diagnostico,
             'roles' => collect($this->roles->listarRemunerables())->map(fn ($rol) => ['id' => $rol->id(), 'nombre' => $rol->etiqueta()])->sortBy('nombre')->values()->all(),
             'seleccion' => $seleccion,
+            'comprobante' => $seleccion !== null && ! $seleccion->sinSueldo() ? $this->listado->comprobante($seleccion->id) : null,
             'metodos' => MetodoPago::opciones(),
             'metodosElectronicos' => array_values(array_map(
                 fn (MetodoPago $metodo): string => $metodo->value,
@@ -107,7 +110,7 @@ final class PagoTrabajadorController extends Controller
         ]);
     }
 
-    /** Fragmento HTML (sin layout) del panel derecho para un trabajador: lo pide el JS al hacer clic en una fila. */
+    /** Fragmento HTML (sin layout) del panel derecho con el comprobante del trabajador: lo pide el JS al hacer clic en una fila. */
     public function panel(ObligacionPagoModel $obligacion): View
     {
         Gate::authorize('view', $obligacion);
@@ -116,6 +119,7 @@ final class PagoTrabajadorController extends Controller
 
         return view('admin.pagos.trabajadores._panel', [
             'seleccion' => $fila,
+            'comprobante' => $this->listado->comprobante($obligacion->id),
             'metodos' => MetodoPago::opciones(),
             'metodosElectronicos' => array_values(array_map(
                 fn (MetodoPago $metodo): string => $metodo->value,
@@ -125,8 +129,8 @@ final class PagoTrabajadorController extends Controller
     }
 
     /**
-     * Fragmento del panel de un trabajador cuyo rol no tiene sueldo configurado:
-     * no hay obligación que pagar, solo su asistencia y el aviso para configurar el sueldo.
+     * Fragmento del panel de un trabajador sin sueldo vigente propio: no hay obligación
+     * ni comprobante, solo el aviso (texto, sin acciones) de dónde se configura.
      */
     public function panelSinSueldo(Request $request, TrabajadorModel $trabajador): View
     {
@@ -137,6 +141,7 @@ final class PagoTrabajadorController extends Controller
 
         return view('admin.pagos.trabajadores._panel', [
             'seleccion' => $this->listado->buscarSinSueldo($trabajador->id, $periodo) ?? abort(404),
+            'comprobante' => null,
             'metodos' => [],
             'metodosElectronicos' => [],
         ]);
@@ -180,6 +185,7 @@ final class PagoTrabajadorController extends Controller
 
         $datos = $request->validated();
         $archivo = $request->file('comprobante');
+        $fila = $this->listado->buscarFila($obligacion->id) ?? abort(404);
 
         try {
             $this->registrarPago->execute(
@@ -193,6 +199,18 @@ final class PagoTrabajadorController extends Controller
                     : null,
                 registradoPorUserId: $request->user()->id,
                 montoDeclarado: isset($datos['monto']) ? (float) $datos['monto'] : null,
+                // Lo que mostró el comprobante al pagar (también las faltas, que viven en Asistencia):
+                // así un cambio de sueldo o una corrección de asistencia posterior no reescribe lo pagado.
+                comprobanteSnapshot: [
+                    'dias_trabajados' => $fila->diasTrabajados,
+                    'faltas' => $fila->faltas,
+                    'valor_dia' => $fila->valorDia,
+                    'sueldo_mensual' => $fila->sueldoBase,
+                    'acumulado' => $fila->acumulado,
+                    'bonificacion' => $fila->bonificacion,
+                    'descuento' => $fila->descuento,
+                    'total' => $fila->total,
+                ],
             );
         } catch (DomainException $exception) {
             return back()->withInput()->withErrors(['pago' => $exception->getMessage()]);

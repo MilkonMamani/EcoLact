@@ -32,7 +32,7 @@ final readonly class RequerimientoInsumo
     public function mensajeFaltante(): string
     {
         return sprintf(
-            'No hay suficiente %s. Necesitas %s %s y solo hay %s %s disponibles.',
+            'No hay suficiente %s. Se necesitan %s %s y hay %s %s disponibles.',
             mb_strtolower($this->nombre) === 'leche' ? 'leche' : $this->nombre,
             RegistrarMovimientoInsumo::formato($this->necesario),
             $this->unidadBase,

@@ -1,5 +1,6 @@
 /**
- * Configuración de pagos y Pagos: interacción de los modales (sin librerías).
+ * Pagos: interacción de los modales (sin librerías). Configuración de pagos
+ * tiene su propio módulo (admin-configuracion-pagos.js).
  * El abrir/cerrar modales lo resuelve app.js; aquí solo se cargan los datos y
  * se validan los campos dinámicos (los mismos se validan de nuevo en el backend).
  */
@@ -11,126 +12,6 @@ function abrirModalesDelServidor() {
     if (document.querySelector('[data-modal].is-open')) {
         document.body.classList.add('overflow-hidden');
     }
-}
-
-function iniciarFormularioConfiguracion(form) {
-    const radios = form.querySelectorAll('[data-config-tipo]');
-    const secciones = form.querySelectorAll('[data-config-seccion]');
-    const modal = form.closest('[data-modal]');
-    const subtitulo = modal?.querySelector('[data-config-subtitulo]');
-    const subtitulos = subtitulo ? JSON.parse(subtitulo.dataset.subtitulos || '{}') : {};
-
-    const sincronizar = () => {
-        const tipo = form.querySelector('[data-config-tipo]:checked')?.value;
-
-        secciones.forEach((seccion) => {
-            const activa = seccion.dataset.configSeccion === tipo;
-
-            seccion.hidden = !activa;
-            seccion.querySelectorAll('input, select, textarea').forEach((campo) => {
-                campo.disabled = !activa;
-            });
-        });
-
-        radios.forEach((radio) => {
-            const punto = radio.closest('label')?.querySelector('[data-config-punto]');
-
-            punto?.classList.toggle('opacity-100', radio.checked);
-            punto?.classList.toggle('opacity-0', !radio.checked);
-        });
-
-        if (subtitulo && subtitulos[tipo]) {
-            subtitulo.textContent = subtitulos[tipo];
-        }
-
-        form.querySelectorAll('[data-toggle-calidad]').forEach((interruptor) => {
-            const raiz = interruptor.closest('[data-config-seccion]') ?? form;
-
-            if (raiz.hidden) {
-                return;
-            }
-
-            const bloque = raiz.querySelector('[data-ajustes-bloque]');
-            const activo = interruptor.checked;
-
-            if (bloque) {
-                bloque.hidden = !activo;
-                bloque.querySelectorAll('input, select').forEach((campo) => {
-                    campo.disabled = !activo;
-                });
-            }
-
-            const texto = raiz.querySelector('[data-toggle-texto]');
-
-            if (texto) {
-                texto.textContent = activo ? 'Sí' : 'No';
-            }
-        });
-    };
-
-    const calcularPreciosFinales = () => {
-        const precio = parseFloat(form.querySelector('input[name="precio_base_litro"]:not(:disabled)')?.value ?? '');
-
-        form.querySelectorAll('[data-ajuste-fila]').forEach((fila) => {
-            const tipo = fila.querySelector('select')?.value;
-            const valor = parseFloat(fila.querySelector('input[type="number"]')?.value ?? '');
-            const salida = fila.querySelector('[data-precio-final]');
-
-            if (!salida) {
-                return;
-            }
-
-            if (Number.isNaN(precio) || Number.isNaN(valor)) {
-                salida.textContent = '—';
-
-                return;
-            }
-
-            const final = Math.max(0, tipo === 'PORCENTAJE' ? precio * (1 + valor / 100) : precio + valor);
-
-            salida.textContent = `S/ ${final.toFixed(2)}`;
-        });
-    };
-
-    form.addEventListener('input', calcularPreciosFinales);
-    form.addEventListener('change', calcularPreciosFinales);
-    calcularPreciosFinales();
-
-    radios.forEach((radio) => radio.addEventListener('change', sincronizar));
-    form.querySelectorAll('[data-toggle-calidad]').forEach((interruptor) => interruptor.addEventListener('change', sincronizar));
-    sincronizar();
-
-    return sincronizar;
-}
-
-function iniciarConfiguracion() {
-    const formularios = [...document.querySelectorAll('[data-config-form]')].map((form) => [form, iniciarFormularioConfiguracion(form)]);
-    const nueva = formularios.find(([form]) => form.querySelector('[data-config-tipo]'));
-
-    if (!nueva) {
-        return;
-    }
-
-    const [form, sincronizar] = nueva;
-
-    document.querySelectorAll('[data-config-nueva][data-tipo]').forEach((boton) => {
-        boton.addEventListener('click', () => {
-            const radio = form.querySelector(`[data-config-tipo][value="${boton.dataset.tipo}"]`);
-
-            if (radio) {
-                radio.checked = true;
-                sincronizar();
-            }
-
-            if (boton.dataset.rol) {
-                const rol = form.querySelector('select[name="rol_id"]');
-
-                if (rol) {
-                    rol.value = boton.dataset.rol;
-                }
-            }
-        });
-    });
 }
 
 function iniciarRegistroPago() {
@@ -269,5 +150,4 @@ function iniciarRegistroPago() {
 }
 
 abrirModalesDelServidor();
-iniciarConfiguracion();
 iniciarRegistroPago();

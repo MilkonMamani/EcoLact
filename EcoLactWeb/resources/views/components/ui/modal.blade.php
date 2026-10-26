@@ -1,24 +1,36 @@
-@props(['id', 'title' => null, 'size' => 'md', 'open' => false, 'nested' => false])
+@props(['id', 'title' => null, 'subtitle' => null, 'size' => 'md', 'open' => false, 'nested' => false, 'flush' => false, 'labelledby' => null])
 
 @php
-    $widths = ['md' => 'max-w-md', 'lg' => 'max-w-2xl', 'xl' => 'max-w-3xl', '2xl' => 'max-w-4xl', 'form' => 'max-w-[46rem]'];
-    $esForm = $size === 'form';
+    $widths = ['md' => 'max-w-md', 'lg' => 'max-w-2xl', 'xl' => 'max-w-3xl', '2xl' => 'max-w-4xl', 'form' => 'max-w-[46rem]', 'receta' => 'max-w-[52rem]'];
+    $esForm = in_array($size, ['form', 'receta'], true);
 @endphp
 
-<div id="{{ $id }}" data-modal class="@if ($open) is-open @endif fixed inset-0 {{ $nested ? 'z-[60]' : 'z-50' }} items-center justify-center {{ $esForm ? 'bg-text/35 p-2 sm:p-4' : 'bg-text/30 p-4' }}" role="dialog" aria-modal="true" @if ($title) aria-label="{{ $title }}" @endif>
-    <div data-modal-panel class="max-h-[92vh] w-full overflow-y-auto {{ $esForm ? 'rounded-2xl p-5 sm:p-7' : 'rounded-2xl p-6' }} bg-surface shadow-[0_20px_45px_-15px_rgb(16_24_40/0.28)] {{ $widths[$size] ?? $widths['md'] }}">
-        <div class="flex items-start justify-between gap-4">
-            @if ($title)
-                <h2 class="{{ $esForm ? 'text-xl font-bold' : 'text-base font-semibold' }} text-text">{{ $title }}</h2>
-            @endif
-
-            <button type="button" data-modal-close aria-label="Cerrar" class="ml-auto text-text-muted hover:text-text">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-        </div>
-
-        <div class="mt-4">
+<div id="{{ $id }}" data-modal class="@if ($open) is-open @endif fixed inset-0 {{ $nested ? 'z-[60]' : 'z-50' }} items-center justify-center {{ $esForm ? 'bg-text/35 p-2 sm:p-4' : 'bg-text/30 p-4' }}" role="dialog" aria-modal="true" @if ($title) aria-label="{{ $title }}" @endif @if ($labelledby) aria-labelledby="{{ $labelledby }}" @endif>
+    @if ($flush)
+        {{-- Sin relleno ni cabecera propia: el contenido arma cabecera, cuerpo con scroll y pie fijos. --}}
+        <div data-modal-panel class="flex max-h-[92vh] w-full flex-col sm:max-h-[88vh] overflow-hidden rounded-2xl bg-surface shadow-[0_20px_45px_-15px_rgb(16_24_40/0.28)] {{ $widths[$size] ?? $widths['md'] }}">
             {{ $slot }}
         </div>
-    </div>
+    @else
+        <div data-modal-panel class="max-h-[92vh] w-full overflow-y-auto {{ $esForm ? 'rounded-2xl p-5 sm:p-7' : 'rounded-2xl p-6' }} bg-surface shadow-[0_20px_45px_-15px_rgb(16_24_40/0.28)] {{ $widths[$size] ?? $widths['md'] }}">
+            <div class="flex items-start justify-between gap-4">
+                @if ($title)
+                    <div class="min-w-0">
+                        <h2 class="{{ $esForm ? 'text-xl font-bold' : 'text-base font-semibold' }} text-text">{{ $title }}</h2>
+                        @if ($subtitle)
+                            <p class="mt-1 text-sm text-text-muted">{{ $subtitle }}</p>
+                        @endif
+                    </div>
+                @endif
+
+                <button type="button" data-modal-close aria-label="Cerrar" class="ml-auto text-text-muted hover:text-text">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="mt-4">
+                {{ $slot }}
+            </div>
+        </div>
+    @endif
 </div>

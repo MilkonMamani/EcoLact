@@ -1,0 +1,140 @@
+/*
+ * Pagos a trabajadores (admin/pagos/trabajadores): tabla para revisar + panel derecho con la
+ * vista previa REAL del comprobante (la hoja A4 de comprobante-pago.css, escalada). Mismo
+ * lenguaje que Pagar a proveedores: blanco, verde EcoLact, bordes finos, sin sombras grandes.
+ * La tabla, el skeleton y la fila seleccionada vienen de admin-fichas.css.
+ */
+body.pagos-trabajadores-page { background: #fff; }
+
+/* Panel de ancho estable: los filtros y la tabla nunca lo empujan. */
+@media (min-width: 1280px) {
+    .pagos-trabajadores .fichas-layout { grid-template-columns: minmax(0, 1fr) 22.5rem; gap: 1.25rem; }
+}
+@media (min-width: 1536px) {
+    .pagos-trabajadores .fichas-layout { grid-template-columns: minmax(0, 1fr) 26rem; }
+}
+
+/* ------------------------------------------------------------ encabezado y filtros compactos */
+.pt-header { display: flex; align-items: flex-start; gap: .75rem; }
+.pt-header .fichas-title { margin-top: .4rem; font-size: 1.6rem; }
+
+.pt-filtros { display: grid; gap: .5rem; margin-top: 1rem; }
+.pt-buscador { height: 2.5rem; border-color: #d0d5dd; border-radius: .5rem; }
+.pt-buscador input { font-size: .85rem; }
+.pt-buscador input::-webkit-search-decoration { -webkit-appearance: none; }
+.pt-filtros-fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+@media (min-width: 640px) {
+    .pt-filtros-fila { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) auto auto; }
+}
+.pt-campo { width: 100%; min-width: 0; height: 2.5rem; padding-inline: .75rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff; color: var(--fichas-ink); font-size: .85rem; box-shadow: none; }
+.pt-campo:focus { border-color: var(--fichas-green); outline: none; box-shadow: 0 0 0 1px var(--fichas-green); }
+select.pt-campo { cursor: pointer; text-overflow: ellipsis; }
+.pt-filtro-boton { height: 2.5rem; font-size: .85rem; font-weight: 500; }
+
+/* ------------------------------------------------------------ métricas: franja pequeña */
+.pt-metricas { display: flex; flex-wrap: wrap; gap: .35rem 1.75rem; margin-top: .9rem; padding: .6rem .9rem; border: 1px solid var(--fichas-border); border-radius: .6rem; font-size: .82rem; }
+.pt-metricas div { display: flex; align-items: baseline; gap: .4rem; }
+.pt-metricas dt { color: var(--fichas-muted); }
+.pt-metricas dd { color: var(--fichas-ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Aviso discreto de una línea encima de la tabla (nunca un bloque grande). */
+.pt-aviso { display: flex; align-items: center; gap: .4rem; margin-top: .75rem; color: var(--fichas-muted); font-size: .8rem; }
+.pt-aviso svg { flex-shrink: 0; color: var(--fichas-soft-text); }
+
+/* ------------------------------------------------------------ tabla */
+.pt-tabla { margin-top: .75rem; box-shadow: none; }
+.pt-tabla .pt-sin-configurar { color: var(--fichas-soft-text); font-size: .8rem; font-style: italic; }
+.pt-tabla .pagos-faltas { color: #c4524b; font-weight: 500; }
+.pt-tabla-vacia { height: auto !important; padding: 2.5rem 1rem !important; color: var(--fichas-muted); text-align: center; white-space: normal !important; }
+.pt-tabla-vacia strong { display: block; margin-bottom: .2rem; color: var(--fichas-ink); }
+.pt-tabla-vacia a { color: var(--fichas-green); font-weight: 600; }
+
+/* Estado compacto: ícono + texto, sin badge. */
+.pago-estado { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; font-weight: 500; white-space: nowrap; }
+.pago-estado.is-pendiente { color: #b54708; }
+.pago-estado.is-pagado { color: #006146; }
+.pago-estado.is-en-curso { color: #4f7a6a; }
+.pago-estado.is-neutro { color: #98a2b3; }
+
+/* ------------------------------------------------------------ panel: comprobante */
+.pt-panel { box-shadow: none; }
+.pt-panel .fichas-panel-contenido { min-height: 0; }
+.pt-panel-cabecera { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; padding: 1rem 1rem .75rem; border-bottom: 1px solid var(--fichas-border); }
+.pt-panel-titulo { font-size: 1rem; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+.pt-panel-subtitulo { margin-top: .1rem; color: var(--fichas-muted); font-size: .78rem; }
+.pt-panel-cuerpo { padding: .9rem 1rem !important; background: #f4f5f7; }
+
+.pt-preview { display: flex; justify-content: center; min-width: 0; }
+.pt-escala { position: relative; flex-shrink: 0; overflow: hidden; width: 100%; aspect-ratio: 210 / 297; border: 1px solid #d9dedb; background: #fff; }
+.pt-escala > .cp-hoja { position: absolute; top: 0; left: 0; transform: scale(var(--pt-escala, .45)); transform-origin: top left; }
+
+.pt-panel-acciones { display: grid; gap: .6rem; padding: .8rem 1rem 1rem; border-top: 1px solid var(--fichas-border); }
+.pt-botones { display: flex; flex-wrap: wrap; gap: .5rem; }
+.pt-botones .fichas-btn { flex: 1 1 10rem; }
+.pt-nota { padding: .5rem .7rem; border-radius: .45rem; background: #f7f9fa; color: #475467; font-size: .8rem; }
+.pt-nota.is-pagado { background: var(--fichas-green-soft); color: var(--fichas-green); font-weight: 500; }
+.pt-nota.is-error { background: #fef3f2; color: #b42318; }
+
+.pt-vacio { padding-block: 4rem; }
+
+/* Sin sueldo configurado: solo texto informativo, sin acciones. */
+.pt-no-disponible { display: grid; justify-items: center; gap: .35rem; padding: 2.5rem 1.25rem; border: 1px dashed #d9dee4; border-radius: .6rem; color: var(--fichas-muted); font-size: .85rem; text-align: center; }
+.pt-no-disponible svg { color: var(--fichas-soft-text); }
+.pt-no-disponible-titulo { color: var(--fichas-ink); font-size: .95rem; font-weight: 600; }
+.pt-no-disponible-ruta { margin-top: .25rem; color: var(--fichas-soft-text); font-size: .78rem; }
+
+/* ------------------------------------------------------------ modal Registrar pago */
+.pt-form { display: grid; gap: .85rem; }
+.pt-form label { display: block; margin-bottom: .3rem; color: #344054; font-size: .8rem; font-weight: 500; }
+.pt-form-fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.pt-campo.is-area { height: auto; padding-block: .5rem; resize: vertical; }
+.pt-campo.is-archivo { height: auto; padding-block: .4rem; font-size: .8rem; }
+.pt-opcional { color: var(--fichas-soft-text, #98a2b3); font-weight: 400; }
+.pt-ayuda { margin-top: .4rem; color: #667085; font-size: .75rem; }
+.pt-ayuda.is-error { color: #b42318; }
+
+.pt-resumen-pago { display: grid; border: 1px solid #e7ebee; border-radius: .6rem; }
+.pt-resumen-pago > div { display: flex; justify-content: space-between; gap: 1rem; padding: .55rem .8rem; font-size: .85rem; }
+.pt-resumen-pago > div + div { border-top: 1px solid #f0f2f4; }
+.pt-resumen-pago dt { color: #667085; }
+.pt-resumen-pago dd { color: #1d2939; font-weight: 600; text-align: right; }
+.pt-resumen-pago .is-total { background: #f1f8f4; }
+.pt-resumen-pago .is-total dd { color: #006146; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+
+.pt-ajustes { border: 1px solid #e7ebee; border-radius: .6rem; padding: .55rem .8rem; }
+.pt-ajustes summary { color: #344054; font-size: .82rem; font-weight: 500; cursor: pointer; }
+.pt-ajustes[open] summary { margin-bottom: .6rem; }
+.pt-form-acciones { display: flex; justify-content: flex-end; gap: .5rem; padding-top: .25rem; }
+#modal-registrar-pago { --fichas-green: #006146; --fichas-green-strong: #00ab62; --fichas-ink: #1d2939; --fichas-soft-text: #98a2b3; }
+
+@media (max-width: 479px) {
+    .pt-form-fila { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ------------------------------------------------------------ tablet: drawer · móvil: pantalla completa */
+.pt-velo { position: fixed; inset: 0; z-index: 39; background: rgb(16 24 40 / .3); }
+
+@media (max-width: 1279px) {
+    .pagos-trabajadores .pt-panel { position: fixed; inset: 0 0 0 auto; z-index: 40; display: flex; flex-direction: column; width: min(28rem, 100%); max-height: none; overflow-y: auto; border-radius: 0; transform: translateX(100%); visibility: hidden; transition: transform .2s ease, visibility .2s; }
+    .pagos-trabajadores .pt-panel.is-abierto { transform: none; visibility: visible; box-shadow: -8px 0 24px rgb(16 24 40 / .08); }
+    body.pt-drawer-abierto { overflow: hidden; }
+}
+@media (max-width: 639px) {
+    .pagos-trabajadores .pt-panel { width: 100%; border: 0; }
+}
+@media (max-width: 1279px) and (prefers-reduced-motion: reduce) {
+    .pagos-trabajadores .pt-panel { transition: none; }
+}
+
+/* ------------------------------------------------------------ impresión desde esta pantalla: solo la hoja */
+@media print {
+    /* Una sola hoja: lo oculto sigue ocupando espacio, así que el documento se corta a 1 página A4. */
+    html:has(body.pagos-trabajadores-page), body.pagos-trabajadores-page { height: 297mm; overflow: hidden; background: #fff; }
+    /* El ancho de impresión cae en el modo drawer: sin transform, la hoja fija no se desplaza fuera de la página. */
+    .pagos-trabajadores .pt-panel { transform: none !important; transition: none; box-shadow: none; }
+    body.pagos-trabajadores-page * { visibility: hidden !important; }
+    body.pagos-trabajadores-page .pt-escala .cp-hoja,
+    body.pagos-trabajadores-page .pt-escala .cp-hoja * { visibility: visible !important; }
+    body.pagos-trabajadores-page .pt-escala { position: static; overflow: visible; border: 0; aspect-ratio: auto; }
+    body.pagos-trabajadores-page .pt-escala .cp-hoja { position: fixed; top: 0; left: 0; height: 296mm; transform: none; box-shadow: none; }
+}

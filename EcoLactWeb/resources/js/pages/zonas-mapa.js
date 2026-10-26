@@ -1,10 +1,10 @@
-import { cargarGoogleMaps, getMapId } from '../maps.js';
+import { alFallarGoogleMaps, cargarGoogleMaps, esCoordenadaValida, getMapId } from '../maps.js';
 
 /**
- * Piezas de mapa de la pantalla /admin/zonas, compartidas por sus tres mapas:
- *  - mapa general (encima de la tabla): todas las zonas del filtro con su delimitación, una
- *    etiqueta "nombre + N proveedores" y un punto por proveedor con coordenadas;
- *  - mapa del Resumen del panel (admin-zonas.js): solo la zona seleccionada;
+ * Piezas de mapa de la pantalla /admin/zonas, compartidas por sus dos mapas:
+ *  - mapa general (el centro de la pantalla): todas las zonas con su delimitación, una
+ *    etiqueta "nombre + N proveedores" y un pin por proveedor con coordenadas, que se puede
+ *    seleccionar y, solo en "Mover ubicación", arrastrar;
  *  - editor de delimitación de "Editar zona": dibujar/ajustar el polígono y guardarlo como GeoJSON.
  *
  * La geometría llega del backend como GeoJSON Polygon ([longitud, latitud], anillo cerrado).
@@ -26,17 +26,31 @@ const ESTILOS = {
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-/** Vértices {lat, lng} del anillo exterior, sin repetir el primero al final. */
-export function verticesDeGeometria(geometry) {
-    const anillo = geometry?.coordinates?.[0] ?? [];
-    const vertices = anillo.map(([lng, lat]) => ({ lat, lng }));
+/**
+ * Vértices {lat, lng} del anillo exterior, sin repetir el primero al final. GeoJSON guarda
+ * [longitud, latitud]; Google Maps usa {lat, lng}. Una geometría nula devuelve [] y una que no
+ * sea un Polygon válido (anillo de al menos 4 puntos con el cierre, coordenadas en rango)
+ * también, con un aviso en consola que nombra la zona: nunca rompe el resto del mapa.
+ */
+export function verticesDeGeometria(geometry, nombre = 'sin nombre') {
+    if (!geometry) {
+        return [];
+    }
 
-    if (vertices.length > 1) {
-        const [primero, ultimo] = [vertices[0], vertices[vertices.length - 1]];
+    const anillo = geometry.type === 'Polygon' && Array.isArray(geometry.coordinates) ? geometry.coordinates[0] : null;
+    const vertices = Array.isArray(anillo)
+        ? anillo.map((punto) => (Array.isArray(punto) ? { lat: Number(punto[1]), lng: Number(punto[0]) } : null))
+        : [];
 
-        if (primero.lat === ultimo.lat && primero.lng === ultimo.lng) {
-            vertices.pop();
-        }
+    if (!Array.isArray(anillo) || anillo.length < 4 || vertices.some((v) => !v || !esCoordenadaValida(v.lat, v.lng))) {
+        console.warn(`[EcoLact] La delimitación de la zona "${nombre}" no es un GeoJSON Polygon válido; no se dibuja.`, geometry);
+        return [];
+    }
+
+    const [primero, ultimo] = [vertices[0], vertices[vertices.length - 1]];
+
+    if (primero.lat === ultimo.lat && primero.lng === ultimo.lng) {
+        vertices.pop();
     }
 
     return vertices;
@@ -45,7 +59,7 @@ export function verticesDeGeometria(geometry) {
 export function dibujarDelimitacion(mapa, zona, { clickable = true, estilo = 'normal' } = {}) {
     return new google.maps.Polygon({
         map: mapa,
-        paths: verticesDeGeometria(zona.geometry),
+        paths: verticesDeGeometria(zona.geometry, zona.nombre),
         strokeColor: zona.color,
         fillColor: zona.color,
         clickable,
@@ -128,10 +142,6 @@ function etiquetaProveedores(cantidad) {
     return `${cantidad} ${cantidad === 1 ? 'proveedor' : 'proveedores'}`;
 }
 
-function formatoLitros(litros) {
-    return `${Math.round(litros).toLocaleString('es-PE')} L`;
-}
-
 /** Datos del mapa general que el servidor dejó en la página (vacío si no hay zonas). */
 export function datosMapaGeneral(pagina) {
     const datos = pagina.querySelector('[data-zonas-mapa-general-datos]');
@@ -141,29 +151,85 @@ export function datosMapaGeneral(pagina) {
 
 // ---------------------------------------------------------------- mapa general
 
+/** Zoom al enfocar un proveedor elegido en el buscador: se ve su entorno y la zona alrededor. */
+const ZOOM_PROVEEDOR = 15;
+
 /**
- * Click en un polígono, en su etiqueta o en la leyenda → misma selección que hacer click en la
- * fila (evento fichas:seleccionar de admin-fichas.js): se resalta la fila, se carga el panel y el
- * mapa hace zoom a la zona. En sentido contrario, admin-zonas.js llama a resaltar() cada vez que
- * el panel muestra otra zona (click en la tabla), así mapa y tabla comparten la selección.
+ * Point-in-polygon por cruce de rayos (x = longitud, y = latitud): el mismo algoritmo que
+ * DelimitacionZona::contiene() en el servidor, que es quien decide al guardar.
+ */
+export function contienePunto(vertices, lat, lng) {
+    let dentro = false;
+
+    for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+        const { lat: yi, lng: xi } = vertices[i];
+        const { lat: yj, lng: xj } = vertices[j];
+
+        if ((yi > lat) !== (yj > lat) && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi) {
+            dentro = !dentro;
+        }
+    }
+
+    return dentro;
+}
+
+/** {lat, lng} numéricos de un AdvancedMarkerElement (su position puede ser LatLng o literal). */
+function posicionDe(marcador) {
+    const { lat, lng } = marcador.position;
+
+    return { lat: typeof lat === 'function' ? lat() : lat, lng: typeof lng === 'function' ? lng() : lng };
+}
+
+/**
+ * Mapa general de Zonas.
+ *
+ * Zonas: click en un polígono, en su etiqueta o en la leyenda abre esa zona en el panel (evento
+ * fichas:seleccionar de admin-fichas.js) y el mapa se acerca a ella; admin-zonas.js llama a
+ * resaltar() cuando el panel muestra otra zona.
+ *
+ * Proveedores: un único AdvancedMarkerElement por proveedor, NUNCA arrastrable por defecto.
+ * seleccionarProveedor() (buscador o click en el pin) lo resalta, atenúa los demás y abre un
+ * popup con "Ver proveedor" y "Mover ubicación". Solo activarArrastre() vuelve arrastrable ese
+ * mismo marcador (no se crea otro) y desactivarArrastre() lo devuelve a su estado bloqueado.
+ * Cada cambio de selección se anuncia con el evento zonas:proveedor-seleccionado.
+ *
+ * actualizar() aplica los datos recalculados por el servidor tras mover a un proveedor: color y
+ * posición de los pines y contadores de las etiquetas, sin recargar la página.
  */
 export function iniciarMapaGeneral(pagina, zonaInicial) {
     const seccion = pagina.querySelector('[data-zonas-mapa-general]');
 
     if (!seccion) {
-        return { resaltar: () => {} };
+        return null;
     }
 
+    const datosEl = pagina.querySelector('[data-zonas-mapa-general-datos]');
     const datos = datosMapaGeneral(pagina);
     const lienzo = seccion.querySelector('[data-zonas-mapa-general-lienzo]');
-    const aviso = seccion.querySelector('[data-zonas-mapa-general-aviso]');
+    const estadoMapa = seccion.querySelector('[data-zonas-mapa-estado]');
     const urlProveedor = seccion.dataset.urlProveedor;
-    const zonas = new Map(datos.zonas.map((zona) => [zona.id, { zona, poligono: null, etiqueta: null, limites: null, puntos: [] }]));
+    const zonas = new Map(datos.zonas.map((zona) => [zona.id, {
+        zona,
+        vertices: verticesDeGeometria(zona.geometry, zona.nombre),
+        poligono: null,
+        etiqueta: null,
+        marcadorEtiqueta: null,
+        limites: null,
+    }]));
+    const pines = new Map();
 
+    let mapsLib = null;
     let mapa = null;
     let infoWindow = null;
-    let limitesGenerales = null;
     let seleccion = zonaInicial;
+    let proveedorSeleccionado = null;
+    let arrastre = null;
+    let marcarListo;
+    const listo = new Promise((resolver) => {
+        marcarListo = resolver;
+    });
+
+    // ------------------------------------------------------------------ zonas
 
     const resaltar = (id, { zoom = false } = {}) => {
         seleccion = id;
@@ -177,17 +243,22 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
             item.etiqueta?.classList.toggle('is-activa', zonaId === id);
         });
 
-        if (!zoom || !mapa || id === null) {
+        if (!zoom || !mapa || id === null || arrastre) {
             return;
         }
 
         const item = zonas.get(id);
-        const limites = item?.limites ?? (item?.puntos.length ? limitesDeVertices(item.puntos) : null);
+        const puntos = [...pines.values()].filter((pin) => pin.proveedor.zonaId === id).map((pin) => posicionDe(pin.marcador));
+        const limites = item?.limites ?? (puntos.length ? limitesDeVertices(puntos) : null);
 
         encuadrar(mapa, limites, 56);
     };
 
-    const seleccionar = (id) => {
+    const seleccionarZona = (id) => {
+        if (arrastre) {
+            return; // Mientras se mueve un pin, el mapa no cambia de zona ni de encuadre.
+        }
+
         resaltar(id, { zoom: true });
         document.dispatchEvent(new CustomEvent('fichas:seleccionar', { detail: { id, desplazar: false } }));
     };
@@ -196,9 +267,19 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
         const boton = event.target.closest('[data-zonas-seleccionar]');
 
         if (boton) {
-            seleccionar(parseInt(boton.dataset.zonasSeleccionar, 10));
+            seleccionarZona(parseInt(boton.dataset.zonasSeleccionar, 10));
         }
     });
+
+    /**
+     * Zona cuya delimitación contiene el punto; si dos se solapan y una es `preferida` (la zona
+     * actual del proveedor), gana esa, igual que en el servidor.
+     */
+    const zonaEn = (lat, lng, preferida = null) => {
+        const contenedoras = [...zonas.values()].filter((item) => item.vertices.length >= 3 && contienePunto(item.vertices, lat, lng));
+
+        return (contenedoras.find((item) => item.zona.id === preferida) ?? contenedoras[0])?.zona ?? null;
+    };
 
     const crearEtiqueta = (zona) => {
         const etiqueta = document.createElement('div');
@@ -214,6 +295,30 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
         return etiqueta;
     };
 
+    // ------------------------------------------------------------- proveedores
+
+    const colorDe = (proveedor) => zonas.get(proveedor.zonaId)?.zona.color ?? '#475467';
+
+    /** Contenido del pin según el estado: seleccionado (más grande, con halo), atenuado o normal. */
+    const contenidoPin = (proveedor) => {
+        const pin = crearPinProveedor(colorDe(proveedor), proveedor.fueraDeDelimitacion);
+        const seleccionado = proveedor.id === proveedorSeleccionado;
+
+        pin.style.setProperty('--pin-color', colorDe(proveedor));
+        pin.classList.toggle('is-seleccionado', seleccionado);
+        pin.classList.toggle('is-atenuado', proveedorSeleccionado !== null && !seleccionado);
+        pin.classList.toggle('is-moviendo', seleccionado && arrastre !== null);
+
+        return pin;
+    };
+
+    const refrescarPines = () => {
+        pines.forEach((pin) => {
+            pin.marcador.content = contenidoPin(pin.proveedor);
+            pin.marcador.zIndex = pin.proveedor.id === proveedorSeleccionado ? 60 : 30;
+        });
+    };
+
     const contenidoInfo = (proveedor) => {
         const caja = document.createElement('div');
         caja.className = 'zonas-info';
@@ -222,12 +327,7 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
         nombre.textContent = proveedor.nombre;
 
         const lista = document.createElement('dl');
-        [
-            ['DNI', proveedor.dni],
-            ['Zona', proveedor.zonaNombre],
-            ['Última entrega', proveedor.ultimaEntrega ?? 'Sin entregas'],
-            ['Litros (semana)', formatoLitros(proveedor.litrosSemana)],
-        ].forEach(([termino, valor]) => {
+        [['DNI', proveedor.dni], ['Zona actual', proveedor.zonaNombre]].forEach(([termino, valor]) => {
             const dt = document.createElement('dt');
             dt.textContent = termino;
             const dd = document.createElement('dd');
@@ -244,21 +344,246 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
             caja.append(fuera);
         }
 
+        const acciones = document.createElement('div');
+        acciones.className = 'zonas-info-acciones';
+
         const enlace = document.createElement('a');
         enlace.href = urlProveedor.replace('__ID__', proveedor.id);
+        enlace.className = 'fichas-btn is-outline is-sm';
         enlace.textContent = 'Ver proveedor';
-        caja.append(enlace);
+
+        const mover = document.createElement('button');
+        mover.type = 'button';
+        mover.className = 'fichas-btn is-primary is-sm';
+        mover.textContent = 'Mover ubicación';
+        mover.addEventListener('click', () => {
+            document.dispatchEvent(new CustomEvent('zonas:mover-ubicacion', { detail: { id: proveedor.id } }));
+        });
+
+        acciones.append(enlace, mover);
+        caja.append(acciones);
 
         return caja;
     };
 
+    const anunciarSeleccion = () => {
+        const proveedor = pines.get(proveedorSeleccionado)?.proveedor ?? null;
+        document.dispatchEvent(new CustomEvent('zonas:proveedor-seleccionado', { detail: { proveedor } }));
+    };
+
+    const abrirInfo = (pin) => {
+        infoWindow.setContent(contenidoInfo(pin.proveedor));
+        infoWindow.open({ map: mapa, anchor: pin.marcador });
+    };
+
+    /** Resalta el pin del proveedor; con `enfocar` centra el mapa en él con un zoom moderado. */
+    const seleccionarProveedor = async (id, { enfocar = true } = {}) => {
+        await listo;
+
+        const pin = pines.get(id);
+
+        if (!pin || !mapa || (arrastre && arrastre.id !== id)) {
+            return false;
+        }
+
+        proveedorSeleccionado = id;
+        refrescarPines();
+
+        if (enfocar) {
+            mapa.panTo(posicionDe(pin.marcador));
+
+            if (mapa.getZoom() < ZOOM_PROVEEDOR) {
+                mapa.setZoom(ZOOM_PROVEEDOR);
+            }
+        }
+
+        if (!arrastre) {
+            abrirInfo(pin);
+        }
+
+        anunciarSeleccion();
+
+        return true;
+    };
+
+    const limpiarProveedor = () => {
+        if (proveedorSeleccionado === null) {
+            return;
+        }
+
+        proveedorSeleccionado = null;
+        infoWindow?.close();
+        refrescarPines();
+        anunciarSeleccion();
+    };
+
+    const crearPin = (proveedor) => {
+        if (!esCoordenadaValida(proveedor.lat, proveedor.lng)) {
+            console.warn(`[EcoLact] ${proveedor.nombre} tiene coordenadas inválidas; no se dibuja su pin.`, proveedor);
+            return null;
+        }
+
+        const marcador = new mapsLib.AdvancedMarkerElement({
+            map: mapa,
+            position: { lat: proveedor.lat, lng: proveedor.lng },
+            content: contenidoPin(proveedor),
+            title: proveedor.nombre,
+            gmpClickable: true,
+            gmpDraggable: false,
+            zIndex: 30,
+        });
+        const pin = { proveedor, marcador };
+
+        // Durante "Mover ubicación" los demás pines quedan bloqueados.
+        marcador.addEventListener('gmp-click', () => {
+            if (!arrastre) {
+                seleccionarProveedor(pin.proveedor.id, { enfocar: false });
+            }
+        });
+
+        pines.set(proveedor.id, pin);
+
+        return pin;
+    };
+
+    // ------------------------------------------------------------ mover ubicación
+
+    /**
+     * Vuelve arrastrable SOLO el marcador del proveedor seleccionado. `alSoltar` recibe la
+     * nueva posición cada vez que se suelta el pin.
+     */
+    const activarArrastre = (id, alSoltar) => {
+        const pin = pines.get(id);
+
+        if (!pin || !mapa || arrastre || id !== proveedorSeleccionado) {
+            return false;
+        }
+
+        infoWindow.close();
+        arrastre = { id, original: posicionDe(pin.marcador), escucha: null };
+        pin.marcador.gmpDraggable = true;
+        arrastre.escucha = pin.marcador.addListener('dragend', () => alSoltar(posicionDe(pin.marcador)));
+        refrescarPines();
+
+        return true;
+    };
+
+    /** Bloquea de nuevo el marcador; con `revertir` vuelve a su posición original. */
+    const desactivarArrastre = ({ revertir = true } = {}) => {
+        if (!arrastre) {
+            return;
+        }
+
+        const pin = pines.get(arrastre.id);
+
+        arrastre.escucha?.remove();
+
+        if (pin) {
+            pin.marcador.gmpDraggable = false;
+
+            if (revertir) {
+                pin.marcador.position = arrastre.original;
+            }
+        }
+
+        arrastre = null;
+        refrescarPines();
+
+        if (pin && pin.proveedor.id === proveedorSeleccionado) {
+            abrirInfo(pin);
+        }
+    };
+
+    // ------------------------------------------------------------ datos del servidor
+
+    /** Aplica el mapa recalculado por el servidor (tras mover a un proveedor). */
+    const actualizar = (nuevos) => {
+        if (datosEl) {
+            datosEl.textContent = JSON.stringify(nuevos);
+        }
+
+        nuevos.zonas.forEach((zona) => {
+            const item = zonas.get(zona.id);
+
+            if (!item) {
+                return;
+            }
+
+            item.zona = { ...item.zona, ...zona };
+
+            if (item.etiqueta) {
+                item.etiqueta.querySelector('span').textContent = etiquetaProveedores(zona.proveedores);
+                item.marcadorEtiqueta.title = `${zona.nombre} · ${etiquetaProveedores(zona.proveedores)}`;
+            }
+        });
+
+        if (!mapa) {
+            return;
+        }
+
+        const vigentes = new Set();
+
+        nuevos.proveedores.forEach((proveedor) => {
+            const pin = pines.get(proveedor.id);
+            vigentes.add(proveedor.id);
+
+            if (pin && esCoordenadaValida(proveedor.lat, proveedor.lng)) {
+                pin.proveedor = proveedor;
+                pin.marcador.position = { lat: proveedor.lat, lng: proveedor.lng };
+            } else if (!pin) {
+                crearPin(proveedor);
+            }
+        });
+
+        pines.forEach((pin, id) => {
+            if (!vigentes.has(id)) {
+                pin.marcador.map = null;
+                pines.delete(id);
+            }
+        });
+
+        if (!pines.has(proveedorSeleccionado)) {
+            proveedorSeleccionado = null;
+            infoWindow.close();
+        }
+
+        refrescarPines();
+
+        const seleccionado = pines.get(proveedorSeleccionado);
+
+        if (seleccionado && !arrastre) {
+            abrirInfo(seleccionado);
+        }
+
+        anunciarSeleccion();
+    };
+
+    // ------------------------------------------------------------------ pintado
+
+    /**
+     * Google Maps no está disponible (sin key, red, o Google rechazó la key después de cargar):
+     * en vez del bloque de error de Google se muestra el aviso de EcoLact con "Reintentar".
+     * La leyenda, el buscador y el panel siguen funcionando.
+     */
+    const mostrarFallo = () => {
+        lienzo.hidden = true;
+        estadoMapa.hidden = false;
+        estadoMapa.classList.add('is-error');
+        estadoMapa.querySelector('[data-zonas-mapa-estado-texto]').textContent = 'No se pudo cargar el mapa. Verifica la configuración de Google Maps.';
+        estadoMapa.querySelector('[data-zonas-mapa-reintentar]').hidden = false;
+        infoWindow?.close();
+        document.dispatchEvent(new CustomEvent('zonas:mapa-no-disponible'));
+    };
+
+    estadoMapa.querySelector('[data-zonas-mapa-reintentar]').addEventListener('click', () => window.location.reload());
+    alFallarGoogleMaps(mostrarFallo);
+
     const pintar = async () => {
-        const mapsLib = await cargarGoogleMaps();
+        mapsLib = await cargarGoogleMaps();
 
         if (!mapsLib) {
-            aviso.hidden = false;
-            aviso.textContent = 'No se pudo cargar Google Maps (falta configurar GOOGLE_MAPS_API_KEY o hubo un problema de red). La leyenda y la tabla siguen funcionando.';
-            lienzo.hidden = true;
+            mostrarFallo();
+            marcarListo();
             return;
         }
 
@@ -270,23 +595,30 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
             clickableIcons: false,
         });
         infoWindow = new google.maps.InfoWindow();
-        limitesGenerales = new google.maps.LatLngBounds();
+        infoWindow.addListener('closeclick', () => limpiarProveedor());
+        google.maps.event.addListenerOnce(mapa, 'tilesloaded', () => {
+            if (!window.__ecolactMapsFallo) {
+                estadoMapa.hidden = true;
+            }
+        });
+
+        const limitesGenerales = new google.maps.LatLngBounds();
 
         zonas.forEach((item) => {
             const { zona } = item;
 
-            if (!zona.geometry) {
-                return;
+            if (item.vertices.length < 3) {
+                return; // Sin delimitación (o inválida): la zona sigue en la leyenda y en el panel.
             }
 
             item.poligono = dibujarDelimitacion(mapa, zona);
-            item.poligono.addListener('click', () => seleccionar(zona.id));
-            item.limites = limitesDeVertices(verticesDeGeometria(zona.geometry));
+            item.poligono.addListener('click', () => seleccionarZona(zona.id));
+            item.limites = limitesDeVertices(item.vertices);
             limitesGenerales.union(item.limites);
 
             if (zona.etiqueta) {
                 item.etiqueta = crearEtiqueta(zona);
-                const marcador = new mapsLib.AdvancedMarkerElement({
+                item.marcadorEtiqueta = new mapsLib.AdvancedMarkerElement({
                     map: mapa,
                     position: zona.etiqueta,
                     content: item.etiqueta,
@@ -294,33 +626,19 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
                     gmpClickable: true,
                     zIndex: 20,
                 });
-                marcador.addListener('gmp-click', () => seleccionar(zona.id));
+                item.marcadorEtiqueta.addEventListener('gmp-click', () => seleccionarZona(zona.id));
             }
         });
 
         datos.proveedores.forEach((proveedor) => {
-            const item = zonas.get(proveedor.zonaId);
-            const posicion = { lat: proveedor.lat, lng: proveedor.lng };
-            const marcador = new mapsLib.AdvancedMarkerElement({
-                map: mapa,
-                position: posicion,
-                content: crearPinProveedor(item.zona.color, proveedor.fueraDeDelimitacion),
-                title: proveedor.nombre,
-                gmpClickable: true,
-                zIndex: 30,
-            });
-
-            marcador.addListener('gmp-click', () => {
-                infoWindow.setContent(contenidoInfo(proveedor));
-                infoWindow.open({ map: mapa, anchor: marcador });
-            });
-
-            item.puntos.push(posicion);
-            limitesGenerales.extend(posicion);
+            if (crearPin(proveedor)) {
+                limitesGenerales.extend({ lat: proveedor.lat, lng: proveedor.lng });
+            }
         });
 
         encuadrar(mapa, limitesGenerales);
         resaltar(seleccion);
+        marcarListo();
     };
 
     pintar();
@@ -328,6 +646,14 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
     return {
         resaltar,
         seleccionada: () => seleccion,
+        zonaEn,
+        zona: (id) => zonas.get(id)?.zona ?? null,
+        proveedor: (id) => pines.get(id)?.proveedor ?? null,
+        seleccionarProveedor,
+        limpiarProveedor,
+        activarArrastre,
+        desactivarArrastre,
+        actualizar,
     };
 }
 
@@ -366,14 +692,20 @@ export function iniciarEditorDelimitacion(pagina) {
         const aviso = seccion.querySelector('[data-delimitacion-aviso]');
         const zonaId = parseInt(seccion.dataset.delimitacionZona, 10);
 
+        const sinMapa = () => {
+            aviso.hidden = false;
+            aviso.textContent = 'No se pudo cargar el mapa: la delimitación solo se puede dibujar sobre él. Verifica la configuración de Google Maps.';
+            lienzo.hidden = true;
+        };
         const mapsLib = await cargarGoogleMaps();
 
-        if (!mapsLib) {
-            aviso.hidden = false;
-            aviso.textContent = 'No se pudo cargar Google Maps: la delimitación solo se puede dibujar sobre el mapa.';
-            lienzo.hidden = true;
+        // Con la key ya rechazada por Google, crear el mapa solo produce errores internos de la API.
+        if (!mapsLib || window.__ecolactMapsFallo) {
+            sinMapa();
             return;
         }
+
+        alFallarGoogleMaps(sinMapa);
 
         const ayuda = seccion.querySelector('[data-delimitacion-ayuda]');
         const botonesModo = seccion.querySelectorAll('[data-delimitacion-modo]');
@@ -392,20 +724,22 @@ export function iniciarEditorDelimitacion(pagina) {
         const limitesReferencia = new google.maps.LatLngBounds();
 
         referencia.zonas
-            .filter((zona) => zona.id !== zonaId && zona.geometry)
+            .filter((zona) => zona.id !== zonaId && verticesDeGeometria(zona.geometry, zona.nombre).length >= 3)
             .forEach((zona) => {
                 dibujarDelimitacion(mapa, zona, { clickable: false, estilo: 'referencia' });
-                verticesDeGeometria(zona.geometry).forEach((vertice) => limitesReferencia.extend(vertice));
+                verticesDeGeometria(zona.geometry, zona.nombre).forEach((vertice) => limitesReferencia.extend(vertice));
 
                 const nombre = document.createElement('div');
                 nombre.className = 'zonas-etiqueta is-referencia';
                 nombre.style.setProperty('--zona-fondo', oscurecer(zona.color));
                 nombre.textContent = zona.nombre;
-                new mapsLib.AdvancedMarkerElement({ map: mapa, position: zona.etiqueta, content: nombre });
+                if (zona.etiqueta && esCoordenadaValida(zona.etiqueta.lat, zona.etiqueta.lng)) {
+                    new mapsLib.AdvancedMarkerElement({ map: mapa, position: zona.etiqueta, content: nombre });
+                }
             });
 
         referencia.proveedores
-            .filter((proveedor) => proveedor.zonaId === zonaId)
+            .filter((proveedor) => proveedor.zonaId === zonaId && esCoordenadaValida(proveedor.lat, proveedor.lng))
             .forEach((proveedor) => {
                 const posicion = { lat: proveedor.lat, lng: proveedor.lng };
                 new mapsLib.AdvancedMarkerElement({ map: mapa, position: posicion, content: crearPinProveedor(inputColor.value), title: proveedor.nombre });
@@ -462,7 +796,7 @@ export function iniciarEditorDelimitacion(pagina) {
             });
 
             if (esPrimero) {
-                marcador.addListener('gmp-click', () => finalizar());
+                marcador.addEventListener('gmp-click', () => finalizar());
             }
 
             return marcador;

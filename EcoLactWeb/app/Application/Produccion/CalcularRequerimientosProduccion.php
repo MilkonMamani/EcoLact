@@ -59,6 +59,7 @@ final class CalcularRequerimientosProduccion
             $lineasCalculadas[] = [
                 'productoId' => $productoId,
                 'producto' => $producto->nombre(),
+                'etiqueta' => $producto->etiqueta(),
                 'unidad' => $producto->unidadMedida(),
                 'cantidad' => $cantidad,
                 'recetaId' => $receta?->id(),

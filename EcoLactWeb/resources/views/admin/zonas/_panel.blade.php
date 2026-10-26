@@ -2,7 +2,8 @@
     Panel derecho de Zonas: se pinta en la carga inicial (index) y como fragmento
     (admin.zonas.panel / admin.zonas.panel.sin-asignar) al elegir otra fila o tras el switch.
     Mismo patrón que Acopiadores: cabecera mínima, pestañas Resumen / Proveedores / Acopiadores
-    y la edición solo desde la sección dueña del dato (Resumen). El mapa vive en el Resumen.
+    y la edición solo desde la sección dueña del dato (Resumen). El único mapa es el general
+    de la pantalla: el Resumen solo resume la delimitación y las ubicaciones.
 
     @var ?\App\Application\Zona\ZonaPanelData $panel
     @var ?list<\App\Application\Zona\ProveedorAsignadoFila> $proveedoresSinZona
@@ -225,7 +226,7 @@
                 </div>
             </div>
 
-            <p class="text-xs text-text-muted">El estado se cambia con el switch del listado o desde el menú de acciones.</p>
+            <p class="text-xs text-text-muted">El estado se cambia desde el menú de acciones de la zona.</p>
             <div class="flex justify-end gap-2 border-t border-text-muted/10 pt-4">
                 <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>
                 <x-ui.button type="submit">Guardar cambios</x-ui.button>
@@ -266,5 +267,5 @@
         </div>
     </div>
 @else
-    <x-fichas.panel-vacio entidad="zona">Haz click en una fila del listado para ver su resumen, proveedores y acopiadores.</x-fichas.panel-vacio>
+    <x-fichas.panel-vacio entidad="zona">Elige una zona en el mapa para ver su resumen, proveedores y acopiadores.</x-fichas.panel-vacio>
 @endif

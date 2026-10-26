@@ -76,6 +76,18 @@ it('abre la ventana para cada rol con su valor por día, nunca por litros acopia
         ->and($obligacion->base_calculo)->not->toHaveKey('litros_pagables');
 })->with(['ACOPIADOR', 'CALIDAD', 'ENCARGADO_PLANTA', 'VENTAS', 'ADMINISTRADOR']);
 
+it('el sueldo es de cada trabajador: un compañero del mismo rol sin sueldo configurado no genera pago', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    $pedro = pagos_personal('ACOPIADOR', 'Pedro');
+    pagos_configurar_trabajador($juan->id, 1500, '2026-09-01', $admin);
+
+    generar_pagos('2026-09-20');
+
+    expect(ObligacionPagoModel::pluck('user_id')->all())->toBe([$juan->id])
+        ->and(ObligacionPagoModel::where('user_id', $pedro->id)->exists())->toBeFalse();
+});
+
 it('dos acopiadores del mismo rol abren dos ventanas EN_CURSO con el mismo valor por día', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $juan = pagos_personal('ACOPIADOR', 'Juan');
@@ -94,8 +106,8 @@ it('dos acopiadores del mismo rol abren dos ventanas EN_CURSO con el mismo valor
 
 it('no duplica un pago aunque la generación corra varias veces', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $admin->forceFill(['created_at' => '2026-01-15'])->save();
-    pagos_configurar('ADMINISTRADOR', 1800, '2026-09-01', $admin);
+    pagos_personal('CALIDAD', 'Ana');
+    pagos_configurar('CALIDAD', 1800, '2026-09-01', $admin);
 
     $primera = generar_pagos('2026-09-20');
     $segunda = generar_pagos('2026-09-20');
@@ -286,7 +298,20 @@ it('el cálculo del proveedor usa el precio de leche vigente, no un valor de la 
         ->and(ConfiguracionPagoModel::firstOrFail()->monto_base)->toBeNull();
 });
 
-it('cada entrega se paga con su propio ajuste de calidad cuando la configuración lo indica', function () {
+it('caso A: todas las entregas ACEPTADAS se pagan al precio normal, sin ajuste', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    proveedor_con_leche($admin, [[50.0, '2026-09-10', 'ACEPTADA'], [50.0, '2026-09-11', 'ACEPTADA']], aplicaCalidad: true);
+
+    generar_pagos('2026-09-20');
+
+    $obligacion = ObligacionPagoModel::firstOrFail();
+
+    expect((float) $obligacion->monto_calculado)->toBe(210.0)
+        ->and($obligacion->base_calculo['resultado_semanal'])->toBe('ACEPTADA')
+        ->and($obligacion->detalles->map(fn ($d): float => (float) $d->ajuste_calidad)->unique()->values()->all())->toBe([0.0]);
+});
+
+it('caso B: una sola entrega OBSERVADA aplica el descuento a TODOS los litros de la semana', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     proveedor_con_leche($admin, [[50.0, '2026-09-10', 'ACEPTADA'], [50.0, '2026-09-11', 'OBSERVADA']], aplicaCalidad: true);
 
@@ -295,12 +320,53 @@ it('cada entrega se paga con su propio ajuste de calidad cuando la configuració
     $obligacion = ObligacionPagoModel::firstOrFail();
     $detalles = $obligacion->detalles->sortBy('entrega_id')->values();
 
-    // ACEPTADA: 50 x 2.10 = 105; OBSERVADA: 50 x (2.10 - 0.30) = 90.
-    expect((float) $obligacion->monto_calculado)->toBe(195.0)
-        ->and((float) $detalles[0]->precio_final)->toBe(2.1)
-        ->and((float) $detalles[1]->ajuste_calidad)->toBe(-0.3)
-        ->and((float) $detalles[1]->precio_final)->toBe(1.8)
-        ->and($detalles[1]->resultado_calidad)->toBe('OBSERVADA');
+    // Semana OBSERVADA: 100 x (2.10 - 0.30) = 180, también la entrega aceptada.
+    expect((float) $obligacion->monto_calculado)->toBe(180.0)
+        ->and($obligacion->base_calculo['resultado_semanal'])->toBe('OBSERVADA')
+        ->and((float) $detalles[0]->precio_final)->toBe(1.8)
+        ->and((float) $detalles[0]->ajuste_calidad)->toBe(-0.3)
+        ->and($detalles[0]->resultado_calidad)->toBe('ACEPTADA')
+        ->and((float) $detalles[1]->precio_final)->toBe(1.8);
+});
+
+it('caso C: varias entregas OBSERVADAS aplican el mismo descuento semanal una sola vez por litro', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    proveedor_con_leche($admin, [[50.0, '2026-09-10', 'OBSERVADA'], [50.0, '2026-09-11', 'OBSERVADA']], aplicaCalidad: true);
+
+    generar_pagos('2026-09-20');
+
+    expect((float) ObligacionPagoModel::firstOrFail()->monto_calculado)->toBe(180.0);
+});
+
+it('caso D y E: una entrega RECHAZADA deja la semana no pagable, aunque haya aceptadas u observadas', function (array $entregas) {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    proveedor_con_leche($admin, $entregas, aplicaCalidad: true);
+
+    $resultado = generar_pagos('2026-09-20');
+
+    $semana = ObligacionPagoModel::sole();
+
+    // La semana queda registrada como NO_PAGABLE con S/ 0.00: visible, pero nunca pagable.
+    expect($resultado->creadas)->toBe(0)
+        ->and($semana->estado)->toBe('NO_PAGABLE')
+        ->and((float) $semana->monto_calculado)->toBe(0.0)
+        ->and($semana->base_calculo['resultado_semanal'])->toBe('RECHAZADA')
+        ->and((float) $semana->base_calculo['precio_base_litro'])->toBe(2.1)
+        ->and((float) $semana->base_calculo['litros_entregados'])->toBe(100.0)
+        ->and((float) $semana->base_calculo['litros_pagables'])->toBe(0.0)
+        ->and(json_encode($resultado->omitidas, JSON_UNESCAPED_UNICODE))->toContain('RECHAZADA');
+})->with([
+    'aceptada + rechazada' => [[[40.0, '2026-09-10', 'ACEPTADA'], [60.0, '2026-09-11', 'RECHAZADA']]],
+    'observada + rechazada' => [[[40.0, '2026-09-10', 'OBSERVADA'], [60.0, '2026-09-11', 'RECHAZADA']]],
+]);
+
+it('caso F: una entrega sin análisis toma el resultado del resto de la semana', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    proveedor_con_leche($admin, [[50.0, '2026-09-10', null], [50.0, '2026-09-11', 'OBSERVADA']], aplicaCalidad: true);
+
+    generar_pagos('2026-09-20');
+
+    expect((float) ObligacionPagoModel::firstOrFail()->monto_calculado)->toBe(180.0);
 });
 
 it('sin ajustes de calidad se paga el precio base aunque haya incidencias', function () {
@@ -326,28 +392,47 @@ it('una entrega sin análisis de calidad SÍ genera deuda al precio base y no cr
         ->and(AnalisisCalidadModel::count())->toBe(0);
 });
 
-it('la leche rechazada no se paga: sus litros valen 0 aunque su ajuste sea 0', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    proveedor_con_leche($admin, [[40.0, '2026-09-10', 'ACEPTADA'], [60.0, '2026-09-11', 'RECHAZADA']]);
-
-    generar_pagos('2026-09-20');
-
-    $obligacion = ObligacionPagoModel::firstOrFail();
-    $rechazada = $obligacion->detalles->firstWhere('resultado_calidad', 'RECHAZADA');
-
-    expect((float) $obligacion->monto_calculado)->toBe(84.0)
-        ->and((float) $rechazada->litros_pagables)->toBe(0.0)
-        ->and((float) $rechazada->subtotal)->toBe(0.0)
-        ->and($obligacion->base_calculo['litros_entregados'])->toEqual(100);
-});
-
-it('la leche completamente rechazada no genera un pago', function () {
+it('la leche completamente rechazada no genera un pago: la semana queda NO_PAGABLE', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     proveedor_con_leche($admin, [[30.0, '2026-09-10', 'RECHAZADA'], [20.0, '2026-09-11', 'RECHAZADA']]);
 
     $resultado = generar_pagos('2026-09-20');
 
-    expect($resultado->creadas)->toBe(0)->and(ObligacionPagoModel::count())->toBe(0);
+    expect($resultado->creadas)->toBe(0)
+        ->and(ObligacionPagoModel::where('estado', 'PENDIENTE')->count())->toBe(0)
+        ->and(ObligacionPagoModel::sole()->estado)->toBe('NO_PAGABLE');
+});
+
+it('las compras de una semana RECHAZADA se descuentan en la siguiente semana pagable', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [$proveedor] = proveedor_con_leche($admin, [[40.0, '2026-09-10', 'RECHAZADA'], [50.0, '2026-09-17', 'ACEPTADA']]);
+    $periodo = PeriodoLiquidacionModel::create(['fecha_inicio' => '2026-09-10', 'fecha_fin' => '2026-09-16', 'estado' => 'ABIERTO']);
+    $producto = ProductoModel::create(['nombre' => 'Queso', 'unidad_medida' => 'UNIDAD', 'estado' => 'ACTIVO']);
+    VentaProductoModel::create([
+        'producto_id' => $producto->id, 'proveedor_id' => $proveedor->id, 'tipo_cliente' => 'PROVEEDOR',
+        'cantidad' => 1, 'precio_unitario' => 20, 'importe_total' => 20, 'forma_pago' => 'DESCUENTO_PLANILLA',
+        'periodo_id' => $periodo->id, 'estado' => 'REGISTRADA', 'fecha' => '2026-09-12', 'registrado_por_user_id' => $admin->id,
+    ]);
+
+    generar_pagos('2026-09-27');
+
+    $rechazada = ObligacionPagoModel::where('estado', 'NO_PAGABLE')->sole();
+    $siguiente = ObligacionPagoModel::where('estado', 'PENDIENTE')->sole();
+
+    // Semana siguiente: 50 L × 2.10 = 105 − 20 de la compra hecha en la semana rechazada.
+    expect($rechazada->base_calculo['descuentos'])->toBe([])
+        ->and((float) $siguiente->monto_calculado)->toBe(85.0);
+});
+
+it('una semana NO_PAGABLE no se puede pagar', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    proveedor_con_leche($admin, [[30.0, '2026-09-10', 'RECHAZADA']]);
+    generar_pagos('2026-09-20');
+    $semana = ObligacionPagoModel::sole();
+
+    expect(fn () => pagar_obligacion($semana, $admin))->toThrow(DomainException::class);
+
+    expect($semana->fresh()->estado)->toBe('NO_PAGABLE');
 });
 
 it('un análisis en borrador todavía no ajusta el precio: se paga el precio base', function () {

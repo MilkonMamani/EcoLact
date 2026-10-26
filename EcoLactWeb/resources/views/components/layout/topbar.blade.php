@@ -65,7 +65,6 @@
                 <div class="border-t border-text-muted/10 py-1.5">
                     <p class="px-3 pb-1 text-xs font-medium uppercase tracking-wide text-text-muted">Configuración</p>
                     <a href="{{ route('admin.parametros-calidad.index') }}" class="block rounded-md px-3 py-1.5 text-sm text-text hover:bg-text-muted/10">Parámetros de calidad</a>
-                    <a href="{{ route('admin.reglas-calidad.index') }}" class="block rounded-md px-3 py-1.5 text-sm text-text hover:bg-text-muted/10">Reglas de calidad</a>
                     <a href="{{ route('admin.configuracion-pagos.index') }}" class="block rounded-md px-3 py-1.5 text-sm text-text hover:bg-text-muted/10">Configuración de pagos</a>
                 </div>
             @endif

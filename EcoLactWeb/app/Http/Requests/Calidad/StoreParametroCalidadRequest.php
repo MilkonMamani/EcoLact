@@ -25,9 +25,10 @@ class StoreParametroCalidadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'codigo' => ['required', 'string', 'max:40', 'unique:parametros_calidad,codigo'],
+            'codigo' => ['required', 'string', 'max:40', 'regex:/^[A-Z0-9_]+$/', 'unique:parametros_calidad,codigo'],
             'nombre' => ['required', 'string', 'max:100'],
             'unidad' => ['nullable', 'string', 'max:30'],
+            'descripcion' => ['nullable', 'string', 'max:200'],
             'estado' => ['required', 'string', Rule::in(['ACTIVO', 'INACTIVO'])],
         ];
     }
@@ -39,6 +40,7 @@ class StoreParametroCalidadRequest extends FormRequest
     {
         return [
             'codigo.unique' => 'Ya existe un parámetro de calidad con ese código.',
+            'codigo.regex' => 'El código solo admite letras mayúsculas, números y guion bajo (ej. GRASA_LACTEA).',
         ];
     }
 }

@@ -152,7 +152,7 @@ it('bloquea con un mensaje entendible cuando falta stock y muestra necesario, di
         app(IniciarProduccion::class)->execute([['producto_id' => $yogur->id, 'cantidad' => 300]], $admin->id);
         $this->fail('Debió bloquearse.');
     } catch (ProduccionBloqueadaException $e) {
-        expect($e->getMessage())->toContain('No hay suficiente Azúcar. Necesitas 9 kg y solo hay 6 kg disponibles.');
+        expect($e->getMessage())->toContain('No hay suficiente Azúcar. Se necesitan 9 kg y hay 6 kg disponibles.');
     }
 
     expect(stockDe($azucar->id()))->toBe(6.0);

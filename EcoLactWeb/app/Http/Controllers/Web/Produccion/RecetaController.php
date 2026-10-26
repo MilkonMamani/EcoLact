@@ -55,6 +55,7 @@ final class RecetaController extends Controller
             'producto_id' => $request->integer('producto') ?: null,
             'estado' => $request->query('estado'),
             'busqueda' => $request->query('q'),
+            'solo_vigente' => true,
         ]);
 
         return view('admin.recetas.index', [
@@ -107,7 +108,7 @@ final class RecetaController extends Controller
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('admin.recetas.index')->with('success', "Se creó {$receta->nombre()} y su producto, con stock 0. Guardar una receta no descuenta insumos; se consumen al iniciar una producción.");
+        return redirect()->route('admin.recetas.index')->with('success', 'Receta guardada. Su producto queda con stock 0 y no se descontaron insumos: se consumen al iniciar una producción.');
     }
 
     public function update(StoreRecetaRequest $request, RecetaModel $receta): RedirectResponse
@@ -117,7 +118,7 @@ final class RecetaController extends Controller
         $datos = $request->validated();
 
         try {
-            $resultado = $this->guardarCambiosReceta->execute(
+            $this->guardarCambiosReceta->execute(
                 recetaId: $receta->id,
                 descripcion: $datos['descripcion'] ?? null,
                 ingredientes: $datos['ingredientes'],
@@ -128,11 +129,7 @@ final class RecetaController extends Controller
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
 
-        $mensaje = $resultado->id() !== $receta->id
-            ? "Esta receta ya se usó en producciones, así que se conservó su historia y se creó la versión {$resultado->version()}."
-            : 'Receta actualizada.';
-
-        return redirect()->route('admin.recetas.index')->with('success', $mensaje);
+        return redirect()->route('admin.recetas.index')->with('success', 'Receta actualizada. Guardar cambios no descuenta inventario.');
     }
 
     public function nuevaVersion(StoreRecetaRequest $request, RecetaModel $receta): RedirectResponse
@@ -165,7 +162,7 @@ final class RecetaController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
 
-        return redirect()->back()->with('success', 'Receta activada. Las demás versiones de este producto quedaron inactivas.');
+        return redirect()->back()->with('success', 'Receta activada.');
     }
 
     public function desactivar(RecetaModel $receta): RedirectResponse

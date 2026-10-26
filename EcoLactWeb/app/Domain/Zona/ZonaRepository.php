@@ -36,4 +36,13 @@ interface ZonaRepository
      * @return Zona[]
      */
     public function listarActivas(): array;
+
+    /**
+     * Delimitaciones operativas guardadas, de TODAS las zonas (activas o no),
+     * ordenadas por nombre de zona. Una zona sin polígono, o con uno que ya
+     * no se puede leer, no aparece.
+     *
+     * @return array<int, DelimitacionZona> zona_id => delimitación
+     */
+    public function listarDelimitaciones(): array;
 }

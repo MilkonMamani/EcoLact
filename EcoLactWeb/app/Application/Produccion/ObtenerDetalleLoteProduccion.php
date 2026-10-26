@@ -7,6 +7,7 @@ use App\Domain\Produccion\LoteProduccionInsumoRepository;
 use App\Domain\Produccion\LoteProduccionRepository;
 use App\Domain\Produccion\ProduccionDetalleRepository;
 use App\Domain\Produccion\ProductoRepository;
+use App\Domain\Produccion\ProductoStockRepository;
 
 final class ObtenerDetalleLoteProduccion
 {
@@ -16,6 +17,7 @@ final class ObtenerDetalleLoteProduccion
         private readonly ProduccionDetalleRepository $produccionDetalles,
         private readonly InsumoRepository $insumos,
         private readonly ProductoRepository $productos,
+        private readonly ProductoStockRepository $stock,
     ) {}
 
     public function execute(int $loteId): ?LoteProduccionDetalleData
@@ -54,14 +56,20 @@ final class ObtenerDetalleLoteProduccion
 
         foreach ($this->produccionDetalles->listarPorLote($loteId) as $detalle) {
             $producto = $this->productos->buscarPorId($detalle->productoId());
+            $obtenida = $detalle->cantidadObtenida();
 
             $productos[] = [
                 'detalleId' => $detalle->id(),
                 'productoId' => $detalle->productoId(),
                 'productoNombre' => $producto?->nombre() ?? 'Producto eliminado',
+                'etiqueta' => $producto?->etiqueta() ?? 'Producto eliminado',
                 'unidadMedida' => $producto?->unidadMedida() ?? '—',
                 'cantidadPlanificada' => $detalle->cantidadPlanificada(),
-                'cantidadObtenida' => $detalle->cantidadObtenida(),
+                'cantidadObtenida' => $obtenida,
+                // Lotes anteriores a la columna merma: se deriva de lo planificado y lo obtenido.
+                'merma' => $detalle->merma() ?? ($obtenida !== null ? round(max(0.0, $detalle->cantidadPlanificada() - $obtenida), 2) : null),
+                'excedente' => $obtenida !== null ? round(max(0.0, $obtenida - $detalle->cantidadPlanificada()), 2) : 0.0,
+                'stockActual' => $this->stock->buscarPorProductoId($detalle->productoId())?->cantidadActual() ?? 0.0,
                 'recetaId' => $detalle->recetaId(),
                 'recetaVersion' => $detalle->recetaVersion(),
             ];

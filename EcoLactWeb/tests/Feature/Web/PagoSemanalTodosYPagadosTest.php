@@ -67,7 +67,7 @@ function historial_pagos_proveedores(): array
 /** Nombres de proveedor visibles en la tabla, en el orden mostrado. */
 function nombres_en_tabla(string $html): array
 {
-    preg_match_all('/<tr data-fila data-id="\d+".*?<td data-proveedor-nombre[^>]*>\s*([^<]+?)\s*(?:<|$)/s', $html, $coincidencias);
+    preg_match_all('/<tr data-fila data-id="\d+".*?<span data-proveedor-nombre[^>]*>\s*([^<]+?)\s*(?:<|$)/s', $html, $coincidencias);
 
     return array_map('trim', $coincidencias[1]);
 }
@@ -133,13 +133,13 @@ it('un proveedor pagado aparece con Estado Todos y Pagados, y no con Pendientes'
         ->and(pantalla_pago(['semana' => '2026-09-10', 'estado' => 'pendientes'])[1])->not->toContain('Milkon Mamani');
 });
 
-it('el estado por defecto es Todos y el combo lista Todos, Pendientes de pago y Pagados', function () {
+it('el estado por defecto es Todos y el combo lista Todos los estados, Pendientes y Pagados', function () {
     $h = historial_pagos_proveedores();
 
     $respuesta = $this->actingAs($h['admin'])->get(route('admin.pagos.proveedores.index', ['semana' => '2026-09-10']))->assertOk();
 
     expect(nombres_en_tabla($respuesta->getContent()))->toContain('Milkon Mamani', 'Juana Quispe');
-    $respuesta->assertSeeInOrder(['<option value="todos" selected>Todos</option>', 'Pendientes de pago', 'Pagados'], false);
+    $respuesta->assertSeeInOrder(['<option value="todos" selected>Todos los estados</option>', '<option value="pendientes" >Pendientes</option>', 'Pagados'], false);
 });
 
 // CASO 8
@@ -159,12 +159,12 @@ it('la fila de un pagado tiene el checkbox deshabilitado y las de pendientes no'
 });
 
 // CASO 9 (parte servidor: qué filas son seleccionables; la selección en sí la hace el JS con data-pendiente)
-it('el botón Seleccionar pendientes de la zona solo puede tomar filas marcadas como pendientes', function () {
+it('la acción masiva Seleccionar pendientes visibles solo puede tomar filas marcadas como pendientes', function () {
     $h = historial_pagos_proveedores();
 
     $html = $this->actingAs($h['admin'])->get(route('admin.pagos.proveedores.index', ['semana' => '2026-09-10', 'zona' => $h['zonaB'], 'estado' => 'todos']))
         ->assertOk()
-        ->assertSee('Seleccionar pendientes de la zona')
+        ->assertSee('Seleccionar pendientes visibles')
         ->getContent();
 
     expect(preg_match_all('/data-pendiente="1"/', $html))->toBe(1)   // Juana
@@ -223,6 +223,17 @@ it('el comprobante de un pagado sigue accesible y usa el snapshot histórico, no
 });
 
 // CASOS 13 y 14
+it('la semana seleccionada se ve solo como "Semana N"; las demás opciones muestran su rango y el valor enviado no cambia', function () {
+    $h = historial_pagos_proveedores();
+
+    $html = $this->actingAs($h['admin'])->get(route('admin.pagos.proveedores.index', ['semana' => '2026-09-10']))->assertOk()->getContent();
+    preg_match('/<select id="filtro-semana".*?<\/select>/s', $html, $combo);
+
+    expect($combo[0])
+        ->toMatch('/<option value="2026-09-10" selected data-corta="Semana 38" data-larga="Semana 38 · 10\/09\/2026 - 16\/09\/2026">Semana 38<\/option>/')
+        ->toMatch('/<option value="2026-09-17"[^>]*>Semana 39 · 17\/09\/2026 - 23\/09\/2026<\/option>/');
+});
+
 it('las semanas del combo son únicas, ordenadas de la más reciente a la más antigua y Todos llega hasta la primera', function () {
     $h = historial_pagos_proveedores();
 
@@ -232,13 +243,16 @@ it('las semanas del combo son únicas, ordenadas de la más reciente a la más a
     expect(array_column($semanas, 'etiqueta'))->toBe(['Semana 39', 'Semana 38', 'Semana 37'])
         ->and(array_column($semanas, 'inicio'))->toBe(['2026-09-17', '2026-09-10', '2026-09-03']);
 
-    $respuesta->assertSeeInOrder(['<option value="todos" selected>Todos</option>', 'Semana 39', 'Semana 38', 'Semana 37'], false);
     preg_match('/<select id="filtro-semana".*?<\/select>/s', $respuesta->getContent(), $combo);
-    expect(substr_count($combo[0], 'Semana 38'))->toBe(1)->and(substr_count($combo[0], '<option'))->toBe(4);
+    preg_match_all('/<option value="([^"]+)"([^>]*)>([^<]*)<\/option>/', $combo[0], $opciones, PREG_SET_ORDER);
+
+    // "Todas las semanas" seleccionada, sin rango; cada semana una sola vez, con su rango en la lista.
+    expect(array_map(fn (array $o): string => trim($o[3]), $opciones))->toBe([
+        'Todas las semanas', 'Semana 39 · 17/09/2026 - 23/09/2026', 'Semana 38 · 10/09/2026 - 16/09/2026', 'Semana 37 · 03/09/2026 - 09/09/2026',
+    ])->and($opciones[0][2])->toContain('selected');
 
     // Todos incluye la primera semana con registros (Pedro Ticona, Semana 37).
     expect(pantalla_pago(['semana' => 'todos'])[1])->toContain('Pedro Ticona');
-    $respuesta->assertSee('Todo el historial');
 });
 
 it('una semana que no existe cae a la más reciente con pendientes y un valor ambiguo no se toma como Todos', function () {

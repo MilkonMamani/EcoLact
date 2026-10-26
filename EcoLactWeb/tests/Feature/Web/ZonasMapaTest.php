@@ -39,13 +39,16 @@ beforeEach(fn () => Carbon::setTestNow(Carbon::parse('2026-09-29 10:00:00', 'Ame
 
 afterEach(fn () => Carbon::setTestNow());
 
-it('muestra el aviso de proveedores sin zona, luego el mapa y después la tabla "Resumen de zonas"', function () {
+it('ordena la pantalla como aviso de proveedores sin zona, buscador de proveedores, mapa y panel, sin la tabla "Resumen de zonas"', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Collana 1');
     fixture_proveedor($zona);
 
     $this->actingAs($admin)->get(route('admin.zonas.index'))
-        ->assertSeeInOrder(['Proveedores sin zona', 'Buscar zona por nombre o descripción', 'data-zonas-mapa-general', 'Delimitación operativa referencial', 'Resumen de zonas', 'data-fichas-tabla'], false);
+        ->assertSeeInOrder(['Proveedores sin zona', 'Buscar proveedor por nombre o DNI...', 'data-zonas-mapa-general', 'Delimitación operativa referencial', 'data-fichas-panel'], false)
+        ->assertDontSee('Resumen de zonas')
+        ->assertDontSee('data-fichas-tabla', false)
+        ->assertDontSee('Buscar zona por nombre o descripción');
 });
 
 it('el mapa trae cada zona con su color, proveedores contados en el servidor y solo los puntos con coordenadas', function () {
@@ -89,16 +92,16 @@ it('con delimitación guardada el mapa trae la geometría, el punto de la etique
         ->assertDontSee('Todavía no hay delimitaciones dibujadas');
 });
 
-it('el filtro de estado también filtra las zonas del mapa', function () {
+it('el mapa muestra todas las zonas, activas e inactivas', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     fixture_zona('Collana 1');
     fixture_zona('Faon')->update(['estado' => 'INACTIVO']);
 
-    $this->actingAs($admin)->get(route('admin.zonas.index', ['estado' => 'ACTIVO']))
-        ->assertViewHas('mapaZonas', fn (ZonasMapaData $mapa): bool => array_column($mapa->zonas, 'nombre') === ['Collana 1']);
+    $this->actingAs($admin)->get(route('admin.zonas.index'))
+        ->assertViewHas('mapaZonas', fn (ZonasMapaData $mapa): bool => array_column($mapa->zonas, 'nombre') === ['Collana 1', 'Faon']);
 });
 
-it('el panel cuenta proveedores con y sin coordenadas, su mini mapa trae solo esa zona y avisa de ubicaciones fuera de la delimitación', function () {
+it('el panel cuenta proveedores con y sin coordenadas y avisa de ubicaciones fuera de la delimitación, sin mini mapa propio', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Collana 1');
     $zona->update(['poligono_geojson' => mapa_cuadrado()]);
@@ -110,9 +113,10 @@ it('el panel cuenta proveedores con y sin coordenadas, su mini mapa trae solo es
     $ajeno = mapa_asignar($otra, -15.5, -70.1);
 
     $this->actingAs($admin)->get(route('admin.zonas.panel', $zona->id))
-        ->assertSeeInOrder(['Ubicación de proveedores', 'Con coordenadas', '2', 'Sin coordenadas', '1'])
+        ->assertSeeInOrder(['Delimitación y ubicaciones', 'Con coordenadas', '2', 'Sin coordenadas', '1'])
         ->assertSee('Rosa Mamani:</strong> la ubicación registrada se encuentra fuera de la delimitación operativa de Collana 1.', false)
-        ->assertSee('"geometry":{"type":"Polygon"', false)
+        ->assertDontSee('Ubicación de proveedores')
+        ->assertDontSee('data-zona-mapa-datos', false)
         ->assertDontSee('Esta zona aún no tiene una delimitación operativa.')
         ->assertDontSee($ajeno->dni);
 });

@@ -67,35 +67,41 @@ it('pagar a trabajadores muestra la pantalla de tabla y panel lateral', function
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.index'))
         ->assertOk()
         ->assertSee('Pagos a trabajadores')
-        ->assertSee('Gestiona los pagos individuales de los trabajadores correspondientes al mes seleccionado.')
+        ->assertSee('Revisa los pagos mensuales del personal y registra la entrega correspondiente.')
         ->assertSee('data-fichas-panel', false);
 });
 
-it('la pantalla muestra KPIs, filtros, tabla con el cálculo y la hoja individual', function () {
+it('la pantalla muestra métricas compactas, filtros, la tabla de liquidaciones y el panel Comprobante de pago', function () {
     [$admin] = pago_semanal_con_pendiente();
 
-    $this->actingAs($admin)->get(route('admin.pagos.proveedores.index'))
+    $html = $this->actingAs($admin)->get(route('admin.pagos.proveedores.index'))
         ->assertOk()
-        ->assertSeeInOrder(['Pago semanal a proveedores', 'Pendientes de pago', 'Litros pagables', 'Total pendiente', 'Seleccionados'])
-        ->assertSeeInOrder(['Semana', 'Zona', 'Estado', 'Seleccionar pendientes de la zona'])
-        ->assertSee('Se imprimirá 1 hoja por cada proveedor seleccionado.')
-        ->assertSee('Proveedores de la semana')
-        ->assertSeeInOrder(['Proveedor', 'Zona', 'Litros', 'Precio/L', 'Calidad', 'Compras', 'Subtotal', 'Total', 'Estado'])
-        ->assertSee('Hoja individual del proveedor')
-        ->assertSee('Revisar e imprimir')
-        ->assertSee('Limpiar selección')
-        ->assertDontSee('Generar PDF de sobres')
-        ->assertDontSee('Resumen de selección')
+        ->assertSeeInOrder(['Pago semanal a proveedores', 'Revisa las liquidaciones semanales y confirma los pagos correspondientes.'])
+        ->assertSeeInOrder(['Pendientes', '1 proveedor', 'Litros pagables', '150 L', 'Total pendiente', 'S/ 270.00'])
+        ->assertSeeInOrder(['Buscar proveedor...', 'filtro-semana', 'filtro-zona', 'filtro-estado', 'Filtrar', 'Limpiar'], false)
+        ->assertSeeInOrder(['Proveedor', 'Zona', 'Litros', 'Precio/L', 'Calidad semanal', 'Compras', 'Total', 'Estado'])
+        ->assertSeeInOrder(['Comprobante de pago', 'Vista previa del comprobante del proveedor seleccionado.', 'Selecciona un proveedor', 'Haz clic en una fila para revisar su liquidación y comprobante.'])
+        ->assertSee('Revisar seleccionados')
+        ->assertSee('Seleccionar pendientes visibles')
+        ->assertSee('Imprimir comprobante')
+        ->assertSee('Registrar pago')
         ->assertSee('Vista previa de impresión')
-        ->assertSee('Zona 1')
-        ->assertSee('150 L')
-        ->assertSee('S/ 2.10')
-        ->assertSee('- S/ 15.00')   // 50 L observados × -0.30
-        ->assertSee('S/ 300.00')    // 150 × 2.10 - 15 = subtotal
-        ->assertSee('Pendiente');
+        ->assertDontSee('Hoja individual del proveedor')
+        ->assertDontSee('Revisar e imprimir')
+        ->assertDontSee('Seleccionados:')
+        ->getContent();
+
+    preg_match('/<thead>.*?<\/thead>/s', $html, $cabecera);
+    preg_match('/<tr data-fila .*?<\/tr>/s', $html, $fila);
+
+    // Semana OBSERVADA: 150 L a 2.10 - 0.30 = 1.80; el total ya es el monto a entregar.
+    expect($cabecera[0])->not->toContain('Subtotal')
+        ->and($fila[0])->toContain('Semana 38')->toContain('150 L')->toContain('S/ 1.80')->toContain('Base S/ 2.10')
+        ->toContain('ajuste −S/ 0.30')->toContain('Observada')->toContain('S/ 270.00')->toContain('Pendiente')
+        ->toContain('title="Ver comprobante"')->not->toContain('eye');
 });
 
-it('el comprobante calcula litros, penalidad, compras descontadas y total final', function () {
+it('el comprobante explica el cálculo semanal: litros, precio base, resultado, penalización, precio aplicado, compras y total', function () {
     [$admin, $obligacion] = pago_semanal_con_pendiente();
     pago_semanal_compra_descontada($admin, $obligacion, 18.0, 2);
     app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'), $admin->id);
@@ -104,53 +110,95 @@ it('el comprobante calcula litros, penalidad, compras descontadas y total final'
         ->assertOk()
         ->assertJsonCount(1, 'hojas');
 
-    expect((float) $respuesta->json('hojas.0.total'))->toBe(264.0);
+    expect((float) $respuesta->json('hojas.0.total'))->toBe(234.0);
 
     $html = $respuesta->json('hojas.0.html');
-    expect($html)->toContain('Comprobante de pago')
-        ->and($html)->toContain('01345678')
-        ->and($html)->toContain('PRV-'.str_pad((string) $obligacion->proveedor_id, 3, '0', STR_PAD_LEFT))
-        ->and($html)->toContain('<dt>Semana</dt><dd>38</dd>')
-        ->and($html)->toContain('10/09/2026 – 16/09/2026')
-        ->and($html)->toContain('Penalidad por calidad')
-        ->and($html)->toContain('− S/ 15.00')
-        ->and($html)->toContain('Subtotal por leche')
-        ->and($html)->toContain('S/ 300.00')
-        ->and($html)->toContain('Queso Paria')
-        ->and($html)->toContain('500 g')
-        ->and($html)->toContain('− S/ 36.00')
-        ->and($html)->toContain('Total a entregar')
-        ->and($html)->toContain('Forma de pago')
-        ->and($html)->toContain('S/ 264.00')
-        ->and($html)->toContain('Recibí conforme')
-        ->and($html)->toContain('Entregado por EcoLact');
+    $ordenado = fn (array $partes): bool => array_reduce($partes, fn (int|false $desde, string $parte) => $desde === false ? false : (($pos = strpos($html, $parte, $desde)) === false ? false : $pos + strlen($parte)), 0) !== false;
+
+    expect($html)->toContain('EcoLact')->toContain('Comprobante de pago')
+        ->toContain('01345678')->toContain('Zona 1')
+        ->toContain('PRV-'.str_pad((string) $obligacion->proveedor_id, 3, '0', STR_PAD_LEFT))
+        ->toContain('<dt>Semana</dt><dd>38</dd>')
+        ->toContain('10/09/2026 – 16/09/2026')
+        ->toContain('Fecha de emisión')
+        ->toContain('<dd data-hoja-estado>Pendiente</dd>')
+        ->toContain('La penalización se aplica a todos los litros de la semana.')
+        ->toContain('Compras en planta')->toContain('Queso Paria')->toContain('500 g')
+        ->toContain('Firma del proveedor')->toContain('Firma autorizada')
+        ->not->toContain('Subtotal por leche');
+    expect($ordenado([
+        'Litros de la semana', '150 L', 'Precio base', 'S/ 2.10 / L', 'Resultado semanal', 'Observada',
+        'Penalización semanal', '− S/ 0.30 / L', 'Precio aplicado', 'S/ 1.80 / L', 'Importe por leche', 'S/ 270.00',
+        'Descuentos', 'Total a pagar', 'S/ 234.00',
+    ]))->toBeTrue();
 });
 
-it('el documento conserva los importes y describe la calidad y las compras', function (float $calidad, string $concepto, int $compras, float $subtotal, float $descuentos, float $total) {
+it('el documento muestra cada resultado semanal con su precio y solo lista descuentos si hubo compras', function (?string $resultado, float $ajuste, float $aplicado, int $compras, string $estado, array $contiene, array $noContiene) {
     $c = new ComprobantePagoProveedor(
         obligacionId: 42, proveedorId: 12, proveedorNombre: 'Miguel Flores Apaza',
         dni: '72100011', codigo: 'PRV-012', zona: 'Collana 2', semanaEtiqueta: 'Semana 39',
         periodoInicio: '2026-09-17', periodoFin: '2026-09-23', rango: '17/09/2026 - 23/09/2026',
-        litros: 30, precioLitro: 1.70, importeLeche: 51, penalidad: $calidad,
-        penalidadLitros: $calidad, detallePenalidad: 'Según análisis de calidad', subtotalLeche: $subtotal,
+        litros: $resultado === 'RECHAZADA' ? 0 : 30, precioLitro: 1.70, importeLeche: $resultado === 'RECHAZADA' ? 0 : 51,
+        penalidad: round($ajuste * 30, 2), penalidadLitros: 0, detallePenalidad: '', subtotalLeche: round($aplicado * 30, 2),
         descuentos: array_fill(0, $compras, ['producto' => 'Queso Paria', 'presentacion' => '500 g', 'cantidad' => '1', 'precioUnitario' => 5.0, 'importe' => 5.0]),
-        subtotalDescuentos: $descuentos, totalFinal: $total, estado: 'PENDIENTE', pagadoEl: null, anioFirma: 2026,
+        subtotalDescuentos: $compras * 5.0, totalFinal: max(0, round($aplicado * 30 - $compras * 5.0, 2)), estado: $estado, pagadoEl: null, anioFirma: 2026,
+        resultadoSemanal: $resultado, litrosSemana: 30, ajusteLitro: $ajuste, precioAplicado: $aplicado,
     );
 
     $html = view('admin.pagos.proveedores._comprobante', ['c' => $c])->render();
 
-    expect($html)->toContain($concepto, 'PRV-2026-39-0042', '72100011', 'Recibí conforme', 'Entregado por EcoLact')
-        ->toContain('data-hoja-total>S/ '.number_format($total, 2))
-        ->not->toContain('1. Datos', 'pp-icono', 'Productores de hoy');
+    expect($html)->toContain('PRV-2026-39-0042', '72100011', 'Firma del proveedor', 'Firma autorizada', ...$contiene)
+        ->not->toContain(...$noContiene);
     expect(substr_count($html, '<td>Queso Paria</td>'))->toBe($compras);
-    expect(str_contains($html, 'data-sin-compras'))->toBe($compras === 0);
-    expect(str_contains($html, '<td>'.$concepto.'</td>'))->toBe($calidad !== 0.0);
 })->with([
-    'sin calidad ni compras' => [0.0, 'Sin bonificación ni penalidad', 0, 51.0, 0.0, 51.0],
-    'penalidad y una compra' => [-1.7, 'Penalidad por calidad', 1, 49.3, 5.0, 44.3],
-    'bonificación y varias compras' => [1.7, 'Bonificación por calidad', 3, 52.7, 15.0, 37.7],
-    'muchas compras conservan todas las filas' => [0.0, 'Sin bonificación ni penalidad', 10, 51.0, 50.0, 1.0],
+    'aceptada sin compras' => ['ACEPTADA', 0.0, 1.70, 0, 'PENDIENTE', ['Aceptada', 'Ajuste calidad', 'S/ 0.00 / L', 'S/ 1.70 / L'], ['Descuentos', 'Penalización semanal', 'no es pagable']],
+    'observada con una compra' => ['OBSERVADA', -0.20, 1.50, 1, 'PENDIENTE', ['Observada', 'Penalización semanal', '− S/ 0.20 / L', 'S/ 1.50 / L', 'Descuentos', '− S/ 5.00'], ['no es pagable']],
+    'rechazada no pagable' => ['RECHAZADA', 0.0, 0.0, 0, 'NO_PAGABLE', ['Rechazada', 'S/ 0.00 / L', 'La semana no es pagable por resultado de calidad rechazado.', '<dd data-hoja-estado>No pagable</dd>'], ['Penalización semanal', 'Ajuste calidad']],
+    'muchas compras conservan todas las filas' => ['ACEPTADA', 0.0, 1.70, 10, 'PENDIENTE', ['Descuentos', 'Compras en planta'], ['no es pagable']],
 ]);
+
+it('un comprobante pagado guardado antes de existir el resultado semanal se lee desde sus propias cifras', function () {
+    $guardado = [
+        'obligacionId' => 7, 'proveedorId' => 3, 'proveedorNombre' => 'Rosa Quispe', 'dni' => '01345678', 'codigo' => 'PRV-003',
+        'zona' => 'Zona 1', 'semanaEtiqueta' => 'Semana 38', 'periodoInicio' => '2026-09-10', 'periodoFin' => '2026-09-16',
+        'rango' => '10/09/2026 - 16/09/2026', 'litros' => 100.0, 'precioLitro' => 2.10, 'importeLeche' => 210.0,
+        'penalidad' => -15.0, 'penalidadLitros' => -7.14, 'detallePenalidad' => 'Penalidad por calidad (observada)',
+        'subtotalLeche' => 195.0, 'descuentos' => [], 'subtotalDescuentos' => 0.0, 'totalFinal' => 195.0,
+        'estado' => 'PAGADO', 'pagadoEl' => '16/09/2026 10:00', 'anioFirma' => 2026,
+    ];
+
+    $c = ComprobantePagoProveedor::desdeArray($guardado);
+
+    expect($c->etiquetaResultado())->toBe('Observada')
+        ->and($c->ajustePorLitro())->toBe(-0.15)
+        ->and($c->precioAplicadoPorLitro())->toBe(1.95)
+        ->and($c->totalFinal)->toBe(195.0)
+        ->and($c->etiquetaEstado())->toBe('Pagado');
+});
+
+it('una semana RECHAZADA aparece como No pagable, con S/ 0.00 y sin poder marcarse para pago', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_precios_y_reglas($admin);
+    pagos_configurar('PROVEEDOR', null, '2026-01-01', $admin);
+    $proveedor = fixture_proveedor(fixture_zona('Zona 1'), '01345678');
+    pagos_entrega($proveedor, 80.0, '2026-09-10', 'ACEPTADA');
+    pagos_entrega($proveedor, 20.0, '2026-09-11', 'RECHAZADA');
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'), $admin->id);
+    $semana = ObligacionPagoModel::sole();
+
+    $html = $this->actingAs($admin)->get(route('admin.pagos.proveedores.index'))->assertOk()->getContent();
+    preg_match('/<tr data-fila .*?<\/tr>/s', $html, $fila);
+
+    expect($fila[0])->toContain('data-estado="NO_PAGABLE"')->toContain('data-pendiente="0"')->toContain('100 L')
+        ->toContain('Rechazada')->toContain('S/ 0.00')->toContain('No pagable')
+        ->toMatch('/data-marcar[^>]*disabled/');
+
+    $hoja = $this->getJson(route('admin.pagos.proveedores.preview', ['ids' => [$semana->id]]))->json('hojas.0.html');
+    expect($hoja)->toContain('La semana no es pagable por resultado de calidad rechazado.')->toContain('S/ 0.00 / L');
+
+    $this->post(route('admin.pagos.proveedores.print-and-pay'), ['ids' => [$semana->id]])->assertSessionHas('error');
+    expect(PagoModel::count())->toBe(0)->and($semana->fresh()->estado)->toBe('NO_PAGABLE');
+});
 
 it('el listado entrega el DNI para buscar y la misma identidad en el comprobante', function () {
     [$admin, $obligacion] = pago_semanal_con_pendiente();
@@ -195,7 +243,7 @@ it('imprimir y marcar pagados registra el pago en efectivo con usuario, fecha, l
 
     $this->actingAs($admin)->post(route('admin.pagos.proveedores.print-and-pay'), [
         'ids' => [$obligacion->id],
-        'montos' => [$obligacion->id => '300.00'],
+        'montos' => [$obligacion->id => '270.00'],
     ])->assertRedirect()->assertSessionHas('success');
 
     $pago = PagoModel::firstOrFail();
@@ -206,7 +254,7 @@ it('imprimir y marcar pagados registra el pago en efectivo con usuario, fecha, l
         ->and($pago->pagado_at)->not->toBeNull()
         ->and($pago->impreso_at)->not->toBeNull()
         ->and($pago->lote_codigo)->toStartWith('PP-')
-        ->and((float) $pago->monto)->toBe(300.0)
+        ->and((float) $pago->monto)->toBe(270.0)
         ->and($pago->comprobante_snapshot['proveedorNombre'])->toBe($obligacion->beneficiario_nombre);
 
     // Con el filtro Pendientes ya no cumple el estado; con Todos (el valor por defecto) sigue visible como Pagado.
@@ -226,7 +274,7 @@ it('los ya pagados dejan de salir como pendientes y aparecen con el filtro Pagad
 
     $this->actingAs($admin)->get(route('admin.pagos.proveedores.index', ['semana' => '2026-09-10', 'estado' => 'pendientes']))
         ->assertOk()
-        ->assertSee('No hay proveedores para esta semana y estos filtros');
+        ->assertSee('No hay liquidaciones para estos filtros');
 
     $this->actingAs($admin)->get(route('admin.pagos.proveedores.index', ['semana' => '2026-09-10', 'estado' => 'pagados']))
         ->assertOk()

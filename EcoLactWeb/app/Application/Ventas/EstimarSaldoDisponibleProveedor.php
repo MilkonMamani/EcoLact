@@ -21,12 +21,10 @@ use DomainException;
  *
  * Si el periodo ya fue liquidado, el saldo se basa en el total a pagar real
  * (Liquidacion::totalPagar()). Si el periodo sigue abierto, se estima con
- * el mismo criterio que usará GenerarLiquidacion al cerrarlo (litros
- * pagables del periodo × el precio único que corresponde según si hubo o
- * no incidencias de calidad), para no prometer un saldo mayor al que
- * realmente se pagará. Esta duplicación puntual del cálculo de
- * GenerarLiquidacion es intencional: aquí es una ESTIMACIÓN de solo
- * lectura sobre un periodo aún abierto, no la liquidación real.
+ * la regla semanal de calidad (ResultadoCalidad::peor): ACEPTADA al precio
+ * base, OBSERVADA con el descuento a todos los litros, RECHAZADA = 0. Así no
+ * se promete un saldo mayor al que realmente se pagará. Es una ESTIMACIÓN de
+ * solo lectura sobre un periodo aún abierto, no la liquidación real.
  */
 final class EstimarSaldoDisponibleProveedor
 {
@@ -68,8 +66,8 @@ final class EstimarSaldoDisponibleProveedor
 
     private function estimarPagoPeriodoAbierto(int $proveedorId, PeriodoLiquidacion $periodo): float
     {
-        $totalLitrosPagables = 0.0;
-        $tuvoIncidencia = false;
+        $totalLitros = 0.0;
+        $resultados = [];
         $huboEntregas = false;
 
         foreach ($this->entregas->listarPorProveedor($proveedorId) as $entrega) {
@@ -82,23 +80,14 @@ final class EstimarSaldoDisponibleProveedor
             }
 
             $huboEntregas = true;
-            $analisis = $this->analisisCalidad->buscarPorEntregaId($entrega->id());
-            $resultado = $analisis?->resultado();
-
-            if ($resultado === ResultadoCalidad::RECHAZADA) {
-                $tuvoIncidencia = true;
-
-                continue;
-            }
-
-            if ($resultado === ResultadoCalidad::OBSERVADA) {
-                $tuvoIncidencia = true;
-            }
-
-            $totalLitrosPagables += $entrega->litros();
+            $resultados[] = $this->analisisCalidad->buscarPorEntregaId($entrega->id())?->resultado();
+            $totalLitros += $entrega->litros();
         }
 
-        if (! $huboEntregas) {
+        // Misma regla semanal que SincronizarPagosProveedor: manda el PEOR resultado.
+        $resultadoSemanal = ResultadoCalidad::peor($resultados);
+
+        if (! $huboEntregas || $resultadoSemanal === ResultadoCalidad::RECHAZADA) {
             return 0.0;
         }
 
@@ -108,15 +97,20 @@ final class EstimarSaldoDisponibleProveedor
             throw new DomainException('No existe un precio base de leche vigente para estimar el saldo del proveedor.');
         }
 
-        $resultadoAplicable = $tuvoIncidencia ? ResultadoCalidad::OBSERVADA : ResultadoCalidad::ACEPTADA;
-        $reglaPago = $this->reglasPagoCalidad->buscarVigentePorResultado($resultadoAplicable, $periodo->fechaFin());
+        $ajuste = 0.0;
 
-        if ($reglaPago === null) {
-            throw new DomainException('No existe una regla de pago por calidad vigente para estimar el saldo del proveedor.');
+        if ($resultadoSemanal === ResultadoCalidad::OBSERVADA) {
+            $reglaPago = $this->reglasPagoCalidad->buscarVigentePorResultado(ResultadoCalidad::OBSERVADA, $periodo->fechaFin());
+
+            if ($reglaPago === null) {
+                throw new DomainException('No existe una regla de pago por calidad vigente para estimar el saldo del proveedor.');
+            }
+
+            $ajuste = $reglaPago->calcularAjuste($precioLeche->precioLitro());
         }
 
-        $precioLitroAplicado = max(0.0, round($precioLeche->precioLitro() + $reglaPago->calcularAjuste($precioLeche->precioLitro()), 4));
+        $precioLitroAplicado = max(0.0, round($precioLeche->precioLitro() + $ajuste, 4));
 
-        return round($totalLitrosPagables * $precioLitroAplicado, 2);
+        return round($totalLitros * $precioLitroAplicado, 2);
     }
 }

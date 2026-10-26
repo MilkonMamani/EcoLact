@@ -1,0 +1,42 @@
+/*
+ * Parámetros de calidad: tabla + panel lateral sobre el patrón .fichas (admin-fichas.css).
+ * Pocos registros: sin scroll horizontal, sin buscador ni filtros. La tabla solo selecciona: editar vive en el panel.
+ */
+
+/* ------------------------------------------------------------ tabla */
+.parametros-calidad .fichas-tabla table { min-width: 0; }
+.parametros-calidad .fichas-tabla td { height: 3.75rem; }
+.parametros-calidad .fichas-tabla [data-fichas-fila]:hover td { background: #f7faf8; }
+.parametros-calidad .fichas-tabla [data-fichas-fila].is-selected td { background: var(--fichas-green-soft); }
+.parametros-calidad .fichas-tabla .is-centro { text-align: center; }
+.parametros-calidad .fichas-tabla .is-accion { width: 1%; text-align: right; }
+.parametros-calidad .fichas-tabla td.is-parametro { white-space: normal; }
+
+.parametros-descripcion { margin-top: .1rem; color: var(--fichas-muted); font-size: .78rem; line-height: 1.35; }
+.parametros-meta { margin-top: .15rem; color: var(--fichas-soft-text); font-size: .75rem; }
+.parametros-rango { color: var(--fichas-ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+.parametros-chevron { display: inline-block; color: var(--fichas-soft-text); }
+
+/* ------------------------------------------------------------ panel */
+.parametros-calidad .fichas-panel-nombre { margin-top: 0; }
+.parametros-panel-descripcion { margin-top: .35rem; color: var(--fichas-muted); font-size: .85rem; line-height: 1.45; }
+.parametros-nota { margin: -.35rem 0 .85rem; color: var(--fichas-muted); font-size: .78rem; }
+.parametros-sin-regla { display: grid; justify-items: center; gap: .25rem; }
+
+/* ------------------------------------------------------------ modales (sin tarjetas: grid, espacio y un divisor) */
+.parametros-campos { display: grid; gap: 1rem 1.25rem; }
+.parametros-ayuda { margin-top: .35rem; color: var(--fichas-muted, #667085); font-size: .72rem; line-height: 1.4; }
+.parametros-modal-pie { display: flex; justify-content: flex-end; gap: .5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e7ebee; }
+.parametros-error { margin-bottom: 1rem; padding: .6rem .8rem; border-left: 3px solid #d94c4c; border-radius: .35rem; background: #fef3f2; color: #b42318; font-size: .825rem; }
+
+@media (min-width: 640px) {
+    .parametros-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .parametros-campos > .is-ancho { grid-column: 1 / -1; }
+}
+
+/* Móvil: lista compacta (nombre, unidad · regla actual, estado, >). Editar queda solo en el panel. */
+@media (max-width: 639px) {
+    .parametros-calidad .fichas-tabla td, .parametros-calidad .fichas-tabla th { padding-inline: .6rem; }
+    .parametros-calidad .parametros-descripcion { display: none; }
+}

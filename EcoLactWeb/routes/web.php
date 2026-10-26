@@ -21,6 +21,7 @@ use App\Http\Controllers\Web\Auth\LoginController;
 use App\Http\Controllers\Web\Calidad\AnalisisCalidadController;
 use App\Http\Controllers\Web\Calidad\ParametroCalidadController;
 use App\Http\Controllers\Web\Calidad\ReglaCalidadController;
+use App\Http\Controllers\Web\Calidad\TicketAnalizadorController;
 use App\Http\Controllers\Web\Comunicacion\ComunicadoController;
 use App\Http\Controllers\Web\Comunicacion\NotificacionController;
 use App\Http\Controllers\Web\EncargadoPlantaController;
@@ -145,6 +146,8 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('zonas/panel/sin-asignar', [ZonaController::class, 'panelSinAsignar'])->name('zonas.panel.sin-asignar');
         Route::get('zonas/{zona}/panel', [ZonaController::class, 'panel'])->name('zonas.panel');
         Route::put('zonas/proveedores/{proveedor}/asignacion', [ZonaController::class, 'guardarAsignacion'])->name('zonas.proveedores.asignacion');
+        // Mapa general: "Mover ubicación" de un pin (misma zona o cambio de zona, verificado en el servidor).
+        Route::patch('zonas/proveedores/{proveedor}/ubicacion', [ZonaController::class, 'moverProveedor'])->name('zonas.proveedores.ubicacion');
 
         // Rutas: configuración de proveedores y orden de visita dentro de
         // una zona, más la asignación del acopiador que abre el recorrido.
@@ -176,11 +179,14 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('entregas/{entrega}/analisis-calidad/detalle', [AnalisisCalidadController::class, 'detalle'])->name('entregas.analisis-calidad.detalle');
         Route::get('analisis-calidad/{analisis}', [AnalisisCalidadController::class, 'show'])->name('analisis-calidad.show');
         Route::post('analisis-calidad', [AnalisisCalidadController::class, 'store'])->name('analisis-calidad.store');
+        // OCR local del ticket del analizador: solo PROPONE valores, no guarda el análisis.
+        Route::post('analisis-calidad/escanear-ticket', TicketAnalizadorController::class)->name('analisis-calidad.escanear-ticket');
         Route::patch('analisis-calidad/{analisis}/finalizar', [AnalisisCalidadController::class, 'finalizar'])->name('analisis-calidad.finalizar');
 
         // Parámetros de calidad
         Route::get('parametros-calidad', [ParametroCalidadController::class, 'index'])->name('parametros-calidad.index');
         Route::get('parametros-calidad/{parametro}', [ParametroCalidadController::class, 'show'])->name('parametros-calidad.show');
+        Route::get('parametros-calidad/{parametro}/panel', [ParametroCalidadController::class, 'panel'])->name('parametros-calidad.panel');
         Route::post('parametros-calidad', [ParametroCalidadController::class, 'store'])->name('parametros-calidad.store');
         Route::patch('parametros-calidad/{parametro}', [ParametroCalidadController::class, 'update'])->name('parametros-calidad.update');
         // NO existe destroy.
@@ -191,12 +197,12 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::post('reglas-calidad', [ReglaCalidadController::class, 'store'])->name('reglas-calidad.store');
         Route::patch('reglas-calidad/{regla}', [ReglaCalidadController::class, 'update'])->name('reglas-calidad.update');
 
-        // Configuración de pagos: cuánto y cómo se paga. El proveedor se paga por litros
-        // con el precio base (que se guarda aquí, con vigencia histórica, en precios_leche)
-        // y ajustes por calidad opcionales; el personal cobra un sueldo fijo mensual por
-        // rol remunerable. Define reglas versionadas: NO registra dinero. Ya no existen
-        // pantallas separadas de Precio de leche ni de Reglas de pago.
+        // Configuración de pagos: los valores base que usa Pagos. Trabajadores: sueldo
+        // mensual de cada trabajador registrado. Proveedores: precio por litro (con
+        // vigencia histórica en precios_leche) y descuento por la semana OBSERVADA.
+        // Define reglas versionadas: NO registra dinero, asistencia ni pagos.
         Route::get('configuracion-pagos', [ConfiguracionPagoController::class, 'index'])->name('configuracion-pagos.index');
+        Route::get('configuracion-pagos/trabajadores/{userId}/panel', [ConfiguracionPagoController::class, 'panelTrabajador'])->whereNumber('userId')->name('configuracion-pagos.trabajadores.panel');
         Route::post('configuracion-pagos', [ConfiguracionPagoController::class, 'store'])->name('configuracion-pagos.store');
         Route::patch('configuracion-pagos/{configuracion}', [ConfiguracionPagoController::class, 'update'])->name('configuracion-pagos.update');
 
@@ -392,6 +398,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('analisis-calidad', [AnalistaAnalisisCalidadController::class, 'index'])->name('analisis-calidad.index');
         Route::get('analisis-calidad/{analisis}', [AnalistaAnalisisCalidadController::class, 'show'])->name('analisis-calidad.show');
         Route::post('analisis-calidad', [AnalistaAnalisisCalidadController::class, 'store'])->name('analisis-calidad.store');
+        Route::post('analisis-calidad/escanear-ticket', TicketAnalizadorController::class)->name('analisis-calidad.escanear-ticket');
         Route::patch('analisis-calidad/{analisis}/finalizar', [AnalistaAnalisisCalidadController::class, 'finalizar'])->name('analisis-calidad.finalizar');
 
         // Proveedores: lectura de cualquier zona, para elegir destinatarios

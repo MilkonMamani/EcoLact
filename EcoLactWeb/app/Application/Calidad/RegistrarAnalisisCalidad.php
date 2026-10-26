@@ -14,9 +14,10 @@ use DomainException;
 
 /**
  * Crea (o revisa, mientras esté en BORRADOR) el análisis de calidad de una
- * entrega a partir de valores ya extraídos (no se realiza OCR en esta
- * etapa). El resultado final (ACEPTADA/OBSERVADA/RECHAZADA) solo se calcula
- * y persiste al confirmar el análisis, ver FinalizarAnalisisCalidad.
+ * entrega a partir de valores ya revisados por el analista (el OCR del
+ * ticket solo los propone, ver EscanearTicketAnalizador). El resultado final
+ * (ACEPTADA/OBSERVADA/RECHAZADA) solo se calcula y persiste al confirmar el
+ * análisis, ver FinalizarAnalisisCalidad.
  */
 final class RegistrarAnalisisCalidad
 {
@@ -29,12 +30,14 @@ final class RegistrarAnalisisCalidad
 
     /**
      * @param  array<string, float>  $valores  Valores ya extraídos, indexados por código de parámetro (ej. 'DENSIDAD', 'GRASA').
+     * @param  array<string, string>  $origenes  OCR si el analista aceptó el valor propuesto por el ticket; MANUAL (por defecto) si lo escribió o corrigió.
      */
     public function execute(
         int $entregaId,
         array $valores,
         ?string $imagenPath = null,
         ?string $observacion = null,
+        array $origenes = [],
     ): AnalisisCalidad {
         if ($this->entregas->buscarPorId($entregaId) === null) {
             throw new DomainException('La entrega indicada no existe.');
@@ -44,6 +47,20 @@ final class RegistrarAnalisisCalidad
 
         if ($analisis !== null && $analisis->estaConfirmado()) {
             throw new DomainException('El análisis de esta entrega ya fue confirmado y no puede modificarse.');
+        }
+
+        if ($analisis !== null && $imagenPath !== null) {
+            // Un ticket nuevo (re-escaneo) reemplaza la foto del borrador.
+            $analisis = $this->analisisCalidad->actualizar(new AnalisisCalidad(
+                id: $analisis->id(),
+                entregaId: $analisis->entregaId(),
+                imagenPath: $imagenPath,
+                estado: $analisis->estado(),
+                resultado: $analisis->resultado(),
+                fechaAnalisis: $analisis->fechaAnalisis(),
+                confirmadoPorUserId: $analisis->confirmadoPorUserId(),
+                observacion: $analisis->observacion(),
+            ));
         }
 
         if ($analisis === null) {
@@ -82,7 +99,7 @@ final class RegistrarAnalisisCalidad
                 analisisId: $analisisId,
                 parametroId: $parametro->id() ?? throw new DomainException("El parámetro '{$codigoParametro}' no tiene identificador válido."),
                 valor: (float) $valor,
-                origen: 'MANUAL',
+                origen: ($origenes[$codigoParametro] ?? null) === 'OCR' ? 'OCR' : 'MANUAL',
             ));
         }
 

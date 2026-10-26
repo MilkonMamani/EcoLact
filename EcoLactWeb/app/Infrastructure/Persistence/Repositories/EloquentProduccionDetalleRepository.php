@@ -46,6 +46,7 @@ class EloquentProduccionDetalleRepository implements ProduccionDetalleRepository
             cantidadObtenida: $model->cantidad_obtenida !== null ? (float) $model->cantidad_obtenida : null,
             recetaId: $model->receta_id,
             recetaVersion: $model->receta_version,
+            merma: $model->merma !== null ? (float) $model->merma : null,
         );
     }
 
@@ -61,6 +62,7 @@ class EloquentProduccionDetalleRepository implements ProduccionDetalleRepository
             'receta_version' => $detalle->recetaVersion(),
             'cantidad_planificada' => $detalle->cantidadPlanificada(),
             'cantidad_obtenida' => $detalle->cantidadObtenida(),
+            'merma' => $detalle->merma(),
         ];
     }
 }

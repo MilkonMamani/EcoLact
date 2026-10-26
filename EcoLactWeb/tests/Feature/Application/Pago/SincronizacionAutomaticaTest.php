@@ -9,6 +9,7 @@ use App\Application\Pago\ObtenerObligacionesPago;
 use App\Application\Pago\RegistrarPagoObligacion;
 use App\Application\Pago\SincronizarPagosProveedor;
 use App\Domain\Pago\PeriodoPago;
+use App\Domain\Shared\Enums\EstadoObligacionPago;
 use App\Domain\Shared\Enums\MetodoPago;
 use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
 use App\Infrastructure\Persistence\Models\EntregaModel;
@@ -98,14 +99,14 @@ it('si falla la sincronización del pago, la entrega y el stock tampoco se guard
             return [];
         }
 
-        public function guardarPendiente(?int $existenteId, int $proveedorId, string $nombre, ?int $configuracionId, PeriodoPago $periodo, float $monto, array $baseCalculo, array $detalles, ?int $actorUserId): bool
+        public function guardarPendiente(?int $existenteId, int $proveedorId, string $nombre, ?int $configuracionId, PeriodoPago $periodo, float $monto, array $baseCalculo, array $detalles, ?int $actorUserId, EstadoObligacionPago $estado = EstadoObligacionPago::PENDIENTE): bool
         {
             throw new RuntimeException('Fallo simulado');
         }
 
         public function eliminarPendientes(array $ids): void {}
 
-        public function descuentosDisponibles(int $proveedorId, PeriodoPago $periodo): array
+        public function descuentosDisponibles(int $proveedorId, PeriodoPago $periodo, array $semanasSinPago = []): array
         {
             return [];
         }

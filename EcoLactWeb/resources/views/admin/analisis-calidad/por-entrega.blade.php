@@ -42,38 +42,22 @@
                 <p class="text-sm text-text-muted">Esta entrega todavía no tiene análisis de calidad. El análisis es opcional: mientras tanto la leche se acopia y se paga al precio base.</p>
             @endif
 
+            <div class="mt-4">
+                @include('calidad.analisis._entrega-trazabilidad')
+            </div>
+
             <form method="POST" action="{{ route('admin.analisis-calidad.store') }}" enctype="multipart/form-data" class="mt-4 space-y-4">
                 @csrf
                 <input type="hidden" name="entrega_id" value="{{ $entrega->id }}">
 
-                <div>
-                    <p class="mb-2 text-sm font-medium text-text">Parámetros de calidad</p>
-                    @if (count($parametros) === 0)
-                        <x-ui.empty-state title="No hay parámetros de calidad configurados" :icon="false" />
-                    @else
-                        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                            @foreach ($parametros as $parametro)
-                                <x-forms.input
-                                    name="valores[{{ $parametro->codigo() }}]"
-                                    type="number"
-                                    step="any"
-                                    :label="$parametro->nombre() . ($parametro->unidad() ? ' (' . $parametro->unidad() . ')' : '')"
-                                />
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
+                @include('calidad.analisis._ticket-analizador', ['urlEscanear' => route('admin.analisis-calidad.escanear-ticket')])
 
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-text" for="imagen-analisis">Evidencia del análisis (opcional)</label>
-                    <input id="imagen-analisis" type="file" name="imagen" accept="image/jpeg,image/png" class="w-full rounded-lg border border-text-muted/25 px-3 py-2 text-sm">
-                    <p class="mt-1 text-xs text-text-muted">Formatos jpg, jpeg o png, máximo 5 MB.</p>
-                </div>
+                @include('calidad.analisis._parametros')
 
                 <x-forms.textarea name="observacion" label="Observación (opcional)" :rows="3" />
 
                 <div class="flex justify-end">
-                    <x-ui.button type="submit">Guardar valores</x-ui.button>
+                    <x-ui.button type="submit">Guardar análisis</x-ui.button>
                 </div>
             </form>
 

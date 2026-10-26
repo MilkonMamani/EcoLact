@@ -12,6 +12,7 @@ final class ParametroCalidad
         private readonly string $nombre,
         private readonly ?string $unidad,
         private readonly string $estado,
+        private readonly ?string $descripcion = null,
     ) {
         if (trim($codigo) === '') {
             throw new InvalidArgumentException('El código del parámetro de calidad es obligatorio.');
@@ -41,6 +42,11 @@ final class ParametroCalidad
     public function estado(): string
     {
         return $this->estado;
+    }
+
+    public function descripcion(): ?string
+    {
+        return $this->descripcion;
     }
 
     public function estaActivo(): bool

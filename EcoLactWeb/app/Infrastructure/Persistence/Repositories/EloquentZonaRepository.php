@@ -99,6 +99,17 @@ class EloquentZonaRepository implements ZonaRepository
             ->all();
     }
 
+    public function listarDelimitaciones(): array
+    {
+        return ZonaModel::whereNotNull('poligono_geojson')
+            ->orderBy('nombre')
+            ->orderBy('id')
+            ->pluck('poligono_geojson', 'id')
+            ->map(fn (?string $geojson): ?DelimitacionZona => DelimitacionZona::desdeGeoJsonONull($geojson))
+            ->filter()
+            ->all();
+    }
+
     private function toEntity(ZonaModel $model): Zona
     {
         return new Zona(

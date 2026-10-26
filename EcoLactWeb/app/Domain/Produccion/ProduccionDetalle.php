@@ -7,6 +7,7 @@ use InvalidArgumentException;
 /**
  * Un producto de un lote: lo PLANIFICADO al iniciar la producción y lo
  * OBTENIDO realmente al finalizarla (null mientras el lote está en proceso).
+ * La MERMA (planificado - obtenido, nunca negativa) se fija al finalizar.
  * Recuerda qué receta y versión se usaron (null en lotes históricos).
  */
 final class ProduccionDetalle
@@ -19,6 +20,7 @@ final class ProduccionDetalle
         private readonly ?float $cantidadObtenida = null,
         private readonly ?int $recetaId = null,
         private readonly ?int $recetaVersion = null,
+        private readonly ?float $merma = null,
     ) {
         if ($cantidadPlanificada <= 0.0) {
             throw new InvalidArgumentException('La cantidad planificada debe ser mayor a cero.');
@@ -64,6 +66,15 @@ final class ProduccionDetalle
         return $this->recetaVersion;
     }
 
+    public function merma(): ?float
+    {
+        return $this->merma;
+    }
+
+    /**
+     * Registra lo realmente obtenido y fija la merma: lo planificado que no se
+     * obtuvo. Si se obtuvo más de lo planificado no hay merma.
+     */
     public function conCantidadObtenida(float $cantidadObtenida): self
     {
         return new self(
@@ -74,6 +85,7 @@ final class ProduccionDetalle
             cantidadObtenida: $cantidadObtenida,
             recetaId: $this->recetaId,
             recetaVersion: $this->recetaVersion,
+            merma: round(max(0.0, $this->cantidadPlanificada - $cantidadObtenida), 2),
         );
     }
 }

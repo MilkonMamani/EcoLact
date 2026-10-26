@@ -6,7 +6,6 @@ use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use App\Infrastructure\Persistence\Models\PagoModel;
 use App\Infrastructure\Persistence\Models\PrecioLecheModel;
 use App\Infrastructure\Persistence\Models\ReglaPagoCalidadModel;
-use App\Infrastructure\Persistence\Models\RoleModel;
 use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -63,123 +62,112 @@ it('el menú del administrador tiene Configuración de pagos y el grupo Pagos, s
 });
 
 // --------------------------------------------------------------------------
-// Configuración de pagos
+// Configuración de pagos: pestañas Trabajadores / Proveedores
 // --------------------------------------------------------------------------
 
-it('la pantalla de configuración muestra KPIs, cómo funciona y las dos secciones', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    fixture_precio_leche(2.10, new DateTimeImmutable('2026-01-01'), $admin->id);
-    pagos_configurar('PROVEEDOR', null, '2026-01-01', $admin);
-    pagos_configurar('ACOPIADOR', 1000, '2026-01-01', $admin);
-
-    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))
-        ->assertOk()
-        ->assertSeeInOrder(['Configuración de pagos', 'Configuraciones activas', 'Pagos a proveedores', 'Pagos al personal', '¿Cómo funciona?'])
-        ->assertSee('Define cómo se calculan los pagos de proveedores y personal. Esta configuración genera pagos pendientes en el módulo Pagos.')
-        ->assertSee('Configuras cómo se calcula el pago.')
-        ->assertSee('El sistema genera el pago pendiente según el periodo.')
-        ->assertSee('En Pagos confirmas la entrega del dinero.')
-        ->assertSeeInOrder(['Tipo', 'Cálculo', 'Precio base', 'Ajuste por calidad', 'Periodicidad', 'Estado', 'Acción'])
-        ->assertSee('El precio por litro se configura aquí. Los ajustes de calidad se aplican solo si están activados.')
-        ->assertSee('S/ 2.10')
-        ->assertSee('por litro')
-        ->assertSee('Configura el sueldo de cada rol del personal. Los roles se cargan desde la tabla roles del sistema.')
-        ->assertSee('Sueldo fijo mensual')
-        ->assertSee('S/ 1,000.00')
-        ->assertSee('Nueva configuración de pago')
-        ->assertSee('Define cómo se calculará el pago del proveedor y cómo luego aparecerá en el módulo Pagos.')
-        ->assertSee('Configura el pago para proveedores de leche.')
-        ->assertSee('Configura el sueldo para el personal de la planta.')
-        ->assertSee('Precio base por litro (S/)')
-        ->assertSee('Aplicar ajustes de calidad')
-        ->assertSee('El precio base de la leche ahora se configura aquí; no existe un módulo separado de Precio de leche.')
-        ->assertSee('El valor diario se calcula automáticamente dividiendo el sueldo mensual entre 30. Los trabajadores que cumplen todo el mes reciben su sueldo mensual completo.');
-});
-
-it('la tabla de personal se arma con los roles remunerables de la base de datos', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    fixture_rol('PROVEEDOR');
-    RoleModel::create(['nombre' => 'ALMACENERO', 'descripcion' => null, 'es_remunerable' => true]);
-
-    $html = $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))->assertOk()->assertSee('ALMACENERO')->getContent();
-
-    $tabla = substr($html, strpos($html, 'Pagos al personal'));
-
-    expect($tabla)->toContain('ADMINISTRADOR')->toContain('ALMACENERO')
-        ->and(substr_count($tabla, '>PROVEEDOR<'))->toBe(0);
-});
-
-it('el modal de ajustes por calidad muestra Aceptada, Observada y Rechazada como no pagable', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    pagos_precios_y_reglas($admin);
-
-    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))
-        ->assertOk()
-        ->assertSee('Ajustes por calidad')
-        ->assertSeeInOrder(['Resultado', 'Tipo de ajuste', 'Valor', 'Aceptada', 'Observada', 'Rechazada', 'No pagable'])
-        ->assertSee('value="-0.30"', false)
-        ->assertDontSee('Ajustes de calidad del precio del proveedor');
-});
-
-it('no se siembran sueldos: sin configurar, ningún rol muestra un monto', function () {
+it('la pantalla muestra solo las pestañas Trabajadores y Proveedores, sin KPIs, sin bloque explicativo ni botón genérico', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
 
     $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))
         ->assertOk()
-        ->assertSee('Sin configurar');
-
-    expect(ConfiguracionPagoModel::count())->toBe(0);
+        ->assertSeeInOrder(['Configuración', 'Configuración de pagos', 'Define los valores base que EcoLact usa para calcular pagos.', 'Trabajadores', 'Proveedores'])
+        ->assertDontSee('Configuraciones activas')
+        ->assertDontSee('Pagos al personal')
+        ->assertDontSee('¿Cómo funciona?')
+        ->assertDontSee('Nueva configuración')
+        ->assertDontSee('Tipo de cálculo')
+        ->assertDontSee('Base salarial');
 });
 
-it('guarda una configuración de personal sin registrar dinero ni crear pagos', function () {
+it('la pestaña Trabajadores lista los trabajadores registrados con sueldo, valor por día, vigencia y estado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    fixture_rol('CALIDAD');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    pagos_personal('VENTAS', 'Ana');
+    pagos_configurar_trabajador($juan->id, 1500, '2026-09-01', $admin);
+
+    $html = $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))
+        ->assertOk()
+        ->assertSeeInOrder(['Trabajador', 'Rol', 'Sueldo mensual', 'Valor/día', 'Vigente desde', 'Estado'])
+        ->getContent();
+
+    preg_match('/<tbody data-fichas-filas>.*?<\/tbody>/s', $html, $filas);
+
+    expect($filas[0])
+        ->toContain('Ana Apellido')->toContain('Personal de ventas')->toContain('Sin configurar')->toContain('Pendiente')
+        ->toContain('Juan Apellido')->toContain('Acopiador')->toContain('S/ 1,500.00')->toContain('S/ 50.00')->toContain('01/09/2026')->toContain('Activo')
+        ->not->toContain('Días')->not->toContain('Faltas')->not->toContain('Acumulado');
+});
+
+it('el panel de un trabajador muestra su sueldo y Editar configuración, sin asistencia ni pagos', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    pagos_configurar_trabajador($juan->id, 1500, '2026-09-01', $admin);
+
+    $this->actingAs($admin)->get(route('admin.configuracion-pagos.trabajadores.panel', $juan->id))
+        ->assertOk()
+        ->assertSeeInOrder(['Juan Apellido', 'Acopiador', 'Sueldo mensual', 'S/ 1,500.00', 'Valor diario', 'S/ 50.00', 'Vigente desde', '01/09/2026'])
+        ->assertSee('Editar configuración')
+        ->assertSee('Editar sueldo')
+        ->assertDontSee('Configurar sueldo')
+        ->assertDontSee('name="rol_id"', false)
+        ->assertDontSee('Proveedor')
+        ->assertDontSee('Asistencia')
+        ->assertDontSee('Pago realizado');
+});
+
+it('un trabajador nuevo sin sueldo muestra Sin configurar y Configurar sueldo', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $ana = pagos_personal('VENTAS', 'Ana');
+
+    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index', ['trabajador' => $ana->id]))
+        ->assertOk()
+        ->assertSee('Este trabajador todavía no tiene un sueldo definido.')
+        ->assertSee('Configurar sueldo')
+        ->assertSee('name="user_id" value="'.$ana->id.'"', false)
+        ->assertDontSee('Editar configuración');
+});
+
+it('configurar sueldo desde la pestaña guarda el sueldo del trabajador sin registrar dinero ni crear pagos', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $david = pagos_personal('CALIDAD', 'David');
 
     $this->actingAs($admin)->post(route('admin.configuracion-pagos.store'), [
         'tipo_beneficiario' => 'PERSONAL',
-        'rol_id' => fixture_rol('CALIDAD')->id,
-        'tipo_calculo' => 'SUELDO_FIJO',
-        'periodicidad' => 'MENSUAL',
-        'monto_base' => '1200.00',
+        'user_id' => $david->id,
+        'monto_base' => '1700.00',
         'fecha_inicio' => '2026-10-01',
         'observacion' => 'Sueldo vigente desde octubre.',
-    ])->assertRedirect(route('admin.configuracion-pagos.index'))->assertSessionHas('success');
+    ])->assertRedirect(route('admin.configuracion-pagos.index', ['tab' => 'trabajadores', 'trabajador' => $david->id]))
+        ->assertSessionHas('success');
 
-    $configuracion = ConfiguracionPagoModel::firstOrFail();
+    $configuracion = ConfiguracionPagoModel::sole();
 
-    expect((float) $configuracion->monto_base)->toBe(1200.0)
+    expect($configuracion->user_id)->toBe($david->id)
+        ->and($configuracion->rol->nombre)->toBe('CALIDAD')
+        ->and((float) $configuracion->monto_base)->toBe(1700.0)
         ->and($configuracion->observacion)->toBe('Sueldo vigente desde octubre.')
         ->and($configuracion->creado_por_user_id)->toBe($admin->id)
         ->and(ObligacionPagoModel::count())->toBe(0)
         ->and(PagoModel::count())->toBe(0);
 });
 
-it('guarda una configuración de proveedor con precio base y ajustes de calidad', function () {
+it('el rol no se puede elegir: se toma siempre del trabajador real', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
+    $david = pagos_personal('CALIDAD', 'David');
 
     $this->actingAs($admin)->post(route('admin.configuracion-pagos.store'), [
-        'tipo_beneficiario' => 'PROVEEDOR',
-        'periodicidad' => 'SEMANAL',
-        'precio_base_litro' => '1.70',
-        'aplica_calidad' => '1',
-        'ajustes' => ['ACEPTADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => '0'], 'OBSERVADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => '-0.10']],
-        'fecha_inicio' => '2026-09-01',
-    ])->assertRedirect(route('admin.configuracion-pagos.index'));
+        'tipo_beneficiario' => 'PERSONAL', 'user_id' => $david->id, 'rol_id' => fixture_rol('ACOPIADOR')->id,
+        'monto_base' => '1700', 'fecha_inicio' => '2026-10-01',
+    ])->assertSessionHas('success');
 
-    $configuracion = ConfiguracionPagoModel::firstOrFail();
-
-    expect($configuracion->tipo_calculo)->toBe('POR_LITROS')
-        ->and($configuracion->monto_base)->toBeNull()
-        ->and($configuracion->aplica_calidad)->toBeTrue()
-        ->and((float) PrecioLecheModel::firstOrFail()->precio_litro)->toBe(1.7)
-        ->and((float) ReglaPagoCalidadModel::where('resultado_calidad', 'OBSERVADA')->value('valor_ajuste'))->toBe(-0.1);
+    expect(ConfiguracionPagoModel::sole()->rol->nombre)->toBe('CALIDAD');
 });
 
-it('valida sueldo, fecha de inicio y rol al guardar una configuración', function (array $datos, string $campo) {
+it('valida sueldo, fecha de inicio y trabajador al configurar un sueldo', function (array $datos, string $campo) {
     $admin = fixture_usuario('ADMINISTRADOR');
-    fixture_rol('ACOPIADOR');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
 
-    $base = ['tipo_beneficiario' => 'PERSONAL', 'rol_id' => fixture_rol('ACOPIADOR')->id, 'monto_base' => '1000', 'fecha_inicio' => '2026-10-01'];
+    $base = ['tipo_beneficiario' => 'PERSONAL', 'user_id' => $juan->id, 'monto_base' => '1000', 'fecha_inicio' => '2026-10-01'];
 
     $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))
         ->post(route('admin.configuracion-pagos.store'), array_merge($base, $datos))
@@ -194,36 +182,115 @@ it('valida sueldo, fecha de inicio y rol al guardar una configuración', functio
     'sueldo no numérico' => [['monto_base' => 'mil'], 'monto_base'],
     'sin fecha de inicio' => [['fecha_inicio' => ''], 'fecha_inicio'],
     'fecha inválida' => [['fecha_inicio' => 'no-es-fecha'], 'fecha_inicio'],
-    'sin rol' => [['rol_id' => ''], 'rol_id'],
-    'rol inexistente' => [['rol_id' => 9999], 'rol_id'],
-    'rol que no es remunerable' => [['rol_id' => 'PROVEEDOR'], 'rol_id'],
-    'acopiador por litros' => [['tipo_calculo' => 'POR_LITROS'], 'tipo_calculo'],
-    'periodicidad semanal para personal' => [['periodicidad' => 'SEMANAL'], 'periodicidad'],
+    'sin trabajador' => [['user_id' => ''], 'user_id'],
+    'trabajador inexistente' => [['user_id' => 9999], 'user_id'],
 ]);
 
-it('rechaza una configuración cuya vigencia se cruza con otra del mismo rol', function () {
+it('no configura el sueldo de alguien que no es trabajador y lo informa', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    pagos_configurar('ACOPIADOR', 1000, '2026-09-01', $admin);
+    $proveedor = fixture_usuario('PROVEEDOR');
 
     $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))->post(route('admin.configuracion-pagos.store'), [
-        'tipo_beneficiario' => 'PERSONAL', 'rol_id' => fixture_rol('ACOPIADOR')->id, 'monto_base' => '1200', 'fecha_inicio' => '2026-10-01',
+        'tipo_beneficiario' => 'PERSONAL', 'user_id' => $proveedor->id, 'monto_base' => '1200', 'fecha_inicio' => '2026-10-01',
+    ])->assertSessionHasErrors('configuracion');
+
+    expect(ConfiguracionPagoModel::count())->toBe(0);
+});
+
+it('rechaza un segundo sueldo del mismo trabajador cuya vigencia se cruza', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    pagos_configurar_trabajador($juan->id, 1000, '2026-09-01', $admin);
+
+    $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))->post(route('admin.configuracion-pagos.store'), [
+        'tipo_beneficiario' => 'PERSONAL', 'user_id' => $juan->id, 'monto_base' => '1200', 'fecha_inicio' => '2026-10-01',
     ])->assertSessionHasErrors('configuracion');
 
     expect(ConfiguracionPagoModel::count())->toBe(1);
 });
 
-it('editar un sueldo con pagos generados abre una nueva vigencia', function () {
+it('editar un sueldo con pagos generados abre una nueva vigencia y no toca el pago generado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pendiente_de_acopiador($admin);
     $configuracion = ConfiguracionPagoModel::firstOrFail();
 
     $this->actingAs($admin)->patch(route('admin.configuracion-pagos.update', $configuracion), [
         'monto_base' => '1100', 'fecha_inicio' => '2026-10-01',
-    ])->assertRedirect(route('admin.configuracion-pagos.index'))->assertSessionHas('success');
+    ])->assertRedirect(route('admin.configuracion-pagos.index', ['tab' => 'trabajadores', 'trabajador' => $configuracion->user_id]))
+        ->assertSessionHas('success');
 
     expect(ConfiguracionPagoModel::count())->toBe(2)
         ->and((float) ObligacionPagoModel::firstOrFail()->monto_calculado)->toBe(1000.0);
 });
+
+it('la pestaña Proveedores muestra la configuración general con precio, periodicidad, día de pago y calidad semanal', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_configurar('PROVEEDOR', null, '2026-09-01', $admin, precio: 1.70, ajustes: [
+        'OBSERVADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => '-0.20'],
+    ]);
+
+    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index', ['tab' => 'proveedores']))
+        ->assertOk()
+        ->assertSeeInOrder(['Pago a proveedores', 'Precio base', 'S/ 1.70 / L', 'Periodicidad', 'Semanal', 'Día de pago', 'Miércoles', 'Vigente desde', '01/09/2026'])
+        ->assertSeeInOrder(['Ajuste por calidad', 'Aceptada', 'Precio normal', 'S/ 1.70 / L', 'Observada', '- S/ 0.20 / L', 'Aplica a todos los litros de la semana', 'S/ 1.50 / L', 'Rechazada', 'No pagable', 'S/ 0.00'])
+        ->assertSee('Editar configuración')
+        ->assertDontSee('Monto fijo')
+        ->assertDontSee('S/ 3.40');
+});
+
+it('sin configuración de proveedores ofrece configurarla una sola vez', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+
+    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index', ['tab' => 'proveedores']))
+        ->assertOk()
+        ->assertSee('Configurar pago a proveedores')
+        ->assertSee('name="tipo_beneficiario" value="PROVEEDOR"', false);
+});
+
+it('guarda la configuración de proveedores con precio base y descuento por la semana OBSERVADA', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+
+    $this->actingAs($admin)->post(route('admin.configuracion-pagos.store'), [
+        'tipo_beneficiario' => 'PROVEEDOR',
+        'precio_base_litro' => '1.70',
+        'descuento_observada' => '0.20',
+        'fecha_inicio' => '2026-09-01',
+    ])->assertRedirect(route('admin.configuracion-pagos.index', ['tab' => 'proveedores']));
+
+    $configuracion = ConfiguracionPagoModel::firstOrFail();
+
+    expect($configuracion->tipo_calculo)->toBe('POR_LITROS')
+        ->and($configuracion->monto_base)->toBeNull()
+        ->and($configuracion->aplica_calidad)->toBeTrue()
+        ->and((float) PrecioLecheModel::firstOrFail()->precio_litro)->toBe(1.7)
+        ->and((float) ReglaPagoCalidadModel::where('resultado_calidad', 'OBSERVADA')->value('valor_ajuste'))->toBe(-0.2)
+        ->and((float) ReglaPagoCalidadModel::where('resultado_calidad', 'ACEPTADA')->value('valor_ajuste'))->toBe(0.0);
+});
+
+it('editar la configuración de proveedores con otra fecha abre nueva vigencia de precio y descuento', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_configurar('PROVEEDOR', null, '2026-09-01', $admin, precio: 1.70, ajustes: [
+        'OBSERVADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => '-0.20'],
+    ]);
+    $configuracion = ConfiguracionPagoModel::sole();
+
+    $this->actingAs($admin)->patch(route('admin.configuracion-pagos.update', $configuracion), [
+        'precio_base_litro' => '1.80', 'descuento_observada' => '0.25', 'fecha_inicio' => '2026-10-25',
+    ])->assertSessionHas('success');
+
+    expect(PrecioLecheModel::orderBy('fecha_inicio')->pluck('precio_litro')->map(fn ($p): float => (float) $p)->all())->toBe([1.7, 1.8])
+        ->and(PrecioLecheModel::orderBy('fecha_inicio')->first()->fecha_fin->format('Y-m-d'))->toBe('2026-10-24')
+        ->and(ReglaPagoCalidadModel::where('resultado_calidad', 'OBSERVADA')->orderBy('fecha_inicio')->pluck('valor_ajuste')->map(fn ($v): float => (float) $v)->all())->toBe([-0.2, -0.25])
+        ->and(ConfiguracionPagoModel::count())->toBe(2);
+});
+
+it('el descuento OBSERVADA no puede ser negativo ni igualar el precio base', function (string $descuento) {
+    $admin = fixture_usuario('ADMINISTRADOR');
+
+    $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))->post(route('admin.configuracion-pagos.store'), [
+        'tipo_beneficiario' => 'PROVEEDOR', 'precio_base_litro' => '1.70', 'descuento_observada' => $descuento, 'fecha_inicio' => '2026-09-01',
+    ])->assertSessionHasErrors('descuento_observada');
+})->with(['-0.20', '1.70']);
 
 it('solo el administrador puede ver o cambiar configuraciones y pagos', function (string $rol) {
     $usuario = fixture_usuario($rol);
@@ -231,6 +298,7 @@ it('solo el administrador puede ver o cambiar configuraciones y pagos', function
     $configuracion = ConfiguracionPagoModel::firstOrFail();
 
     $this->actingAs($usuario)->get(route('admin.configuracion-pagos.index'))->assertForbidden();
+    $this->actingAs($usuario)->get(route('admin.configuracion-pagos.trabajadores.panel', $obligacion->user_id))->assertForbidden();
     $this->actingAs($usuario)->post(route('admin.configuracion-pagos.store'), [])->assertForbidden();
     $this->actingAs($usuario)->patch(route('admin.configuracion-pagos.update', $configuracion), [])->assertForbidden();
     $this->actingAs($usuario)->get(route('admin.pagos.index'))->assertForbidden();

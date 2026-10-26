@@ -23,6 +23,7 @@ class FinalizarProduccionRequest extends FormRequest
         return [
             'obtenido' => ['required', 'array', 'min:1'],
             'obtenido.*' => ['required', 'numeric', 'min:0'],
+            'observacion' => ['nullable', 'string', 'max:500'],
         ];
     }
 

@@ -25,4 +25,12 @@ interface PersonalPagableQuery
      * @return list<int>
      */
     public function usuariosSinFichaReal(int $rolId): array;
+
+    /**
+     * La persona pagable ACTIVA del usuario indicado, con su rol real: con ficha
+     * ACTIVA si su rol tiene ficha (acopiador, analista, encargado, personal de
+     * ventas), o el usuario mismo para un rol remunerable sin ficha (p.ej. el
+     * administrador). Null si su rol no es remunerable o no está activa.
+     */
+    public function trabajadorActivo(int $userId): ?PersonalPagable;
 }

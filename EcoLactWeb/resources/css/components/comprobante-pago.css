@@ -1,8 +1,9 @@
 /*
  * Comprobante de pago de trabajador (admin/pagos/trabajadores/{obligacion}/comprobante).
- * Documento formal tipo invoice: blanco, texto oscuro, líneas finas. Color solo en el
- * aviso de vista previa (ámbar) y en el total. Siempre UNA hoja A4 vertical: la hoja
- * mide 210 × 297 mm y las firmas quedan al pie de esa misma hoja.
+ * Documento formal: blanco, texto oscuro, líneas finas, sin logo. Color solo en el total
+ * (verde muy suave) y en faltas/descuentos. Siempre UNA hoja A4 vertical: la hoja mide
+ * 210 × 297 mm y las firmas quedan al pie de esa misma hoja. La misma hoja se muestra
+ * escalada en el panel de Pagos a trabajadores (.pt-preview).
  */
 .cp-pagina {
     --cp-tinta: #111827;
@@ -28,56 +29,63 @@
 .cp-contenedor { overflow-x: auto; padding: 2rem 1rem; }
 
 /* ------------------------------------------------ hoja */
-.cp-hoja { box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; width: 210mm; height: 297mm; margin: 0 auto; padding: 12mm 18mm 16mm; overflow: hidden; background: #fff; font-size: 9.5pt; line-height: 1.45; }
+/* Variables en la hoja (no solo en .cp-pagina): la misma hoja se ve escalada dentro del panel de Pagos a trabajadores. */
+.cp-hoja {
+    --cp-tinta: #111827;
+    --cp-gris: #4b5563;
+    --cp-gris-suave: #6b7280;
+    --cp-gris-claro: #9ca3af;
+    --cp-linea: #e5e7eb;
+    --cp-acento: #006146;
+    box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; width: 210mm; height: 297mm; margin: 0 auto; padding: 16mm 18mm 18mm; overflow: hidden; background: #fff; color: var(--cp-tinta); font-size: 9.5pt; line-height: 1.45; text-align: left;
+}
+.cp-hoja *, .cp-hoja *::before, .cp-hoja *::after { box-sizing: border-box; }
+.cp-hoja p, .cp-hoja h1, .cp-hoja h2, .cp-hoja dl, .cp-hoja dd { margin: 0; }
 
-.cp-encabezado { display: flex; justify-content: space-between; gap: 8mm; padding-bottom: 2.5mm; border-bottom: 1px solid var(--cp-linea); color: var(--cp-gris-suave); font-size: 7.5pt; }
+/* Cabecera centrada: solo texto, sin logo. */
+.cp-cabecera { padding-bottom: 5mm; border-bottom: 2px solid var(--cp-tinta); text-align: center; }
+.cp-emisor { color: var(--cp-gris-suave); font-size: 8pt; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; }
+.cp-cabecera h1 { margin-top: 1.5mm; font-size: 18pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.cp-numero { margin-top: 1mm; color: var(--cp-gris); font-size: 10pt; font-variant-numeric: tabular-nums; }
 
-.cp-titulo { margin-top: 9mm; }
-.cp-titulo h1 { font-size: 20pt; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
-.cp-numero { margin-top: 1mm; color: var(--cp-gris); font-size: 10.5pt; }
+.cp-hoja dt, .cp-seccion h2 { color: var(--cp-gris-suave); font-size: 7pt; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
+.cp-hoja dd small { display: block; margin-top: .4mm; color: var(--cp-gris-claro); font-size: 7.5pt; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.cp-hoja dt small { display: block; margin-top: .4mm; color: var(--cp-gris-claro); font-size: 7.5pt; font-weight: 400; letter-spacing: 0; text-transform: none; }
 
-.cp-aviso { margin-top: 5mm; padding: 2mm 3mm; border: 1px solid #f3d3a8; border-left: 3px solid var(--cp-ambar); background: #fffaf2; color: var(--cp-ambar); font-size: 8pt; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.cp-fechas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6mm; padding: 5mm 0; border-bottom: 1px solid var(--cp-linea); }
+.cp-fechas dd { margin-top: 1mm; font-size: 10pt; font-weight: 500; }
 
-.cp-resumen { display: grid; grid-auto-columns: minmax(0, 1fr); grid-auto-flow: column; gap: 8mm; margin-top: 7mm; }
-.cp-resumen dt, .cp-etiqueta, .cp-trabajador-datos dt { color: var(--cp-gris-suave); font-size: 7pt; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
-.cp-resumen dd { margin-top: 1mm; font-size: 10pt; font-weight: 500; }
-.cp-resumen dd small { display: block; color: var(--cp-gris-claro); font-size: 8pt; font-weight: 400; }
-.cp-resumen .is-total { text-align: right; }
-.cp-resumen .is-total dd { font-size: 17pt; font-weight: 700; line-height: 1.15; }
+/* ------------------------------------------------ secciones */
+.cp-seccion { margin-top: 7mm; }
+.cp-seccion h2 { padding-bottom: 2mm; border-bottom: 1px solid var(--cp-tinta); }
 
-/* ------------------------------------------------ trabajador */
-.cp-trabajador { margin-top: 8mm; padding-top: 5mm; border-top: 1px solid var(--cp-tinta); }
-.cp-trabajador-nombre { margin-top: 1mm; font-size: 14pt; font-weight: 600; }
-.cp-trabajador-datos { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4mm; margin-top: 3.5mm; }
-.cp-trabajador-datos dd { margin-top: .6mm; overflow-wrap: anywhere; }
+.cp-datos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm 6mm; margin-top: 4mm; }
+.cp-datos .is-ancho { grid-column: 1 / -1; }
+.cp-datos dd { margin-top: .8mm; overflow-wrap: anywhere; }
+.cp-nombre { font-size: 13pt; font-weight: 600; }
 
-/* ------------------------------------------------ tabla de conceptos */
-.cp-tabla { width: 100%; margin-top: 9mm; border-collapse: collapse; }
-.cp-tabla th { padding: 2.3mm 2mm; border-top: 1px solid var(--cp-tinta); border-bottom: 1px solid var(--cp-tinta); font-size: 7pt; font-weight: 700; letter-spacing: .09em; text-align: left; text-transform: uppercase; }
-.cp-tabla td { padding: 2.4mm 2mm; border-bottom: 1px solid var(--cp-linea); vertical-align: top; }
-.cp-tabla td:first-child { font-weight: 600; }
-.cp-tabla td:nth-child(2) { color: var(--cp-gris-suave); }
-.cp-tabla th:first-child, .cp-tabla td:first-child { padding-left: 0; }
-.cp-tabla th:last-child, .cp-tabla td:last-child { padding-right: 0; }
-.cp-tabla .is-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.cp-tabla .is-acumulado td { border-top: 1px solid #cbd0d6; font-weight: 600; }
-.cp-tabla .is-acumulado td:nth-child(2) { font-weight: 400; }
-.cp-tabla .is-negativo { color: #b42318; }
+.cp-detalle { margin-top: 1mm; }
+.cp-detalle > div { display: flex; align-items: baseline; justify-content: space-between; gap: 8mm; padding: 2.4mm 0; border-bottom: 1px solid var(--cp-linea); }
+.cp-detalle dt { color: var(--cp-gris); font-size: 9.5pt; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.cp-detalle dd { font-weight: 500; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cp-detalle .is-subtotal { border-top: 1px solid #cbd0d6; }
+.cp-detalle .is-subtotal dt, .cp-detalle .is-subtotal dd { color: var(--cp-tinta); font-weight: 600; }
+.cp-hoja .is-negativo { color: #b42318; }
 
-/* ------------------------------------------------ notas + totales */
-.cp-cierre { display: grid; grid-template-columns: minmax(0, 1fr) 70mm; gap: 10mm; margin-top: 6mm; }
-.cp-notas p { margin-bottom: 2mm; font-size: 8.5pt; }
-.cp-notas span { display: block; color: var(--cp-gris-suave); font-size: 7pt; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
-.cp-totales > div { display: flex; justify-content: space-between; gap: 4mm; padding: 1.4mm 0; font-variant-numeric: tabular-nums; }
-.cp-totales dt { color: var(--cp-gris-suave); font-size: 7pt; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; }
-.cp-totales .is-total { margin-top: 2mm; padding-top: 3mm; border-top: 2px solid var(--cp-tinta); }
-.cp-totales .is-total dt { color: var(--cp-tinta); font-size: 10pt; font-weight: 700; }
-.cp-totales .is-total dd { color: var(--cp-acento); font-size: 16pt; font-weight: 700; }
+/* Total a pagar: fondo verde muy suave, sin colores fuertes. */
+.cp-total { display: flex; align-items: center; justify-content: space-between; gap: 8mm; margin-top: 4mm; padding: 4mm 5mm; border-top: 2px solid var(--cp-tinta); background: #f1f8f4; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+.cp-total span { font-size: 10pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.cp-total strong { color: var(--cp-acento); font-size: 17pt; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.cp-estado { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4mm 6mm; margin-top: 5mm; }
+.cp-estado .is-ancho { grid-column: 1 / -1; }
+.cp-estado dd { margin-top: .8mm; font-weight: 500; }
 
 /* ------------------------------------------------ firmas: al pie de la MISMA hoja */
 .cp-firmas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24mm; padding-top: 10mm; }
 .cp-firmas span { display: block; border-top: 1px solid var(--cp-tinta); }
-.cp-firmas p { margin-top: 2mm; color: var(--cp-gris); font-size: 8pt; text-align: center; }
+.cp-firmas p { margin-top: 1.5mm; color: var(--cp-gris); font-size: 8pt; text-align: center; }
+.cp-firmas .cp-firma-titulo { margin-top: 2mm; color: var(--cp-tinta); font-weight: 600; }
 
 /* ------------------------------------------------ impresión: solo la hoja, una página A4 */
 @media print {
@@ -86,5 +94,5 @@
     .cp-contenedor { overflow: visible; padding: 0; }
     /* 1 mm menos de alto: evita que el redondeo del navegador genere una segunda hoja en blanco. */
     .cp-hoja { height: 296mm; margin: 0; break-after: avoid; page-break-after: avoid; break-inside: avoid; page-break-inside: avoid; }
-    .cp-tabla tr, .cp-cierre, .cp-firmas { break-inside: avoid; page-break-inside: avoid; }
+    .cp-seccion, .cp-total, .cp-firmas { break-inside: avoid; page-break-inside: avoid; }
 }

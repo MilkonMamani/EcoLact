@@ -95,6 +95,17 @@ final class Producto
         return self::formatoCantidad($this->presentacionCantidad).' '.$this->presentacionUnidad;
     }
 
+    /**
+     * Nombre para elegir el producto en Producción: "Queso Paria · 1 kg". Los
+     * productos históricos sin presentación muestran su nombre completo.
+     */
+    public function etiqueta(): string
+    {
+        $presentacion = $this->presentacion();
+
+        return $presentacion === null ? $this->nombre : $this->nombreBase().' · '.$presentacion;
+    }
+
     public function unidadMedida(): string
     {
         return $this->unidadMedida;

@@ -1,218 +1,134 @@
+{{--
+    CONFIGURACIÓN DE PAGOS: solo los valores base que usa Pagos, en dos pestañas.
+    - Trabajadores: sueldo mensual de cada trabajador registrado (tabla + panel lateral, patrón
+      admin-fichas; ?trabajador=ID mantiene la selección). El valor por día se calcula (sueldo / 30).
+    - Proveedores: configuración GENERAL (precio por litro y descuento por la semana OBSERVADA).
+    Nada de asistencia, entregas ni pagos realizados: eso vive en Pagos.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Configuración de pagos')
+@section('body-class', 'admin-fichas-page')
+@section('contenedor', 'max-w-[1600px]')
 
 @php
-    $soles = fn ($valor, int $decimales = 2): string => 'S/ '.number_format((float) $valor, $decimales);
-    $kpis = $datos['kpis'];
-    $proveedor = $datos['proveedor'];
-    $precioBase = $datos['precioBaseVigente'];
-    $reglasActivas = $datos['reglasActivas'];
-    $puedeConfigurar = auth()->user()?->can('create', \App\Infrastructure\Persistence\Models\ConfiguracionPagoModel::class);
-    $etiquetasEstado = ['ACTIVA' => 'Activa', 'PROGRAMADA' => 'Programada', 'VENCIDA' => 'Vencida', 'SIN_CONFIGURAR' => 'Sin configurar'];
-    $encabezado = 'py-3 pr-4 text-[11px] font-medium uppercase tracking-wider text-label';
-    $pasos = ['Configuras cómo se calcula el pago.', 'El sistema genera el pago pendiente según el periodo.', 'En Pagos confirmas la entrega del dinero.'];
+    $trabajadores = $datos['trabajadores'];
+    $seleccionadoId = $trabajador['userId'] ?? null;
+    $pestanas = ['trabajadores' => 'Trabajadores', 'proveedores' => 'Proveedores'];
 @endphp
 
 @section('content')
-    <div data-pagos-page data-config-pagos class="space-y-6">
-        <div class="flex flex-wrap items-start justify-between gap-4">
-            <div class="flex items-start gap-3">
-                <button type="button" data-sidebar-toggle aria-label="Abrir menú" class="rounded-lg p-2 text-text transition hover:bg-text-muted/10 lg:hidden">
-                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" /></svg>
+    <div class="fichas config-pagos" data-config-pagos-page>
+        <header class="fichas-header">
+            <div class="min-w-0">
+                <x-layout.breadcrumbs :items="[['Configuración', null], ['Configuración de pagos', null]]" />
+                <h1 class="fichas-title">Configuración de pagos</h1>
+                <p class="fichas-subtitle">Define los valores base que EcoLact usa para calcular pagos.</p>
+            </div>
+        </header>
+
+        @error('configuracion')
+            <p class="config-pagos-error" role="alert">{{ $message }}</p>
+        @enderror
+
+        <nav class="config-pagos-tabs" role="tablist" aria-label="Tipo de configuración">
+            @foreach ($pestanas as $clave => $etiqueta)
+                <button type="button" role="tab" id="tab-{{ $clave }}" aria-controls="seccion-{{ $clave }}" aria-selected="{{ $pestana === $clave ? 'true' : 'false' }}" data-config-tab="{{ $clave }}">
+                    {{ $etiqueta }}
                 </button>
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight text-text">Configuración de pagos</h1>
-                    <p class="mt-1.5 max-w-2xl text-sm text-label">Define cómo se calculan los pagos de proveedores y personal. Esta configuración genera pagos pendientes en el módulo Pagos.</p>
+            @endforeach
+        </nav>
+
+        {{-- TRABAJADORES: cuánto gana cada trabajador --}}
+        <section id="seccion-trabajadores" role="tabpanel" aria-labelledby="tab-trabajadores" data-config-seccion="trabajadores" @if ($pestana !== 'trabajadores') hidden @endif>
+            @if (count($trabajadores) === 0)
+                <x-ui.empty-state class="mt-6 bg-surface" title="Todavía no hay trabajadores registrados." description="Registra trabajadores en Trabajadores > Nuevo trabajador y aparecerán aquí para configurar su sueldo." />
+            @else
+                <div class="fichas-layout" data-fichas-page data-fichas-param="trabajador">
+                    <div>
+                        <p class="config-pagos-ayuda">Sueldo mensual de cada trabajador. El valor por día se calcula sobre 30 días.</p>
+                        <div class="fichas-tabla is-loading" data-fichas-tabla>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Trabajador</th>
+                                        <th scope="col" class="hidden md:table-cell">Rol</th>
+                                        <th scope="col" class="is-num">Sueldo mensual</th>
+                                        <th scope="col" class="is-num hidden sm:table-cell">Valor/día</th>
+                                        <th scope="col" class="hidden lg:table-cell">Vigente desde</th>
+                                        <th scope="col" class="hidden sm:table-cell">Estado</th>
+                                        <th scope="col" class="is-accion sm:hidden"><span class="sr-only">Ver detalle</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="fichas-skeleton" aria-hidden="true">
+                                    @for ($i = 0; $i < min(8, count($trabajadores)); $i++)
+                                        <tr>
+                                            <td><span class="fichas-bone is-lg"></span></td>
+                                            <td class="hidden md:table-cell"><span class="fichas-bone is-md"></span></td>
+                                            <td><span class="fichas-bone is-sm ml-auto"></span></td>
+                                            <td class="hidden sm:table-cell"><span class="fichas-bone is-sm ml-auto"></span></td>
+                                            <td class="hidden lg:table-cell"><span class="fichas-bone is-md"></span></td>
+                                            <td class="hidden sm:table-cell"><span class="fichas-bone is-sm"></span></td>
+                                            <td class="sm:hidden"></td>
+                                        </tr>
+                                    @endfor
+                                </tbody>
+                                <tbody data-fichas-filas>
+                                    @foreach ($trabajadores as $fila)
+                                        @php $configurado = $fila['sueldo'] !== null; @endphp
+                                        <tr data-fichas-fila data-ficha-id="{{ $fila['userId'] }}" data-url-panel="{{ route('admin.configuracion-pagos.trabajadores.panel', $fila['userId']) }}" tabindex="0" title="Ver detalle" aria-selected="{{ $fila['userId'] === $seleccionadoId ? 'true' : 'false' }}" @class(['is-selected' => $fila['userId'] === $seleccionadoId])>
+                                            <td class="is-trabajador">
+                                                <a href="{{ route('admin.configuracion-pagos.index', ['tab' => 'trabajadores', 'trabajador' => $fila['userId']]) }}" class="fichas-nombre" data-fichas-seleccionar tabindex="-1">{{ $fila['nombre'] }}</a>
+                                                <p class="config-pagos-meta md:hidden">{{ $fila['rol'] }}</p>
+                                            </td>
+                                            <td class="is-muted hidden md:table-cell">{{ $fila['rol'] }}</td>
+                                            <td @class(['is-num', 'is-muted' => ! $configurado])>{{ $configurado ? 'S/ '.number_format($fila['sueldo'], 2) : 'Sin configurar' }}</td>
+                                            <td class="is-num is-muted hidden sm:table-cell">{{ $configurado ? 'S/ '.number_format($fila['valorDia'], 2) : '—' }}</td>
+                                            <td class="is-muted hidden lg:table-cell">{{ $fila['vigenteDesde'] ? \Illuminate\Support\Carbon::parse($fila['vigenteDesde'])->format('d/m/Y') : '—' }}</td>
+                                            <td class="hidden sm:table-cell">@include('admin.configuracion-pagos._estado', ['estado' => $fila['estado']])</td>
+                                            <td class="is-accion sm:hidden" aria-hidden="true"><x-ui.icon name="chevron-right" class="config-pagos-chevron h-4 w-4" /></td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <noscript><style>.fichas-tabla.is-loading [data-fichas-filas] { display: table-row-group; } .fichas-tabla.is-loading .fichas-skeleton { display: none; }</style></noscript>
+                    </div>
+
+                    <aside class="fichas-panel" data-fichas-panel aria-live="polite" aria-label="Sueldo del trabajador">
+                        @if ($trabajador)
+                            @include('admin.configuracion-pagos._panel-trabajador', ['trabajador' => $trabajador])
+                        @else
+                            @include('admin.configuracion-pagos._panel-trabajador-vacio')
+                        @endif
+                    </aside>
+
+                    <template data-fichas-panel-vacio>
+                        @include('admin.configuracion-pagos._panel-trabajador-vacio')
+                    </template>
+
+                    <template data-fichas-panel-skeleton>
+                        <div class="fichas-panel-cargando" aria-busy="true" aria-label="Cargando">
+                            <div class="fichas-panel-head">
+                                <div class="grid flex-1 gap-2.5">
+                                    <span class="fichas-bone is-xl"></span>
+                                    <span class="fichas-bone is-md"></span>
+                                </div>
+                            </div>
+                            <div class="fichas-panel-cuerpo grid gap-4">
+                                @foreach (['is-md', 'is-xl', 'is-lg', 'is-md', 'is-xl'] as $ancho)
+                                    <span class="fichas-bone {{ $ancho }}"></span>
+                                @endforeach
+                            </div>
+                        </div>
+                    </template>
                 </div>
-            </div>
-            @if ($puedeConfigurar)
-                <x-ui.button data-modal-open="modal-nueva-configuracion" data-config-nueva as="button" type="button" class="shadow-sm">
-                    <x-ui.icon name="plus" class="h-4 w-4" /> Nueva configuración
-                </x-ui.button>
             @endif
-        </div>
-
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <x-ui.stat-card label="Configuraciones activas" :value="$kpis['activas']" accent="primary">
-                <x-slot:icon><x-ui.icon name="files" class="h-6 w-6" /></x-slot:icon>
-            </x-ui.stat-card>
-            <x-ui.stat-card label="Pagos a proveedores" :value="$kpis['proveedores']" accent="info">
-                <x-slot:icon><x-ui.icon name="droplet" class="h-6 w-6" /></x-slot:icon>
-            </x-ui.stat-card>
-            <x-ui.stat-card label="Pagos al personal" :value="$kpis['personal']" accent="accent" class="sm:col-span-2 lg:col-span-1">
-                <x-slot:icon><x-ui.icon name="users" class="h-6 w-6" /></x-slot:icon>
-            </x-ui.stat-card>
-        </div>
-
-        <section aria-labelledby="como-funciona" class="rounded-xl border border-info/20 bg-info-soft px-5 py-4">
-            <div class="flex items-center gap-2">
-                <x-ui.icon name="info" class="h-5 w-5 text-info" />
-                <h2 id="como-funciona" class="text-sm font-semibold text-text">¿Cómo funciona?</h2>
-            </div>
-            <ol class="mt-3 grid gap-3 md:grid-cols-3 md:gap-0 md:divide-x md:divide-info/20">
-                @foreach ($pasos as $indice => $paso)
-                    <li class="flex items-center gap-3 md:px-5 md:first:pl-0 md:last:pr-0">
-                        <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-info text-sm font-semibold text-white" aria-hidden="true">{{ $indice + 1 }}</span>
-                        <span class="text-sm text-text">{{ $paso }}</span>
-                    </li>
-                @endforeach
-            </ol>
         </section>
 
-        {{-- PAGOS A PROVEEDORES --}}
-        <x-ui.card :padded="false">
-            <div class="flex items-start gap-3 border-b border-text-muted/10 px-5 py-4">
-                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-info-soft text-info"><x-ui.icon name="truck" class="h-5 w-5" /></span>
-                <div>
-                    <h2 class="text-base font-semibold text-text">Pagos a proveedores</h2>
-                    <p class="mt-0.5 text-sm text-label">El precio por litro se configura aquí. Los ajustes de calidad se aplican solo si están activados.</p>
-                </div>
-            </div>
-            <div class="px-5 pb-4">
-                <x-tables.table class="ecolact-table-cards">
-                    <thead>
-                        <tr class="border-b border-text-muted/10 text-left">
-                            <th class="{{ $encabezado }}">Tipo</th>
-                            <th class="{{ $encabezado }}">Cálculo</th>
-                            <th class="{{ $encabezado }}">Precio base</th>
-                            <th class="{{ $encabezado }}">Ajuste por calidad</th>
-                            <th class="{{ $encabezado }}">Periodicidad</th>
-                            <th class="{{ $encabezado }}">Estado</th>
-                            <th class="{{ $encabezado }} pr-0 text-right">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php($configuracion = $proveedor['configuracion'])
-                        <tr class="border-b border-text-muted/5">
-                            <td data-label="Tipo" class="py-4 pr-4 font-medium text-text">Proveedor</td>
-                            <td data-label="Cálculo" class="py-4 pr-4 text-text">Por litros entregados</td>
-                            <td data-label="Precio base" class="py-4 pr-4 font-medium text-text">
-                                @if ($precioBase !== null)
-                                    {{ $soles($precioBase) }} <span class="font-normal text-label">por litro</span>
-                                @else
-                                    <span class="font-normal text-warning">Sin precio</span>
-                                @endif
-                            </td>
-                            <td data-label="Ajuste por calidad" class="py-4 pr-4 text-text">
-                                @if ($configuracion && ! $configuracion->aplicaCalidad())
-                                    <span class="text-label">No aplica</span>
-                                @else
-                                    {{ $reglasActivas }} {{ $reglasActivas === 1 ? 'regla activa' : 'reglas activas' }}
-                                @endif
-                            </td>
-                            <td data-label="Periodicidad" class="py-4 pr-4 text-text">Semanal</td>
-                            <td data-label="Estado" class="py-4 pr-4">
-                                <x-ui.badge compact :status="$proveedor['estado']">{{ $etiquetasEstado[$proveedor['estado']] }}</x-ui.badge>
-                                @if ($configuracion)
-                                    <span class="mt-1 block text-xs text-label">Desde {{ $configuracion->fechaInicio()->format('d/m/Y') }}</span>
-                                @endif
-                            </td>
-                            <td data-label="Acción" class="py-4 pl-4">
-                                <x-tables.actions>
-                                    @if ($puedeConfigurar)
-                                        @if ($configuracion)
-                                            <x-ui.action-button type="edit" label="Editar configuración" subject="de pago a proveedores" :data-modal-open="'modal-editar-config-'.$configuracion->id()" />
-                                        @else
-                                            <x-ui.action-button type="create" :text="true" label="Configurar" subject="pagos a proveedores" data-modal-open="modal-nueva-configuracion" data-config-nueva data-tipo="PROVEEDOR" />
-                                        @endif
-                                    @endif
-                                </x-tables.actions>
-                            </td>
-                        </tr>
-                        @if (count($proveedor['historial']) > 0 || count($datos['preciosHistorial']) > 1)
-                            <tr class="bg-background/60">
-                                <td colspan="7" data-full class="px-4 py-2">
-                                    @include('admin.configuracion-pagos._historial', ['fila' => $proveedor, 'esProveedor' => true, 'precios' => $datos['preciosHistorial']])
-                                </td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </x-tables.table>
-            </div>
-        </x-ui.card>
-
-        {{-- PAGOS AL PERSONAL --}}
-        <x-ui.card :padded="false">
-            <div class="flex items-start gap-3 border-b border-text-muted/10 px-5 py-4">
-                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent"><x-ui.icon name="users" class="h-5 w-5" /></span>
-                <div>
-                    <h2 class="text-base font-semibold text-text">Pagos al personal</h2>
-                    <p class="mt-0.5 text-sm text-label">Configura el sueldo de cada rol del personal. Los roles se cargan desde la tabla roles del sistema.</p>
-                </div>
-            </div>
-            <p class="border-b border-text-muted/10 px-5 py-3 text-xs text-label">El valor diario se calcula automáticamente dividiendo el sueldo mensual entre 30. Los trabajadores que cumplen todo el mes reciben su sueldo mensual completo.</p>
-            <div class="px-5 pb-4">
-                <x-tables.table class="ecolact-table-cards">
-                    <thead>
-                        <tr class="border-b border-text-muted/10 text-left">
-                            <th class="{{ $encabezado }}">Rol</th>
-                            <th class="{{ $encabezado }}">Tipo de cálculo</th>
-                            <th class="{{ $encabezado }}">Valor / Sueldo base</th>
-                            <th class="{{ $encabezado }}">Periodicidad</th>
-                            <th class="{{ $encabezado }}">Estado</th>
-                            <th class="{{ $encabezado }} pr-0 text-right">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($datos['personal'] as $fila)
-                            @php($configuracion = $fila['configuracion'])
-                            <tr class="border-b border-text-muted/5 {{ count($fila['historial']) === 0 ? 'last:border-0' : '' }}">
-                                <td data-label="Rol" class="py-4 pr-4 font-medium text-text">{{ $fila['rolNombre'] }}</td>
-                                <td data-label="Tipo de cálculo" class="py-4 pr-4 text-text">Sueldo fijo mensual</td>
-                                <td data-label="Valor / Sueldo base" class="py-4 pr-4 font-medium text-text whitespace-nowrap">
-                                    @if ($configuracion)
-                                        {{ $soles($configuracion->montoBase()) }}
-                                        <span class="mt-0.5 block text-xs font-normal text-label">{{ $soles($fila['valorDia']) }} / día · Base salarial: 30 días</span>
-                                    @else
-                                        —
-                                    @endif
-                                </td>
-                                <td data-label="Periodicidad" class="py-4 pr-4 text-text">Día 1 de cada mes</td>
-                                <td data-label="Estado" class="py-4 pr-4">
-                                    <x-ui.badge compact :status="$fila['estado']">{{ $etiquetasEstado[$fila['estado']] }}</x-ui.badge>
-                                    @if ($configuracion)
-                                        <span class="mt-1 block text-xs text-label">Desde {{ $configuracion->fechaInicio()->format('d/m/Y') }}</span>
-                                    @endif
-                                </td>
-                                <td data-label="Acción" class="py-4 pl-4">
-                                    <x-tables.actions>
-                                        @if ($puedeConfigurar)
-                                            @if ($configuracion)
-                                                <x-ui.action-button type="edit" label="Editar configuración" :subject="'de '.$fila['rolNombre']" :data-modal-open="'modal-editar-config-'.$configuracion->id()" />
-                                            @else
-                                                <x-ui.action-button type="create" :text="true" label="Configurar" :subject="'pagos de '.$fila['rolNombre']" data-modal-open="modal-nueva-configuracion" data-config-nueva data-tipo="PERSONAL" data-rol="{{ $fila['rolId'] }}" />
-                                            @endif
-                                        @endif
-                                    </x-tables.actions>
-                                </td>
-                            </tr>
-                            @if (count($fila['historial']) > 0)
-                                <tr class="border-b border-text-muted/5 bg-background/60 last:border-0">
-                                    <td colspan="6" data-full class="px-4 py-2">
-                                        @include('admin.configuracion-pagos._historial', ['fila' => $fila, 'esProveedor' => false, 'precios' => []])
-                                    </td>
-                                </tr>
-                            @endif
-                        @empty
-                            <tr>
-                                <td colspan="6" data-full class="py-6 text-center text-sm text-label">No hay roles remunerables. Marca un rol de la tabla roles como remunerable para configurar su sueldo.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </x-tables.table>
-                <p class="mt-4 text-xs text-label">Todas las personas activas de un mismo rol generan el mismo sueldo mensual. Cambiar un sueldo abre una nueva vigencia: los pagos de meses anteriores no se modifican.</p>
-            </div>
-        </x-ui.card>
+        {{-- PROVEEDORES: precio por litro y calidad semanal --}}
+        <section id="seccion-proveedores" role="tabpanel" aria-labelledby="tab-proveedores" data-config-seccion="proveedores" @if ($pestana !== 'proveedores') hidden @endif>
+            @include('admin.configuracion-pagos._proveedores', ['proveedor' => $datos['proveedor']])
+        </section>
     </div>
-
-    @if ($puedeConfigurar)
-        @include('admin.configuracion-pagos._modal-nueva', ['datos' => $datos])
-
-        @foreach (array_merge([$proveedor], $datos['personal']) as $fila)
-            @if ($fila['configuracion'])
-                @include('admin.configuracion-pagos._modal-editar', ['fila' => $fila, 'datos' => $datos])
-            @endif
-        @endforeach
-    @endif
 @endsection

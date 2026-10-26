@@ -40,14 +40,18 @@ it('el detalle del lote muestra la leche, los insumos y los productos planificad
     $enProceso->assertSee('Queso Vista');
     $enProceso->assertSee('Sal fina');
     $enProceso->assertSee('40 L');
-    $enProceso->assertSee('Registrar resultado y finalizar');
+    $enProceso->assertSee('Finalizar producción');
+    $enProceso->assertSee('Insumos consumidos');
+    $enProceso->assertSee('Impacto en inventario');
 
     app(FinalizarProduccion::class)->execute($lote->id(), [ProduccionDetalleModel::first()->id => 3.0], $admin->id);
 
     $finalizado = $this->actingAs($admin)->get(route('admin.produccion.show', $lote->id()));
     $finalizado->assertOk();
-    $finalizado->assertSee('Resultado final');
-    $finalizado->assertDontSee('Registrar resultado y finalizar');
+    $finalizado->assertSee('Producción finalizada');
+    $finalizado->assertSee('Stock incorporado');
+    $finalizado->assertDontSee('data-produccion-finalizar', false);
+    $finalizado->assertDontSee('Impacto en inventario');
 });
 
 it('el modal sin productos con receta muestra el estado vacío y el botón a Recetas solo para el administrador', function () {

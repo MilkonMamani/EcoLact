@@ -18,14 +18,16 @@ use InvalidArgumentException;
  * la valorización de entregas): aquí solo se abre una nueva vigencia cuando el
  * valor cambia, sin sobrescribir el pasado.
  *
- * RECHAZADA no es un ajuste editable: la leche rechazada nunca ingresa a la
- * planta y no se paga (la valorización ya la deja en 0 litros pagables). Solo
- * se asegura que exista su regla, que la valorización necesita.
+ * Solo OBSERVADA es editable (el descuento por litro que se aplica a toda la
+ * semana). ACEPTADA es siempre el precio normal: su regla se fija en 0, de modo
+ * que un ajuste positivo anterior queda cerrado como historial y no se suma al
+ * precio base. RECHAZADA no es un ajuste: la semana rechazada no se paga. Solo
+ * se asegura que existan sus reglas, que la valorización necesita.
  */
 final class AplicarPrecioYAjustesProveedor
 {
     /** Resultados cuyo ajuste se edita desde la configuración. */
-    private const EDITABLES = [ResultadoCalidad::ACEPTADA, ResultadoCalidad::OBSERVADA];
+    private const EDITABLES = [ResultadoCalidad::OBSERVADA];
 
     public function __construct(
         private readonly PrecioLecheRepository $preciosLeche,
@@ -33,7 +35,7 @@ final class AplicarPrecioYAjustesProveedor
     ) {}
 
     /**
-     * @param  array<string, array{tipo_ajuste?: string|null, valor_ajuste?: float|string|null}>|null  $ajustes  por resultado (ACEPTADA, OBSERVADA)
+     * @param  array<string, array{tipo_ajuste?: string|null, valor_ajuste?: float|string|null}>|null  $ajustes  por resultado; solo se lee OBSERVADA (ACEPTADA siempre es 0)
      */
     public function execute(?float $precioBaseLitro, bool $aplicaCalidad, ?array $ajustes, DateTimeImmutable $inicio, int $actorUserId): void
     {
@@ -98,6 +100,9 @@ final class AplicarPrecioYAjustesProveedor
 
             $this->versionarRegla($resultado, $tipo, $valor, $vigente, $existentes, $inicio);
         }
+
+        $aceptada = $this->reglasPagoCalidad->buscarVigentePorResultado(ResultadoCalidad::ACEPTADA, $inicio);
+        $this->versionarRegla(ResultadoCalidad::ACEPTADA, 'MONTO', 0.0, $aceptada, $existentes, $inicio);
 
         if ($this->reglasPagoCalidad->buscarVigentePorResultado(ResultadoCalidad::RECHAZADA, $inicio) === null) {
             $this->reglasPagoCalidad->guardar(new ReglaPagoCalidad(null, ResultadoCalidad::RECHAZADA, 'MONTO', 0.0, $inicio, null, 'ACTIVO'));

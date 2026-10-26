@@ -31,18 +31,18 @@ function escenarioModal(int $userId, float $leche = 30.0): array
     return [$queso, $cuajo, $sal];
 }
 
-it('el historial muestra los KPIs pedidos, la leche disponible en una línea y el botón que abre el modal', function () {
+it('el historial muestra solo los KPIs útiles, la leche disponible real y el botón que abre el modal', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     fixture_stock_leche(30.0, $admin->id);
     fixture_lote(20.0, $admin->id, 'FINALIZADO');
 
     $html = $this->actingAs($admin)->get(route('admin.produccion.index'))->assertOk();
 
-    $html->assertSeeInOrder(['Lotes en proceso', 'Lotes finalizados', 'Leche utilizada', 'Productos obtenidos']);
+    $html->assertSeeInOrder(['Lotes en proceso', 'Leche disponible', '30 L', 'Lotes finalizados']);
+    $html->assertDontSee('Productos obtenidos');
     $html->assertSee('20 L');
-    $html->assertSeeInOrder(['Leche disponible:', '30 L']);
     $html->assertSee('data-modal-open="modal-nueva-produccion"', false);
-    $html->assertSeeInOrder(['Código', 'Fecha inicio', 'Fecha fin', 'Leche utilizada', 'Productos obtenidos', 'Estado', 'Acciones']);
+    $html->assertSeeInOrder(['Código', 'Producto(s)', 'Inicio', 'Leche utilizada', 'Resultado', 'Estado', 'Acción']);
     $html->assertDontSee('Stock de leche');
 });
 
@@ -68,7 +68,7 @@ it('la leche utilizada del KPI sale de los movimientos de consumo, no de un valo
     $this->actingAs($admin)->get(route('admin.produccion.index'))->assertSee('30 L');
 });
 
-it('el modal ofrece solo productos con receta activa y muestra la imagen del producto', function () {
+it('el modal ofrece solo productos con receta activa, con su presentación e imagen', function () {
     Storage::fake('public');
     $admin = fixture_usuario('ADMINISTRADOR');
     [$queso] = escenarioModal($admin->id);
@@ -77,15 +77,16 @@ it('el modal ofrece solo productos con receta activa y muestra la imagen del pro
 
     $html = $this->actingAs($admin)->get(route('admin.produccion.index'))->assertOk();
 
-    $html->assertSee('Agregar productos');
-    $html->assertSee('Elegir un producto');
+    $html->assertSee('Selecciona qué fabricar. EcoLact calculará automáticamente los insumos necesarios.');
+    $html->assertSee('Agregar otro producto');
     $html->assertSee('Queso Paria 1 kg');
     $html->assertDontSee('Yogurt sin receta');
     $html->assertSee('storage\/products\/queso-paria-1-kg-abcd1234.png', false);
     $html->assertSee('Observación (opcional)');
     $html->assertSee('Cancelar');
     $html->assertSee('Iniciar producción');
-    $html->assertSee('Resumen de insumos requeridos');
+    $html->assertSee('Requerimientos');
+    $html->assertDontSee('Resumen de insumos requeridos');
     $html->assertSee('Calculando insumos...');
 });
 
@@ -135,11 +136,11 @@ it('con leche insuficiente el cálculo marca Insuficiente y el backend bloquea i
     expect($leche['nombre'])->toBe('Leche');
     expect($leche['suficiente'])->toBeFalse();
     expect($json->json('data.puede_iniciar'))->toBeFalse();
-    expect($json->json('data.mensajes.0'))->toBe('No hay suficiente leche. Necesitas 50 L y solo hay 30 L disponibles.');
+    expect($json->json('data.mensajes.0'))->toBe('No hay suficiente leche. Se necesitan 50 L y hay 30 L disponibles.');
 
     // Aunque alguien salte el botón deshabilitado, el servidor vuelve a validar todo.
     $respuesta = $this->actingAs($admin)->post(route('admin.produccion.store'), ['productos' => [['producto_id' => $queso->id, 'cantidad' => 5]]]);
-    $respuesta->assertSessionHas('error', 'No hay suficiente leche. Necesitas 50 L y solo hay 30 L disponibles.');
+    $respuesta->assertSessionHas('error', 'No hay suficiente leche. Se necesitan 50 L y hay 30 L disponibles.');
     expect(LoteProduccionModel::count())->toBe(0);
     expect((float) fixture_leche()->fresh()->stock_actual)->toBe(30.0);
 });
@@ -211,7 +212,7 @@ it('el ingreso de leche por una entrega aparece como movimiento y sube el stock 
 
     app(RegistrarEntrega::class)->execute('DNI', $proveedor->dni, $acopiador->user_id, 20.0);
 
-    $this->actingAs($admin)->get(route('admin.produccion.index'))->assertSeeInOrder(['Leche disponible:', '20 L']);
+    $this->actingAs($admin)->get(route('admin.produccion.index'))->assertSeeInOrder(['Leche disponible', '20 L']);
     $this->assertDatabaseHas('insumo_movimientos', ['insumo_id' => fixture_leche()->id, 'motivo' => 'INGRESO_ACOPIO', 'origen_tipo' => 'ENTREGA']);
 });
 
@@ -221,7 +222,7 @@ it('el requerimiento con leche insuficiente usa la misma redacción en el modal 
 
     $req = app(CalcularRequerimientosProduccion::class)->execute([['producto_id' => $queso->id, 'cantidad' => 5]]);
 
-    expect($req->mensajesDeBloqueo())->toBe(['No hay suficiente leche. Necesitas 50 L y solo hay 30 L disponibles.']);
+    expect($req->mensajesDeBloqueo())->toBe(['No hay suficiente leche. Se necesitan 50 L y hay 30 L disponibles.']);
 });
 
 it('el modal "Nuevo insumo" tiene las secciones, campos y textos del diseño', function () {

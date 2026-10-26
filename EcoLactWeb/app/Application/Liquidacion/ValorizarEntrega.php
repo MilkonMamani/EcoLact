@@ -69,7 +69,8 @@ final class ValorizarEntrega
             throw new DomainException('No existe una regla de pago por calidad vigente para el resultado obtenido.');
         }
 
-        $ajustePorLitro = $reglaPago->calcularAjuste($precioLeche->precioLitro());
+        // ACEPTADA es siempre el precio normal: nunca suma un ajuste al precio base.
+        $ajustePorLitro = $resultado === ResultadoCalidad::ACEPTADA ? 0.0 : $reglaPago->calcularAjuste($precioLeche->precioLitro());
         $precioFinalLitro = max(0.0, round($precioLeche->precioLitro() + $ajustePorLitro, 4));
         // Leche RECHAZADA no ingresa físicamente a la planta: no se paga.
         // El precio final por litro de la SEMANA (no de este día) lo

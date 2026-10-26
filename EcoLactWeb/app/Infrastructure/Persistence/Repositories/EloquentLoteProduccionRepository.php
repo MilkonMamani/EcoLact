@@ -78,6 +78,7 @@ class EloquentLoteProduccionRepository implements LoteProduccionRepository
             estado: $model->estado,
             registradoPorUserId: $model->registrado_por_user_id,
             observacion: $model->observacion,
+            observacionCierre: $model->observacion_cierre,
         );
     }
 
@@ -93,6 +94,7 @@ class EloquentLoteProduccionRepository implements LoteProduccionRepository
             'estado' => $lote->estado(),
             'registrado_por_user_id' => $lote->registradoPorUserId(),
             'observacion' => $lote->observacion(),
+            'observacion_cierre' => $lote->observacionCierre(),
         ];
     }
 }

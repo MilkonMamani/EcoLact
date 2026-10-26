@@ -10,6 +10,7 @@ use App\Domain\Pago\ConfiguracionPagoRepository;
 use App\Domain\Pago\PeriodoPago;
 use App\Domain\Pago\PrecioLecheRepository;
 use App\Domain\Pago\ReglaPagoCalidadRepository;
+use App\Domain\Shared\Enums\EstadoObligacionPago;
 use App\Domain\Shared\Enums\ResultadoCalidad;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use DateTimeImmutable;
@@ -18,11 +19,21 @@ use DateTimeImmutable;
  * Mantiene sincronizados, sin intervención del administrador, los pagos
  * PENDIENTES de los proveedores con lo que realmente entregaron.
  *
- * Cada entrega válida (no anulada) genera deuda por sí misma: litros pagables x
- * (precio base vigente el día de la entrega + ajuste de calidad). El ajuste solo
- * se aplica si existe un análisis CONFIRMADO y la configuración del proveedor
- * activa los ajustes; sin análisis se paga el precio base. La leche RECHAZADA no
- * se paga (0 litros pagables): no ingresó a la planta.
+ * La calidad se liquida POR SEMANA con el PEOR resultado de los análisis
+ * CONFIRMADOS de la semana (RECHAZADA > OBSERVADA > ACEPTADA):
+ *
+ * - ACEPTADA: todos los litros al precio base vigente el día de cada entrega.
+ * - OBSERVADA: el descuento por litro de la regla OBSERVADA se aplica a TODOS
+ *   los litros de la semana (no solo a la entrega observada), si la
+ *   configuración del proveedor aplica calidad.
+ * - RECHAZADA: la semana completa no se paga (0 litros pagables). Queda
+ *   registrada como liquidación NO_PAGABLE con S/ 0.00 (visible en Pagar a
+ *   proveedores, nunca pagable) y sus compras de planilla pasan a la
+ *   siguiente semana pagable.
+ *
+ * Una entrega sin análisis confirmado no aporta resultado: se paga según el
+ * resto de la semana (si ninguna tiene análisis, al precio base). El pendiente
+ * se recalcula cuando se confirma un análisis, mientras no esté PAGADO.
  *
  * Las entregas se agrupan por proveedor y semana (jueves a miércoles) en UN
  * pago pendiente abierto, que se recalcula cada vez que llega una entrega, se
@@ -96,15 +107,24 @@ final class SincronizarPagosProveedor
             $grupos[$periodo->clave()][] = $entrega;
         }
 
+        $resultadosSemanales = array_map(
+            fn (array $grupo): ?ResultadoCalidad => ResultadoCalidad::peor(array_map(fn (EntregaPagable $entrega): ?ResultadoCalidad => $entrega->resultado, $grupo)),
+            $grupos,
+        );
+        // Una semana RECHAZADA no paga: sus compras de planilla pasan a la siguiente semana pagable.
+        $semanasSinPago = array_keys(array_filter($resultadosSemanales, fn (?ResultadoCalidad $r): bool => $r === ResultadoCalidad::RECHAZADA));
+
         foreach ($grupos as $clave => $grupo) {
             $periodo = PeriodoPago::semanaQueContiene(new DateTimeImmutable($clave));
             $nombre = $grupo[0]->proveedorNombre;
             $detalles = [];
             $configuracion = null;
+            $resultadoSemanal = $resultadosSemanales[$clave];
+            $noPagable = $resultadoSemanal === ResultadoCalidad::RECHAZADA;
 
             foreach ($grupo as $entrega) {
                 $configuracion = $this->configuracionPara($configuraciones, $entrega->fechaHora);
-                $detalle = $configuracion !== null ? $this->calcular($entrega, $configuracion) : null;
+                $detalle = $configuracion !== null ? $this->calcular($entrega, $configuracion, $resultadoSemanal) : null;
 
                 if ($detalle === null) {
                     $resultado->omitir($nombre, $periodo->etiqueta().' ('.$periodo->rango().')', 'La entrega #'.$entrega->entregaId.' no tiene configuración de pago ni precio de leche vigentes.');
@@ -116,11 +136,11 @@ final class SincronizarPagosProveedor
             }
 
             $bruto = round(array_sum(array_map(fn (DetalleEntregaCalculado $d): float => $d->subtotal, $detalles)), 2);
-            $descuentos = $this->pendientes->descuentosDisponibles($proveedorId, $periodo);
+            $descuentos = $noPagable ? [] : $this->pendientes->descuentosDisponibles($proveedorId, $periodo, $semanasSinPago);
             $totalDescuentos = round(array_sum(array_column($descuentos, 'importe')), 2);
             $monto = round($bruto - $totalDescuentos, 2);
 
-            if ($detalles === [] || $monto <= 0.0) {
+            if ($detalles === [] || (! $noPagable && $monto <= 0.0)) {
                 if ($detalles !== [] && $bruto > 0.0) {
                     $resultado->omitir($nombre, $periodo->etiqueta().' ('.$periodo->rango().')', 'Los descuentos de planilla igualan o superan el importe de la leche entregada; no hay monto que pagar.');
                 }
@@ -128,15 +148,23 @@ final class SincronizarPagosProveedor
                 continue;
             }
 
+            if ($noPagable) {
+                $resultado->omitir($nombre, $periodo->etiqueta().' ('.$periodo->rango().')', 'La semana tiene una entrega RECHAZADA: la liquidación semanal no es pagable.');
+            }
+
+            $litrosEntregados = round(array_sum(array_map(fn (DetalleEntregaCalculado $d): float => $d->litrosEntregados, $detalles)), 2);
             $litrosPagables = round(array_sum(array_map(fn (DetalleEntregaCalculado $d): float => $d->litrosPagables, $detalles)), 2);
             $baseCalculo = [
                 'tipo_calculo' => 'POR_LITROS',
-                'litros_entregados' => round(array_sum(array_map(fn (DetalleEntregaCalculado $d): float => $d->litrosEntregados, $detalles)), 2),
+                'litros_entregados' => $litrosEntregados,
                 'litros_pagables' => $litrosPagables,
-                'precio_base_litro' => $litrosPagables > 0 ? round(array_sum(array_map(fn (DetalleEntregaCalculado $d): float => $d->litrosPagables * $d->precioBase, $detalles)) / $litrosPagables, 4) : null,
-                'precio_litro_aplicado' => $litrosPagables > 0 ? round($bruto / $litrosPagables, 4) : null,
+                // Ponderados por litros entregados: también se conocen en una semana RECHAZADA (0 L pagables).
+                'precio_base_litro' => $litrosEntregados > 0 ? round(array_sum(array_map(fn (DetalleEntregaCalculado $d): float => $d->litrosEntregados * $d->precioBase, $detalles)) / $litrosEntregados, 4) : null,
+                'ajuste_calidad_litro' => $litrosEntregados > 0 ? round(array_sum(array_map(fn (DetalleEntregaCalculado $d): float => $d->litrosEntregados * $d->ajuste, $detalles)) / $litrosEntregados, 4) : 0.0,
+                'precio_litro_aplicado' => $litrosPagables > 0 ? round($bruto / $litrosPagables, 4) : 0.0,
                 'aplica_calidad' => (bool) $configuracion?->aplicaCalidad(),
                 'tuvo_incidencia' => count(array_filter($detalles, fn (DetalleEntregaCalculado $d): bool => $d->resultado !== null && $d->resultado !== ResultadoCalidad::ACEPTADA->value)) > 0,
+                'resultado_semanal' => $resultadoSemanal?->value,
                 'subtotal' => $bruto,
                 'ajustes' => -$totalDescuentos,
                 'descuentos' => $descuentos,
@@ -145,10 +173,14 @@ final class SincronizarPagosProveedor
 
             $usados[$clave] = true;
 
-            if ($this->pendientes->guardarPendiente($existentes[$clave] ?? null, $proveedorId, $nombre, $configuracion?->id(), $periodo, $monto, $baseCalculo, $detalles, $actorUserId)) {
-                $resultado->creadas++;
-            } else {
-                $resultado->existentes++;
+            $creada = $this->pendientes->guardarPendiente(
+                $existentes[$clave] ?? null, $proveedorId, $nombre, $configuracion?->id(), $periodo, $noPagable ? 0.0 : $monto, $baseCalculo, $detalles, $actorUserId,
+                $noPagable ? EstadoObligacionPago::NO_PAGABLE : EstadoObligacionPago::PENDIENTE,
+            );
+
+            // Una semana NO_PAGABLE queda registrada, pero no cuenta como pago generado.
+            if (! $noPagable) {
+                $creada ? $resultado->creadas++ : $resultado->existentes++;
             }
         }
 
@@ -181,7 +213,12 @@ final class SincronizarPagosProveedor
         return $fecha->setTime(0, 0) < $primera->fechaInicio() ? $primera : null;
     }
 
-    private function calcular(EntregaPagable $entrega, ConfiguracionPago $configuracion): ?DetalleEntregaCalculado
+    /**
+     * Valoriza una entrega con el resultado de la SEMANA, no con el suyo: ACEPTADA
+     * no lleva ajuste (precio normal), OBSERVADA aplica el descuento vigente el día
+     * de la entrega y RECHAZADA deja la entrega sin litros pagables.
+     */
+    private function calcular(EntregaPagable $entrega, ConfiguracionPago $configuracion, ?ResultadoCalidad $resultadoSemanal): ?DetalleEntregaCalculado
     {
         $precio = $this->preciosLeche->buscarVigente($entrega->fechaHora);
 
@@ -192,13 +229,13 @@ final class SincronizarPagosProveedor
         $precioBase = $precio->precioLitro();
         $ajuste = 0.0;
 
-        if ($configuracion->aplicaCalidad() && $entrega->resultado !== null && $entrega->resultado !== ResultadoCalidad::RECHAZADA) {
-            $regla = $this->reglasPagoCalidad->buscarVigentePorResultado($entrega->resultado, $entrega->fechaHora);
+        if ($configuracion->aplicaCalidad() && $resultadoSemanal === ResultadoCalidad::OBSERVADA) {
+            $regla = $this->reglasPagoCalidad->buscarVigentePorResultado(ResultadoCalidad::OBSERVADA, $entrega->fechaHora);
             $ajuste = $regla !== null ? $regla->calcularAjuste($precioBase) : 0.0;
         }
 
         $precioFinal = max(0.0, round($precioBase + $ajuste, 4));
-        $litrosPagables = $entrega->resultado === ResultadoCalidad::RECHAZADA ? 0.0 : $entrega->litros;
+        $litrosPagables = $resultadoSemanal === ResultadoCalidad::RECHAZADA ? 0.0 : $entrega->litros;
 
         return new DetalleEntregaCalculado(
             entregaId: $entrega->entregaId,

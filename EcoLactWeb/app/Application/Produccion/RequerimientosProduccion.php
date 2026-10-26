@@ -7,7 +7,7 @@ namespace App\Application\Produccion;
  * (con la receta que se usaría), los insumos totales requeridos (ya sumados
  * entre todos los productos) y los productos que no tienen receta activa.
  *
- * @phpstan-type Linea array{productoId: int, producto: string, unidad: string, cantidad: float, recetaId: int|null, recetaNombre: string|null, recetaVersion: int|null}
+ * @phpstan-type Linea array{productoId: int, producto: string, etiqueta: string, unidad: string, cantidad: float, recetaId: int|null, recetaNombre: string|null, recetaVersion: int|null}
  */
 final readonly class RequerimientosProduccion
 {

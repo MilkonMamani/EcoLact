@@ -24,7 +24,7 @@ function asignacionValida(int $zonaId, int $rutaId, array $extra = []): array
 
 // ---------------------------------------------------------------- listado
 
-it('el panel lista las zonas desde la base de datos, resalta la seleccionada y muestra su tabla de proveedores', function () {
+it('muestra las zonas desde la base de datos y abre la seleccionada en el panel con su tabla de proveedores', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $collana1 = fixture_zona('Collana 1');
     fixture_zona('Collana 2');
@@ -41,14 +41,14 @@ it('el panel lista las zonas desde la base de datos, resalta la seleccionada y m
     $response->assertOk()
         ->assertSee('Collana 1')
         ->assertSee('Collana 2')
-        ->assertSee('Buscar zona por nombre o descripción...')
+        ->assertDontSee('Buscar zona por nombre o descripción...')
         ->assertSee('Buscar proveedor por nombre o DNI...')
         ->assertSeeInOrder(['Resumen', 'Proveedores', 'Acopiadores'])
         ->assertSeeInOrder(['Sandra Ccama Quispe', '72100012', 'Registrada'])
         ->assertSeeInOrder(['Wilson Poma Mamani', '72100013', 'Sin ubicación'])
         ->assertDontSee('Proveedores sin zona');
-    $response->assertSee('data-ficha-id="'.$collana1->id.'" data-url-panel', false)
-        ->assertSee('is-selected', false);
+    $response->assertSee('data-fichas-contenido data-ficha-id="'.$collana1->id.'"', false)
+        ->assertSee('data-zonas-seleccionar="'.$collana1->id.'"', false);
     // "Ruta 01" sigue en el JSON del catálogo zona→ruta que usa el modal de
     // asignación (data-catalogo); lo que ya no debe verse es la card de
     // rutas ni su navegación a "Recorridos".
@@ -120,14 +120,15 @@ it('el mapa de la zona indica cuántos proveedores tienen ubicación registrada'
         ->assertSeeInOrder(['Con coordenadas', '1', 'Sin coordenadas', '1']);
 });
 
-it('una zona sin proveedores con coordenadas muestra el estado vacío del mapa', function () {
+it('una zona sin proveedores con coordenadas lo indica en el Resumen, sin mini mapa propio', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     app(AsignarProveedorARuta::class)->execute(rutaId: $ruta->id(), proveedorId: fixture_proveedor($zona)->id);
 
     $this->actingAs($admin)->get(route('admin.zonas.panel', $zona->id))
-        ->assertSee('Sin ubicaciones registradas');
+        ->assertSeeInOrder(['Delimitación y ubicaciones', 'Con coordenadas', '0', 'Sin coordenadas', '1'])
+        ->assertDontSee('data-zona-mapa-lienzo', false);
 });
 
 // ---------------------------------------------------- alta rápida de ruta

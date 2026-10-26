@@ -42,35 +42,49 @@ final class EloquentPersonalPagableQuery implements PersonalPagableQuery
             ->when($relacionFicha !== null, fn ($query) => $query->with($relacionFicha))
             ->orderBy('username')
             ->get()
-            ->map(function (User $usuario) use ($relacionFicha): ?PersonalPagable {
-                // Rol sin ficha dedicada (p.ej. administrador o un rol nuevo): el usuario mismo es el personal pagable.
-                if ($relacionFicha === null) {
-                    return new PersonalPagable(
-                        userId: $usuario->id,
-                        rolId: $usuario->role_id,
-                        nombre: $usuario->username,
-                        fechaAlta: DateTimeImmutable::createFromInterface($usuario->created_at),
-                    );
-                }
-
-                $ficha = $usuario->{$relacionFicha};
-
-                // Sin ficha real, o ficha inactiva: no es personal pagable, aunque el usuario tenga el role_id.
-                if ($ficha === null || $ficha->estado !== EstadoUsuario::ACTIVO->value) {
-                    return null;
-                }
-
-                return new PersonalPagable(
-                    userId: $usuario->id,
-                    rolId: $usuario->role_id,
-                    nombre: trim($ficha->nombres.' '.$ficha->apellidos),
-                    fechaAlta: DateTimeImmutable::createFromInterface($ficha->fecha_ingreso ?? $ficha->created_at),
-                    dni: $ficha->dni,
-                );
-            })
+            ->map(fn (User $usuario): ?PersonalPagable => $this->aPersonalPagable($usuario, $relacionFicha))
             ->filter()
             ->values()
             ->all();
+    }
+
+    public function trabajadorActivo(int $userId): ?PersonalPagable
+    {
+        $usuario = User::query()->where('estado', EstadoUsuario::ACTIVO->value)->find($userId);
+
+        if ($usuario === null || ! RoleModel::whereKey($usuario->role_id)->where('es_remunerable', true)->exists()) {
+            return null;
+        }
+
+        return $this->aPersonalPagable($usuario, $this->relacionFichaDelRol($usuario->role_id));
+    }
+
+    private function aPersonalPagable(User $usuario, ?string $relacionFicha): ?PersonalPagable
+    {
+        // Rol sin ficha dedicada (p.ej. administrador o un rol nuevo): el usuario mismo es el personal pagable.
+        if ($relacionFicha === null) {
+            return new PersonalPagable(
+                userId: $usuario->id,
+                rolId: $usuario->role_id,
+                nombre: $usuario->username,
+                fechaAlta: DateTimeImmutable::createFromInterface($usuario->created_at),
+            );
+        }
+
+        $ficha = $usuario->{$relacionFicha};
+
+        // Sin ficha real, o ficha inactiva: no es personal pagable, aunque el usuario tenga el role_id.
+        if ($ficha === null || $ficha->estado !== EstadoUsuario::ACTIVO->value) {
+            return null;
+        }
+
+        return new PersonalPagable(
+            userId: $usuario->id,
+            rolId: $usuario->role_id,
+            nombre: trim($ficha->nombres.' '.$ficha->apellidos),
+            fechaAlta: DateTimeImmutable::createFromInterface($ficha->fecha_ingreso ?? $ficha->created_at),
+            dni: $ficha->dni,
+        );
     }
 
     public function usuariosSinFichaReal(int $rolId): array

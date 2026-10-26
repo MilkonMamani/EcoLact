@@ -7,6 +7,7 @@ use App\Application\Pago\Contracts\PagoSemanalProveedoresQuery;
 use App\Application\Pago\PagoSemanalFiltro;
 use App\Domain\Pago\PeriodoPago;
 use App\Domain\Shared\Enums\EstadoObligacionPago;
+use App\Domain\Shared\Enums\ResultadoCalidad;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use App\Infrastructure\Persistence\Models\ProductoModel;
@@ -20,6 +21,11 @@ use Illuminate\Support\Str;
 
 final class EloquentPagoSemanalProveedoresQuery implements PagoSemanalProveedoresQuery
 {
+    private const ETIQUETAS_RESULTADO = ['ACEPTADA' => 'Aceptada', 'OBSERVADA' => 'Observada', 'RECHAZADA' => 'Rechazada'];
+
+    /** Estado compacto de la tabla (la etiqueta larga del enum sigue en otras pantallas). */
+    private const ETIQUETAS_ESTADO = ['PENDIENTE' => 'Pendiente', 'PAGADO' => 'Pagado', 'NO_PAGABLE' => 'No pagable'];
+
     public function listado(PagoSemanalFiltro $filtro, DateTimeImmutable $hoy): array
     {
         $semanas = $this->semanasDisponibles($hoy);
@@ -300,39 +306,49 @@ final class EloquentPagoSemanalProveedoresQuery implements PagoSemanalProveedore
             'semanaInicio' => $semana['inicio'],
             'semanaEtiqueta' => $semana['etiqueta'],
             'litros' => $calculo['litros'],
+            'litrosSemana' => $calculo['litrosSemana'],
             'precioLitro' => $calculo['precioLitro'],
+            'ajusteLitro' => $calculo['ajusteLitro'],
+            'precioAplicado' => $calculo['precioAplicado'],
+            'resultado' => $calculo['resultado'],
+            'resultadoEtiqueta' => self::ETIQUETAS_RESULTADO[$calculo['resultado']] ?? 'Sin análisis',
             'penalidad' => $calculo['penalidad'],
             'compras' => $calculo['compras'],
             'subtotal' => $calculo['subtotal'],
             'total' => $calculo['total'],
             'estado' => $obligacion->estado,
-            'estadoEtiqueta' => EstadoObligacionPago::from($obligacion->estado)->etiqueta(),
+            'estadoEtiqueta' => self::ETIQUETAS_ESTADO[$obligacion->estado] ?? EstadoObligacionPago::from($obligacion->estado)->etiqueta(),
             'pendiente' => $obligacion->estado === EstadoObligacionPago::PENDIENTE->value,
         ];
     }
 
     /**
-     * Cifras del pago: litros, precio base, penalidad (subtotal de leche menos
-     * litros × precio base), compras descontadas y total. Sale del cálculo
-     * guardado en el pago, no se recalcula con precios de hoy.
+     * Cifras de la liquidación semanal tal como se calcularon (SincronizarPagosProveedor):
+     * litros de la semana y pagables, precio base, resultado de calidad semanal, ajuste
+     * por litro, precio aplicado, importe de leche, compras descontadas y total. Un pago
+     * PAGADO usa su comprobante guardado: nunca se recalcula con la configuración de hoy.
      *
-     * @return array{litros: float, precioLitro: float, importeLeche: float, penalidad: float, subtotal: float, compras: float, total: float}
+     * @return array{litros: float, litrosSemana: float, precioLitro: float, ajusteLitro: float, precioAplicado: float, resultado: string|null, importeLeche: float, penalidad: float, subtotal: float, compras: float, total: float}
      */
     private function calculo(ObligacionPagoModel $obligacion): array
     {
-        // Un pago PAGADO es un registro histórico: sus cifras son las del comprobante
-        // guardado al pagar, nunca las de una configuración posterior.
         $snapshot = $obligacion->pago?->comprobante_snapshot;
 
         if (is_array($snapshot)) {
+            $guardado = ComprobantePagoProveedor::desdeArray($snapshot, estado: EstadoObligacionPago::PAGADO->value);
+
             return [
-                'litros' => round((float) $snapshot['litros'], 2),
-                'precioLitro' => round((float) $snapshot['precioLitro'], 2),
-                'importeLeche' => round((float) $snapshot['importeLeche'], 2),
-                'penalidad' => round((float) $snapshot['penalidad'], 2),
-                'subtotal' => round((float) $snapshot['subtotalLeche'], 2),
-                'compras' => round((float) $snapshot['subtotalDescuentos'], 2),
-                'total' => round((float) $snapshot['totalFinal'], 2),
+                'litros' => round($guardado->litros, 2),
+                'litrosSemana' => round($guardado->litrosDeLaSemana(), 2),
+                'precioLitro' => round($guardado->precioLitro, 2),
+                'ajusteLitro' => round($guardado->ajustePorLitro(), 2),
+                'precioAplicado' => round($guardado->precioAplicadoPorLitro(), 2),
+                'resultado' => $guardado->resultadoSemanal(),
+                'importeLeche' => round($guardado->importeLeche, 2),
+                'penalidad' => round($guardado->penalidad, 2),
+                'subtotal' => round($guardado->subtotalLeche, 2),
+                'compras' => round($guardado->subtotalDescuentos, 2),
+                'total' => round($guardado->totalFinal, 2),
             ];
         }
 
@@ -341,21 +357,30 @@ final class EloquentPagoSemanalProveedoresQuery implements PagoSemanalProveedore
 
         if ($obligacion->detalles->isNotEmpty()) {
             $litros = round((float) $obligacion->detalles->sum('litros_pagables'), 2);
+            $litrosSemana = round((float) $obligacion->detalles->sum('litros_entregados'), 2);
             $importeLeche = round((float) $obligacion->detalles->sum(fn ($detalle): float => (float) $detalle->litros_pagables * (float) $detalle->precio_base), 2);
             $subtotal = round((float) $obligacion->detalles->sum('subtotal'), 2);
         } else {
             $litros = round((float) ($base['litros_pagables'] ?? 0), 2);
+            $litrosSemana = round((float) ($base['litros_entregados'] ?? $litros), 2);
             $importeLeche = round($litros * (float) ($base['precio_base_litro'] ?? 0), 2);
             $subtotal = round((float) ($base['subtotal'] ?? $total), 2);
         }
 
         $precioLitro = $litros > 0.0 && $importeLeche > 0.0 ? round($importeLeche / $litros, 2) : round((float) ($base['precio_base_litro'] ?? 0), 2);
+        $penalidad = $importeLeche > 0.0 ? round($subtotal - $importeLeche, 2) : 0.0;
+        $noPagable = $obligacion->estado === EstadoObligacionPago::NO_PAGABLE->value;
 
         return [
             'litros' => $litros,
+            'litrosSemana' => $litrosSemana,
             'precioLitro' => $precioLitro,
+            'ajusteLitro' => round((float) ($base['ajuste_calidad_litro'] ?? ($litros > 0.0 ? $penalidad / $litros : 0.0)), 2),
+            'precioAplicado' => $noPagable ? 0.0 : ($litros > 0.0 ? round($subtotal / $litros, 2) : $precioLitro),
+            'resultado' => $base['resultado_semanal']
+                ?? ResultadoCalidad::peor($obligacion->detalles->map(fn ($detalle): ?ResultadoCalidad => ResultadoCalidad::tryFrom((string) $detalle->resultado_calidad)))?->value,
             'importeLeche' => $importeLeche,
-            'penalidad' => $importeLeche > 0.0 ? round($subtotal - $importeLeche, 2) : 0.0,
+            'penalidad' => $penalidad,
             'subtotal' => $subtotal,
             'compras' => max(0.0, round($subtotal - $total, 2)),
             'total' => $total,
@@ -403,6 +428,10 @@ final class EloquentPagoSemanalProveedoresQuery implements PagoSemanalProveedore
             descuentos: $descuentos,
             subtotalDescuentos: $calculo['compras'],
             totalFinal: $calculo['total'],
+            resultadoSemanal: $calculo['resultado'] ?? 'SIN_ANALISIS',
+            litrosSemana: $calculo['litrosSemana'],
+            ajusteLitro: $calculo['ajusteLitro'],
+            precioAplicado: $calculo['precioAplicado'],
             estado: $obligacion->estado,
             pagadoEl: $pago !== null ? ($pago->pagado_at ?? $pago->fecha_pago)->format('d/m/Y H:i') : null,
             anioFirma: (int) now()->format('Y'),

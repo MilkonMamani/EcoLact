@@ -1,4 +1,4 @@
-﻿/* Documento único: listado, modal e impresión reutilizan _comprobante. */
+﻿/* Documento único: panel, modal e impresión reutilizan _comprobante. Cabe en una hoja A4. */
 .pp-hoja {
     --pp-tinta: #17221e;
     --pp-muted: #68716c;
@@ -24,41 +24,56 @@
 .pp-documento { text-align: right; }
 .pp-documento h1 { font-size: 19px; font-weight: 700; text-transform: uppercase; letter-spacing: .035em; }
 .pp-documento p { margin-top: 5px; font-size: 12px; font-variant-numeric: tabular-nums; }
-.pp-hoja .pp-resumen { display: grid; grid-template-columns: 1fr .65fr 1.6fr; gap: 20px; margin-top: 20px; }
-.pp-resumen dt, .pp-etiqueta { color: var(--pp-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; }
-.pp-resumen dd { margin-top: 4px; font-weight: 500; }
-.pp-hoja .pp-pagado { margin-top: 9px; color: var(--pp-muted); font-size: 11px; }
-.pp-proveedor { margin-top: 23px; padding-top: 17px; border-top: 1px solid var(--pp-linea); }
-.pp-hoja .pp-proveedor-nombre { margin-top: 4px; font-size: 18px; font-weight: 600; }
-.pp-hoja .pp-proveedor-datos { display: flex; flex-wrap: wrap; gap: 12px 30px; margin-top: 8px; }
-.pp-proveedor-datos div { display: flex; gap: 10px; }
-.pp-proveedor-datos dt { color: var(--pp-muted); }
-.pp-seccion { margin-top: 25px; }
+.pp-etiqueta, .pp-datos dt { color: var(--pp-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; }
+
+/* Datos del pago */
+.pp-proveedor { margin-top: 22px; }
+.pp-hoja .pp-datos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 20px; }
+.pp-datos .is-ancho { grid-column: 1 / -1; }
+.pp-datos dd { margin-top: 3px; font-weight: 500; overflow-wrap: anywhere; }
+.pp-hoja .pp-proveedor-nombre { font-size: 18px; font-weight: 600; }
+.pp-hoja .pp-pagado { margin-top: 10px; color: var(--pp-muted); font-size: 11px; }
+
+/* Detalle del cálculo */
+.pp-seccion { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--pp-linea); }
+.pp-hoja .pp-calculo { margin-top: 8px; }
+.pp-calculo > div { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 8px 0; border-bottom: 1px solid var(--pp-linea); }
+.pp-calculo dt { color: var(--pp-muted); }
+.pp-calculo dt small { display: block; margin-top: 2px; font-size: 11px; }
+.pp-calculo dd { font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pp-calculo .is-negativo { color: #b42318; }
+.pp-calculo .is-subtotal dt, .pp-calculo .is-subtotal dd { color: var(--pp-tinta); font-weight: 700; }
+.pp-resultado { font-weight: 600; }
+.pp-resultado.is-aceptada { color: var(--pp-acento); }
+.pp-resultado.is-observada { color: #b54708; }
+.pp-resultado.is-rechazada { color: #b42318; }
+.pp-hoja .pp-aviso { margin-top: 10px; padding: 8px 10px; border-left: 3px solid #b42318; background: #fef3f2; color: #b42318; font-size: 12px; }
+
+/* Descuentos */
 .pp-tabla { width: 100%; margin-top: 9px; border-collapse: collapse; }
 .pp-tabla th { padding: 8px 6px; border-top: 1px solid var(--pp-tinta); border-bottom: 1px solid var(--pp-linea); text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .025em; }
-.pp-tabla td { padding: 9px 6px; border-bottom: 1px solid var(--pp-linea); vertical-align: top; overflow-wrap: anywhere; }
+.pp-tabla td { padding: 8px 6px; border-bottom: 1px solid var(--pp-linea); vertical-align: top; overflow-wrap: anywhere; }
 .pp-tabla td:nth-child(2) { color: var(--pp-muted); font-size: 12px; }
 .pp-tabla th:first-child, .pp-tabla td:first-child { padding-left: 0; }
 .pp-tabla th:last-child, .pp-tabla td:last-child { padding-right: 0; }
 .pp-tabla .is-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.pp-subtotal { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--pp-linea); font-size: 12px; }
-.pp-subtotal span { font-weight: 600; text-transform: uppercase; letter-spacing: .035em; }
-.pp-subtotal strong { font-variant-numeric: tabular-nums; }
-.pp-hoja .pp-nota, .pp-hoja .pp-sin-compras { margin-top: 8px; color: var(--pp-muted); font-size: 12px; }
-.pp-hoja .pp-sin-compras { padding: 10px 0; }
-.pp-cierre { margin-top: 23px; margin-left: auto; width: 370px; }
-.pp-totales dl { margin-top: 6px; }
-.pp-totales dl > div { display: flex; justify-content: space-between; gap: 20px; padding: 5px 0; font-variant-numeric: tabular-nums; }
+
+/* Total */
+.pp-cierre { margin-top: 24px; margin-left: auto; width: 370px; }
+.pp-totales > div { display: flex; justify-content: space-between; gap: 20px; padding: 5px 0; font-variant-numeric: tabular-nums; }
 .pp-totales dt { color: var(--pp-muted); }
 .pp-totales dd { white-space: nowrap; }
 .pp-totales .is-total { align-items: baseline; margin-top: 8px; padding-top: 12px; border-top: 2px solid var(--pp-tinta); font-weight: 700; }
 .pp-totales .is-total dt { color: var(--pp-tinta); text-transform: uppercase; }
 .pp-totales .is-total dd { color: var(--pp-acento); font-size: 24px; }
-.pp-forma-pago { display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; }
-.pp-firmas { display: grid; grid-template-columns: 1fr 1fr; gap: 65px; margin-top: 52px; }
+.pp-hoja .pp-forma-pago { margin-top: 10px; color: var(--pp-muted); font-size: 12px; text-align: right; }
+
+/* Firmas */
+.pp-firmas { display: grid; grid-template-columns: 1fr 1fr; gap: 65px; margin-top: 64px; }
 .pp-firma-linea { display: block; border-top: 1px solid var(--pp-tinta); }
 .pp-firma p { margin-top: 5px; color: var(--pp-muted); font-size: 11px; overflow-wrap: anywhere; }
-.pp-firma .pp-firma-titulo { margin-top: 9px; margin-bottom: 9px; color: var(--pp-tinta); font-size: 12px; font-weight: 600; }
+.pp-firma .pp-firma-titulo { margin-top: 9px; color: var(--pp-tinta); font-size: 12px; font-weight: 600; }
+
 /* Solo la vista en pantalla se escala. La altura se mide también para muchas compras. */
 .pp-escala { position: relative; width: 100%; overflow: hidden; height: calc(1122px * var(--pp-escala, 1)); }
 .pp-escala > .pp-hoja { position: absolute; top: 0; left: 0; }
@@ -73,8 +88,8 @@
     .pp-hoja { page: proveedores; width: 100%; min-height: 0; padding: 0; transform: none; --pp-escala: 1 !important; break-after: page; page-break-after: always; }
     .pp-hoja:last-child { break-after: auto; page-break-after: auto; }
     .pp-tabla thead { display: table-header-group; }
-    .pp-tabla tr, .pp-cabecera, .pp-proveedor, .pp-subtotal, .pp-cierre, .pp-firmas { break-inside: avoid; page-break-inside: avoid; }
-    .pp-etiqueta, .pp-nota { break-after: avoid; page-break-after: avoid; }
+    .pp-tabla tr, .pp-cabecera, .pp-proveedor, .pp-calculo, .pp-cierre, .pp-firmas { break-inside: avoid; page-break-inside: avoid; }
+    .pp-etiqueta { break-after: avoid; page-break-after: avoid; }
     .pp-documento-individual { width: auto !important; border: 0; }
     .pp-pantalla { overflow: visible !important; }
 }

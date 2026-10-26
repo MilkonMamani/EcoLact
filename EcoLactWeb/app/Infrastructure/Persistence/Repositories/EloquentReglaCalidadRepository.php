@@ -35,16 +35,11 @@ class EloquentReglaCalidadRepository implements ReglaCalidadRepository
 
     public function buscarVigentePorParametro(int $parametroId, DateTimeImmutable $fecha): ?ReglaCalidad
     {
-        $fechaSql = $fecha->format('Y-m-d');
-
         $model = ReglaCalidadModel::where('parametro_id', $parametroId)
-            ->where('estado', 'ACTIVO')
-            ->whereDate('fecha_inicio', '<=', $fechaSql)
-            ->where(function ($query) use ($fechaSql) {
-                $query->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', $fechaSql);
-            })
+            ->vigentesEn($fecha)
             ->orderBy('prioridad')
             ->orderByDesc('fecha_inicio')
+            ->orderByDesc('id')
             ->first();
 
         return $model ? $this->toEntity($model) : null;

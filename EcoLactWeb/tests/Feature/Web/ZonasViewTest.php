@@ -2,6 +2,7 @@
 
 use App\Application\Ruta\AsignarProveedorARuta;
 use App\Application\Ruta\RegistrarRuta;
+use App\Application\Zona\ZonasMapaData;
 use App\Infrastructure\Persistence\Models\EntregaModel;
 use App\Infrastructure\Persistence\Models\ProveedorModel;
 use App\Infrastructure\Persistence\Models\RutaModel;
@@ -36,7 +37,7 @@ beforeEach(function () {
 
 afterEach(fn () => Carbon::setTestNow());
 
-it('la tabla de zonas muestra proveedores, acopiadores, litros de la semana y última entrega, sin columna #', function () {
+it('el mapa trae por zona proveedores, acopiadores, litros de la semana y última entrega, sin tabla ni switch', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona('Collana 1');
     $zona->update(['descripcion' => 'Zona principal de acopio']);
@@ -52,25 +53,28 @@ it('la tabla de zonas muestra proveedores, acopiadores, litros de la semana y ú
     $this->actingAs($admin)->get(route('admin.zonas.index'))
         ->assertOk()
         ->assertSee('data-fichas-page', false)
-        ->assertSeeInOrder(['Nombre', 'Descripción', 'Proveedores', 'Acopiadores', 'Litros (semana)', 'Última entrega', 'Estado'])
-        ->assertSeeInOrder(['Collana 1', 'Zona principal de acopio', '2', '1', '348 L', 'Hoy 06:42'])
-        ->assertSee('data-estado-switch', false)
-        ->assertDontSee('<th scope="col">#</th>', false);
+        ->assertViewHas('mapaZonas', function (ZonasMapaData $mapa) use ($zona): bool {
+            expect($mapa->zonas[0])->toMatchArray(['id' => $zona->id, 'proveedores' => 2, 'acopiadores' => 1, 'litrosSemana' => 348.0, 'ultimaEntrega' => 'Hoy 06:42']);
+
+            return true;
+        })
+        ->assertDontSee('data-estado-switch', false)
+        ->assertDontSee('data-fichas-tabla', false);
 });
 
-it('busca zonas por nombre o descripción, filtra por estado y pagina en el servidor', function () {
+it('sin tabla ni paginación, la leyenda del mapa lista todas las zonas para elegirlas', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    fixture_zona('Collana 1')->update(['descripcion' => 'Distrito norte']);
-    fixture_zona('Faon')->update(['estado' => 'INACTIVO']);
+    fixture_zona('Collana 1');
+    $faon = fixture_zona('Faon');
+    $faon->update(['estado' => 'INACTIVO']);
     foreach (range(1, 12) as $i) {
         fixture_zona(sprintf('Zeta %02d', $i));
     }
 
-    $this->actingAs($admin);
-
-    $this->get(route('admin.zonas.index', ['q' => 'norte']))->assertSee('>Collana 1</a>', false)->assertDontSee('>Faon</a>', false);
-    $this->get(route('admin.zonas.index', ['estado' => 'INACTIVO']))->assertSee('>Faon</a>', false)->assertDontSee('>Collana 1</a>', false);
-    $this->get(route('admin.zonas.index'))->assertSee('Mostrando 1 a 12 de 14 zonas');
+    $this->actingAs($admin)->get(route('admin.zonas.index'))
+        ->assertSee('data-zonas-seleccionar="'.$faon->id.'"', false)
+        ->assertSee('Zeta 12')
+        ->assertDontSee('de 14 zonas');
 });
 
 it('el Resumen muestra información, métricas, rutas y el mapa; sin pestaña Rutas', function () {
@@ -88,8 +92,9 @@ it('el Resumen muestra información, métricas, rutas y el mapa; sin pestaña Ru
         ->assertSeeInOrder(['Información de la zona', 'Nombre', 'Zona Norte', 'Estado', 'Activa', 'Descripción', 'Zona de la parte alta', 'Creada el'])
         ->assertSeeInOrder(['Proveedores', '2', 'Acopiadores', '1', 'Litros (semana)', '0 L'])
         ->assertSeeInOrder(['Rutas', '1 ruta activa', 'Ruta Zona Norte', 'Gestionar ruta'])
-        ->assertSeeInOrder(['Ubicación de proveedores', 'Ver mapa completo', 'Con coordenadas', '1', 'Sin coordenadas', '1'])
-        ->assertSee('data-zona-mapa-datos', false);
+        ->assertSeeInOrder(['Delimitación y ubicaciones', 'Con coordenadas', '1', 'Sin coordenadas', '1'])
+        ->assertDontSee('Ver mapa completo')
+        ->assertDontSee('data-zona-mapa-datos', false);
 });
 
 it('la pestaña Acopiadores muestra solo los de la zona con lo entregado esta semana en ella', function () {

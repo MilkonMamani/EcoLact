@@ -29,7 +29,6 @@ function semana_unica_escenario(): array
 {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_configurar('PROVEEDOR', null, '2026-01-01', $admin, precio: 1.70, ajustes: [
-        'ACEPTADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => 0.25],
         'OBSERVADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => -0.20],
     ]);
 
@@ -52,14 +51,13 @@ it('acumula una o cinco entregas en una sola obligación y es idempotente', func
         ->and($o->fecha_pago_programada->format('Y-m-d'))->toBe('2026-09-23');
 })->with(['una entrega' => [1, 20.0, 34.0], 'cinco entregas' => [5, 100.0, 170.0]]);
 
-it('consolida calidad compras y comprobante sin pagar anuladas ni rechazadas', function () {
+it('consolida calidad semanal, compras y comprobante sin pagar anuladas', function () {
     [$admin, $proveedor] = semana_unica_escenario();
     pagos_entrega($proveedor, 20, '2026-09-17', 'ACEPTADA');
     pagos_entrega($proveedor, 30, '2026-09-18');
     pagos_entrega($proveedor, 25, '2026-09-20');
     pagos_entrega($proveedor, 15, '2026-09-21');
     pagos_entrega($proveedor, 10, '2026-09-22', 'OBSERVADA');
-    pagos_entrega($proveedor, 50, '2026-09-19', 'RECHAZADA');
     pagos_entrega($proveedor, 50, '2026-09-19')->update(['estado' => 'ANULADA']);
     $periodo = PeriodoLiquidacionModel::create(['fecha_inicio' => '2026-09-17', 'fecha_fin' => '2026-09-23', 'estado' => 'ABIERTO']);
     $producto = ProductoModel::create(['nombre' => 'Queso', 'unidad_medida' => 'UNIDAD', 'estado' => 'ACTIVO']);
@@ -76,10 +74,25 @@ it('consolida calidad compras y comprobante sin pagar anuladas ni rechazadas', f
 
     $o = ObligacionPagoModel::sole();
     $c = app(ObtenerComprobantesPagoProveedor::class)->execute([$o->id])[0];
+    // Semana OBSERVADA: el descuento de 0.20 va a los 100 L, no solo a los 10 L observados.
     expect($c->litros)->toBe(100.0)->and($c->importeLeche)->toBe(170.0)
-        ->and($c->penalidad)->toBe(3.0)->and($c->subtotalLeche)->toBe(173.0)
-        ->and($c->subtotalDescuentos)->toBe(23.0)->and($c->totalFinal)->toBe(150.0)
-        ->and($c->descuentos)->toHaveCount(2);
+        ->and($c->penalidad)->toBe(-20.0)->and($c->subtotalLeche)->toBe(150.0)
+        ->and($c->subtotalDescuentos)->toBe(23.0)->and($c->totalFinal)->toBe(127.0)
+        ->and($c->descuentos)->toHaveCount(2)
+        ->and($o->base_calculo['resultado_semanal'])->toBe('OBSERVADA');
+});
+
+it('una entrega RECHAZADA deja toda la semana sin pago y lo informa', function () {
+    [, $proveedor] = semana_unica_escenario();
+    pagos_entrega($proveedor, 20, '2026-09-17', 'ACEPTADA');
+    pagos_entrega($proveedor, 10, '2026-09-22', 'OBSERVADA');
+    pagos_entrega($proveedor, 50, '2026-09-19', 'RECHAZADA');
+
+    $resultado = app(SincronizarPagosProveedor::class)->execute();
+
+    expect(ObligacionPagoModel::sole()->estado)->toBe('NO_PAGABLE')
+        ->and((float) ObligacionPagoModel::sole()->monto_calculado)->toBe(0.0)
+        ->and(json_encode($resultado->omitidas, JSON_UNESCAPED_UNICODE))->toContain('RECHAZADA');
 });
 
 it('respeta el precio de cada entrega cuando cambia dentro de la semana', function () {

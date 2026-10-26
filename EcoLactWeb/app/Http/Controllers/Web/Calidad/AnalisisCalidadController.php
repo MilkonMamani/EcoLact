@@ -111,7 +111,7 @@ final class AnalisisCalidadController extends Controller
         Gate::authorize('view', $entrega);
 
         return view('admin.analisis-calidad.por-entrega', [
-            'entrega' => $entrega->load(['proveedor', 'zona']),
+            'entrega' => $entrega->load(['proveedor', 'zona', 'acopiador']),
             'analisis' => $this->obtenerAnalisisCalidad->porEntrega($entrega->id),
             'parametros' => array_values(array_filter(
                 $this->obtenerParametrosCalidad->execute(),
@@ -129,15 +129,17 @@ final class AnalisisCalidadController extends Controller
         // Traducción HTTP -> Application: el archivo subido se guarda aquí
         // (responsabilidad de la capa de entrega) y se pasa como ruta de
         // texto al Use Case, que nunca conoce Illuminate\Http\UploadedFile.
+        // Sin archivo, se usa la foto que ya guardó "Escanear ticket".
         $imagenPath = $request->hasFile('imagen')
             ? $request->file('imagen')->store('analisis-calidad', 'public')
-            : null;
+            : ($datos['ticket_path'] ?? null);
 
         $this->registrarAnalisisCalidad->execute(
             entregaId: (int) $datos['entrega_id'],
             valores: $datos['valores'],
             imagenPath: $imagenPath,
             observacion: $datos['observacion'] ?? null,
+            origenes: $datos['origenes'] ?? [],
         );
 
         return redirect()->back()->with('success', 'Análisis de calidad registrado correctamente.');

@@ -11,7 +11,9 @@ use InvalidArgumentException;
 /**
  * Define cuánto y cómo se paga, con vigencia histórica. Un proveedor cobra
  * por litros (el precio sale SIEMPRE de precios_leche, por eso monto_base es
- * nulo); el personal cobra un sueldo fijo mensual por rol.
+ * nulo); el personal cobra un sueldo fijo mensual POR TRABAJADOR (userId), con
+ * el rol real del trabajador. Las configuraciones por rol (userId nulo) son
+ * historial del modelo anterior y ya no se usan para calcular sueldos.
  */
 final class ConfiguracionPago
 {
@@ -28,13 +30,14 @@ final class ConfiguracionPago
         private readonly string $estado,
         private readonly ?string $observacion,
         private readonly int $creadoPorUserId,
+        private readonly ?int $userId = null,
     ) {
         if ($fechaFin !== null && $fechaFin < $fechaInicio) {
             throw new InvalidArgumentException('La fecha fin de la configuración no puede ser anterior a la fecha de inicio.');
         }
 
         if ($tipoBeneficiario === TipoBeneficiarioPago::PROVEEDOR) {
-            if ($tipoCalculo !== TipoCalculoPago::POR_LITROS || $rolId !== null || $montoBase !== null || $periodicidad !== PeriodicidadPago::SEMANAL) {
+            if ($tipoCalculo !== TipoCalculoPago::POR_LITROS || $rolId !== null || $userId !== null || $montoBase !== null || $periodicidad !== PeriodicidadPago::SEMANAL) {
                 throw new InvalidArgumentException('Un proveedor se paga por litros con periodicidad semanal, sin rol y sin monto propio: el precio sale de Precio de leche.');
             }
         } else {
@@ -61,6 +64,12 @@ final class ConfiguracionPago
     public function rolId(): ?int
     {
         return $this->rolId;
+    }
+
+    /** Trabajador dueño del sueldo (null: proveedor o configuración histórica por rol). */
+    public function userId(): ?int
+    {
+        return $this->userId;
     }
 
     public function tipoCalculo(): TipoCalculoPago
@@ -124,7 +133,7 @@ final class ConfiguracionPago
         return new self(
             $this->id, $this->tipoBeneficiario, $this->rolId, $this->tipoCalculo, $this->montoBase,
             $this->periodicidad, $this->aplicaCalidad, $this->fechaInicio, $fechaFin, $this->estado,
-            $this->observacion, $this->creadoPorUserId,
+            $this->observacion, $this->creadoPorUserId, $this->userId,
         );
     }
 }

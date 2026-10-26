@@ -18,13 +18,14 @@ final class ObtenerProductosProducibles
     ) {}
 
     /**
-     * @return list<array{id: int, nombre: string, unidad: string, imagen: ?string}>
+     * @return list<array{id: int, nombre: string, etiqueta: string, unidad: string, imagen: ?string}>
      */
     public function execute(): array
     {
         return array_map(fn (Producto $p): array => [
             'id' => $p->id(),
             'nombre' => $p->nombre(),
+            'etiqueta' => $p->etiqueta(),
             'unidad' => $p->unidadMedida(),
             'imagen' => $this->imagenes->url($p->imagen()),
         ], $this->productos->listarConRecetaActiva());

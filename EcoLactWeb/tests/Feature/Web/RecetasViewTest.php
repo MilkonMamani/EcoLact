@@ -77,39 +77,56 @@ it('no existe un campo para escribir el nombre de la receta: aunque se envíe se
     expect(RecetaModel::firstOrFail()->nombre)->toBe('Receta Queso Paria 1 kg');
 });
 
-it('el formulario muestra los campos de la nueva receta sin nombre manual', function () {
+it('la pantalla es simple: sin filtros, sin métricas y un modal sin bloques repetidos ni nombre manual', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
 
     $html = $this->actingAs($admin)->get(route('admin.recetas.index'))->assertOk();
 
     $html->assertSee('Define cómo se fabrica cada producto.');
-    $html->assertSee('+ Nueva receta');
-    $html->assertSee('Tipo de producto');
-    $html->assertSee('Nombre del producto');
-    $html->assertSee('Unidad de presentación');
-    $html->assertSee('Imagen del producto');
-    $html->assertSee('Receta generada automáticamente');
-    $html->assertSee('Guardar esta receta no descuenta insumos.', false);
-    $html->assertSee('Recetas activas');
+    $html->assertSee('Nueva receta');
+    $html->assertSee('No hay recetas registradas.');
+    $html->assertSeeInOrder(['Define el producto y su fórmula de producción.', 'Información del producto', 'Tipo de producto', 'Unidad de presentación', 'Seleccionar imagen', 'Fórmula de producción', 'Agregar ingrediente', 'Créalo desde Inventario &gt; Insumos.', 'Guardar una receta no descuenta inventario.', 'Guardar receta'], false);
     $html->assertDontSee('Nombre de la receta');
+    $html->assertDontSee('Receta generada automáticamente');
+    $html->assertDontSee('Recetas activas');
+    $html->assertDontSee('Buscar producto');
+    $html->assertDontSee('Filtrar');
 });
 
-it('la tabla de recetas tiene la imagen como primera columna y las columnas pedidas', function () {
+it('la tabla de recetas es compacta: imagen dentro de Producto, sin columnas de receta, rendimiento ni versión', function () {
     Storage::fake('public');
     $admin = fixture_usuario('ADMINISTRADOR');
     $this->actingAs($admin)->post(route('admin.recetas.store'), datosDeReceta(['imagen' => UploadedFile::fake()->image('queso.png', 300, 300)]));
 
     $html = $this->actingAs($admin)->get(route('admin.recetas.index'))->assertOk();
 
-    $html->assertSeeInOrder(['Imagen', 'Producto', 'Presentación', 'Receta', 'Ingredientes', 'Estado', 'Actualizada', 'Acciones']);
-    $html->assertSee('Queso Paria');
-    $html->assertSee('1 kg');
-    $html->assertSee('Receta Queso Paria 1 kg');
-    $html->assertSee('2 ingredientes');
-    $html->assertSee('storage/products/queso-paria-1-kg-', false);
+    $html->assertSeeInOrder(['Producto', 'Presentación', 'Ingredientes', 'Estado', 'Actualizada', 'Acción', 'storage/products/queso-paria-1-kg-', 'Queso Paria', 'Queso', '1 kg', '2 ingredientes', 'Receta activa'], false);
     $html->assertSee('Ver receta');
     $html->assertSee('Editar receta');
     $html->assertSee('Desactivar receta');
+    $html->assertSee('Fórmula para producir 1 unidad de 1 kg');
+    // El nombre interno de la receta y su versión viajan solo en los datos del formulario, nunca como texto visible.
+    $html->assertDontSeeText('Receta Queso Paria 1 kg');
+    $html->assertDontSeeText('versión');
+    $html->assertDontSee('>v1<', false);
+});
+
+it('cada producto muestra una sola receta aunque tenga historial de versiones', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    fixture_stock_leche(500.0, $admin->id);
+    $this->actingAs($admin)->post(route('admin.recetas.store'), datosDeReceta());
+    $producto = ProductoModel::firstOrFail();
+    $v1 = RecetaModel::firstOrFail();
+    app(IniciarProduccion::class)->execute([['producto_id' => $producto->id, 'cantidad' => 1]], $admin->id);
+    $this->actingAs($admin)->patch(route('admin.recetas.update', $v1->id), datosDeEdicion(['ingredientes' => [0 => ['cantidad' => 12]]]));
+    $vigente = RecetaModel::where('estado', 'ACTIVA')->firstOrFail();
+
+    $html = $this->actingAs($admin)->get(route('admin.recetas.index'))->assertOk();
+
+    expect(substr_count($html->getContent(), 'class="recetas-fila"'))->toBe(1);
+    $html->assertSee('id="receta-'.$vigente->id.'"', false);
+    $html->assertDontSee('id="receta-'.$v1->id.'"', false);
+    $html->assertSee('12 L');
 });
 
 it('valida en el servidor: tipo, nombre, presentación, unidad, ingredientes y cantidades', function () {
@@ -126,6 +143,21 @@ it('valida en el servidor: tipo, nombre, presentación, unidad, ingredientes y c
 
     expect(RecetaModel::count())->toBe(0);
     expect(ProductoModel::count())->toBe(0);
+});
+
+it('si el servidor rechaza la receta, el modal vuelve con los datos y el error junto a su campo', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+
+    $this->actingAs($admin)
+        ->from(route('admin.recetas.index'))
+        ->post(route('admin.recetas.store'), datosDeReceta(['nombre_producto' => '', 'ingredientes' => [1 => ['cantidad' => 0]]]))
+        ->assertRedirect(route('admin.recetas.index'));
+
+    $html = $this->actingAs($admin)->get(route('admin.recetas.index'))->assertOk();
+
+    $html->assertSeeInOrder(['Nombre', 'Escriba el nombre del producto.', 'Fórmula de producción'], false);
+    $html->assertSee('data-old=', false);
+    $html->assertSee('ingredientes.1.cantidad', false);
 });
 
 it('rechaza un ingrediente repetido y no crea el producto', function () {
@@ -170,7 +202,7 @@ it('una receta usada no se edita: al editarla se crea la versión siguiente sobr
         'ingredientes' => [0 => ['cantidad' => 12]],
     ]));
 
-    $response->assertSessionHas('success', fn (string $m) => str_contains($m, 'versión 2'));
+    $response->assertSessionHas('success', fn (string $m) => ! str_contains($m, 'versión'));
     expect(RecetaModel::where('producto_id', $producto->id)->orderBy('version')->pluck('estado', 'version')->all())->toBe([1 => 'INACTIVA', 2 => 'ACTIVA']);
     expect(ProductoModel::count())->toBe(1);
     expect((float) $v1->fresh()->detalles->firstWhere('insumo_id', fixture_leche()->id)->cantidad)->toBe(10.0);
@@ -184,7 +216,7 @@ it('una receta sin usar se edita en el mismo lugar', function () {
     $this->actingAs($admin)->patch(route('admin.recetas.update', $receta->id), datosDeEdicion([
         'descripcion' => 'Nueva fórmula',
         'ingredientes' => [0 => ['cantidad' => 11]],
-    ]))->assertSessionHas('success', 'Receta actualizada.');
+    ]))->assertSessionHas('success', fn (string $m) => str_starts_with($m, 'Receta actualizada.'));
 
     expect(RecetaModel::count())->toBe(1);
     expect($receta->fresh()->descripcion)->toBe('Nueva fórmula');

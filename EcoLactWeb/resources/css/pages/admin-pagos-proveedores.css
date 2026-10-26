@@ -1,35 +1,100 @@
-/* Solo la pantalla principal; el comprobante y el modal conservan sus estilos. */
+/*
+ * Pagar a proveedores: tabla (revisar liquidaciones) + panel derecho (comprobante y pago).
+ * Blanco, verde EcoLact, bordes suaves. El comprobante y el modal tienen sus propios estilos.
+ */
 body.pagos-proveedores-page { background: #fff; }
 
 [data-pago-semanal] {
     --color-primary: #006146;
     --color-primary-dark: #004d38;
+    --pp-borde: #e7ebee;
+    --pp-suave: #667085;
     min-width: 0;
 }
 
-[data-pago-semanal] .pp-filtros-fila {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: end;
-    gap: 12px;
+/* Métricas: una franja horizontal compacta */
+.pp-metricas { display: flex; flex-wrap: wrap; gap: .5rem 2rem; padding: .7rem 1rem; border: 1px solid var(--pp-borde); border-radius: .6rem; font-size: .85rem; }
+.pp-metricas div { display: flex; align-items: baseline; gap: .45rem; }
+.pp-metricas dt { color: var(--pp-suave); }
+.pp-metricas dd { font-weight: 600; color: #1d2939; font-variant-numeric: tabular-nums; }
+
+/* Diseño: tabla + comprobante */
+.pp-layout { display: grid; gap: 1rem; min-width: 0; }
+@media (min-width: 1280px) {
+    .pp-layout { grid-template-columns: minmax(0, 1fr) 380px; align-items: start; }
 }
 
-[data-pago-semanal] .pp-filtros-fila > div { grid-column: 1 / -1; }
-
+/* Filtros compactos */
+.pp-filtros { display: grid; gap: .5rem; }
+.pp-filtros-fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
 @media (min-width: 640px) {
-    [data-pago-semanal] .pp-filtros-fila {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto;
-        gap: 8px;
-    }
-    [data-pago-semanal] .pp-filtros-fila > div { grid-column: auto; }
+    .pp-filtros-fila { grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto; }
+}
+/* Buscador: reutiliza .campo-icono-caja (ícono a 0.8rem, texto desde 2.55rem); solo se conserva el alto de los filtros. */
+.pp-buscador { height: 2.5rem; border-color: #d0d5dd; border-radius: .5rem; }
+.pp-buscador input { font-size: .85rem; }
+.pp-buscador input::-webkit-search-decoration { -webkit-appearance: none; }
+
+.pp-campo { height: 2.5rem; padding-inline: .75rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff; color: #1d2939; font-size: .85rem; }
+.pp-campo:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 1px var(--color-primary); }
+select.pp-campo { width: 100%; min-width: 0; cursor: pointer; text-overflow: ellipsis; }
+
+.pp-boton { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; height: 2.5rem; padding-inline: .9rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff; color: #1d2939; font-size: .85rem; font-weight: 500; white-space: nowrap; cursor: pointer; transition: background-color .15s, border-color .15s; }
+.pp-boton:hover { background: #f7f9fa; }
+.pp-boton.is-primario { border-color: var(--color-primary); background: var(--color-primary); color: #fff; }
+.pp-boton.is-primario:hover { background: var(--color-primary-dark); }
+.pp-boton:disabled { cursor: not-allowed; opacity: .5; }
+.pp-boton.is-sm { height: 2.1rem; padding-inline: .7rem; font-size: .8rem; }
+.pp-boton.is-icono { width: 2.1rem; padding: 0; }
+
+/* Tabla de liquidaciones */
+.pp-tabla-tarjeta { border: 1px solid var(--pp-borde); border-radius: .75rem; background: #fff; }
+.pp-tabla-barra { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; padding: .75rem 1rem; }
+.pp-tabla-liquidaciones { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.pp-tabla-liquidaciones th { padding: .6rem .6rem; border-block: 1px solid var(--pp-borde); background: #f7f9fa; color: var(--pp-suave); font-size: .68rem; font-weight: 600; letter-spacing: .05em; text-align: left; text-transform: uppercase; white-space: nowrap; }
+.pp-tabla-liquidaciones td { padding: .6rem .6rem; border-bottom: 1px solid #f0f2f4; vertical-align: middle; }
+.pp-tabla-liquidaciones .is-num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pp-tabla-liquidaciones .is-check { width: 2.5rem; padding-left: 1rem; }
+.pp-tabla-liquidaciones [data-fila] { cursor: pointer; transition: background-color .15s; }
+.pp-tabla-liquidaciones [data-fila]:hover { background: #f8faf9; }
+.pp-tabla-liquidaciones [data-fila].is-vista { background: #eef7f2; }
+.pp-tabla-liquidaciones [data-fila].is-vista > td:first-child { box-shadow: inset 3px 0 #006146; }
+.pp-tabla-liquidaciones [data-fila]:focus-visible { outline: 2px solid #00ab62; outline-offset: -2px; }
+.pp-total { font-weight: 700; color: #1d2939; }
+
+.pp-calidad { display: inline-flex; align-items: center; gap: .35rem; font-weight: 500; white-space: nowrap; }
+.pp-calidad::before { content: ""; width: .45rem; height: .45rem; border-radius: 999px; background: currentColor; }
+.pp-calidad.is-aceptada { color: #006146; }
+.pp-calidad.is-observada { color: #b54708; }
+.pp-calidad.is-rechazada { color: #b42318; }
+.pp-calidad.is-sin { color: var(--pp-suave); }
+
+.pp-estado { display: inline-flex; align-items: center; gap: .3rem; font-size: .78rem; font-weight: 500; white-space: nowrap; }
+.pp-estado.is-pendiente { color: #b54708; }
+.pp-estado.is-pagado { color: #006146; }
+.pp-estado.is-no-pagable { color: #98a2b3; }
+
+/* Panel derecho: comprobante + acciones */
+.pp-panel { min-width: 0; padding: 1rem; border: 1px solid var(--pp-borde); border-radius: .75rem; background: #fff; }
+.pp-panel-cabecera { display: flex; align-items: flex-start; justify-content: space-between; gap: .5rem; margin-bottom: .75rem; }
+.pp-panel-cerrar { display: none; padding: .3rem; border-radius: .4rem; color: #98a2b3; cursor: pointer; }
+.pp-panel-cerrar:hover { background: #f2f4f7; color: #1d2939; }
+.pp-panel-vacio { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem; padding: 3.5rem 1.5rem; border: 1px dashed #d0d5dd; border-radius: .6rem; text-align: center; }
+.pp-panel-acciones { display: grid; gap: .6rem; margin-top: .9rem; padding-top: .9rem; border-top: 1px solid var(--pp-borde); }
+.pp-panel-nota { padding: .55rem .7rem; border-radius: .45rem; background: #f7f9fa; color: #475467; font-size: .8rem; }
+.pp-panel-nota.is-pagado { background: #eef7f2; color: #006146; font-weight: 500; }
+.pp-panel-nota.is-no-pagable { background: #fef3f2; color: #b42318; }
+
+@media (min-width: 1280px) {
+    .pp-panel { position: sticky; top: 1rem; }
 }
 
-/* El JS existente aplica esta clase a las filas seleccionadas o previsualizadas. */
-[data-pago-semanal] [data-fila].bg-info-soft { background: #f0faf5; }
-[data-pago-semanal] [data-fila].bg-info-soft > td:first-child { box-shadow: inset 2px 0 #006146; }
-[data-pago-semanal] [data-fila]:not(.bg-info-soft):hover { background: #f8faf9; }
-[data-pago-semanal] [data-paginacion] .bg-info-soft {
-    background: #f0faf5;
-    border-color: #b9d9ca;
-    color: #006146;
+/* Tablet y móvil: el comprobante se abre como panel superpuesto al elegir una fila. */
+@media (max-width: 1279px) {
+    .pp-panel { position: fixed; inset: 0 0 0 auto; z-index: 40; width: min(26rem, 100%); overflow-y: auto; border-radius: 0; transform: translateX(100%); visibility: hidden; transition: transform .2s ease, visibility .2s; }
+    .pp-panel.is-abierto { transform: none; visibility: visible; box-shadow: -8px 0 24px rgb(16 24 40 / .08); }
+    .pp-panel-cerrar { display: inline-flex; }
+}
+@media (max-width: 1279px) and (prefers-reduced-motion: reduce) {
+    .pp-panel { transition: none; }
 }

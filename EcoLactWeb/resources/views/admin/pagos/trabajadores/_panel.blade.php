@@ -1,151 +1,162 @@
 {{--
-    Panel derecho de Pagos a trabajadores: resumen del trabajador seleccionado. Se pinta en la
-    carga inicial (index, ?trabajador=ID) y como fragmento (admin.pagos.trabajadores.panel) al
-    elegir otra fila. Solo muestra TrabajadorPagoFila; el único cambio de datos que se hace aquí
-    es el que ya existía: bonificación/descuento y registrar el pago mientras está PENDIENTE.
+    Panel derecho de Pagos a trabajadores: PREVISUALIZACIÓN REAL del comprobante del trabajador
+    seleccionado (la misma hoja A4 que se imprime, escalada por admin-pago-trabajadores.js) y sus
+    acciones: Imprimir comprobante y, solo si está PENDIENTE, Registrar pago (modal con
+    confirmación). Aquí nunca se configura el sueldo: eso vive en Configuración de pagos.
+
+    Se pinta en la carga inicial (index, ?trabajador=ID) y como fragmento al elegir otra fila
+    (admin-fichas.js). Solo muestra datos del backend; no calcula dinero.
 
     @var \App\Application\Pago\TrabajadorPagoFila|null $seleccion
+    @var \App\Application\Pago\ComprobantePagoTrabajador|null $comprobante
 --}}
 @php
     $soles = fn ($valor): string => 'S/ '.number_format((float) $valor, 2);
+    $puedePagar = auth()->user()?->can('pay', \App\Infrastructure\Persistence\Models\ObligacionPagoModel::class) ?? false;
+    $comprobante ??= null;
 @endphp
 
 @if ($seleccion === null)
-    <x-fichas.panel-vacio entidad="trabajador">Haz click en una fila del listado para ver su asistencia y el detalle de su pago.</x-fichas.panel-vacio>
-@else
+    <div class="fichas-panel-vacio pt-vacio">
+        <span class="fichas-panel-vacio-icono"><x-ui.icon name="file-text" class="h-6 w-6" /></span>
+        <p class="font-semibold text-text">Selecciona un trabajador</p>
+        <p>Haz clic en una fila para revisar el detalle y su comprobante de pago.</p>
+    </div>
+@elseif ($seleccion->sinSueldo() || $comprobante === null)
     <div class="fichas-panel-contenido" data-fichas-contenido data-ficha-id="{{ $seleccion->clave() }}">
-        <header class="fichas-panel-head">
-            <span class="fichas-avatar" aria-hidden="true">{{ $seleccion->iniciales }}</span>
-            <div class="min-w-0 flex-1">
-                <h2 class="fichas-panel-nombre">{{ $seleccion->nombre }}</h2>
-                <p class="fichas-panel-dni">{{ $seleccion->rol }} · {{ $seleccion->dni ? 'DNI '.$seleccion->dni : 'Sin DNI' }}</p>
+        <header class="pt-panel-cabecera">
+            <div class="min-w-0">
+                <h2 class="pt-panel-titulo">{{ $seleccion->nombre }}</h2>
+                <p class="pt-panel-subtitulo">{{ $seleccion->rol }}</p>
             </div>
             <button type="button" class="fichas-cerrar" data-fichas-cerrar aria-label="Cerrar panel" title="Cerrar panel">
                 <x-ui.icon name="x-mark" class="h-5 w-5" />
             </button>
         </header>
 
-        <div class="fichas-panel-cuerpo pagos-panel" @unless ($seleccion->sinSueldo()) data-panel-obligacion="{{ $seleccion->id }}" @endunless>
-            <dl class="pagos-periodo">
-                <dt>Periodo</dt>
-                <dd>{{ $seleccion->periodoEtiqueta }}</dd>
-                <dd class="is-rango">{{ $seleccion->periodoRango }}</dd>
-            </dl>
-
-            <section class="pagos-bloque" aria-labelledby="pagos-asistencia-{{ $seleccion->clave() }}">
-                <h3 id="pagos-asistencia-{{ $seleccion->clave() }}">Resumen de asistencia</h3>
-                <dl class="pagos-asistencia">
-                    <div><dt>Asistencias</dt><dd>{{ $seleccion->diasTrabajados }}</dd></div>
-                    <div @class(['is-falta' => $seleccion->faltas > 0])><dt>Faltas</dt><dd>{{ $seleccion->faltas }}</dd></div>
-                </dl>
-            </section>
-
-            @if ($seleccion->sinSueldo())
-                {{-- Sin sueldo configurado para su rol: no hay obligación que pagar, no se inventan montos. --}}
-                <section class="pagos-bloque">
-                    <div class="pagos-estado-fila">
-                        <h3>Estado del pago</h3>
-                        <x-pagos.estado-pago :estado="$seleccion->estado" />
-                    </div>
-                    <p class="pagos-sin-sueldo" data-sin-sueldo>El rol <strong>{{ $seleccion->rol }}</strong> no tiene sueldo configurado. Configura su sueldo mensual para que se genere el pago de {{ $seleccion->periodoEtiqueta }}.</p>
-                    <a href="{{ route('admin.configuracion-pagos.index') }}" class="fichas-btn is-outline pagos-accion">Configurar sueldo del rol</a>
-                </section>
-            @else
-            <section class="pagos-bloque" aria-labelledby="pagos-detalle-{{ $seleccion->id }}">
-                <h3 id="pagos-detalle-{{ $seleccion->id }}">Detalle de pago</h3>
-                <dl class="pagos-detalle">
-                    <div><dt>Sueldo mensual</dt><dd>{{ $soles($seleccion->sueldoBase) }}</dd></div>
-                    <div><dt>Valor por día</dt><dd>{{ $soles($seleccion->valorDia) }}</dd></div>
-                    <div>
-                        <dt>
-                            Acumulado
-                            <span class="pagos-nota">{{ $seleccion->esMesCompleto ? 'Sueldo mensual menos faltas registradas.' : 'Proporcional a los días trabajados'.($seleccion->fechaIngresoEtiqueta ? ' desde su ingreso ('.$seleccion->fechaIngresoEtiqueta.')' : '').'.' }}</span>
-                        </dt>
-                        <dd>{{ $soles($seleccion->acumulado) }}</dd>
-                    </div>
-                    <div>
-                        <dt><label for="pago-bonificacion-{{ $seleccion->id }}">Bonificaciones</label></dt>
-                        <dd>
-                            @if ($seleccion->estaPendiente())
-                                <span class="pagos-ajuste">S/ <input id="pago-bonificacion-{{ $seleccion->id }}" type="number" step="0.01" min="0" inputmode="decimal" value="{{ number_format($seleccion->bonificacion, 2, '.', '') }}" data-campo-bonificacion></span>
-                            @else
-                                {{ $soles($seleccion->bonificacion) }}
-                            @endif
-                        </dd>
-                    </div>
-                    <div>
-                        <dt><label for="pago-descuento-{{ $seleccion->id }}">Descuentos</label></dt>
-                        <dd>
-                            @if ($seleccion->estaPendiente())
-                                <span class="pagos-ajuste">S/ <input id="pago-descuento-{{ $seleccion->id }}" type="number" step="0.01" min="0" inputmode="decimal" value="{{ number_format($seleccion->descuento, 2, '.', '') }}" data-campo-descuento></span>
-                            @else
-                                {{ $soles($seleccion->descuento) }}
-                            @endif
-                        </dd>
-                    </div>
-                </dl>
-                <p data-ajuste-error hidden class="mt-2 text-xs text-danger"></p>
-
-                <div class="pagos-total-final">
-                    <span>Total final</span>
-                    <strong data-campo-total>{{ $soles($seleccion->total) }}</strong>
-                </div>
-            </section>
-
-            <section class="pagos-bloque">
-                <div class="pagos-estado-fila">
-                    <h3>Estado del pago</h3>
-                    <x-pagos.estado-pago :estado="$seleccion->estado" />
-                </div>
-
-                @if ($seleccion->estaEnCurso())
-                    <p class="pagos-nota">El mes aún no ha sido cerrado: el pago estará disponible al cierre del mes.</p>
-                    <button type="button" class="fichas-btn is-outline pagos-accion" disabled>Registrar pago</button>
-                @elseif ($seleccion->estaPendiente())
-                    <form method="POST" action="{{ route('admin.pagos.trabajadores.pagar', $seleccion->id) }}" enctype="multipart/form-data" class="pagos-form" data-form-confirmar-pago data-metodos-electronicos="{{ json_encode($metodosElectronicos) }}">
-                        @csrf
-                        <input type="hidden" name="q" value="{{ request('q') }}">
-                        <input type="hidden" name="rol" value="{{ request('rol') }}">
-                        <input type="hidden" name="periodo" value="{{ request('periodo') }}">
-                        <input type="hidden" name="estado" value="{{ request('estado') }}">
-
-                        <x-forms.select name="metodo_pago" :id="'trabajador-metodo-'.$seleccion->id" label="Método de pago" required :options="$metodos" placeholder="Selecciona un método" data-campo-metodo />
-
-                        <div>
-                            <x-forms.label :for="'trabajador-operacion-'.$seleccion->id"><span data-campo-operacion-etiqueta>N° de operación / referencia</span><span class="text-danger" aria-hidden="true" data-campo-operacion-req hidden> *</span></x-forms.label>
-                            <input id="trabajador-operacion-{{ $seleccion->id }}" name="numero_operacion" type="text" maxlength="100" autocomplete="off" class="pagos-campo" data-campo-operacion>
-                            <p class="mt-1 text-xs text-text-muted" data-campo-operacion-ayuda>Opcional para efectivo; obligatorio para métodos electrónicos.</p>
-                        </div>
-
-                        <div>
-                            <x-forms.label :for="'trabajador-fecha-'.$seleccion->id" :required="true">Fecha de pago</x-forms.label>
-                            <input id="trabajador-fecha-{{ $seleccion->id }}" name="fecha_pago" type="date" required max="{{ now()->toDateString() }}" min="{{ $seleccion->periodoInicioIso }}" value="{{ now()->toDateString() }}" class="pagos-campo">
-                        </div>
-
-                        <x-forms.textarea name="observacion" :id="'trabajador-observacion-'.$seleccion->id" label="Observación (opcional)" placeholder="Ej. Pago en efectivo" :rows="2" maxlength="500" />
-
-                        <div>
-                            <x-forms.label :for="'trabajador-comprobante-'.$seleccion->id">Constancia adjunta (opcional)</x-forms.label>
-                            <input id="trabajador-comprobante-{{ $seleccion->id }}" name="comprobante" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" class="pagos-campo is-archivo">
-                        </div>
-
-                        <button type="submit" class="fichas-btn is-primary pagos-accion">Registrar pago</button>
-                    </form>
-                @else
-                    <p class="pagos-pagado">
-                        Pagado el {{ $seleccion->pagadoEl }} · {{ $seleccion->metodoPago }}@if ($seleccion->registradoPor) · por {{ $seleccion->registradoPor }}@endif
-                    </p>
-                    @if ($seleccion->observacion)
-                        <p class="pagos-nota">"{{ $seleccion->observacion }}"</p>
-                    @endif
-                @endif
-
-                {{-- Pagado: comprobante definitivo. Antes: vista previa claramente marcada en el propio documento. --}}
-                <a href="{{ route('admin.pagos.trabajadores.comprobante', $seleccion->id) }}" target="_blank" rel="noopener" class="fichas-btn is-outline pagos-accion" data-imprimir-comprobante>
-                    <x-ui.icon name="printer" class="h-4 w-4" /> {{ $seleccion->estado === 'PAGADO' ? 'Imprimir comprobante' : 'Imprimir vista previa' }}
-                </a>
-            </section>
-            @endif
+        <div class="fichas-panel-cuerpo">
+            {{-- Sin sueldo vigente propio: no hay obligación ni comprobante. Solo texto informativo, sin acciones. --}}
+            <div class="pt-no-disponible" data-sin-sueldo>
+                <x-ui.icon name="minus-circle" class="h-6 w-6" />
+                <p class="pt-no-disponible-titulo">Pago no disponible</p>
+                <p>No existe una configuración salarial vigente para este trabajador en {{ $seleccion->periodoEtiqueta }}.</p>
+                <p class="pt-no-disponible-ruta">Configúrala desde: Configuración &gt; Configuración de pagos.</p>
+            </div>
         </div>
+    </div>
+@else
+    @php $c = $comprobante; @endphp
+    <div class="fichas-panel-contenido" data-fichas-contenido data-ficha-id="{{ $seleccion->clave() }}" data-panel-obligacion="{{ $c->obligacionId }}">
+        <header class="pt-panel-cabecera">
+            <div class="min-w-0">
+                <h2 class="pt-panel-titulo">Comprobante del trabajador</h2>
+                <p class="pt-panel-subtitulo">Vista previa del comprobante del trabajador seleccionado.</p>
+            </div>
+            <button type="button" class="fichas-cerrar" data-fichas-cerrar aria-label="Cerrar panel" title="Cerrar panel">
+                <x-ui.icon name="x-mark" class="h-5 w-5" />
+            </button>
+        </header>
+
+        <div class="fichas-panel-cuerpo pt-panel-cuerpo">
+            <div class="pt-preview" data-comprobante-preview>
+                <div class="pt-escala" data-comprobante-escala>
+                    @include('admin.pagos.trabajadores._comprobante', ['c' => $c])
+                </div>
+            </div>
+        </div>
+
+        <footer class="pt-panel-acciones">
+            @if ($errors->any())
+                <p class="pt-nota is-error" role="alert">{{ $errors->first('pago') ?: $errors->first() }}</p>
+            @endif
+
+            @if ($c->estaPagado())
+                <p class="pt-nota is-pagado">Pagado el {{ $c->pagadoEl }}@if ($c->pagadoPor) · registrado por {{ $c->pagadoPor }}@endif</p>
+            @elseif ($c->estado === 'EN_CURSO')
+                <p class="pt-nota">El mes aún está en curso: el pago se podrá registrar al cierre del mes.</p>
+            @endif
+
+            <div class="pt-botones">
+                <a href="{{ route('admin.pagos.trabajadores.comprobante', $c->obligacionId) }}" target="_blank" rel="noopener" class="fichas-btn is-outline" data-imprimir-comprobante>
+                    <x-ui.icon name="printer" class="h-4 w-4" /> Imprimir comprobante
+                </a>
+                @if ($seleccion->estaPendiente() && $puedePagar)
+                    <button type="button" class="fichas-btn is-primary" data-modal-open="modal-registrar-pago" data-registrar-pago>
+                        <x-ui.icon name="check" class="h-4 w-4" /> Registrar pago
+                    </button>
+                @endif
+            </div>
+        </footer>
+
+        @if ($seleccion->estaPendiente() && $puedePagar)
+            {{-- admin-pago-trabajadores.js lo mueve a <body> (el panel puede ser un drawer con transform). --}}
+            <x-ui.modal id="modal-registrar-pago" title="Registrar pago" subtitle="Confirma la entrega del pago al trabajador.">
+                <form method="POST" action="{{ route('admin.pagos.trabajadores.pagar', $c->obligacionId) }}" enctype="multipart/form-data" class="pt-form" data-form-confirmar-pago data-obligacion="{{ $c->obligacionId }}" data-metodos-electronicos="{{ json_encode($metodosElectronicos) }}">
+                    @csrf
+                    @foreach (['q', 'rol', 'periodo', 'estado'] as $filtroActivo)
+                        <input type="hidden" name="{{ $filtroActivo }}" value="{{ request($filtroActivo) }}">
+                    @endforeach
+                    <input type="hidden" name="monto" value="{{ number_format($c->total, 2, '.', '') }}" data-campo-monto>
+
+                    <dl class="pt-resumen-pago">
+                        <div><dt>Trabajador</dt><dd>{{ $c->nombre }}</dd></div>
+                        <div><dt>Periodo</dt><dd>{{ $c->periodoEtiqueta }}</dd></div>
+                        <div class="is-total"><dt>Total</dt><dd data-campo-total>{{ $soles($c->total) }}</dd></div>
+                    </dl>
+
+                    {{-- Ajustes del pago pendiente (AjustarObligacionPersonal): se guardan al cambiar y el comprobante los refleja. --}}
+                    <details class="pt-ajustes" @if ($c->bonificacion > 0 || $c->descuento > 0) open @endif>
+                        <summary>Bonificación o descuento (opcional)</summary>
+                        <div class="pt-form-fila">
+                            <div>
+                                <label for="pago-bonificacion">Bonificación (S/)</label>
+                                <input id="pago-bonificacion" type="number" step="0.01" min="0" inputmode="decimal" value="{{ number_format($c->bonificacion, 2, '.', '') }}" class="pt-campo" data-campo-bonificacion>
+                            </div>
+                            <div>
+                                <label for="pago-descuento">Descuento (S/)</label>
+                                <input id="pago-descuento" type="number" step="0.01" min="0" inputmode="decimal" value="{{ number_format($c->descuento, 2, '.', '') }}" class="pt-campo" data-campo-descuento>
+                            </div>
+                        </div>
+                        <p class="pt-ayuda">Acumulado del periodo: {{ $soles($c->acumulado) }}.</p>
+                        <p data-ajuste-error hidden class="pt-ayuda is-error"></p>
+                    </details>
+
+                    <div class="pt-form-fila">
+                        <div>
+                            <label for="pago-metodo">Método <span class="text-danger" aria-hidden="true">*</span></label>
+                            <select id="pago-metodo" name="metodo_pago" required class="pt-campo" data-campo-metodo>
+                                @foreach ($metodos as $valor => $etiqueta)
+                                    <option value="{{ $valor }}" @selected($valor === \App\Domain\Shared\Enums\MetodoPago::EFECTIVO->value)>{{ $etiqueta }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="pago-fecha">Fecha de pago <span class="text-danger" aria-hidden="true">*</span></label>
+                            <input id="pago-fecha" name="fecha_pago" type="date" required max="{{ now()->toDateString() }}" min="{{ $c->periodoInicio }}" value="{{ now()->toDateString() }}" class="pt-campo">
+                        </div>
+                    </div>
+
+                    <div data-campo-operacion-grupo hidden>
+                        <label for="pago-operacion">N.° de operación <span class="text-danger" aria-hidden="true">*</span></label>
+                        <input id="pago-operacion" name="numero_operacion" type="text" maxlength="100" autocomplete="off" class="pt-campo" data-campo-operacion>
+                    </div>
+
+                    <div>
+                        <label for="pago-observacion">Observación <span class="pt-opcional">(opcional)</span></label>
+                        <textarea id="pago-observacion" name="observacion" rows="2" maxlength="500" class="pt-campo is-area" placeholder="Ej. Pago entregado en planta"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="pago-constancia">Constancia adjunta <span class="pt-opcional">(opcional)</span></label>
+                        <input id="pago-constancia" name="comprobante" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" class="pt-campo is-archivo">
+                    </div>
+
+                    <div class="pt-form-acciones">
+                        <button type="button" class="fichas-btn is-outline" data-modal-close>Cancelar</button>
+                        <button type="submit" class="fichas-btn is-primary" data-confirmar-pago>Confirmar pago</button>
+                    </div>
+                </form>
+            </x-ui.modal>
+        @endif
     </div>
 @endif
