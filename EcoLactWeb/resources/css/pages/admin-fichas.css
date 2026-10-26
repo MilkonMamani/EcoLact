@@ -56,6 +56,8 @@
 /* ------------------------------------------------------------ tabla */
 .fichas-tabla { margin-top: 1.25rem; overflow-x: auto; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; box-shadow: 0 1px 2px rgb(16 24 40 / .04); }
 .fichas-tabla table { width: 100%; min-width: 50rem; border-collapse: collapse; font-size: .875rem; text-align: left; }
+/* Tablas de pocas columnas (Insumos): caben junto al panel sin scroll horizontal. */
+.fichas-tabla.is-compacta table { min-width: 30rem; }
 .fichas-tabla th { padding: .7rem 1rem; border-bottom: 1px solid var(--fichas-border); background: var(--fichas-head); color: var(--fichas-muted); font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
 .fichas-tabla td { height: 3.25rem; padding: .5rem 1rem; border-bottom: 1px solid #f0f2f4; vertical-align: middle; white-space: nowrap; }
 .fichas-tabla tbody tr:last-child td { border-bottom: 0; }

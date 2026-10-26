@@ -14,6 +14,7 @@ class ProductoPrecioModel extends Model
         'producto_id',
         'tipo_cliente',
         'precio',
+        'cantidad_minima',
         'fecha_inicio',
         'fecha_fin',
         'estado',
@@ -22,6 +23,7 @@ class ProductoPrecioModel extends Model
 
     protected $casts = [
         'precio' => 'decimal:2',
+        'cantidad_minima' => 'decimal:2',
         'fecha_inicio' => 'date',
         'fecha_fin' => 'date',
     ];

@@ -33,7 +33,7 @@ class StoreRecetaRequest extends FormRequest
 
         return [
             'producto_existente_id' => $esNueva ? ['nullable', 'integer', 'exists:productos,id'] : ['prohibited'],
-            'tipo_producto' => $sinProductoExistente ? ['required', 'string', 'max:60'] : ['prohibited'],
+            'categoria_id' => $sinProductoExistente ? ['required', 'integer', Rule::exists('categorias_productos', 'id')->where('estado', 'ACTIVA')] : ['prohibited'],
             'nombre_producto' => $sinProductoExistente ? ['required', 'string', 'max:100'] : ['prohibited'],
             'presentacion_cantidad' => $sinProductoExistente ? ['required', 'numeric', 'gt:0', 'max:999999'] : ['prohibited'],
             'presentacion_unidad' => $sinProductoExistente ? ['required', 'string', Rule::in(UnidadMedida::codigos())] : ['prohibited'],
@@ -53,7 +53,9 @@ class StoreRecetaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tipo_producto.required' => 'Indique el tipo de producto (Queso, Yogurt...).',
+            'categoria_id.required' => 'Elija la categoría del producto.',
+            'categoria_id.integer' => 'Elija una categoría de la lista o guarde la nueva categoría.',
+            'categoria_id.exists' => 'La categoría elegida no existe o no está activa.',
             'nombre_producto.required' => 'Escriba el nombre del producto.',
             'presentacion_cantidad.required' => 'Indique la presentación (por ejemplo 1).',
             'presentacion_cantidad.gt' => 'La presentación debe ser mayor que cero.',

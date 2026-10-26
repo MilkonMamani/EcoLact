@@ -16,6 +16,7 @@ final class ProductoPrecio
         private readonly ?DateTimeImmutable $fechaFin,
         private readonly string $estado,
         private readonly int $creadoPorUserId,
+        private readonly ?float $cantidadMinima = null,
     ) {
         if (! in_array($tipoCliente, ['PROVEEDOR', 'MAYORISTA', 'PUBLICO'], true)) {
             throw new InvalidArgumentException('El tipo de cliente debe ser PROVEEDOR, MAYORISTA o PUBLICO.');
@@ -23,6 +24,10 @@ final class ProductoPrecio
 
         if ($precio <= 0.0) {
             throw new InvalidArgumentException('El precio debe ser mayor a cero.');
+        }
+
+        if ($cantidadMinima !== null && ($tipoCliente !== 'MAYORISTA' || $cantidadMinima <= 0.0)) {
+            throw new InvalidArgumentException('La cantidad mínima solo aplica al precio mayorista y debe ser mayor a cero.');
         }
     }
 
@@ -44,6 +49,15 @@ final class ProductoPrecio
     public function precio(): float
     {
         return $this->precio;
+    }
+
+    /**
+     * Solo MAYORISTA: desde cuántas unidades compradas se aplica este precio
+     * (TarifasProducto). Sin umbral (null, filas históricas) no se aplica nunca.
+     */
+    public function cantidadMinima(): ?float
+    {
+        return $this->cantidadMinima;
     }
 
     public function fechaInicio(): DateTimeImmutable

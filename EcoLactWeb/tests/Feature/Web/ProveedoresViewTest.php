@@ -92,7 +92,6 @@ it('el panel del proveedor muestra sus entregas y deja fuera de Compras las vent
     );
     app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PROVEEDOR',
         cantidad: 2.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,

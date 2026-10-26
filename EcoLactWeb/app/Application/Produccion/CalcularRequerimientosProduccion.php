@@ -45,6 +45,8 @@ final class CalcularRequerimientosProduccion
         $lineasCalculadas = [];
         $sinReceta = [];
         $necesarioPorInsumo = [];
+        // Un mismo insumo suele repetirse entre recetas (la leche): se lee una sola vez.
+        $insumosLeidos = [];
 
         foreach ($cantidades as $productoId => $cantidad) {
             $producto = $this->productos->buscarPorId($productoId)
@@ -76,7 +78,7 @@ final class CalcularRequerimientosProduccion
             $factor = $receta->factorPara($cantidad);
 
             foreach ($receta->detalles() as $detalle) {
-                $insumo = $this->insumos->buscarPorId($detalle->insumoId())
+                $insumo = ($insumosLeidos[$detalle->insumoId()] ??= $this->insumos->buscarPorId($detalle->insumoId()))
                     ?? throw new DomainException("Un ingrediente de la receta de {$producto->nombre()} ya no existe.");
 
                 $necesarioPorInsumo[$detalle->insumoId()] = ($necesarioPorInsumo[$detalle->insumoId()] ?? 0.0)
@@ -100,6 +102,7 @@ final class CalcularRequerimientosProduccion
                 unidadBase: $insumo->unidadBase(),
                 necesario: round($necesario, 4),
                 disponible: $insumo->stockActual(),
+                esLeche: $insumo->esLeche(),
             );
         }
 

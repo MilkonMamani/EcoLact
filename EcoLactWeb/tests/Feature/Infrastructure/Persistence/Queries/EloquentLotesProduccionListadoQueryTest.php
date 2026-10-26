@@ -36,8 +36,8 @@ it('calcula los KPIs y arma las filas de lotes de producción', function () {
 
     expect($datos->kpis['enProceso'])->toBe(1);
     expect($datos->kpis['finalizados'])->toBe(1);
-    expect($datos->kpis['lecheUtilizada'])->toBe(50.0);
-    expect($datos->kpis['productosObtenidos'])->toBe(5.0);
+    expect($datos->kpis)->toHaveKeys(['enProceso', 'finalizados'])->toHaveCount(2);
+    expect(collect($datos->filas)->sum('litros'))->toBe(50.0);
     expect($datos->filas)->toHaveCount(2);
 
     $filaFinalizada = collect($datos->filas)->firstWhere('estado', 'FINALIZADO');

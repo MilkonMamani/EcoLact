@@ -1,9 +1,10 @@
 {{--
-    Inventario de insumos (ADMINISTRADOR y ENCARGADO_PLANTA). Toda la cantidad se guarda en la
+    Inventario de insumos del portal de planta (ENCARGADO_PLANTA). Las compras no se registran aquí:
+    viven en la pantalla Insumos del administrador. Toda la cantidad se guarda en la
     unidad base del insumo. La LECHE es un insumo del sistema: su stock sube solo con las
     entregas de los proveedores y no se puede desactivar.
     Variables: $insumos, $kpis, $movimientos (id => movimientos), $tipos, $unidades,
-    $prefijo ('admin'|'planta'), $storeRoute, $updateRoute, $ajusteRoute, $compraRoute (nullable).
+    $prefijo ('admin'|'planta'), $storeRoute, $updateRoute, $ajusteRoute.
 --}}
 @php
     $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 4), '0'), '.');
@@ -163,17 +164,7 @@
                                     </div>
 
                                     <div class="space-y-4 text-sm">
-                                        @if ($compraRoute && ! $insumo->esLeche())
-                                            <form method="POST" action="{{ route($compraRoute, $insumo->id()) }}" class="space-y-2">
-                                                @csrf
-                                                <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">Registrar compra</p>
-                                                <div class="grid grid-cols-2 gap-2">
-                                                    <x-forms.input name="cantidad" type="number" step="any" min="0" :id="'compra_cantidad_'.$insumo->id()" label="Cantidad" required :sticky="false" />
-                                                    <x-forms.select name="unidad" :id="'compra_unidad_'.$insumo->id()" label="Unidad" :options="\App\Domain\Produccion\UnidadMedida::opcionesCompatiblesCon($insumo->unidadBase())" :value="$insumo->unidadBase()" :placeholder="false" :sticky="false" />
-                                                </div>
-                                                <x-ui.button type="submit" size="sm">Registrar compra</x-ui.button>
-                                            </form>
-                                        @elseif ($insumo->esLeche())
+                                        @if ($insumo->esLeche())
                                             <p class="rounded-lg bg-info/10 p-3 text-xs text-info">La leche no se compra: su stock aumenta automáticamente con cada entrega de los proveedores.</p>
                                         @endif
 
@@ -199,77 +190,5 @@
         @endif
     </x-ui.card>
 
-    <x-ui.modal id="modal-nuevo-insumo" title="Nuevo insumo" size="lg">
-        <form method="POST" action="{{ route($storeRoute) }}" class="space-y-5" data-insumo-nuevo>
-            @csrf
-
-            <section class="space-y-4">
-                <h3 class="text-xs font-semibold uppercase tracking-wide text-text-muted">Información del insumo</h3>
-
-                <x-forms.input name="nombre" label="Nombre del insumo" required placeholder="Ej. Cuajo" maxlength="120" />
-
-                <div class="grid gap-4 sm:grid-cols-2">
-                    <x-forms.select name="tipo" label="Tipo" :options="$tipos" value="INSUMO" :placeholder="false" required />
-                    <x-forms.select name="unidad_base" label="Unidad base" :options="$unidades" :placeholder="false" value="ml" required data-unidad-base-select />
-                </div>
-
-                <x-forms.textarea name="descripcion" label="Descripción (opcional)" :rows="2" placeholder="Coagulante utilizado para quesos..." />
-            </section>
-
-            <hr class="border-text-muted/10">
-
-            <section class="space-y-4">
-                <h3 class="text-xs font-semibold uppercase tracking-wide text-text-muted">Control de inventario</h3>
-
-                <div class="grid gap-4 sm:grid-cols-2">
-                    <div>
-                        <x-forms.label for="stock_inicial">Stock inicial</x-forms.label>
-                        <div class="flex items-center gap-2">
-                            <input id="stock_inicial" name="stock_inicial" type="number" step="any" min="0" value="{{ old('stock_inicial') }}" placeholder="0" class="w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary {{ $errors->has('stock_inicial') ? 'border-danger' : '' }}">
-                            <span class="w-8 shrink-0 text-sm text-text-muted" data-sufijo-unidad>ml</span>
-                        </div>
-                        <x-forms.error name="stock_inicial" />
-                    </div>
-                    <div>
-                        <x-forms.label for="stock_minimo" :required="true">Stock mínimo</x-forms.label>
-                        <div class="flex items-center gap-2">
-                            <input id="stock_minimo" name="stock_minimo" type="number" step="any" min="0" required value="{{ old('stock_minimo', 0) }}" class="w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary {{ $errors->has('stock_minimo') ? 'border-danger' : '' }}">
-                            <span class="w-8 shrink-0 text-sm text-text-muted" data-sufijo-unidad>ml</span>
-                        </div>
-                        <x-forms.error name="stock_minimo" />
-                    </div>
-                </div>
-
-                <p class="flex items-start gap-2 rounded-lg bg-info/10 px-3 py-2 text-xs text-primary-dark">
-                    <x-ui.icon name="alert-circle" class="mt-0.5 h-4 w-4 shrink-0" />
-                    <span>Se mostrará “Stock bajo” cuando el stock llegue al mínimo configurado. Todo el stock se controla en la unidad base; las recetas pueden usar otra unidad compatible y se convierte sola.</span>
-                </p>
-            </section>
-
-            <div class="flex justify-end gap-2 border-t border-text-muted/10 pt-4">
-                <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>
-                <x-ui.button type="submit">Guardar insumo</x-ui.button>
-            </div>
-        </form>
-    </x-ui.modal>
-
-    <x-ui.modal id="modal-editar-insumo" title="Editar insumo">
-        <form method="POST" action="#" class="space-y-4">
-            @csrf
-            @method('PATCH')
-            <x-forms.input name="nombre" label="Nombre" required :sticky="false" />
-            <div class="grid gap-4 sm:grid-cols-2">
-                <x-forms.select name="tipo" label="Tipo" :options="$tipos" :placeholder="false" :sticky="false" />
-                <x-forms.select name="estado" label="Estado" :options="['ACTIVO' => 'Activo', 'INACTIVO' => 'Inactivo']" :placeholder="false" :sticky="false" />
-            </div>
-            <p class="-mt-2 text-xs text-info" data-aviso-sistema hidden>Este es un insumo del sistema: no se puede cambiar su tipo ni desactivarlo.</p>
-            <p class="text-xs text-text-muted">Unidad base: <strong data-unidad-base></strong> (no se puede cambiar: cambiarla reinterpretaría todo el historial).</p>
-            <x-forms.textarea name="descripcion" label="Descripción (opcional)" :rows="2" :sticky="false" />
-            <x-forms.input name="stock_minimo" type="number" step="any" min="0" label="Stock mínimo" required :sticky="false" />
-            <div class="flex justify-end gap-2 pt-2">
-                <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>
-                <x-ui.button type="submit">Guardar cambios</x-ui.button>
-            </div>
-        </form>
-    </x-ui.modal>
+    @include('insumos._modales-insumo')
 </div>

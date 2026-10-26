@@ -2,15 +2,16 @@
 
 namespace App\Application\Produccion;
 
+use App\Domain\Produccion\CompraInsumoRepository;
 use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\InsumoMovimiento;
 use App\Domain\Produccion\InsumoMovimientoRepository;
 use App\Domain\Produccion\InsumoRepository;
 
 /**
- * Datos de la pantalla "Insumos": catálogo con su stock actual, indicadores y
- * los últimos movimientos de cada insumo (para verlos desplegados en la misma
- * fila, sin cambiar de pantalla).
+ * Datos de la pantalla "Insumos": catálogo con su stock actual, indicadores,
+ * la fecha de la última compra de cada insumo y los últimos movimientos de
+ * cada uno (para verlos desplegados en la misma fila, sin cambiar de pantalla).
  *
  * @phpstan-type Kpis array{insumos: int, conStock: int, stockBajo: int, sinStock: int}
  */
@@ -21,12 +22,13 @@ final class ObtenerInventarioInsumos
     public function __construct(
         private readonly InsumoRepository $insumos,
         private readonly InsumoMovimientoRepository $movimientos,
+        private readonly CompraInsumoRepository $compras,
     ) {}
 
     /**
-     * @return array{insumos: list<Insumo>, kpis: Kpis, movimientos: array<int, list<InsumoMovimiento>>}
+     * @return array{insumos: list<Insumo>, kpis: Kpis, movimientos: array<int, list<InsumoMovimiento>>, ultimasCompras: array<int, \DateTimeImmutable>}
      */
-    public function execute(?string $busqueda = null, ?string $nivel = null, ?string $tipo = null): array
+    public function execute(?string $busqueda = null, ?string $nivel = null, ?string $tipo = null, bool $conMovimientos = true): array
     {
         $todos = $this->insumos->listar();
 
@@ -59,10 +61,16 @@ final class ObtenerInventarioInsumos
 
         $movimientos = [];
 
-        foreach ($filtrados as $insumo) {
+        // La vista con panel lateral (admin) carga los movimientos solo del insumo elegido.
+        foreach ($conMovimientos ? $filtrados : [] as $insumo) {
             $movimientos[$insumo->id()] = array_slice($this->movimientos->listarPorInsumo($insumo->id()), 0, self::MOVIMIENTOS_POR_INSUMO);
         }
 
-        return ['insumos' => $filtrados, 'kpis' => $kpis, 'movimientos' => $movimientos];
+        return [
+            'insumos' => $filtrados,
+            'kpis' => $kpis,
+            'movimientos' => $movimientos,
+            'ultimasCompras' => $this->compras->ultimaCompraPorInsumo(),
+        ];
     }
 }

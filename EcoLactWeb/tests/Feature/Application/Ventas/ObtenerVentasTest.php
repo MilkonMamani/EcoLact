@@ -27,19 +27,17 @@ it('lista todas las ventas de todos los clientes, sin acotar por proveedor', fun
 
     app(RegistrarProductoPrecio::class)->execute($productoA->id, 'PUBLICO', 20.0, $admin->id);
     fixture_ingreso_producto($productoA->id, 10.0, $admin->id);
-    app(RegistrarProductoPrecio::class)->execute($productoB->id, 'MAYORISTA', 19.0, $admin->id);
+    app(RegistrarProductoPrecio::class)->execute($productoB->id, 'PUBLICO', 19.0, $admin->id);
     fixture_ingreso_producto($productoB->id, 10.0, $admin->id);
 
     app(RegistrarVentaProducto::class)->execute(
         productoId: $productoA->id,
-        tipoCliente: 'PUBLICO',
         cantidad: 2.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,
     );
     app(RegistrarVentaProducto::class)->execute(
         productoId: $productoB->id,
-        tipoCliente: 'MAYORISTA',
         cantidad: 3.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,

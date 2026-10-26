@@ -25,7 +25,6 @@ it('compone el dashboard de ventas con kpis, stock crítico y más vendidos', fu
 
     app(RegistrarVentaProducto::class)->execute(
         productoId: $productoA->id,
-        tipoCliente: 'PUBLICO',
         cantidad: 5.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $ventas->id,

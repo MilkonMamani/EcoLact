@@ -92,6 +92,15 @@
 .recetas-ingrediente-quitar { justify-self: center; color: var(--fichas-soft-text); }
 .recetas-ingrediente-quitar:hover { border-color: #fecdca; background: #fef3f2; color: #b42318; }
 
+/* Categoría: combobox + mini formulario "+ Nueva categoría" desplegado debajo, dentro del modal. */
+.recetas-categoria-opcion-nueva { color: var(--fichas-green); font-weight: 600; }
+.recetas-categoria-nueva { display: grid; gap: .45rem; margin-top: .6rem; padding: .75rem .85rem; border: 1px solid var(--fichas-border); border-left: 3px solid var(--fichas-green-strong); border-radius: .6rem; background: #fff; }
+.recetas-categoria-nueva[hidden] { display: none; }
+.recetas-categoria-nueva-label { color: var(--fichas-ink); font-size: .8rem; font-weight: 500; }
+.recetas-categoria-nueva-error { color: #d94c4c; font-size: .75rem; }
+.recetas-categoria-nueva-error:empty { display: none; }
+.recetas-categoria-nueva-acciones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .5rem; }
+
 .recetas-nota-inventario { display: flex; flex: 1 1 18rem; align-items: flex-start; gap: .45rem; color: var(--fichas-muted); font-size: .75rem; line-height: 1.4; }
 
 @media (min-width: 640px) {

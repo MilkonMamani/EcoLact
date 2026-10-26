@@ -7,7 +7,7 @@
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-background font-sans text-text antialiased">
+<body class="min-h-screen bg-background font-sans text-text antialiased @yield('body-class')">
     <a href="#contenido" class="ecolact-skip-link">Saltar al contenido</a>
 
     <div class="flex min-h-screen">

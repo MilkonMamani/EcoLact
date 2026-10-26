@@ -107,10 +107,9 @@ final class InsumoController extends Controller
             nombre: $datos['nombre'],
             unidadBase: $datos['unidad_base'] ?? $datos['unidad_medida'],
             stockMinimo: (float) $datos['stock_minimo'],
-            stockInicial: (float) ($datos['stock_inicial'] ?? 0.0),
             tipo: TipoInsumo::from($datos['tipo'] ?? 'INSUMO'),
             descripcion: $datos['descripcion'] ?? null,
-            registradoPorUserId: $request->user()->id,
+            estado: $datos['estado'],
         );
 
         return response()->json(['data' => $this->serializar($insumo)], 201);

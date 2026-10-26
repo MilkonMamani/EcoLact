@@ -32,8 +32,16 @@ if (document.querySelector('[data-recetas-page]')) {
     import('./pages/recetas.js');
 }
 
+if (document.querySelector('[data-productos-page]')) {
+    import('./pages/admin-productos.js');
+}
+
 if (document.querySelector('[data-insumos-page]')) {
     import('./pages/insumos.js');
+}
+
+if (document.querySelector('[data-compra-insumos]')) {
+    import('./pages/insumos-compra.js');
 }
 
 if (document.querySelector('[data-pago-semanal]')) {
@@ -46,6 +54,14 @@ if (document.querySelector('[data-pagos-page]')) {
 
 if (document.querySelector('[data-pago-trabajadores]')) {
     import('./pages/admin-pago-trabajadores.js');
+}
+
+if (document.querySelector('[data-caja-page]')) {
+    import('./pages/admin-caja.js');
+}
+
+if (document.querySelector('[data-ventas-pos]')) {
+    import('./pages/ventas-pos.js');
 }
 
 if (document.querySelector('[data-fichas-page]')) {

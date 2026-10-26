@@ -21,7 +21,7 @@ function vpc_crearProducto(): ProductoModel
     ]);
 }
 
-it('index delega en VentasListadoQuery y expone el listado general, productos y compradores a la vista', function () {
+it('index delega en VentasListadoQuery y expone el historial, el catálogo vendible y los compradores a la vista', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $producto = vpc_crearProducto();
 
@@ -29,7 +29,6 @@ it('index delega en VentasListadoQuery y expone el listado general, productos y 
     fixture_ingreso_producto($producto->id, 10.0, $admin->id);
     app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PUBLICO',
         cantidad: 2.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,
@@ -42,7 +41,7 @@ it('index delega en VentasListadoQuery y expone el listado general, productos y 
 
     expect($view->name())->toBe('ventas.ventas.general');
     expect($view->getData()['datos']->kpis['ventas'])->toBe(1);
-    expect($view->getData()['productos'])->toHaveCount(1);
+    expect($view->getData()['catalogo'])->toHaveCount(1);
 });
 
 it('un PROVEEDOR no puede ver el listado general de ventas', function () {

@@ -6,8 +6,8 @@ use App\Domain\Ventas\Comprador;
 use App\Domain\Ventas\CompradorRepository;
 
 /**
- * Registra un comprador que no es proveedor (mayorista o público que se
- * quiere identificar), para trazabilidad de sus compras.
+ * Registra un comprador en la agenda de clientes (para saber quién compró).
+ * No se le asigna tipo de precio: el mayorista lo decide la cantidad.
  */
 final class RegistrarComprador
 {
@@ -17,16 +17,16 @@ final class RegistrarComprador
 
     public function execute(
         string $nombre,
-        string $tipoCliente,
         ?string $documento = null,
         ?string $telefono = null,
     ): Comprador {
+        $limpio = fn (?string $valor): ?string => $valor !== null && trim($valor) !== '' ? trim($valor) : null;
+
         return $this->compradores->guardar(new Comprador(
             id: null,
-            nombre: $nombre,
-            documento: $documento,
-            telefono: $telefono,
-            tipoCliente: $tipoCliente,
+            nombre: trim($nombre),
+            documento: $limpio($documento),
+            telefono: $limpio($telefono),
             estado: 'ACTIVO',
         ));
     }

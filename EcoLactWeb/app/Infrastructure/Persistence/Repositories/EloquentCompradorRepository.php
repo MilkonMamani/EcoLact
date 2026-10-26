@@ -41,8 +41,8 @@ class EloquentCompradorRepository implements CompradorRepository
             nombre: $model->nombre,
             documento: $model->documento,
             telefono: $model->telefono,
-            tipoCliente: $model->tipo_cliente,
             estado: $model->estado,
+            tipoCliente: $model->tipo_cliente,
         );
     }
 

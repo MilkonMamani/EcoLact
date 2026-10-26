@@ -1,7 +1,8 @@
 <?php
 
 use App\Application\Produccion\ActualizarInsumo;
-use App\Application\Produccion\RegistrarCompraInsumo;
+use App\Application\Produccion\CalcularCompraInsumos;
+use App\Application\Produccion\RegistrarInsumo;
 use App\Application\Produccion\RegistrarMovimientoInsumo;
 use App\Domain\Shared\Enums\MotivoMovimientoInsumo;
 use App\Domain\Shared\Enums\TipoInsumo;
@@ -33,18 +34,18 @@ it('el stock de un insumo es la suma de sus movimientos (fuente única de verdad
     $admin = fixture_usuario('ADMINISTRADOR');
     $sal = fixture_insumo('Sal', 'kg', 10.0, 0.0, $admin->id);
 
-    app(RegistrarCompraInsumo::class)->execute($sal->id(), 5.0, $admin->id);
+    app(RegistrarMovimientoInsumo::class)->execute($sal->id(), MotivoMovimientoInsumo::INGRESO_COMPRA, 'ENTRADA', 5.0, $admin->id);
     app(RegistrarMovimientoInsumo::class)->execute($sal->id(), MotivoMovimientoInsumo::AJUSTE_SALIDA, 'SALIDA', 3.0, $admin->id);
 
     expect((float) InsumoModel::find($sal->id())->stock_actual)->toBe(12.0);
     expect(saldoPorMovimientos($sal->id()))->toBe(12.0);
 });
 
-it('convierte la unidad de una compra a la unidad base del insumo', function () {
+it('convierte la unidad de un movimiento a la unidad base del insumo', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $azucar = fixture_insumo('Azúcar', 'g', 0.0, 0.0, $admin->id);
 
-    app(RegistrarCompraInsumo::class)->execute($azucar->id(), 50.0, $admin->id, unidad: 'kg');
+    app(RegistrarMovimientoInsumo::class)->execute($azucar->id(), MotivoMovimientoInsumo::INGRESO_COMPRA, 'ENTRADA', 50.0, $admin->id, unidad: 'kg');
 
     expect((float) InsumoModel::find($azucar->id())->stock_actual)->toBe(50000.0);
     expect((float) InsumoMovimientoModel::where('insumo_id', $azucar->id())->value('cantidad'))->toBe(50000.0);
@@ -54,7 +55,7 @@ it('rechaza una unidad incompatible con la del insumo', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $azucar = fixture_insumo('Azúcar', 'g', 0.0, 0.0, $admin->id);
 
-    app(RegistrarCompraInsumo::class)->execute($azucar->id(), 5.0, $admin->id, unidad: 'L');
+    app(RegistrarMovimientoInsumo::class)->execute($azucar->id(), MotivoMovimientoInsumo::INGRESO_COMPRA, 'ENTRADA', 5.0, $admin->id, unidad: 'L');
 })->throws(DomainException::class, 'no es compatible');
 
 it('nunca deja el stock negativo y no guarda ningún movimiento cuando se rechaza', function () {
@@ -76,23 +77,20 @@ it('un motivo con dirección fija no acepta la dirección contraria', function (
     app(RegistrarMovimientoInsumo::class)->execute($sal->id(), MotivoMovimientoInsumo::CONSUMO_PRODUCCION, 'ENTRADA', 1.0, $admin->id);
 })->throws(InvalidArgumentException::class);
 
-it('registrar un insumo con stock inicial deja un movimiento que lo respalda', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    $cuajo = fixture_insumo('Cuajo', 'ml', 800.0, 100.0, $admin->id);
+it('crear un insumo solo crea su ficha: nace con stock 0 y sin movimientos', function () {
+    $cuajo = app(RegistrarInsumo::class)->execute(nombre: 'Cuajo', unidadBase: 'ml', stockMinimo: 100.0);
 
-    $movimientos = InsumoMovimientoModel::where('insumo_id', $cuajo->id())->get();
-
-    expect($movimientos)->toHaveCount(1);
-    expect($movimientos[0]->motivo)->toBe('AJUSTE_ENTRADA');
-    expect(saldoPorMovimientos($cuajo->id()))->toBe(800.0);
+    expect($cuajo->stockActual())->toBe(0.0);
+    expect($cuajo->estado())->toBe('ACTIVO');
+    expect(InsumoMovimientoModel::where('insumo_id', $cuajo->id())->count())->toBe(0);
 });
 
 it('la leche no se puede comprar, desactivar ni cambiar de tipo, pero sí editar su información no crítica', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $leche = fixture_leche();
 
-    expect(fn () => app(RegistrarCompraInsumo::class)->execute($leche->id, 10.0, $admin->id))
-        ->toThrow(DomainException::class, 'La leche no se repone por compra');
+    expect(fn () => app(CalcularCompraInsumos::class)->execute([['insumo_id' => $leche->id, 'presentacion_id' => 0, 'cantidad' => 10]]))
+        ->toThrow(DomainException::class, 'La leche no se compra');
 
     expect(fn () => app(ActualizarInsumo::class)->execute($leche->id, 'Leche', null, 0.0, 'INACTIVO'))
         ->toThrow(DomainException::class, 'no se puede desactivar');

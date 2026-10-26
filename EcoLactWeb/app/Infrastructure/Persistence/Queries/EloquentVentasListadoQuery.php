@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Queries;
 use App\Application\Ventas\Contracts\VentasListadoQuery;
 use App\Application\Ventas\VentasFiltro;
 use App\Application\Ventas\VentasListadoData;
+use App\Domain\Ventas\VentaProducto;
 use App\Infrastructure\Persistence\Models\VentaProductoModel;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Query\Builder;
@@ -48,6 +49,7 @@ final class EloquentVentasListadoQuery implements VentasListadoQuery
                 'v.cantidad',
                 'v.importe_total',
                 'v.estado',
+                'v.forma_pago',
                 'p.nombre as producto_nombre',
                 'pr.nombres as proveedor_nombres',
                 'pr.apellidos as proveedor_apellidos',
@@ -58,7 +60,9 @@ final class EloquentVentasListadoQuery implements VentasListadoQuery
             ->get()
             ->map(fn (object $fila): array => [
                 'id' => (int) $fila->id,
+                'codigo' => VentaProducto::codigo((int) $fila->id),
                 'fecha' => CarbonImmutable::parse($fila->fecha, config('app.timezone'))->format('d/m/Y H:i'),
+                'fechaCorta' => self::fechaCorta(CarbonImmutable::parse($fila->fecha, config('app.timezone'))),
                 'productoNombre' => $fila->producto_nombre,
                 'clienteNombre' => $fila->tipo_cliente === 'PROVEEDOR'
                     ? trim($fila->proveedor_nombres.' '.$fila->proveedor_apellidos)
@@ -66,11 +70,20 @@ final class EloquentVentasListadoQuery implements VentasListadoQuery
                 'clienteTipo' => $fila->tipo_cliente,
                 'cantidad' => (float) $fila->cantidad,
                 'importeTotal' => (float) $fila->importe_total,
+                'formaPago' => $fila->forma_pago,
                 'estado' => $fila->estado,
             ])
             ->all();
 
         return new VentasListadoData(kpis: $kpis, filas: $filas);
+    }
+
+    /** "26 oct. · 14:32" */
+    private static function fechaCorta(CarbonImmutable $fecha): string
+    {
+        $meses = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'set.', 'oct.', 'nov.', 'dic.'];
+
+        return $fecha->format('j').' '.$meses[$fecha->month - 1].' · '.$fecha->format('H:i');
     }
 
     private function base(VentasFiltro $filtro): Builder
@@ -83,8 +96,10 @@ final class EloquentVentasListadoQuery implements VentasListadoQuery
 
         if ($filtro->busqueda !== null) {
             $busqueda = '%'.$filtro->busqueda.'%';
-            $query->where(function (Builder $query) use ($busqueda): void {
+            $ventaId = preg_match('/^v-?0*(\d+)$/i', $filtro->busqueda, $codigo) === 1 ? (int) $codigo[1] : null;
+            $query->where(function (Builder $query) use ($busqueda, $ventaId): void {
                 $query->where('p.nombre', 'like', $busqueda)
+                    ->when($ventaId !== null, fn (Builder $query) => $query->orWhere('v.id', $ventaId))
                     ->orWhere('c.nombre', 'like', $busqueda)
                     ->orWhere('pr.nombres', 'like', $busqueda)
                     ->orWhere('pr.apellidos', 'like', $busqueda);

@@ -8,7 +8,7 @@ namespace App\Application\Produccion;
 final readonly class LotesProduccionListadoData
 {
     /**
-     * @param  array{enProceso: int, finalizados: int, lecheUtilizada: float, productosObtenidos: float}  $kpis
+     * @param  array{enProceso: int, finalizados: int}  $kpis
      * @param  list<Fila>  $filas
      */
     public function __construct(

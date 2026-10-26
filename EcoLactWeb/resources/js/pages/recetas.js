@@ -21,7 +21,7 @@ if (pagina) {
     const formulaProducto = formulario.querySelector('[data-formula-producto]');
     const formulaAyuda = formulario.querySelector('[data-formula-ayuda]');
     const campos = {
-        tipo: formulario.querySelector('[name="tipo_producto"]'),
+        categoria: formulario.querySelector('[name="categoria_id"]'),
         nombre: formulario.querySelector('[name="nombre_producto"]'),
         cantidad: formulario.querySelector('[name="presentacion_cantidad"]'),
         unidad: formulario.querySelector('[name="presentacion_unidad"]'),
@@ -38,6 +38,11 @@ if (pagina) {
     const ingredientesError = formulario.querySelector('[data-ingredientes-error]');
     const botonAgregar = formulario.querySelector('[data-agregar-ingrediente]');
     const botonGuardar = formulario.querySelector('[data-guardar]');
+    const categoriaCaja = formulario.querySelector('[data-categoria]');
+    const categoriaNueva = formulario.querySelector('[data-categoria-nueva]');
+    const categoriaNombre = formulario.querySelector('[data-categoria-nombre]');
+    const categoriaError = formulario.querySelector('[data-categoria-error]');
+    const categoriaGuardar = formulario.querySelector('[data-categoria-guardar]');
 
     const insumos = JSON.parse(pagina.dataset.insumos || '[]');
     const errores = JSON.parse(pagina.dataset.errores || '{}');
@@ -46,6 +51,7 @@ if (pagina) {
     const MAX_BYTES = 2 * 1024 * 1024;
     const TIPOS_MIME = ['image/jpeg', 'image/png', 'image/webp'];
     const TEXTO_SIN_PRODUCTO = 'Completa el producto y la presentación para definir la fórmula.';
+    const NUEVA_CATEGORIA = '__nueva__';
 
     let urlVistaPrevia = null;
     // Presentación del producto fijo (Editar / Configurar); en Nueva se lee de los campos.
@@ -263,6 +269,102 @@ if (pagina) {
         botonImagen.textContent = 'Cambiar imagen';
     });
 
+    /* ---------------------------------------------------------------- categoría */
+
+    // Valor elegido antes de "+ Nueva categoría", para volver a él si se cancela.
+    let categoriaAnterior = '';
+
+    function abrirNuevaCategoria() {
+        categoriaNueva.hidden = false;
+        categoriaNombre.value = '';
+        categoriaError.textContent = '';
+        categoriaNombre.classList.replace('border-danger', 'border-text-muted/25');
+        categoriaNombre.focus();
+    }
+
+    function cerrarNuevaCategoria(valor = categoriaAnterior) {
+        categoriaNueva.hidden = true;
+        categoriaError.textContent = '';
+        categoriaGuardar.disabled = false;
+        campos.categoria.value = valor;
+    }
+
+    function errorCategoria(mensaje) {
+        categoriaError.textContent = mensaje;
+        categoriaNombre.classList.replace('border-text-muted/25', 'border-danger');
+        categoriaNombre.focus();
+    }
+
+    async function guardarCategoria() {
+        const nombre = categoriaNombre.value.trim().replace(/\s+/g, ' ');
+
+        if (!nombre) {
+            errorCategoria('Escriba el nombre de la categoría.');
+            return;
+        }
+
+        const repetida = [...campos.categoria.options].find((o) => o.value !== NUEVA_CATEGORIA && o.value !== '' && o.text.trim().toLowerCase() === nombre.toLowerCase());
+
+        if (repetida) {
+            errorCategoria(`Ya existe la categoría ${repetida.text.trim()}.`);
+            return;
+        }
+
+        categoriaGuardar.disabled = true;
+
+        try {
+            const respuesta = await fetch(categoriaCaja.dataset.urlCategoria, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-CSRF-TOKEN': formulario.querySelector('[name="_token"]').value },
+                body: JSON.stringify({ nombre }),
+            });
+            const datos = await respuesta.json().catch(() => ({}));
+
+            if (!respuesta.ok) {
+                throw new Error(datos.errors?.nombre?.[0] ?? datos.message ?? 'No se pudo guardar la categoría.');
+            }
+
+            // La nueva categoría entra justo antes de "+ Nueva categoría" y queda elegida.
+            const opcion = new Option(datos.nombre, datos.id);
+            campos.categoria.insertBefore(opcion, campos.categoria.querySelector(`option[value="${NUEVA_CATEGORIA}"]`));
+            categoriaAnterior = String(datos.id);
+            cerrarNuevaCategoria(categoriaAnterior);
+        } catch (error) {
+            categoriaGuardar.disabled = false;
+            errorCategoria(error.message);
+        }
+    }
+
+    campos.categoria.addEventListener('change', () => {
+        if (campos.categoria.value === NUEVA_CATEGORIA) {
+            abrirNuevaCategoria();
+        } else {
+            categoriaAnterior = campos.categoria.value;
+            categoriaNueva.hidden = true;
+        }
+    });
+
+    categoriaGuardar.addEventListener('click', guardarCategoria);
+    formulario.querySelector('[data-categoria-cancelar]').addEventListener('click', () => {
+        cerrarNuevaCategoria();
+        campos.categoria.focus();
+    });
+
+    // Enter en el nombre guarda la categoría, no la receta.
+    categoriaNombre.addEventListener('keydown', (evento) => {
+        if (evento.key === 'Enter') {
+            evento.preventDefault();
+            guardarCategoria();
+        }
+    });
+
+    formulario.addEventListener('submit', (evento) => {
+        if (!campos.categoria.disabled && campos.categoria.value === NUEVA_CATEGORIA) {
+            evento.preventDefault();
+            errorCategoria('Guarde la nueva categoría o cancele para elegir una existente.');
+        }
+    });
+
     /* ---------------------------------------------------------------- modos */
 
     // Los errores pintados por el servidor solo valen para el primer formulario reabierto.
@@ -289,6 +391,8 @@ if (pagina) {
         }
 
         formulario.reset();
+        categoriaAnterior = '';
+        cerrarNuevaCategoria('');
         filas.replaceChildren();
         filas.dataset.contador = '0';
         limpiarImagen();
@@ -352,7 +456,8 @@ if (pagina) {
         }
 
         if (viejo && modo === 'crear') {
-            campos.tipo.value = viejo.tipo_producto ?? '';
+            campos.categoria.value = viejo.categoria_id ?? '';
+            categoriaAnterior = campos.categoria.value;
             campos.nombre.value = viejo.nombre_producto ?? '';
             campos.cantidad.value = viejo.presentacion_cantidad ?? '';
             campos.unidad.value = viejo.presentacion_unidad ?? '';

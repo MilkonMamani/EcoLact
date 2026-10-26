@@ -12,6 +12,5 @@
         'storeRoute' => 'planta.insumos.store',
         'updateRoute' => 'planta.insumos.update',
         'ajusteRoute' => 'planta.insumos.movimiento',
-        'compraRoute' => null,
     ])
 @endsection

@@ -22,7 +22,6 @@ it('arma el detalle de un producto con sus movimientos recientes ordenados por f
     fixture_ingreso_producto($producto->id, 100.0, $admin->id);
     app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PUBLICO',
         cantidad: 20.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,

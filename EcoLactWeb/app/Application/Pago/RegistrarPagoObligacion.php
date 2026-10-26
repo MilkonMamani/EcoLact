@@ -2,6 +2,7 @@
 
 namespace App\Application\Pago;
 
+use App\Application\Caja\RegistrarMovimientoCaja;
 use App\Application\Liquidacion\RegistrarPago;
 use App\Application\Pago\Contracts\AlmacenComprobantePago;
 use App\Application\Shared\TransactionManager;
@@ -25,6 +26,9 @@ use Throwable;
  * Para un proveedor se registra además el pago en el flujo de liquidaciones
  * (RegistrarPago), de modo que el portal y la app del proveedor sigan viendo
  * su liquidación como pagada.
+ *
+ * El dinero sale de la caja en la misma transacción: SALIDA PROVEEDOR o
+ * TRABAJADOR (RegistrarMovimientoCaja). Si la caja falla, el pago no queda.
  */
 final class RegistrarPagoObligacion
 {
@@ -34,6 +38,7 @@ final class RegistrarPagoObligacion
         private readonly RegistrarPago $registrarPagoLiquidacion,
         private readonly AlmacenComprobantePago $comprobantes,
         private readonly TransactionManager $transacciones,
+        private readonly RegistrarMovimientoCaja $caja,
     ) {}
 
     public function execute(
@@ -142,6 +147,7 @@ final class RegistrarPagoObligacion
                 }
 
                 $this->obligaciones->marcarComoPagada($obligacionId);
+                $this->caja->porPago($obligacion, $pago);
 
                 return $pago;
             });

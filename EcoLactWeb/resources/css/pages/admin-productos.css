@@ -1,0 +1,57 @@
+/*
+ * Productos (Inventario): reutiliza la tabla desplegable de Recetas (admin-recetas.css) y las
+ * variables de .fichas. Aquí solo lo propio: filtros en una línea, ficha en 2 columnas y el
+ * bloque "Gestión de precios" con sus modos ver / editar.
+ */
+
+/* ------------------------------------------------------------ filtros */
+.productos-filtros { display: grid; gap: .75rem; align-items: end; margin-top: 1.5rem; }
+.productos-filtros label { color: #344054; font-size: .8rem; font-weight: 500; }
+.productos-filtros select { height: 2.875rem; border-color: #d9dee4; border-radius: .6rem; box-shadow: none; }
+
+@media (min-width: 768px) {
+    .productos-filtros { grid-template-columns: minmax(0, 1fr) 12rem auto; }
+}
+
+/* ------------------------------------------------------------ fila */
+.productos-fila { cursor: pointer; }
+.productos-chevron svg { transition: transform .2s; }
+.productos-chevron[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* ------------------------------------------------------------ ficha desplegada */
+.productos-ficha { display: grid; gap: 1.5rem; white-space: normal; }
+.productos-ficha-producto { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1.25rem; }
+.productos-ficha-producto > div { flex: 1 1 10rem; }
+.productos-datos { display: grid; gap: .65rem; margin-top: .85rem; }
+.productos-datos dt { color: var(--fichas-muted); font-size: .75rem; }
+.productos-datos dd { margin-top: .1rem; color: var(--fichas-ink); font-size: .875rem; font-weight: 600; }
+
+@media (min-width: 1024px) {
+    .productos-ficha { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; }
+    .productos-precios { padding-left: 2rem; border-left: 1px solid #dfe7e3; }
+}
+
+/* ------------------------------------------------------------ gestión de precios */
+.productos-precios { min-width: 0; }
+.productos-precios-titulo { color: var(--fichas-muted); font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.productos-precios[data-modo="ver"] .productos-modo-editar,
+.productos-precios[data-modo="editar"] .productos-modo-ver { display: none; }
+
+.productos-lista-precios { margin-top: .75rem; border-top: 1px solid #dfe7e3; }
+.productos-lista-precios > div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .25rem 1rem; padding: .6rem 0; border-bottom: 1px solid #e6ede9; }
+.productos-lista-precios dt { color: var(--fichas-muted); font-size: .85rem; }
+.productos-lista-precios dd { color: var(--fichas-ink); font-size: .95rem; font-weight: 600; text-align: right; }
+.productos-umbral { display: block; color: var(--fichas-muted); font-size: .75rem; font-weight: 500; }
+
+.productos-sin-precios { display: grid; justify-items: start; gap: .35rem; margin-top: .75rem; padding: 1rem; border: 1px dashed #cfd6dc; border-radius: .6rem; background: #fff; color: var(--fichas-muted); font-size: .85rem; }
+.productos-sin-precios .fichas-btn { margin-top: .5rem; }
+
+.productos-campos { display: grid; gap: .9rem 1rem; margin-top: .75rem; }
+@media (min-width: 640px) {
+    .productos-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.productos-ayuda { margin-top: .75rem; color: var(--fichas-muted); font-size: .75rem; }
+
+.productos-precios-acciones { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+.productos-btn-eliminar { color: #b42318; }
+.productos-btn-eliminar:hover { border-color: #fda29b; color: #b42318; }

@@ -4,12 +4,14 @@ use App\Application\Produccion\CrearReceta;
 use App\Application\Produccion\RegistrarInsumo;
 use App\Application\Produccion\RegistrarMovimientoInsumo;
 use App\Domain\Produccion\Insumo;
+use App\Domain\Produccion\InsumoRepository;
 use App\Domain\Produccion\LoteProduccion;
 use App\Domain\Produccion\LoteProduccionRepository;
 use App\Domain\Produccion\Receta;
 use App\Domain\Shared\Enums\MotivoMovimientoInsumo;
 use App\Infrastructure\Persistence\Models\AcopiadorModel;
 use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
+use App\Infrastructure\Persistence\Models\CategoriaProductoModel;
 use App\Infrastructure\Persistence\Models\EntregaModel;
 use App\Infrastructure\Persistence\Models\InsumoModel;
 use App\Infrastructure\Persistence\Models\LoteProduccionInsumoModel;
@@ -336,17 +338,31 @@ if (! function_exists('fixture_stock_leche')) {
 
 if (! function_exists('fixture_insumo')) {
     /**
-     * Crea un insumo por el caso de uso real (el stock inicial queda respaldado por un movimiento).
+     * Crea la ficha del insumo por el caso de uso real (nace en 0) y, si se pide stock,
+     * lo deja respaldado por un movimiento de ajuste, como haría un conteo físico.
      */
     function fixture_insumo(string $nombre, string $unidadBase = 'kg', float $stock = 0.0, float $minimo = 0.0, ?int $userId = null): Insumo
     {
-        return app(RegistrarInsumo::class)->execute(
+        $insumo = app(RegistrarInsumo::class)->execute(
             nombre: $nombre,
             unidadBase: $unidadBase,
             stockMinimo: $minimo,
-            stockInicial: $stock,
-            registradoPorUserId: $userId ?? fixture_usuario('ADMINISTRADOR')->id,
         );
+
+        if ($stock <= 0.0) {
+            return $insumo;
+        }
+
+        app(RegistrarMovimientoInsumo::class)->execute(
+            insumoId: (int) $insumo->id(),
+            motivo: MotivoMovimientoInsumo::AJUSTE_ENTRADA,
+            direccion: 'ENTRADA',
+            cantidad: $stock,
+            registradoPorUserId: $userId ?? fixture_usuario('ADMINISTRADOR')->id,
+            observacion: 'Stock de prueba',
+        );
+
+        return app(InsumoRepository::class)->buscarPorId((int) $insumo->id()) ?? $insumo;
     }
 }
 
@@ -403,5 +419,19 @@ if (! function_exists('fixture_lote')) {
         }
 
         return app(LoteProduccionRepository::class)->buscarPorId($lote->id);
+    }
+}
+
+if (! function_exists('fixture_categoria_id')) {
+    /**
+     * Id de una categoría de producto. Quesos, Yogures y Mantequillas las crea
+     * la migración de categorias_productos; cualquier otra se crea aquí.
+     */
+    function fixture_categoria_id(string $nombre = 'Quesos'): int
+    {
+        return CategoriaProductoModel::firstOrCreate(
+            ['nombre_normalizado' => CategoriaProductoModel::normalizar($nombre)],
+            ['nombre' => $nombre, 'estado' => 'ACTIVA'],
+        )->id;
     }
 }

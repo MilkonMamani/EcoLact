@@ -43,18 +43,19 @@
             <x-layout.sidebar-link icon="payment" :href="route('admin.configuracion-pagos.index')" :active="request()->routeIs('admin.configuracion-pagos.*')">Configuración de pagos</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Finanzas</p>
+            <x-layout.sidebar-link icon="wallet" :href="route('admin.caja.index')" :active="request()->routeIs('admin.caja.*')">Caja</x-layout.sidebar-link>
             <x-layout.sidebar-group label="Pagos" icon="payment" :active="request()->routeIs('admin.pagos.*')">
                 <x-layout.sidebar-link :href="route('admin.pagos.proveedores.index')" :active="request()->routeIs('admin.pagos.proveedores.*')">Pagar a proveedores</x-layout.sidebar-link>
                 <x-layout.sidebar-link :href="route('admin.pagos.trabajadores.index')" :active="request()->routeIs('admin.pagos.trabajadores.*') || request()->routeIs('admin.pagos.index')">Pagar a trabajadores</x-layout.sidebar-link>
             </x-layout.sidebar-group>
 
             <p class="ecolact-sidebar-heading">Producción</p>
-            <x-layout.sidebar-link icon="audit" :href="route('admin.recetas.index')" :active="request()->routeIs('admin.recetas.*')">Recetas</x-layout.sidebar-link>
-            <x-layout.sidebar-link icon="production" :href="route('admin.produccion.index')" :active="request()->routeIs('admin.produccion.*')">Producción</x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="recipe" :href="route('admin.recetas.index')" :active="request()->routeIs('admin.recetas.*')">Recetas</x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="factory" :href="route('admin.produccion.index')" :active="request()->routeIs('admin.produccion.*')">Producción</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Inventario</p>
-            <x-layout.sidebar-link icon="box" :href="route('admin.insumos.index')" :active="request()->routeIs('admin.insumos.*')">Insumos</x-layout.sidebar-link>
-            <x-layout.sidebar-link icon="box" :href="route('admin.productos.index')" :active="request()->routeIs('admin.productos.*') || request()->routeIs('admin.producto-precios.*') || request()->routeIs('admin.stock.*')">Productos</x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="inventory" :href="route('admin.insumos.index')" :active="request()->routeIs('admin.insumos.*')">Insumos</x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="package" :href="route('admin.productos.index')" :active="request()->routeIs('admin.productos.*') || request()->routeIs('admin.producto-precios.*') || request()->routeIs('admin.stock.*')">Productos</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Ventas</p>
             <x-layout.sidebar-link icon="sales" :href="route('admin.ventas.index')" :active="request()->routeIs('admin.ventas.index')">Ventas</x-layout.sidebar-link>
@@ -84,4 +85,3 @@
     </div>
 </body>
 </html>
-

@@ -6,11 +6,17 @@ use App\Application\Ventas\ObtenerCompradores;
 use App\Application\Ventas\RegistrarComprador;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ventas\StoreCompradorRequest;
+use App\Http\Support\PantallaVentas;
 use App\Infrastructure\Persistence\Models\CompradorModel;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
+/**
+ * Compradores = agenda de clientes registrados. La misma agenda alimenta
+ * "Comprador registrado" en Nueva venta (cuyo modal guarda aquí por fetch).
+ */
 final class CompradorController extends Controller
 {
     public function __construct(
@@ -27,18 +33,21 @@ final class CompradorController extends Controller
         ]);
     }
 
-    public function store(StoreCompradorRequest $request): RedirectResponse
+    public function store(StoreCompradorRequest $request): RedirectResponse|JsonResponse
     {
         Gate::authorize('create', CompradorModel::class);
 
         $datos = $request->validated();
 
-        $this->registrarComprador->execute(
+        $comprador = $this->registrarComprador->execute(
             nombre: $datos['nombre'],
-            tipoCliente: $datos['tipo_cliente'],
             documento: $datos['documento'] ?? null,
             telefono: $datos['telefono'] ?? null,
         );
+
+        if ($request->expectsJson()) {
+            return response()->json(['data' => PantallaVentas::comprador($comprador)], 201);
+        }
 
         return redirect()->back()->with('success', 'Comprador registrado correctamente.');
     }

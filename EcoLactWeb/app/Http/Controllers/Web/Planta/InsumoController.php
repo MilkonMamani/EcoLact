@@ -79,10 +79,9 @@ final class InsumoController extends Controller
                 nombre: $datos['nombre'],
                 unidadBase: $datos['unidad_base'],
                 stockMinimo: (float) $datos['stock_minimo'],
-                stockInicial: (float) ($datos['stock_inicial'] ?? 0.0),
                 tipo: TipoInsumo::from($datos['tipo']),
                 descripcion: $datos['descripcion'] ?? null,
-                registradoPorUserId: $request->user()->id,
+                estado: $datos['estado'],
             );
         } catch (DomainException $e) {
             return redirect()->back()->withInput()->with('error', $e->getMessage());

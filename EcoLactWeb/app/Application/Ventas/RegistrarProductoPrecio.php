@@ -13,6 +13,11 @@ use DomainException;
  * MAYORISTA o PUBLICO). Cada tipo de cliente paga un precio distinto por el
  * mismo producto (ej. queso a S/18 al proveedor, S/19 al mayorista, S/20 al
  * público).
+ *
+ * Un tipo de cliente tiene un solo precio vigente: registrar uno nuevo cierra
+ * el anterior (queda INACTIVO, con fecha_fin; las ventas pasadas lo citan).
+ * El precio MAYORISTA puede llevar `cantidadMinima`: desde cuántas unidades
+ * se le aplica también a una venta al público.
  */
 final class RegistrarProductoPrecio
 {
@@ -27,20 +32,27 @@ final class RegistrarProductoPrecio
         float $precio,
         int $creadoPorUserId,
         ?DateTimeImmutable $fechaInicio = null,
+        ?float $cantidadMinima = null,
     ): ProductoPrecio {
         if ($this->productos->buscarPorId($productoId) === null) {
             throw new DomainException('El producto indicado no existe.');
         }
 
-        return $this->precios->guardar(new ProductoPrecio(
+        $fechaInicio ??= new DateTimeImmutable;
+        $nuevo = new ProductoPrecio(
             id: null,
             productoId: $productoId,
             tipoCliente: $tipoCliente,
             precio: $precio,
-            fechaInicio: $fechaInicio ?? new DateTimeImmutable,
+            fechaInicio: $fechaInicio,
             fechaFin: null,
             estado: 'ACTIVO',
             creadoPorUserId: $creadoPorUserId,
-        ));
+            cantidadMinima: $cantidadMinima,
+        );
+
+        $this->precios->cerrarVigentes($productoId, $tipoCliente, $fechaInicio);
+
+        return $this->precios->guardar($nuevo);
     }
 }

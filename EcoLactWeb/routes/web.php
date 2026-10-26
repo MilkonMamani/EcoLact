@@ -7,8 +7,11 @@ use App\Http\Controllers\Web\Acopiador\ProveedorController as AcopiadorProveedor
 use App\Http\Controllers\Web\Acopiador\RecorridoController as AcopiadorRecorridoController;
 use App\Http\Controllers\Web\Acopiador\SeguimientoCalidadController as AcopiadorSeguimientoCalidadController;
 use App\Http\Controllers\Web\AcopiadorController;
+use App\Http\Controllers\Web\Admin\CajaController;
+use App\Http\Controllers\Web\Admin\CompraInsumoController as AdminCompraInsumoController;
 use App\Http\Controllers\Web\Admin\DashboardController;
 use App\Http\Controllers\Web\Admin\InsumoController as AdminInsumoController;
+use App\Http\Controllers\Web\Admin\PresentacionInsumoController as AdminPresentacionInsumoController;
 use App\Http\Controllers\Web\AdministradorController;
 use App\Http\Controllers\Web\Analista\AnalisisCalidadController as AnalistaAnalisisCalidadController;
 use App\Http\Controllers\Web\Analista\ComunicadoController as AnalistaComunicadoController;
@@ -44,6 +47,7 @@ use App\Http\Controllers\Web\Planta\InsumoController as PlantaInsumoController;
 use App\Http\Controllers\Web\Planta\ProduccionController as PlantaProduccionController;
 use App\Http\Controllers\Web\Planta\ProductoController as PlantaProductoController;
 use App\Http\Controllers\Web\Planta\RecetaController as PlantaRecetaController;
+use App\Http\Controllers\Web\Produccion\CategoriaProductoController;
 use App\Http\Controllers\Web\Produccion\ProduccionController;
 use App\Http\Controllers\Web\Produccion\ProductoController;
 use App\Http\Controllers\Web\Produccion\RecetaController;
@@ -210,6 +214,11 @@ Route::middleware(['auth', 'active'])->group(function () {
         // pantalla de Liquidaciones: el cálculo nace en Configuración -> Pagos.
         Route::get('liquidaciones/{liquidacion}/imprimir', [LiquidacionController::class, 'imprimir'])->name('liquidaciones.imprimir');
 
+        // Finanzas > Caja: solo lectura. Los movimientos nacen en Ventas, Pagos e Insumos;
+        // aquí no hay alta, edición ni borrado de movimientos.
+        Route::get('caja', [CajaController::class, 'index'])->name('caja.index');
+        Route::get('caja/{movimiento}/panel', [CajaController::class, 'panel'])->whereNumber('movimiento')->name('caja.panel');
+
         // Pagar a proveedores: pago semanal en efectivo. Elegir proveedores, revisar un
         // comprobante por cada uno y, al confirmar la impresión, marcarlos como pagados.
         Route::get('pagos/proveedores', [PagoSemanalProveedorController::class, 'index'])->name('pagos.proveedores.index');
@@ -262,21 +271,18 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::post('produccion', [ProduccionController::class, 'store'])->name('produccion.store');
         Route::post('produccion/{lote}/finalizar', [ProduccionController::class, 'finalizar'])->name('produccion.finalizar');
 
-        // Productos: inventario de productos terminados (SOLO CONSULTA). Nacen desde
-        // su receta; no se crean ni se editan aquí. El precio por tipo de cliente
-        // se configura aparte, en producto-precios más abajo.
+        // Productos: consulta de productos terminados (nacen desde su receta; no se
+        // crean ni se editan aquí) + gestión de sus precios por tipo de cliente
+        // en la fila desplegable. Precios: exclusivo de ADMINISTRADOR (ProductoPrecioPolicy).
         Route::get('productos', [ProductoController::class, 'index'])->name('productos.index');
-        Route::get('productos/{producto}', [ProductoController::class, 'show'])->whereNumber('producto')->name('productos.show');
-
-        // Precios de productos (queso, etc.) por tipo de cliente: configuración
-        // financiera exclusiva de ADMINISTRADOR (ProductoPrecioPolicy).
-        Route::get('productos/{producto}/precios', [ProductoPrecioController::class, 'index'])->name('producto-precios.index');
-        Route::post('producto-precios', [ProductoPrecioController::class, 'store'])->name('producto-precios.store');
+        Route::put('productos/{producto}/precios', [ProductoPrecioController::class, 'update'])->whereNumber('producto')->name('producto-precios.update');
+        Route::delete('productos/{producto}/precios', [ProductoPrecioController::class, 'destroy'])->whereNumber('producto')->name('producto-precios.destroy');
 
         // Recetas: configuración de qué insumos (leche incluida) y cuánto de
         // cada uno lleva un producto. NO descuenta inventario; se versiona.
         Route::get('recetas', [RecetaController::class, 'index'])->name('recetas.index');
         Route::post('recetas', [RecetaController::class, 'store'])->name('recetas.store');
+        Route::post('recetas/categorias', [CategoriaProductoController::class, 'store'])->name('recetas.categorias.store');
         Route::patch('recetas/{receta}', [RecetaController::class, 'update'])->name('recetas.update');
         Route::post('recetas/{receta}/version', [RecetaController::class, 'nuevaVersion'])->name('recetas.version');
         Route::patch('recetas/{receta}/activar', [RecetaController::class, 'activar'])->name('recetas.activar');
@@ -290,9 +296,16 @@ Route::middleware(['auth', 'active'])->group(function () {
         // Policies (Gate::before ya concede acceso a ADMINISTRADOR).
         Route::get('insumos', [AdminInsumoController::class, 'index'])->name('insumos.index');
         Route::get('insumos/{insumo}', [AdminInsumoController::class, 'show'])->name('insumos.show');
+        Route::get('insumos/{insumo}/panel', [AdminInsumoController::class, 'panel'])->name('insumos.panel');
+        Route::post('insumos/{insumo}/presentaciones', [AdminPresentacionInsumoController::class, 'store'])->name('insumos.presentaciones.store');
+        Route::patch('insumos/{insumo}/presentaciones/{presentacion}', [AdminPresentacionInsumoController::class, 'update'])->whereNumber('presentacion')->name('insumos.presentaciones.update');
+        // Compra de insumos: boleta escaneada (OCR propone, la persona revisa) o registro manual.
+        Route::post('compras-insumo/boleta', [AdminCompraInsumoController::class, 'procesarBoleta'])->name('compras-insumo.boleta');
+        Route::post('compras-insumo/previsualizar', [AdminCompraInsumoController::class, 'previsualizar'])->name('compras-insumo.previsualizar');
+        Route::post('compras-insumo', [AdminCompraInsumoController::class, 'store'])->name('compras-insumo.store');
+        Route::get('compras-insumo/{compra}', [AdminCompraInsumoController::class, 'show'])->whereNumber('compra')->name('compras-insumo.show');
         Route::post('insumos', [AdminInsumoController::class, 'store'])->name('insumos.store');
         Route::patch('insumos/{insumo}', [AdminInsumoController::class, 'update'])->name('insumos.update');
-        Route::post('insumos/{insumo}/compra', [AdminInsumoController::class, 'registrarCompra'])->name('insumos.compra');
         Route::post('insumos/{insumo}/ajuste', [AdminInsumoController::class, 'registrarAjuste'])->name('insumos.ajuste');
 
         Route::get('stock', [StockController::class, 'index'])->name('stock.index');
@@ -303,6 +316,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::post('compradores', [CompradorController::class, 'store'])->name('compradores.store');
 
         Route::get('ventas', [VentaProductoController::class, 'index'])->name('ventas.index');
+        Route::get('ventas/saldo-proveedor/{proveedor}', [VentaProductoController::class, 'saldoProveedor'])->whereNumber('proveedor')->name('ventas.saldo-proveedor');
         Route::get('ventas/{venta}', [VentaProductoController::class, 'show'])->name('ventas.show');
         Route::get('proveedores/{proveedor}/ventas', [VentaProductoController::class, 'porProveedor'])->name('proveedores.ventas.index');
         Route::post('ventas', [VentaProductoController::class, 'store'])->name('ventas.store');
@@ -456,10 +470,11 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::prefix('ventas')->as('ventas.')->middleware('role:VENTAS')->group(function () {
         Route::get('dashboard', [PersonalVentasDashboardController::class, 'index'])->name('dashboard');
 
-        // Ventas: historial + registrar venta (dos pantallas separadas,
-        // igual que Entregas del acopiador / Producción de planta).
+        // Ventas / POS: pestañas Nueva venta + Historial (ventas/crear redirige a la primera;
+        // la misma pantalla que admin.ventas.*, ver PantallaVentas).
         Route::get('ventas', [PersonalVentasVentaController::class, 'index'])->name('ventas.index');
         Route::get('ventas/crear', [PersonalVentasVentaController::class, 'create'])->name('ventas.create');
+        Route::get('ventas/saldo-proveedor/{proveedor}', [PersonalVentasVentaController::class, 'saldoProveedor'])->whereNumber('proveedor')->name('ventas.saldo-proveedor');
         Route::get('ventas/{venta}', [PersonalVentasVentaController::class, 'show'])->name('ventas.show');
         Route::post('ventas', [PersonalVentasVentaController::class, 'store'])->name('ventas.store');
 

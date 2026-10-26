@@ -17,7 +17,7 @@ uses(TestCase::class, RefreshDatabase::class);
 function datosDeReceta(array $extra = []): array
 {
     return array_replace_recursive([
-        'tipo_producto' => 'Queso',
+        'categoria_id' => fixture_categoria_id('Quesos'),
         'nombre_producto' => 'Queso Paria',
         'presentacion_cantidad' => 1,
         'presentacion_unidad' => 'kg',
@@ -33,7 +33,7 @@ function datosDeReceta(array $extra = []): array
 function datosDeEdicion(array $extra = []): array
 {
     $datos = datosDeReceta($extra);
-    unset($datos['tipo_producto'], $datos['nombre_producto'], $datos['presentacion_cantidad'], $datos['presentacion_unidad']);
+    unset($datos['categoria_id'], $datos['nombre_producto'], $datos['presentacion_cantidad'], $datos['presentacion_unidad']);
 
     return $datos;
 }
@@ -51,7 +51,8 @@ it('el administrador crea una receta desde Recetas y se genera solo el producto 
 
     $producto = ProductoModel::where('nombre', 'Queso Paria 1 kg')->firstOrFail();
     expect($producto->nombre_base)->toBe('Queso Paria');
-    expect($producto->tipo_producto)->toBe('Queso');
+    expect($producto->categoria_id)->toBe(fixture_categoria_id('Quesos'));
+    expect($producto->tipo_producto)->toBe('Quesos');
     expect((float) $producto->presentacion_cantidad)->toBe(1.0);
     expect($producto->presentacion_unidad)->toBe('kg');
     expect($producto->estado)->toBe('ACTIVO');
@@ -85,7 +86,7 @@ it('la pantalla es simple: sin filtros, sin métricas y un modal sin bloques rep
     $html->assertSee('Define cómo se fabrica cada producto.');
     $html->assertSee('Nueva receta');
     $html->assertSee('No hay recetas registradas.');
-    $html->assertSeeInOrder(['Define el producto y su fórmula de producción.', 'Información del producto', 'Tipo de producto', 'Unidad de presentación', 'Seleccionar imagen', 'Fórmula de producción', 'Agregar ingrediente', 'Créalo desde Inventario &gt; Insumos.', 'Guardar una receta no descuenta inventario.', 'Guardar receta'], false);
+    $html->assertSeeInOrder(['Define el producto y su fórmula de producción.', 'Información del producto', 'Categoría', '+ Nueva categoría', 'Unidad de presentación', 'Seleccionar imagen', 'Fórmula de producción', 'Agregar ingrediente', 'Créalo desde Inventario &gt; Insumos.', 'Guardar una receta no descuenta inventario.', 'Guardar receta'], false);
     $html->assertDontSee('Nombre de la receta');
     $html->assertDontSee('Receta generada automáticamente');
     $html->assertDontSee('Recetas activas');
@@ -129,11 +130,11 @@ it('cada producto muestra una sola receta aunque tenga historial de versiones', 
     $html->assertSee('12 L');
 });
 
-it('valida en el servidor: tipo, nombre, presentación, unidad, ingredientes y cantidades', function () {
+it('valida en el servidor: categoría, nombre, presentación, unidad, ingredientes y cantidades', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
 
     $this->actingAs($admin)->post(route('admin.recetas.store'), [])
-        ->assertSessionHasErrors(['tipo_producto', 'nombre_producto', 'presentacion_cantidad', 'presentacion_unidad', 'ingredientes']);
+        ->assertSessionHasErrors(['categoria_id', 'nombre_producto', 'presentacion_cantidad', 'presentacion_unidad', 'ingredientes']);
 
     $this->actingAs($admin)->post(route('admin.recetas.store'), datosDeReceta([
         'presentacion_cantidad' => 0,
@@ -283,15 +284,15 @@ it('la pantalla de nueva producción solo ofrece productos con receta activa y m
 
     $html = $this->actingAs($admin)->get(route('admin.produccion.index'))->assertOk();
 
-    $html->assertSee('Queso Paria 1 kg');
+    $html->assertSee('Queso Paria · 1 kg');
     $html->assertDontSee('Producto histórico sin receta');
-    $html->assertSee('storage\/products\/queso-paria-1-kg-', false);
+    $html->assertSee('storage/products/queso-paria-1-kg-', false);
 });
 
 it('el listado de recetas se puede filtrar por producto y estado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $this->actingAs($admin)->post(route('admin.recetas.store'), datosDeReceta());
-    $this->actingAs($admin)->post(route('admin.recetas.store'), datosDeReceta(['nombre_producto' => 'Yogurt Beta', 'tipo_producto' => 'Yogurt']));
+    $this->actingAs($admin)->post(route('admin.recetas.store'), datosDeReceta(['nombre_producto' => 'Yogurt Beta', 'categoria_id' => fixture_categoria_id('Yogures')]));
     $beta = ProductoModel::where('nombre_base', 'Yogurt Beta')->firstOrFail();
     RecetaModel::where('producto_id', $beta->id)->update(['estado' => 'INACTIVA', 'producto_activo_id' => null]);
     $paria = ProductoModel::where('nombre_base', 'Queso Paria')->firstOrFail();

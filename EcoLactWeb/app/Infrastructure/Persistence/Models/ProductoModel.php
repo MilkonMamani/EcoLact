@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Persistence\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -14,6 +15,7 @@ class ProductoModel extends Model
         'nombre',
         'nombre_base',
         'tipo_producto',
+        'categoria_id',
         'presentacion_cantidad',
         'presentacion_unidad',
         'imagen',
@@ -24,6 +26,11 @@ class ProductoModel extends Model
     protected $casts = [
         'presentacion_cantidad' => 'decimal:3',
     ];
+
+    public function categoria(): BelongsTo
+    {
+        return $this->belongsTo(CategoriaProductoModel::class, 'categoria_id');
+    }
 
     public function produccionDetalles(): HasMany
     {

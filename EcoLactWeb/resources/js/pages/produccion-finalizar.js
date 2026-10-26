@@ -41,6 +41,8 @@ if (formulario) {
             if (!valido) {
                 etiquetaDiferencia.textContent = 'Merma';
                 diferencia.textContent = '—';
+                diferencia.classList.remove('text-danger', 'text-text');
+                diferencia.classList.add('text-text-muted');
                 incremento.textContent = '—';
                 resultante.textContent = '—';
                 return;
@@ -48,7 +50,10 @@ if (formulario) {
 
             const excedente = obtenido > planificado;
             etiquetaDiferencia.textContent = excedente ? 'Excedente' : 'Merma';
-            diferencia.textContent = conUnidad(redondear(Math.abs(planificado - obtenido)), unidad);
+            const valorDiferencia = redondear(Math.abs(planificado - obtenido));
+            diferencia.textContent = conUnidad(valorDiferencia, unidad);
+            diferencia.classList.remove('text-text-muted', 'text-danger', 'text-text');
+            diferencia.classList.add(!excedente && valorDiferencia > 0 ? 'text-danger' : 'text-text');
             incremento.textContent = `+${conUnidad(obtenido, unidad)}`;
             resultante.textContent = conUnidad(redondear(stock + obtenido), unidad);
 

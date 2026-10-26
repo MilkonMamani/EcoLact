@@ -47,6 +47,8 @@ it('el requerimiento muestra el producto con su presentación y receta x cantida
     expect($json->json('data.lineas.0.etiqueta'))->toBe('Queso Paria · 1 kg');
     expect(array_column($json->json('data.insumos'), 'necesario', 'nombre'))->toEqual(['Leche' => 100, 'Cuajo' => 150, 'Sal' => 300]);
     expect($json->json('data.puede_iniciar'))->toBeTrue();
+    expect($json->json('data.resumen'))->toBe('Todos los insumos están disponibles.');
+    expect($json->json('data.insumos.0.es_leche'))->toBeTrue();
 });
 
 it('si falta sal bloquea con un mensaje claro y no descuenta nada', function () {
@@ -59,6 +61,8 @@ it('si falta sal bloquea con un mensaje claro y no descuenta nada', function () 
 
     expect($json->json('data.puede_iniciar'))->toBeFalse();
     expect($json->json('data.mensajes'))->toBe(['No hay suficiente Sal. Se necesitan 300 g y hay 250 g disponibles.']);
+    expect($json->json('data.resumen'))->toBe('No hay suficientes insumos para iniciar esta producción.');
+    expect(array_column($json->json('data.insumos'), 'faltante', 'nombre'))->toEqual(['Leche' => 0, 'Cuajo' => 0, 'Sal' => 50]);
 
     $this->actingAs($encargado)->post(route('planta.produccion.store'), ['productos' => [['producto_id' => $queso->id, 'cantidad' => 10]]])
         ->assertSessionHas('error', 'No hay suficiente Sal. Se necesitan 300 g y hay 250 g disponibles.');

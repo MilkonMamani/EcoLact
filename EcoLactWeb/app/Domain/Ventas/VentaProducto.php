@@ -43,6 +43,12 @@ final class VentaProducto
         }
     }
 
+    /** Código visible de una venta: "V-00018" (el mismo que cita Caja). */
+    public static function codigo(int $id): string
+    {
+        return 'V-'.str_pad((string) $id, 5, '0', STR_PAD_LEFT);
+    }
+
     public function id(): ?int
     {
         return $this->id;

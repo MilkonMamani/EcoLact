@@ -4,13 +4,11 @@ namespace App\Infrastructure\Ocr;
 
 use App\Application\Calidad\Contracts\TicketAnalizadorOcrService;
 use App\Application\Calidad\TicketIlegibleException;
-use Illuminate\Support\Facades\Process;
 use Throwable;
 
 /**
- * OCR local con el ejecutable de Tesseract (sin servicios en la nube). Se
- * invoca con Process y argumentos en arreglo, nunca concatenando un comando
- * de shell; la ruta de la imagen la genera el servidor, no el request.
+ * OCR local del ticket del analizador. La ejecución de Tesseract es la
+ * compartida (TesseractOcr); aquí solo vive cómo se prepara y lee un ticket.
  *
  * Flujo: preprocesa la foto (PreprocesadorImagenTicket) a un PNG temporal,
  * detecta con OSD si el ticket está girado 90/180/270°, lo endereza y lo lee
@@ -31,13 +29,9 @@ final class TesseractTicketAnalizadorOcrService implements TicketAnalizadorOcrSe
 
     private const MODO_SEGMENTACION = '4';
 
-    private const SEGUNDOS_MAXIMOS = 30;
-
-    /** Por debajo de esta confianza el OSD no justifica girar la imagen. */
-    private const CONFIANZA_MINIMA_ORIENTACION = 2.0;
-
     public function __construct(
         private readonly PreprocesadorImagenTicket $preprocesador,
+        private readonly TesseractOcr $tesseract,
     ) {}
 
     public function leerLecturas(string $rutaImagen): array
@@ -64,7 +58,7 @@ final class TesseractTicketAnalizadorOcrService implements TicketAnalizadorOcrSe
         try {
             $this->preprocesador->preparar($rutaImagen, $rutaBase);
 
-            $giro = $this->detectarGiro($rutaBase);
+            $giro = $this->tesseract->detectarGiro($rutaBase);
             if ($giro !== 0) {
                 $this->preprocesador->rotar($rutaBase, $giro);
             }
@@ -74,7 +68,7 @@ final class TesseractTicketAnalizadorOcrService implements TicketAnalizadorOcrSe
             $lecturas = [];
             foreach (self::VARIANTES as $variante) {
                 $this->preprocesador->variante($rutaBase, $rutaVariante, $variante['lado'], $variante['binarizar']);
-                $lecturas[] = trim($this->tesseract($rutaVariante));
+                $lecturas[] = trim($this->tesseract->leer($rutaVariante, self::MODO_SEGMENTACION));
             }
 
             return $lecturas;
@@ -87,57 +81,5 @@ final class TesseractTicketAnalizadorOcrService implements TicketAnalizadorOcrSe
             @unlink($rutaVariante);
             @rmdir($carpeta);
         }
-    }
-
-    private function tesseract(string $rutaImagen): string
-    {
-        $resultado = Process::timeout(self::SEGUNDOS_MAXIMOS)->run([
-            $this->binario(),
-            $rutaImagen,
-            'stdout',
-            '-l',
-            (string) config('services.tesseract.idioma'),
-            '--psm',
-            self::MODO_SEGMENTACION,
-        ]);
-
-        if (! $resultado->successful()) {
-            throw new TicketIlegibleException('Tesseract falló: '.trim($resultado->errorOutput()));
-        }
-
-        return $resultado->output();
-    }
-
-    /**
-     * Grados (horario) que hay que girar la imagen según el OSD de Tesseract.
-     * Si el OSD no está disponible o no está seguro, no se gira.
-     */
-    private function detectarGiro(string $rutaImagen): int
-    {
-        $resultado = Process::timeout(self::SEGUNDOS_MAXIMOS)->run([
-            $this->binario(),
-            $rutaImagen,
-            'stdout',
-            '--psm',
-            '0',
-        ]);
-
-        $salida = $resultado->output()."\n".$resultado->errorOutput();
-
-        if (! preg_match('/Rotate:\s*(\d+)/', $salida, $giro)
-            || ! preg_match('/Orientation confidence:\s*([\d.]+)/', $salida, $confianza)) {
-            return 0;
-        }
-
-        $grados = (int) $giro[1];
-
-        return in_array($grados, [90, 180, 270], true) && (float) $confianza[1] >= self::CONFIANZA_MINIMA_ORIENTACION
-            ? $grados
-            : 0;
-    }
-
-    private function binario(): string
-    {
-        return (string) config('services.tesseract.binario');
     }
 }

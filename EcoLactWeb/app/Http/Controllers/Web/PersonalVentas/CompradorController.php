@@ -7,15 +7,17 @@ use App\Application\Ventas\RegistrarComprador;
 use App\Domain\Ventas\Comprador;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ventas\StoreCompradorRequest;
+use App\Http\Support\PantallaVentas;
 use App\Infrastructure\Persistence\Models\CompradorModel;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 /**
- * Portal del VENTAS: "Compradores" (mayoristas y público que se quieren
- * identificar). Reutiliza los MISMOS Use Cases que admin.compradores.*
+ * Portal del VENTAS: "Compradores" (agenda de clientes registrados).
+ * Reutiliza los MISMOS Use Cases que admin.compradores.*
  * (Web\Ventas\CompradorController); solo cambia la vista servida.
  */
 final class CompradorController extends Controller
@@ -36,39 +38,30 @@ final class CompradorController extends Controller
             $compradores = $compradores->filter(
                 fn (Comprador $c): bool => str_contains(mb_strtolower($c->nombre()), $texto)
                     || str_contains(mb_strtolower($c->documento() ?? ''), $texto)
+                    || str_contains($c->telefono() ?? '', $texto)
             );
         }
 
-        if ($request->filled('tipo_cliente')) {
-            $compradores = $compradores->filter(fn (Comprador $c): bool => $c->tipoCliente() === $request->string('tipo_cliente')->toString());
-        }
-
-        $todos = collect($this->obtenerCompradores->execute());
-
-        $kpis = [
-            'total' => $todos->count(),
-            'mayoristas' => $todos->filter(fn (Comprador $c): bool => $c->tipoCliente() === 'MAYORISTA')->count(),
-            'publico' => $todos->filter(fn (Comprador $c): bool => $c->tipoCliente() === 'PUBLICO')->count(),
-        ];
-
         return view('ventas-panel.compradores.index', [
             'compradores' => $compradores->values()->all(),
-            'kpis' => $kpis,
         ]);
     }
 
-    public function store(StoreCompradorRequest $request): RedirectResponse
+    public function store(StoreCompradorRequest $request): RedirectResponse|JsonResponse
     {
         Gate::authorize('create', CompradorModel::class);
 
         $datos = $request->validated();
 
-        $this->registrarComprador->execute(
+        $comprador = $this->registrarComprador->execute(
             nombre: $datos['nombre'],
-            tipoCliente: $datos['tipo_cliente'],
             documento: $datos['documento'] ?? null,
             telefono: $datos['telefono'] ?? null,
         );
+
+        if ($request->expectsJson()) {
+            return response()->json(['data' => PantallaVentas::comprador($comprador)], 201);
+        }
 
         return redirect()->route('ventas.compradores.index')->with('success', 'Comprador registrado correctamente.');
     }

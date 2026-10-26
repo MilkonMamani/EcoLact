@@ -15,19 +15,15 @@ final class EloquentLotesProduccionListadoQuery implements LotesProduccionListad
 {
     public function obtener(LotesProduccionFiltro $filtro): LotesProduccionListadoData
     {
-        $loteIds = $this->base($filtro)->pluck('l.id');
-
-        // La leche utilizada sale del consumo real del insumo LECHE registrado
-        // en cada lote, nunca de un valor escrito a mano.
+        // Solo las métricas que muestra la pantalla; la leche disponible sale
+        // del stock real del insumo LECHE (ObtenerStockLeche), no de aquí.
         $kpis = [
             'enProceso' => (int) LoteProduccionModel::where('estado', 'EN_PROCESO')->count(),
             'finalizados' => (int) $this->base($filtro)->where('l.estado', 'FINALIZADO')->count(),
-            'lecheUtilizada' => round((float) $this->consumoDeLeche()->whereIn('c.lote_produccion_id', $loteIds)->sum('c.cantidad_usada'), 2),
-            'productosObtenidos' => round((float) DB::table('produccion_detalles')
-                ->whereIn('lote_produccion_id', $loteIds)
-                ->sum('cantidad_obtenida'), 2),
         ];
 
+        // La leche utilizada sale del consumo real del insumo LECHE registrado
+        // en cada lote, nunca de un valor escrito a mano.
         $filas = $this->base($filtro)
             ->select('l.id', 'l.codigo', 'l.fecha_hora_inicio', 'l.fecha_hora_fin', 'l.estado')
             ->selectRaw("(SELECT COALESCE(SUM(c.cantidad_usada), 0) FROM lote_produccion_insumos AS c INNER JOIN insumos AS i ON i.id = c.insumo_id WHERE c.lote_produccion_id = l.id AND i.codigo = 'LECHE') as litros_leche")
@@ -98,13 +94,6 @@ final class EloquentLotesProduccionListadoQuery implements LotesProduccionListad
         }
 
         return $porLote;
-    }
-
-    private function consumoDeLeche(): Builder
-    {
-        return DB::table('lote_produccion_insumos as c')
-            ->join('insumos as i', 'i.id', '=', 'c.insumo_id')
-            ->where('i.codigo', 'LECHE');
     }
 
     private function base(LotesProduccionFiltro $filtro): Builder

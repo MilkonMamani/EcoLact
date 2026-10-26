@@ -2,53 +2,56 @@
 
 namespace App\Http\Controllers\Web\Ventas;
 
-use App\Application\Ventas\ObtenerProductoPrecios;
-use App\Application\Ventas\RegistrarProductoPrecio;
+use App\Application\Ventas\ConfigurarPreciosProducto;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Ventas\StoreProductoPrecioRequest;
+use App\Http\Requests\Ventas\UpdateProductoPreciosRequest;
 use App\Infrastructure\Persistence\Models\ProductoModel;
 use App\Infrastructure\Persistence\Models\ProductoPrecioModel;
-use DateTimeImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\View\View;
 
 /**
  * Configuración financiera exclusiva de ADMINISTRADOR (ProductoPrecioPolicy):
- * el precio de cada producto por tipo de cliente (proveedor, mayorista,
- * público).
+ * los precios de cada producto por tipo de cliente (proveedor, público,
+ * mayorista desde N unidades). Se gestionan desde la fila desplegable de
+ * INVENTARIO -> Productos; ambas acciones vuelven ahí con el producto abierto.
  */
 final class ProductoPrecioController extends Controller
 {
     public function __construct(
-        private readonly RegistrarProductoPrecio $registrarProductoPrecio,
-        private readonly ObtenerProductoPrecios $obtenerProductoPrecios,
+        private readonly ConfigurarPreciosProducto $configurarPrecios,
     ) {}
 
-    public function index(ProductoModel $producto): View
-    {
-        Gate::authorize('viewAny', ProductoPrecioModel::class);
-
-        return view('admin.producto-precios.index', [
-            'producto' => $producto,
-            'precios' => $this->obtenerProductoPrecios->execute($producto->id),
-        ]);
-    }
-
-    public function store(StoreProductoPrecioRequest $request): RedirectResponse
+    public function update(UpdateProductoPreciosRequest $request, ProductoModel $producto): RedirectResponse
     {
         Gate::authorize('create', ProductoPrecioModel::class);
 
-        $datos = $request->validated();
+        $numero = fn (string $campo): ?float => $request->filled($campo) ? (float) $request->input($campo) : null;
 
-        $this->registrarProductoPrecio->execute(
-            productoId: (int) $datos['producto_id'],
-            tipoCliente: $datos['tipo_cliente'],
-            precio: (float) $datos['precio'],
+        $this->configurarPrecios->execute(
+            productoId: $producto->id,
+            precioProveedor: $numero('precio_proveedor'),
+            precioPublico: $numero('precio_publico'),
+            precioMayorista: $numero('precio_mayorista'),
+            cantidadMinimaMayorista: $numero('cantidad_minima_mayorista'),
             creadoPorUserId: $request->user()->id,
-            fechaInicio: isset($datos['fecha_inicio']) ? new DateTimeImmutable($datos['fecha_inicio']) : null,
         );
 
-        return redirect()->back()->with('success', 'Precio de producto registrado correctamente.');
+        return $this->volver($producto)->with('success', 'Precios guardados correctamente.');
+    }
+
+    public function destroy(ProductoModel $producto): RedirectResponse
+    {
+        Gate::authorize('create', ProductoPrecioModel::class);
+
+        $this->configurarPrecios->retirarTodos($producto->id);
+
+        return $this->volver($producto)->with('success', 'Se eliminaron los precios del producto.');
+    }
+
+    private function volver(ProductoModel $producto): RedirectResponse
+    {
+        return redirect()->to(url()->previous(route('admin.productos.index')).'#producto-'.$producto->id)
+            ->with('productoAbierto', $producto->id);
     }
 }

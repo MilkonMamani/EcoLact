@@ -18,6 +18,8 @@ final class InsumoMovimiento
 
     public const ORIGEN_LOTE_PRODUCCION = 'LOTE_PRODUCCION';
 
+    public const ORIGEN_COMPRA_INSUMO = 'COMPRA_INSUMO';
+
     public function __construct(
         private readonly ?int $id,
         private readonly int $insumoId,

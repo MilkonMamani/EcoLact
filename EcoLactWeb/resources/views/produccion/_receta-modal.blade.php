@@ -2,7 +2,7 @@
     Modal único de Nueva / Editar receta (recetas.js cambia textos y campos según el modo).
     Estructura: PRODUCTO → FÓRMULA → INGREDIENTES → GUARDAR. Cabecera y pie fijos; solo el cuerpo hace scroll.
     En Editar el producto no se modifica (el servidor lo prohíbe): se muestra como información fija.
-    Variables: $tiposProducto, $unidadesPresentacion.
+    Variables: $categoriasProducto, $unidadesPresentacion.
 --}}
 <x-ui.modal id="modal-receta" size="receta" flush labelledby="modal-receta-titulo">
     <form method="POST" action="{{ route('admin.recetas.store') }}" enctype="multipart/form-data" class="recetas-modal" data-receta-form>
@@ -32,15 +32,21 @@
                 <h3 id="receta-seccion-producto" class="recetas-seccion">Información del producto</h3>
 
                 <div data-datos-producto class="recetas-campos">
-                    <div>
-                        <x-forms.label for="tipo_producto" :required="true">Tipo de producto</x-forms.label>
-                        <input id="tipo_producto" name="tipo_producto" list="tipos-producto" required autocomplete="off" placeholder="Queso, Yogurt, Mantequilla..." @class(['w-full rounded-lg border bg-surface px-3 py-2 text-sm text-text shadow-sm placeholder:text-text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary', 'border-danger' => $errors->has('tipo_producto'), 'border-text-muted/25' => ! $errors->has('tipo_producto')])>
-                        <datalist id="tipos-producto">
-                            @foreach ($tiposProducto as $tipo)
-                                <option value="{{ $tipo }}"></option>
-                            @endforeach
-                        </datalist>
-                        <x-forms.error name="tipo_producto" />
+                    {{-- Categoría: combobox desde categorias_productos; "+ Nueva categoría" despliega un mini formulario aquí mismo. --}}
+                    <div class="recetas-categoria" data-categoria data-url-categoria="{{ route('admin.recetas.categorias.store') }}">
+                        <x-forms.select name="categoria_id" label="Categoría" required :options="$categoriasProducto" placeholder="Elija la categoría" data-categoria-select>
+                            <option value="__nueva__" class="recetas-categoria-opcion-nueva">+ Nueva categoría</option>
+                        </x-forms.select>
+
+                        <div class="recetas-categoria-nueva" data-categoria-nueva hidden>
+                            <label for="categoria_nueva_nombre" class="recetas-categoria-nueva-label">Nombre de la categoría</label>
+                            <input id="categoria_nueva_nombre" type="text" maxlength="60" autocomplete="off" placeholder="Ej. Manjares" class="w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm placeholder:text-text-muted/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" data-categoria-nombre>
+                            <p class="recetas-categoria-nueva-error" role="alert" data-categoria-error></p>
+                            <div class="recetas-categoria-nueva-acciones">
+                                <button type="button" class="fichas-btn is-outline is-sm" data-categoria-cancelar>Cancelar</button>
+                                <button type="button" class="fichas-btn is-primary is-sm" data-categoria-guardar>Guardar categoría</button>
+                            </div>
+                        </div>
                     </div>
                     <x-forms.input name="nombre_producto" label="Nombre" required placeholder="Queso Paria" maxlength="100" />
                     <x-forms.input name="presentacion_cantidad" type="number" step="any" min="0" label="Presentación" required placeholder="1" />
@@ -48,7 +54,7 @@
                 </div>
 
                 <dl class="recetas-producto-fijo" data-producto-fijo hidden>
-                    <div data-fijo="tipo"><dt>Tipo</dt><dd></dd></div>
+                    <div data-fijo="tipo"><dt>Categoría</dt><dd></dd></div>
                     <div data-fijo="nombre"><dt>Nombre</dt><dd></dd></div>
                     <div data-fijo="presentacion"><dt>Presentación</dt><dd></dd></div>
                 </dl>

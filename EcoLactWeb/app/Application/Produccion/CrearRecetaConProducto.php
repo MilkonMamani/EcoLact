@@ -26,6 +26,9 @@ use Throwable;
  * deshace todo, incluido el archivo de imagen ya guardado. Un producto es
  * único: si ya existe uno con el mismo nombre y presentación, se rechaza (la
  * fórmula se cambia editando su receta o creando una nueva versión).
+ *
+ * `categoriaId` liga el producto a su categoría (categorias_productos);
+ * `tipoProducto` guarda el nombre de esa categoría para las vistas que aún lo leen.
  */
 final class CrearRecetaConProducto
 {
@@ -49,6 +52,7 @@ final class CrearRecetaConProducto
         array $ingredientes,
         int $creadaPorUserId,
         ?ImagenSubida $imagen = null,
+        ?int $categoriaId = null,
     ): Receta {
         $tipoProducto = trim($tipoProducto);
         $nombreBase = trim((string) preg_replace('/\s+/', ' ', $nombreBase));
@@ -77,7 +81,7 @@ final class CrearRecetaConProducto
         $ruta = $imagen !== null ? $this->imagenes->guardar($imagen->rutaTemporal, $imagen->extension, $nombre) : null;
 
         try {
-            return $this->transacciones->run(function () use ($tipoProducto, $nombreBase, $nombre, $presentacionCantidad, $presentacionUnidad, $descripcion, $ingredientes, $creadaPorUserId, $ruta): Receta {
+            return $this->transacciones->run(function () use ($tipoProducto, $nombreBase, $nombre, $presentacionCantidad, $presentacionUnidad, $descripcion, $ingredientes, $creadaPorUserId, $ruta, $categoriaId): Receta {
                 $producto = $this->productos->guardar(new Producto(
                     id: null,
                     nombre: $nombre,
@@ -88,6 +92,7 @@ final class CrearRecetaConProducto
                     presentacionCantidad: $presentacionCantidad,
                     presentacionUnidad: $presentacionUnidad,
                     imagen: $ruta,
+                    categoriaId: $categoriaId,
                 ));
 
                 return $this->crearReceta->execute(

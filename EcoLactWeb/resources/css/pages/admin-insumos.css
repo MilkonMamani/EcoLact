@@ -1,0 +1,52 @@
+/*
+ * Pantalla Insumos del administrador (sobre admin-fichas.css): guía del flujo
+ * (ficha → presentaciones → compra → ajuste), resumen en una línea en lugar de
+ * tarjetas, tabla de 8 columnas junto al panel y chips de tipo de movimiento.
+ */
+
+/* ------------------------------------------------------------ guía del flujo */
+.insumos-flujo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.25rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; }
+.insumos-flujo li { display: flex; align-items: flex-start; gap: .65rem; padding: .75rem .9rem; border-color: var(--fichas-border); }
+.insumos-flujo li:nth-child(odd) { border-right-width: 1px; }
+.insumos-flujo li:nth-child(-n + 2) { border-bottom-width: 1px; }
+.insumos-flujo-numero { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 999px; background: var(--fichas-green-soft); color: var(--fichas-green); font-size: .75rem; font-weight: 700; }
+.insumos-flujo-titulo { display: flex; align-items: center; gap: .3rem; color: var(--fichas-ink); font-size: .82rem; font-weight: 600; }
+.insumos-flujo-titulo svg { color: var(--fichas-green); }
+.insumos-flujo-texto { margin-top: .1rem; color: var(--fichas-muted); font-size: .75rem; line-height: 1.35; }
+
+@media (min-width: 1024px) {
+    .insumos-flujo { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .insumos-flujo li { border-right-width: 1px; border-bottom-width: 0; }
+    .insumos-flujo li:last-child { border-right-width: 0; }
+}
+
+/* ------------------------------------------------------------ resumen */
+.insumos-resumen { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; margin-top: 1.1rem; color: var(--fichas-muted); font-size: .82rem; }
+.insumos-resumen strong { color: var(--fichas-ink); font-weight: 700; }
+.insumos-resumen span { display: inline-flex; align-items: center; gap: .35rem; }
+.insumos-resumen span.is-ok::before, .insumos-resumen span.is-bajo::before, .insumos-resumen span.is-sin::before { content: ''; width: .5rem; height: .5rem; border-radius: 999px; }
+.insumos-resumen span.is-ok::before { background: #12b76a; }
+.insumos-resumen span.is-bajo::before { background: #f79009; }
+.insumos-resumen span.is-sin::before { background: #f04438; }
+
+/* ------------------------------------------------------------ tabla */
+.insumos-tabla { margin-top: .75rem; }
+.insumos-tabla th, .insumos-tabla td { padding-inline: .75rem; }
+.insumos-tabla .is-centro { text-align: center; }
+.insumos-sistema { display: inline-flex; margin-left: .35rem; padding: .05rem .5rem; border-radius: 999px; background: #eff8ff; color: #175cd3; font-size: .7rem; font-weight: 600; box-shadow: inset 0 0 0 1px rgb(23 92 211 / .18); vertical-align: middle; }
+.insumos-acciones { display: inline-flex; gap: .3rem; }
+.insumos-accion { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff; color: var(--fichas-muted); transition: border-color .15s, color .15s, background-color .15s; }
+.insumos-accion:hover:not(:disabled) { border-color: var(--fichas-green-strong); background: var(--fichas-green-soft); color: var(--fichas-green); }
+.insumos-accion:disabled { cursor: not-allowed; opacity: .4; }
+
+/* ------------------------------------------------------------ panel */
+.insumos-stock { display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .75rem .9rem; border-radius: .6rem; background: var(--fichas-green-soft); }
+.insumos-stock-rotulo { color: var(--fichas-muted); font-size: .72rem; }
+.insumos-stock-valor { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+.insumos-stock-valor span { font-size: .9rem; font-weight: 500; color: var(--fichas-muted); }
+.insumos-mov { flex-shrink: 0; padding: .05rem .45rem; border-radius: .35rem; font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+.insumos-mov.is-compra { background: #ecfdf3; color: #067647; }
+.insumos-mov.is-ajuste { background: #fffaeb; color: #b54708; }
+.insumos-mov.is-consumo { background: #f2f4f7; color: #344054; }
+.insumos-mov.is-acopio { background: #eff8ff; color: #175cd3; }
+.insumos-mov.is-otro { background: #f2f4f7; color: #667085; }

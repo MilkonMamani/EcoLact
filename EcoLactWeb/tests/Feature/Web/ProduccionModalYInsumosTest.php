@@ -78,14 +78,18 @@ it('el modal ofrece solo productos con receta activa, con su presentación e ima
     $html = $this->actingAs($admin)->get(route('admin.produccion.index'))->assertOk();
 
     $html->assertSee('Selecciona qué fabricar. EcoLact calculará automáticamente los insumos necesarios.');
-    $html->assertSee('Agregar otro producto');
+    // Un producto por lote: sin paso "Agregar"; producto y cantidad calculan directo.
+    $html->assertDontSee('Agregar otro producto');
+    $html->assertSee('name="productos[0][producto_id]"', false);
+    $html->assertSee('name="productos[0][cantidad]"', false);
+    $html->assertSee('Leche disponible');
     $html->assertSee('Queso Paria 1 kg');
     $html->assertDontSee('Yogurt sin receta');
-    $html->assertSee('storage\/products\/queso-paria-1-kg-abcd1234.png', false);
+    $html->assertSee('storage/products/queso-paria-1-kg-abcd1234.png', false);
     $html->assertSee('Observación (opcional)');
     $html->assertSee('Cancelar');
     $html->assertSee('Iniciar producción');
-    $html->assertSee('Requerimientos');
+    $html->assertSee('Requerimientos de producción');
     $html->assertDontSee('Resumen de insumos requeridos');
     $html->assertSee('Calculando insumos...');
 });
@@ -165,7 +169,7 @@ it('el flujo del ejemplo: 30 L, 2 quesos consumen 20 L, 10 ml y 40 g y luego se 
     expect((float) fixture_leche()->fresh()->stock_actual)->toBe(10.0);
 });
 
-it('Insumos: la leche va primera con "Del sistema", franja informativa y KPIs nuevos', function () {
+it('Insumos: acciones separadas en el encabezado, guía del flujo y la leche primera con "Del sistema"', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     fixture_stock_leche(30.0, $admin->id);
     fixture_insumo('Azúcar', 'kg', 5.0, 0.0, $admin->id);
@@ -175,22 +179,25 @@ it('Insumos: la leche va primera con "Del sistema", franja informativa y KPIs nu
     $html = $this->actingAs($admin)->get(route('admin.insumos.index'))->assertOk();
 
     $html->assertSee('Materias primas, insumos y envases necesarios para producción.');
-    $html->assertSeeInOrder(['Total de insumos', 'Con stock', 'Stock bajo', 'Sin stock']);
-    $html->assertSee('La leche se actualiza automáticamente con cada entrega de los proveedores y siempre aparece primero en la lista.');
-    $html->assertSeeInOrder(['Insumo', 'Tipo', 'Unidad', 'Stock actual', 'Estado', 'Acciones']);
+    // Crear insumo, comprar, escanear y ajustar son acciones distintas.
+    $html->assertSeeInOrder(['Nuevo insumo', 'Registrar compra', 'Escanear boleta', 'Ajustar stock']);
+    $html->assertSeeInOrder(['Crear insumo', 'Presentaciones', 'Registrar compra', 'Ajustar stock']);
+    $html->assertSeeInOrder(['insumos', 'con stock', 'con stock bajo', 'sin stock']);
+    $html->assertSeeInOrder(['Insumo', 'Tipo', 'Unidad base', 'Stock actual', 'Stock mínimo', 'Estado', 'Última compra', 'Acciones']);
     $html->assertSeeInOrder(['Leche', 'Del sistema', 'Materia prima', '30 L', 'Aaa primer alfabético', 'Azúcar', 'Cuajo']);
-    $html->assertSee('bg-info/10', false);
 });
 
 it('Insumos: la leche no ofrece Desactivar y un insumo normal sí', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    fixture_insumo('Cuajo', 'ml', 800.0, 0.0, $admin->id);
+    $cuajo = fixture_insumo('Cuajo', 'ml', 800.0, 0.0, $admin->id);
 
-    $html = $this->actingAs($admin)->get(route('admin.insumos.index'))->assertOk();
+    $leche = $this->actingAs($admin)->get(route('admin.insumos.panel', fixture_leche()->id))->assertOk();
+    $leche->assertDontSee('Desactivar Leche');
+    $leche->assertSee('Editar Leche');
 
-    $html->assertDontSee('Desactivar Leche');
-    $html->assertSee('Desactivar Cuajo');
-    $html->assertSee('Editar Leche');
+    $this->actingAs($admin)->get(route('admin.insumos.panel', $cuajo->id()))->assertOk()->assertSee('Desactivar Cuajo');
+    // ?insumo=ID abre la pantalla con ese panel ya cargado.
+    $this->actingAs($admin)->get(route('admin.insumos.index', ['insumo' => $cuajo->id()]))->assertOk()->assertSee('Desactivar Cuajo');
 });
 
 it('no se puede crear otra leche (por nombre en cualquier mayúscula) ni desactivar la del sistema', function () {
@@ -232,24 +239,26 @@ it('el modal "Nuevo insumo" tiene las secciones, campos y textos del diseño', f
 
     $html->assertSee('id="modal-nuevo-insumo"', false);
     $html->assertSeeInOrder([
-        'Nuevo insumo', 'Información del insumo', 'Nombre del insumo', 'Ej. Cuajo', 'Tipo', 'Unidad base',
-        'Descripción (opcional)', 'Coagulante utilizado para quesos...', 'Control de inventario', 'Stock inicial', 'Stock mínimo',
-        'Se mostrará “Stock bajo” cuando el stock llegue al mínimo configurado.', 'Cancelar', 'Guardar insumo',
+        'Nuevo insumo', 'Crea la ficha del insumo. Todavía no registra ninguna compra.', 'Ficha del insumo',
+        'Nombre del insumo', 'Ej. Cuajo', 'Tipo', 'Unidad base', 'Stock mínimo', 'Estado',
+        'Descripción (opcional)', 'Coagulante utilizado para quesos...', 'El stock empieza en 0.', 'Cancelar', 'Crear insumo',
     ]);
     $html->assertSee('data-sufijo-unidad', false);
+    // Crear la ficha no es una compra: no se pide stock inicial.
+    $html->assertDontSee('name="stock_inicial"', false);
 });
 
-it('crear un insumo desde el modal guarda descripción, unidad, stock inicial y mínimo', function () {
+it('crear un insumo desde el modal guarda descripción, unidad y mínimo, con stock 0', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
 
     $this->actingAs($admin)->post(route('admin.insumos.store'), [
-        'nombre' => 'Cuajo', 'tipo' => 'INSUMO', 'unidad_base' => 'ml',
-        'descripcion' => 'Coagulante utilizado para quesos', 'stock_inicial' => 800, 'stock_minimo' => 100,
+        'nombre' => 'Cuajo', 'tipo' => 'INSUMO', 'unidad_base' => 'ml', 'estado' => 'ACTIVO',
+        'descripcion' => 'Coagulante utilizado para quesos', 'stock_minimo' => 100,
     ])->assertSessionHas('success');
 
     $cuajo = InsumoModel::where('nombre', 'Cuajo')->firstOrFail();
     expect($cuajo->descripcion)->toBe('Coagulante utilizado para quesos');
-    expect((float) $cuajo->stock_actual)->toBe(800.0);
+    expect((float) $cuajo->stock_actual)->toBe(0.0);
     expect((float) $cuajo->stock_minimo)->toBe(100.0);
 });
 

@@ -27,7 +27,7 @@ it('admin.insumos.index e admin.insumos.show renderizan de verdad', function () 
 
 it('admin.compradores.index renderiza de verdad', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    app(RegistrarComprador::class)->execute('Comercial X', 'MAYORISTA');
+    app(RegistrarComprador::class)->execute('Comercial X');
 
     $this->actingAs($admin)->get(route('admin.compradores.index'))->assertOk()->assertSee('Comercial X');
 });

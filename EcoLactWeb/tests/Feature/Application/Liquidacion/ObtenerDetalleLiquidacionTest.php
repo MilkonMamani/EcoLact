@@ -59,7 +59,6 @@ it('arma el detalle con entregas, incidencia, compras, ajustes y saldo pendiente
     // venta por su periodo_id y anexa el ajuste automáticamente.
     app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PROVEEDOR',
         cantidad: 1.0,
         formaPago: 'DESCUENTO_PLANILLA',
         registradoPorUserId: $admin->id,

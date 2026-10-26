@@ -2,19 +2,18 @@
 
 namespace App\Application\Produccion;
 
-use App\Application\Shared\TransactionManager;
 use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\InsumoRepository;
 use App\Domain\Produccion\UnidadMedida;
-use App\Domain\Shared\Enums\MotivoMovimientoInsumo;
 use App\Domain\Shared\Enums\TipoInsumo;
 use DomainException;
 
 /**
- * Da de alta un insumo en el catálogo (cuajo, sal, azúcar, envases...), con
- * su unidad base y el umbral mínimo que dispara la alerta de reposición. El
- * stock inicial, si lo hay, entra como un movimiento AJUSTE_ENTRADA para que
- * el historial de movimientos respalde siempre el saldo.
+ * Crea la FICHA de un insumo (cuajo, sal, azúcar, envases...): su unidad base
+ * y el umbral mínimo que dispara la alerta de reposición. Crear un insumo NO
+ * significa que haya entrado mercancía: el stock nace siempre en 0 y solo sube
+ * con una compra confirmada (RegistrarCompraInsumos) o, para corregir el
+ * conteo físico, con un ajuste (RegistrarAjusteInsumo).
  *
  * Los insumos del sistema (LECHE) NO se crean por aquí: los crea la
  * migración y se identifican por su código.
@@ -23,18 +22,15 @@ final class RegistrarInsumo
 {
     public function __construct(
         private readonly InsumoRepository $insumos,
-        private readonly RegistrarMovimientoInsumo $registrarMovimiento,
-        private readonly TransactionManager $transacciones,
     ) {}
 
     public function execute(
         string $nombre,
         string $unidadBase,
         float $stockMinimo,
-        float $stockInicial = 0.0,
         TipoInsumo $tipo = TipoInsumo::INSUMO,
         ?string $descripcion = null,
-        ?int $registradoPorUserId = null,
+        string $estado = 'ACTIVO',
     ): Insumo {
         $nombre = trim($nombre);
 
@@ -50,37 +46,20 @@ final class RegistrarInsumo
             throw new DomainException('La unidad base no es válida. Use: '.implode(', ', UnidadMedida::codigos()).'.');
         }
 
-        if ($stockInicial > 0.0 && $registradoPorUserId === null) {
-            throw new DomainException('Para registrar stock inicial se necesita saber quién lo registra.');
+        if (! in_array($estado, ['ACTIVO', 'INACTIVO'], true)) {
+            throw new DomainException('El estado del insumo debe ser Activo o Inactivo.');
         }
 
-        return $this->transacciones->run(function () use ($nombre, $unidadBase, $stockMinimo, $stockInicial, $tipo, $descripcion, $registradoPorUserId): Insumo {
-            $insumo = $this->insumos->guardar(new Insumo(
-                id: null,
-                nombre: $nombre,
-                unidadBase: $unidadBase,
-                stockActual: 0.0,
-                stockMinimo: $stockMinimo,
-                estado: 'ACTIVO',
-                tipo: $tipo,
-                codigo: null,
-                descripcion: $descripcion,
-            ));
-
-            if ($stockInicial > 0.0) {
-                $this->registrarMovimiento->execute(
-                    insumoId: $insumo->id() ?? throw new DomainException('El insumo no tiene identificador válido.'),
-                    motivo: MotivoMovimientoInsumo::AJUSTE_ENTRADA,
-                    direccion: MotivoMovimientoInsumo::ENTRADA,
-                    cantidad: $stockInicial,
-                    registradoPorUserId: $registradoPorUserId,
-                    observacion: 'Stock inicial al registrar el insumo.',
-                );
-
-                return $this->insumos->buscarPorId($insumo->id()) ?? $insumo;
-            }
-
-            return $insumo;
-        });
+        return $this->insumos->guardar(new Insumo(
+            id: null,
+            nombre: $nombre,
+            unidadBase: $unidadBase,
+            stockActual: 0.0,
+            stockMinimo: $stockMinimo,
+            estado: $estado,
+            tipo: $tipo,
+            codigo: null,
+            descripcion: $descripcion,
+        ));
     }
 }

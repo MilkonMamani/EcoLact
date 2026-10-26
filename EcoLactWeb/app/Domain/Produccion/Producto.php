@@ -22,6 +22,7 @@ final class Producto
         private readonly ?float $presentacionCantidad = null,
         private readonly ?string $presentacionUnidad = null,
         private readonly ?string $imagen = null,
+        private readonly ?int $categoriaId = null,
     ) {
         if (trim($nombre) === '') {
             throw new InvalidArgumentException('El nombre del producto es obligatorio.');
@@ -71,6 +72,11 @@ final class Producto
     public function tipoProducto(): ?string
     {
         return $this->tipoProducto;
+    }
+
+    public function categoriaId(): ?int
+    {
+        return $this->categoriaId;
     }
 
     public function presentacionCantidad(): ?float
@@ -141,6 +147,7 @@ final class Producto
             presentacionCantidad: $this->presentacionCantidad,
             presentacionUnidad: $this->presentacionUnidad,
             imagen: $imagen,
+            categoriaId: $this->categoriaId,
         );
     }
 }

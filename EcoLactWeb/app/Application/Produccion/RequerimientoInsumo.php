@@ -14,6 +14,7 @@ final readonly class RequerimientoInsumo
         public string $unidadBase,
         public float $necesario,
         public float $disponible,
+        public bool $esLeche = false,
     ) {}
 
     public function suficiente(): bool
@@ -33,7 +34,7 @@ final readonly class RequerimientoInsumo
     {
         return sprintf(
             'No hay suficiente %s. Se necesitan %s %s y hay %s %s disponibles.',
-            mb_strtolower($this->nombre) === 'leche' ? 'leche' : $this->nombre,
+            $this->esLeche ? 'leche' : $this->nombre,
             RegistrarMovimientoInsumo::formato($this->necesario),
             $this->unidadBase,
             RegistrarMovimientoInsumo::formato($this->disponible),
@@ -42,7 +43,7 @@ final readonly class RequerimientoInsumo
     }
 
     /**
-     * @return array{insumo_id: int, nombre: string, unidad: string, necesario: float, disponible: float, faltante: float, suficiente: bool}
+     * @return array{insumo_id: int, nombre: string, unidad: string, necesario: float, disponible: float, faltante: float, suficiente: bool, es_leche: bool}
      */
     public function toArray(): array
     {
@@ -54,6 +55,7 @@ final readonly class RequerimientoInsumo
             'disponible' => $this->disponible,
             'faltante' => $this->faltante(),
             'suficiente' => $this->suficiente(),
+            'es_leche' => $this->esLeche,
         ];
     }
 }

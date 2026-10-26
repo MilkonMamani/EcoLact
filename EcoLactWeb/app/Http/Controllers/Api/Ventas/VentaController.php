@@ -120,22 +120,22 @@ final class VentaController extends Controller
     {
         Gate::authorize('create', VentaProductoModel::class);
 
-        $datos = $request->validated();
+        $datos = $request->venta();
 
         $venta = $this->registrarVentaProducto->execute(
-            productoId: (int) $datos['producto_id'],
-            tipoCliente: $datos['tipo_cliente'],
-            cantidad: (float) $datos['cantidad'],
+            productoId: $datos['producto_id'],
+            cantidad: $datos['cantidad'],
             formaPago: $datos['forma_pago'],
             registradoPorUserId: $request->user()->id,
-            proveedorId: isset($datos['proveedor_id']) ? (int) $datos['proveedor_id'] : null,
-            compradorId: isset($datos['comprador_id']) ? (int) $datos['comprador_id'] : null,
+            proveedorId: $datos['proveedor_id'],
+            compradorId: $datos['comprador_id'],
         );
 
         return response()->json([
             'data' => [
                 'id' => $venta->id(),
                 'producto_id' => $venta->productoId(),
+                'tipo_cliente' => $venta->tipoCliente(),
                 'cantidad' => $venta->cantidad(),
                 'precio_unitario' => $venta->precioUnitario(),
                 'importe_total' => $venta->importeTotal(),

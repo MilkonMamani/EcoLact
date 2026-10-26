@@ -39,6 +39,14 @@ class EloquentProductoPrecioRepository implements ProductoPrecioRepository
             ->all();
     }
 
+    public function cerrarVigentes(int $productoId, string $tipoCliente, DateTimeImmutable $fecha): void
+    {
+        ProductoPrecioModel::where('producto_id', $productoId)
+            ->where('tipo_cliente', $tipoCliente)
+            ->where('estado', 'ACTIVO')
+            ->update(['estado' => 'INACTIVO', 'fecha_fin' => $fecha->format('Y-m-d')]);
+    }
+
     private function toEntity(ProductoPrecioModel $model): ProductoPrecio
     {
         return new ProductoPrecio(
@@ -50,6 +58,7 @@ class EloquentProductoPrecioRepository implements ProductoPrecioRepository
             fechaFin: $model->fecha_fin ? DateTimeImmutable::createFromInterface($model->fecha_fin) : null,
             estado: $model->estado,
             creadoPorUserId: $model->creado_por_user_id,
+            cantidadMinima: $model->cantidad_minima !== null ? (float) $model->cantidad_minima : null,
         );
     }
 
@@ -62,6 +71,7 @@ class EloquentProductoPrecioRepository implements ProductoPrecioRepository
             'producto_id' => $precio->productoId(),
             'tipo_cliente' => $precio->tipoCliente(),
             'precio' => $precio->precio(),
+            'cantidad_minima' => $precio->cantidadMinima(),
             'fecha_inicio' => $precio->fechaInicio()->format('Y-m-d'),
             'fecha_fin' => $precio->fechaFin()?->format('Y-m-d'),
             'estado' => $precio->estado(),

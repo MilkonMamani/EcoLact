@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Web\Produccion;
 
-use App\Application\Produccion\Contracts\ProductoDetalleQuery;
 use App\Application\Produccion\Contracts\ProductosListadoQuery;
 use App\Application\Produccion\ProductosFiltro;
 use App\Http\Controllers\Controller;
@@ -12,16 +11,15 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 /**
- * INVENTARIO -> Productos (ADMINISTRADOR): inventario de productos terminados,
- * de SOLO CONSULTA. Un producto no se crea, edita ni desactiva desde aquí: nace
- * y se configura desde su RECETA, y su stock lo mueven la producción (al
- * finalizar) y las ventas.
+ * INVENTARIO -> Productos (ADMINISTRADOR): consulta de productos terminados y
+ * gestión de sus precios, en una sola pantalla (fila desplegable). Un producto
+ * no se crea, edita ni desactiva desde aquí: nace desde su RECETA, y su stock
+ * lo mueven la producción (al finalizar) y las ventas.
  */
 final class ProductoController extends Controller
 {
     public function __construct(
         private readonly ProductosListadoQuery $productosListadoQuery,
-        private readonly ProductoDetalleQuery $productoDetalleQuery,
     ) {}
 
     public function index(Request $request): View
@@ -35,15 +33,6 @@ final class ProductoController extends Controller
 
         return view('admin.productos.index', [
             'datos' => $this->productosListadoQuery->obtener($filtro),
-        ]);
-    }
-
-    public function show(ProductoModel $producto): View
-    {
-        Gate::authorize('view', $producto);
-
-        return view('admin.productos.show', [
-            'detalle' => $this->productoDetalleQuery->obtener($producto->id),
         ]);
     }
 }

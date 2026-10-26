@@ -21,7 +21,6 @@ it('la pantalla de mis compras muestra los KPIs y el historial', function () {
 
     app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PROVEEDOR',
         cantidad: 2.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,
@@ -46,7 +45,6 @@ it('el detalle de una compra muestra el producto y el importe', function () {
 
     $venta = app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PROVEEDOR',
         cantidad: 3.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,
@@ -72,7 +70,6 @@ it('un proveedor no puede ver la compra de otro proveedor (403)', function () {
 
     $venta = app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PROVEEDOR',
         cantidad: 1.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,

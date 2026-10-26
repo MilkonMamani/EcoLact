@@ -1,4 +1,233 @@
-<!DOCTYPE html>
+Quiero corregir dos detalles de UI en:
+
+FINANZAS > PAGOS > PAGAR A PROVEEDORES
+
+No quiero modificar la lógica de pagos.
+Solo quiero corregir:
+
+1. el icono del buscador que se está superponiendo con el texto
+2. cómo se muestra la semana seleccionada
+
+==================================================
+1. CORREGIR BUSCADOR
+==================================================
+
+Actualmente el icono de búsqueda está montándose encima del placeholder:
+
+"Buscar proveedor..."
+
+Quiero que quede correctamente alineado.
+
+Estructura esperada:
+
+[ 🔍   Buscar proveedor... ]
+
+El icono debe:
+
+- quedar dentro del input
+- alineado verticalmente al centro
+- tener separación suficiente con el texto
+- no superponerse
+- no moverse al hacer focus
+- no cambiar el alto actual del input
+
+Si el icono está con position:absolute:
+
+revisar left / top / transform.
+
+El input debe tener padding-left suficiente.
+
+Ejemplo conceptual:
+
+icono:
+left: 14px
+
+input:
+padding-left: 42px
+
+No hardcodear CSS extraño si ya existen componentes reutilizables.
+
+Revisar el componente de búsqueda actual de EcoLact y reutilizar su patrón si existe.
+
+==================================================
+2. SEMANA SELECCIONADA
+==================================================
+
+Actualmente cuando selecciono una semana se muestra algo como:
+
+Semana 40 · 24/09/2026 - 30/09/2026
+
+Quiero cambiar el comportamiento.
+
+Cuando el combobox está CERRADO y ya existe una semana seleccionada:
+
+mostrar solamente:
+
+Semana 40
+
+o:
+
+Semana 39
+
+Nada más.
+
+==================================================
+3. OPCIONES DEL COMBOBOX
+==================================================
+
+Cuando ABRO el combobox sí quiero ver:
+
+Semana 40 · 24/09/2026 - 30/09/2026
+Semana 39 · 17/09/2026 - 23/09/2026
+Semana 38 · 10/09/2026 - 16/09/2026
+
+Es decir:
+
+VALOR VISIBLE SELECCIONADO:
+Semana 40
+
+OPCIÓN EN LISTADO:
+Semana 40 · 24/09/2026 - 30/09/2026
+
+==================================================
+4. IMPORTANTE
+==================================================
+
+No cambiar:
+
+- valor enviado al backend
+- query string
+- filtros
+- lógica de periodos
+- número de semana
+- fechas calculadas
+
+Esto es solo presentación.
+
+==================================================
+5. IMPLEMENTACIÓN
+==================================================
+
+Primero revisa si el control es:
+
+- select nativo
+- componente Blade
+- Alpine
+- JavaScript custom
+
+No rehacer el componente completo si no hace falta.
+
+Si es un select nativo y no permite mostrar una etiqueta distinta entre:
+
+selected value
+y
+option label
+
+entonces puedes usar un componente select personalizado ya existente en EcoLact.
+
+Pero NO introducir una librería externa solo para esto.
+
+==================================================
+6. FORMATO DE FECHA
+==================================================
+
+Dentro del dropdown mantener:
+
+dd/mm/yyyy
+
+Ejemplo:
+
+Semana 40 · 24/09/2026 - 30/09/2026
+
+==================================================
+7. ESTADO "TODOS"
+==================================================
+
+Si existe:
+
+Todos
+
+mantenerlo como:
+
+Todas las semanas
+
+o el texto actual si ya está definido.
+
+No mostrar rango cuando está seleccionado "Todos".
+
+==================================================
+8. RESULTADO VISUAL ESPERADO
+==================================================
+
+Buscador:
+
+┌─────────────────────────────────────────────┐
+│ 🔍  Buscar proveedor...                    │
+└─────────────────────────────────────────────┘
+
+Semana cerrada:
+
+[ Semana 40                    ▼ ]
+
+Dropdown abierto:
+
+Semana 40 · 24/09/2026 - 30/09/2026
+Semana 39 · 17/09/2026 - 23/09/2026
+Semana 38 · 10/09/2026 - 16/09/2026
+
+==================================================
+9. RESPONSIVE
+==================================================
+
+Verificar:
+
+desktop
+tablet
+mobile
+
+El texto de semana seleccionada no debe desbordarse.
+
+==================================================
+10. VALIDACIÓN
+==================================================
+
+Probar:
+
+- input vacío
+- escribir búsqueda
+- focus del buscador
+- seleccionar Semana 40
+- seleccionar Semana 39
+- abrir dropdown
+- cerrar dropdown
+- seleccionar Todas las semanas
+- aplicar filtro
+- limpiar filtro
+
+==================================================
+11. INFORME FINAL
+==================================================
+
+Al terminar dime:
+
+A. qué causaba la superposición del icono
+B. qué archivo corregiste
+C. cómo quedó el padding del buscador
+D. cómo se muestra ahora la semana seleccionada
+E. cómo se muestran las opciones abiertas
+F. si tocaste lógica backend
+G. build/tests ejecutados
+
+REGLA FINAL:
+
+Buscador:
+icono separado del texto.
+
+Semana seleccionada:
+solo "Semana 40".
+
+Dropdown:
+"Semana 40 · fecha inicio - fecha fin".<!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">

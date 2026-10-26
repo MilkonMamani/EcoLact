@@ -118,10 +118,10 @@ it('lo producido queda disponible para vender y la venta descuenta del mismo sal
     app(RegistrarProductoPrecio::class)->execute($queso->id, 'PUBLICO', 30.0, $admin->id);
 
     app(FinalizarProduccion::class)->execute($lote->id(), [$detalles[0]->id => 98, $detalles[1]->id => 49], $admin->id);
-    app(RegistrarVentaProducto::class)->execute($queso->id, 'PUBLICO', 8.0, 'CONTADO', $admin->id);
+    app(RegistrarVentaProducto::class)->execute($queso->id, 8.0, 'CONTADO', $admin->id);
 
     expect(app(ProductoStockRepository::class)->buscarPorProductoId($queso->id)->cantidadActual())->toBe(90.0);
 
-    expect(fn () => app(RegistrarVentaProducto::class)->execute($queso->id, 'PUBLICO', 91.0, 'CONTADO', $admin->id))
+    expect(fn () => app(RegistrarVentaProducto::class)->execute($queso->id, 91.0, 'CONTADO', $admin->id))
         ->toThrow(DomainException::class, 'No hay stock suficiente');
 });

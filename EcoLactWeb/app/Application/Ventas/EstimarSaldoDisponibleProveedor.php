@@ -37,16 +37,20 @@ final class EstimarSaldoDisponibleProveedor
         private readonly VentaProductoRepository $ventasProducto,
     ) {}
 
+    /**
+     * Un periodo sin id (aún no guardado, ver PeriodoDescuentoActual::consultar)
+     * no tiene liquidación ni compras a cuenta: solo cuenta el pago estimado.
+     */
     public function execute(int $proveedorId, PeriodoLiquidacion $periodo): float
     {
-        $periodoId = $periodo->id() ?? throw new DomainException('El periodo indicado no tiene identificador válido.');
+        $periodoId = $periodo->id();
 
-        $pagoEstimado = $this->buscarLiquidacionDelPeriodo($proveedorId, $periodoId)?->totalPagar()
+        $pagoEstimado = ($periodoId !== null ? $this->buscarLiquidacionDelPeriodo($proveedorId, $periodoId)?->totalPagar() : null)
             ?? $this->estimarPagoPeriodoAbierto($proveedorId, $periodo);
 
         $yaDescontado = 0.0;
 
-        foreach ($this->ventasProducto->listarPorProveedorYPeriodo($proveedorId, $periodoId, 'DESCUENTO_PLANILLA') as $venta) {
+        foreach ($periodoId !== null ? $this->ventasProducto->listarPorProveedorYPeriodo($proveedorId, $periodoId, 'DESCUENTO_PLANILLA') : [] as $venta) {
             $yaDescontado += $venta->importeTotal();
         }
 

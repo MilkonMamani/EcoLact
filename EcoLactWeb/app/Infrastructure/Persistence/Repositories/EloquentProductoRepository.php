@@ -90,6 +90,7 @@ class EloquentProductoRepository implements ProductoRepository
             presentacionCantidad: $model->presentacion_cantidad !== null ? (float) $model->presentacion_cantidad : null,
             presentacionUnidad: $model->presentacion_unidad,
             imagen: $model->imagen,
+            categoriaId: $model->categoria_id,
         );
     }
 
@@ -102,6 +103,7 @@ class EloquentProductoRepository implements ProductoRepository
             'nombre' => $producto->nombre(),
             'nombre_base' => $producto->nombreBase(),
             'tipo_producto' => $producto->tipoProducto(),
+            'categoria_id' => $producto->categoriaId(),
             'presentacion_cantidad' => $producto->presentacionCantidad(),
             'presentacion_unidad' => $producto->presentacionUnidad(),
             'imagen' => $producto->imagen(),

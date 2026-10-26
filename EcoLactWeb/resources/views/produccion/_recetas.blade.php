@@ -4,7 +4,7 @@
     Guardar una receta NUNCA descuenta insumos. Cada producto muestra UNA receta (la vigente); el
     historial de versiones se conserva en el backend para las producciones, pero no se expone aquí.
     Variables: $datos (RecetasListadoData), $editable (bool), $rutaIndex.
-    Solo si $editable: $insumos, $tiposProducto, $unidadesPresentacion, $productoPorConfigurar.
+    Solo si $editable: $insumos, $categoriasProducto, $unidadesPresentacion, $productoPorConfigurar.
 --}}
 @php
     $filas = collect($datos->filas);

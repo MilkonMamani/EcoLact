@@ -76,6 +76,10 @@
                         <td class="py-2 pr-4 text-text-muted">
                             @if ($movimiento->origen_tipo === 'ENTREGA')
                                 Entrega #{{ $movimiento->origen_id }}
+                            @elseif ($movimiento->origen_tipo === \App\Domain\Produccion\InsumoMovimiento::ORIGEN_COMPRA_INSUMO && Route::has('admin.compras-insumo.show') && auth()->user()->esAdministrador())
+                                <a href="{{ route('admin.compras-insumo.show', $movimiento->origen_id) }}" class="font-medium text-primary hover:text-primary-dark">Compra #{{ $movimiento->origen_id }}</a>
+                            @elseif ($movimiento->origen_tipo === \App\Domain\Produccion\InsumoMovimiento::ORIGEN_COMPRA_INSUMO)
+                                Compra #{{ $movimiento->origen_id }}
                             @elseif ($movimiento->lote_produccion_id)
                                 Lote #{{ $movimiento->lote_produccion_id }}
                             @else

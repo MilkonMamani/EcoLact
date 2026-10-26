@@ -16,7 +16,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('jornadas_personal', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            // SQLite (tests) no borra claves foráneas por nombre; MySQL usa el nombre real.
+            $table->dropForeign(Schema::getConnection()->getDriverName() === 'sqlite' ? ['user_id'] : 'fk_jornadas_personal_user_id');
             $table->dropUnique('uq_jornadas_personal_user_fecha');
             $table->dropColumn('user_id');
             $table->unsignedBigInteger('trabajador_id')->nullable(false)->change();

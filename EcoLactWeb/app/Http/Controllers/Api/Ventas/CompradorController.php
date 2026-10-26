@@ -48,7 +48,6 @@ final class CompradorController extends Controller
 
         $comprador = $this->registrarComprador->execute(
             nombre: $datos['nombre'],
-            tipoCliente: $datos['tipo_cliente'],
             documento: $datos['documento'] ?? null,
             telefono: $datos['telefono'] ?? null,
         );

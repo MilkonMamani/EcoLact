@@ -1,0 +1,163 @@
+/*
+ * Caja (admin/caja): billetera de EcoLact. Saldo arriba, movimientos abajo, detalle en un panel
+ * lateral. Mismo lenguaje que Pagos: blanco, verde EcoLact, bordes finos, radio moderado, sin
+ * sombras pesadas. Los tokens (--fichas-*) y los botones vienen de admin-fichas.css.
+ *
+ * Desktop: 4 tarjetas en fila e historial como tabla. Tablet: tarjetas 2×2.
+ * Móvil: saldo a todo el ancho, ingresos/salidas compactos y movimientos como lista.
+ */
+body.caja-page { background: #fff; }
+
+.caja {
+    --caja-entrada: #0f7a4d;
+    --caja-entrada-soft: #ecf7f1;
+    --caja-salida: #c4524b;
+    --caja-salida-soft: #fdf1f0;
+}
+
+.caja-header { display: flex; align-items: flex-start; gap: .75rem; }
+.caja-header .fichas-title { margin-top: .4rem; font-size: 1.6rem; }
+
+/* ------------------------------------------------------------ tarjetas */
+.caja-tarjetas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1.25rem; }
+.caja-saldo { grid-column: 1 / -1; }
+@media (min-width: 1024px) {
+    .caja-tarjetas { grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); }
+    .caja-saldo { grid-column: auto; }
+}
+
+.caja-saldo { display: flex; flex-direction: column; justify-content: space-between; gap: .35rem; padding: 1.1rem 1.2rem; border-radius: .85rem; background: var(--fichas-green); color: #fff; }
+.caja-saldo-cabecera { display: flex; align-items: center; gap: .6rem; }
+.caja-saldo-icono { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: .6rem; background: rgb(255 255 255 / .14); }
+.caja-saldo-etiqueta { flex: 1; font-size: .85rem; font-weight: 500; color: rgb(255 255 255 / .85); }
+.caja-ojo { display: inline-flex; padding: .35rem; border-radius: .5rem; color: rgb(255 255 255 / .85); transition: background-color .15s; }
+.caja-ojo:hover { background: rgb(255 255 255 / .12); color: #fff; }
+.caja-ojo:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.caja-saldo-monto { margin-top: .35rem; font-size: 2rem; font-weight: 700; line-height: 1.1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.caja-saldo-nota { font-size: .75rem; color: rgb(255 255 255 / .7); }
+
+.caja-ojo-oculto, .caja-monto-oculto { display: none; }
+.caja-saldo.is-oculto .caja-ojo-ver, .caja-saldo.is-oculto .caja-monto-real { display: none; }
+.caja-saldo.is-oculto .caja-ojo-oculto, .caja-saldo.is-oculto .caja-monto-oculto { display: inline; }
+
+.caja-tarjeta { display: flex; flex-direction: column; justify-content: space-between; gap: .5rem; min-width: 0; padding: 1rem 1.1rem; border: 1px solid var(--fichas-border); border-radius: .85rem; background: #fff; }
+.caja-tarjeta-etiqueta { display: flex; align-items: center; gap: .45rem; color: var(--fichas-muted); font-size: .8rem; font-weight: 500; }
+.caja-tarjeta-valor { color: var(--fichas-ink); font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.caja-tarjeta-valor.is-entrada { color: var(--caja-entrada); }
+.caja-tarjeta-valor.is-salida { color: var(--caja-salida); }
+.caja-punto { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 9999px; background: #f2f4f7; color: var(--fichas-muted); }
+.caja-punto.is-entrada { background: var(--caja-entrada-soft); color: var(--caja-entrada); }
+.caja-punto.is-salida { background: var(--caja-salida-soft); color: var(--caja-salida); }
+
+/* ------------------------------------------------------------ filtros compactos */
+.caja-historial { margin-top: 1.75rem; }
+.caja-historial-titulo { font-size: 1.05rem; font-weight: 600; }
+
+.caja-filtros { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; margin-top: .75rem; }
+.caja-buscador, .caja-rango { grid-column: 1 / -1; }
+.caja-buscador { height: 2.5rem; border-color: #d0d5dd; border-radius: .5rem; }
+.caja-buscador input { font-size: .85rem; }
+.caja-buscador input::-webkit-search-decoration { -webkit-appearance: none; }
+@media (min-width: 1024px) {
+    .caja-filtros { grid-template-columns: minmax(0, 1fr) auto 11rem 12.5rem auto; align-items: center; }
+    .caja-buscador, .caja-rango { grid-column: auto; }
+}
+
+.caja-rango { display: flex; align-items: center; gap: .4rem; height: 2.5rem; padding-inline: .7rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff; color: var(--fichas-muted); font-size: .85rem; }
+.caja-rango:focus-within { border-color: var(--fichas-green); box-shadow: 0 0 0 1px var(--fichas-green); }
+.caja-rango label { flex: 1; min-width: 0; }
+.caja-rango input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--fichas-ink); font-size: .82rem; outline: none; }
+.caja-limpiar { height: 2.5rem; }
+
+/* ------------------------------------------------------------ historial */
+.caja-lista { margin-top: .75rem; overflow: hidden; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; }
+.caja-lista ul { margin: 0; padding: 0; list-style: none; }
+.caja-lista li + li { border-top: 1px solid #f0f2f4; }
+
+.caja-lista-cabecera, .caja-fila { display: grid; grid-template-columns: 10.5rem minmax(0, 2fr) minmax(0, 1fr) 6rem 9.5rem 3.5rem; align-items: center; gap: 1rem; padding-inline: 1rem; }
+.caja-lista-cabecera { padding-block: .7rem; border-bottom: 1px solid var(--fichas-border); background: var(--fichas-head); color: var(--fichas-muted); font-size: .72rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
+.caja-lista-cabecera .is-num { text-align: right; }
+.caja-lista-cabecera .is-accion { text-align: center; }
+
+.caja-fila { min-height: 3.75rem; padding-block: .6rem; color: inherit; font-size: .875rem; text-decoration: none; transition: background-color .15s; }
+.caja-fila:hover { background: #fafbfc; }
+.caja-fila.is-selected { background: var(--fichas-green-soft); }
+.caja-fila:focus-visible { outline: 2px solid var(--fichas-green); outline-offset: -2px; }
+
+.caja-fecha { color: var(--fichas-muted); font-size: .8rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.caja-concepto { display: flex; align-items: center; gap: .7rem; min-width: 0; }
+.caja-concepto-titulo { display: block; overflow: hidden; color: var(--fichas-ink); font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.caja-concepto-sub { display: block; overflow: hidden; color: var(--fichas-muted); font-size: .8rem; text-overflow: ellipsis; white-space: nowrap; }
+.caja-referencia { overflow: hidden; color: #475467; font-size: .82rem; text-overflow: ellipsis; white-space: nowrap; }
+.caja-tipo { justify-self: start; padding: .15rem .55rem; border-radius: 9999px; font-size: .75rem; font-weight: 600; }
+.caja-tipo.is-entrada { background: var(--caja-entrada-soft); color: var(--caja-entrada); }
+.caja-tipo.is-salida { background: var(--caja-salida-soft); color: var(--caja-salida); }
+.caja-monto { font-weight: 700; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.caja-monto.is-entrada { color: var(--caja-entrada); }
+.caja-monto.is-salida { color: var(--caja-salida); }
+.caja-accion { display: inline-flex; justify-self: center; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 1px solid var(--fichas-border); border-radius: .5rem; color: var(--fichas-muted); }
+.caja-fila:hover .caja-accion { border-color: var(--fichas-green-strong); color: var(--fichas-green); }
+
+/* Ícono por categoría: se reconoce de un vistazo de dónde viene el dinero. */
+.caja-categoria-icono { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: .6rem; }
+.caja-categoria-icono.is-venta { background: var(--caja-entrada-soft); color: var(--caja-entrada); }
+.caja-categoria-icono.is-proveedor { background: #eef4fb; color: #3b6fa3; }
+.caja-categoria-icono.is-insumos { background: #fdf6e9; color: #a06a12; }
+.caja-categoria-icono.is-trabajador { background: #f3f0fa; color: #6750a4; }
+.caja-categoria-icono.is-grande { width: 3rem; height: 3rem; border-radius: .8rem; }
+
+.caja-vacio { padding: 2.5rem 1rem; color: var(--fichas-muted); font-size: .875rem; text-align: center; }
+.caja-vacio strong { display: block; margin-bottom: .2rem; color: var(--fichas-ink); }
+
+/* Tablet: sin columna de referencia ni de tipo (el color del monto ya lo dice). */
+@media (max-width: 1023px) {
+    .caja-lista-cabecera, .caja-fila { grid-template-columns: 8.5rem minmax(0, 1fr) 8.5rem 2.5rem; }
+    .caja-lista-cabecera > :nth-child(3), .caja-lista-cabecera > :nth-child(4), .caja-fila .caja-referencia, .caja-fila .caja-tipo { display: none; }
+}
+
+/* Móvil: lista tipo billetera (ícono · concepto/fecha · monto). */
+@media (max-width: 639px) {
+    .caja-saldo-monto { font-size: 1.75rem; }
+    .caja-tarjeta { padding: .8rem .9rem; }
+    .caja-tarjeta-valor { font-size: 1.05rem; }
+    .caja-tarjetas > .caja-tarjeta:last-child { grid-column: 1 / -1; flex-direction: row; align-items: center; }
+
+    .caja-lista-cabecera { display: none; }
+    .caja-fila { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "concepto monto" "concepto fecha"; gap: .1rem .75rem; padding: .75rem .85rem; }
+    .caja-fila .caja-concepto { grid-area: concepto; }
+    .caja-fila .caja-monto { grid-area: monto; }
+    .caja-fila .caja-fecha { grid-area: fecha; justify-self: end; font-size: .72rem; }
+    .caja-fila .caja-accion { display: none; }
+}
+
+/* ------------------------------------------------------------ panel de detalle (drawer) */
+.caja-velo { position: fixed; inset: 0; z-index: 39; background: rgb(16 24 40 / .3); }
+.caja-panel { position: fixed; inset: 0 0 0 auto; z-index: 40; width: min(26rem, 100%); overflow-y: auto; border-left: 1px solid var(--fichas-border); background: #fff; transform: translateX(100%); visibility: hidden; transition: transform .2s ease, visibility .2s; }
+.caja-panel.is-abierto { transform: none; visibility: visible; box-shadow: -8px 0 24px rgb(16 24 40 / .08); }
+body.caja-drawer-abierto { overflow: hidden; }
+
+.caja-detalle { display: flex; flex-direction: column; gap: 1.1rem; padding: 1rem 1.25rem 1.5rem; }
+.caja-detalle-cabecera { display: flex; align-items: center; justify-content: space-between; }
+.caja-detalle-kicker { color: var(--fichas-muted); font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.caja-cerrar { display: inline-flex; padding: .35rem; border-radius: .5rem; color: var(--fichas-muted); }
+.caja-cerrar:hover { background: #f2f4f7; color: var(--fichas-ink); }
+
+.caja-detalle-resumen { display: grid; justify-items: center; gap: .35rem; padding: 1.1rem 1rem; border: 1px solid var(--fichas-border); border-radius: .85rem; text-align: center; }
+.caja-detalle-titulo { margin-top: .35rem; font-size: 1rem; font-weight: 600; }
+.caja-detalle-monto { font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.caja-detalle-monto.is-entrada { color: var(--caja-entrada); }
+.caja-detalle-monto.is-salida { color: var(--caja-salida); }
+
+.caja-detalle-datos { display: grid; border: 1px solid var(--fichas-border); border-radius: .75rem; }
+.caja-detalle-datos > div { display: flex; justify-content: space-between; gap: 1rem; padding: .6rem .85rem; font-size: .85rem; }
+.caja-detalle-datos > div + div { border-top: 1px solid #f0f2f4; }
+.caja-detalle-datos dt { flex-shrink: 0; color: var(--fichas-muted); }
+.caja-detalle-datos dd { color: var(--fichas-ink); font-weight: 500; text-align: right; overflow-wrap: anywhere; }
+
+.caja-detalle-acciones { display: flex; flex-wrap: wrap; gap: .5rem; }
+.caja-detalle-acciones .fichas-btn { flex: 1 1 9rem; }
+.caja-detalle-nota { color: var(--fichas-soft-text); font-size: .75rem; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+    .caja-panel { transition: none; }
+}

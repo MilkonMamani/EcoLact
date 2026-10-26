@@ -16,6 +16,7 @@ use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\UnidadMedida;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Produccion\StoreRecetaRequest;
+use App\Infrastructure\Persistence\Models\CategoriaProductoModel;
 use App\Infrastructure\Persistence\Models\ProductoModel;
 use App\Infrastructure\Persistence\Models\RecetaModel;
 use DomainException;
@@ -33,8 +34,6 @@ use Illuminate\View\View;
  */
 final class RecetaController extends Controller
 {
-    private const TIPOS_SUGERIDOS = ['Queso', 'Yogurt', 'Mantequilla'];
-
     public function __construct(
         private readonly RecetasListadoQuery $recetasListadoQuery,
         private readonly CrearRecetaConProducto $crearRecetaConProducto,
@@ -67,7 +66,7 @@ final class RecetaController extends Controller
                 'unidades' => UnidadMedida::opciones(),
                 'compatibles' => UnidadMedida::opcionesCompatiblesCon($i->unidadBase()),
             ], $this->obtenerInsumos->execute()),
-            'tiposProducto' => $this->tiposProducto(),
+            'categoriasProducto' => $this->categoriasProducto(),
             'unidadesPresentacion' => UnidadMedida::opciones(),
             'productoPorConfigurar' => $this->productoPorConfigurar($request->integer('configurar') ?: null),
         ]);
@@ -93,8 +92,10 @@ final class RecetaController extends Controller
                     $this->cambiarImagenProducto->execute($receta->productoId(), $imagen);
                 }
             } else {
+                $categoria = CategoriaProductoModel::findOrFail($datos['categoria_id']);
+
                 $receta = $this->crearRecetaConProducto->execute(
-                    tipoProducto: $datos['tipo_producto'],
+                    tipoProducto: $categoria->nombre,
                     nombreBase: $datos['nombre_producto'],
                     presentacionCantidad: (float) $datos['presentacion_cantidad'],
                     presentacionUnidad: $datos['presentacion_unidad'],
@@ -102,6 +103,7 @@ final class RecetaController extends Controller
                     ingredientes: $datos['ingredientes'],
                     creadaPorUserId: $request->user()->id,
                     imagen: $imagen,
+                    categoriaId: $categoria->id,
                 );
             }
         } catch (DomainException $e) {
@@ -190,13 +192,14 @@ final class RecetaController extends Controller
     }
 
     /**
-     * @return list<string>
+     * Categorías activas para el combobox: primero Quesos, Yogures y
+     * Mantequillas (las base, creadas por la migración) y luego el resto.
+     *
+     * @return array<int, string>
      */
-    private function tiposProducto(): array
+    private function categoriasProducto(): array
     {
-        $existentes = ProductoModel::query()->whereNotNull('tipo_producto')->distinct()->pluck('tipo_producto')->all();
-
-        return array_values(array_unique([...self::TIPOS_SUGERIDOS, ...$existentes]));
+        return CategoriaProductoModel::activas()->orderBy('id')->pluck('nombre', 'id')->all();
     }
 
     /**

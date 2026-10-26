@@ -3,7 +3,7 @@
 namespace App\Application\Ventas;
 
 /**
- * @phpstan-type Fila array{id: int, fecha: string, productoNombre: string, clienteNombre: string, clienteTipo: string, cantidad: float, importeTotal: float, estado: string}
+ * @phpstan-type Fila array{id: int, codigo: string, fecha: string, fechaCorta: string, productoNombre: string, clienteNombre: string, clienteTipo: string, cantidad: float, importeTotal: float, formaPago: string, estado: string}
  */
 final readonly class VentasListadoData
 {

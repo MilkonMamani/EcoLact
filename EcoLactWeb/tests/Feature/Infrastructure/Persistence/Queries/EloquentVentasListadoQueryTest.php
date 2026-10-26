@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Ventas\ConfigurarPreciosProducto;
 use App\Application\Ventas\RegistrarComprador;
 use App\Application\Ventas\RegistrarProductoPrecio;
 use App\Application\Ventas\RegistrarVentaProducto;
@@ -32,7 +33,6 @@ it('calcula los KPIs (ventas, total vendido, productos vendidos, compradores) de
 
     app(RegistrarVentaProducto::class)->execute(
         productoId: $productoA->id,
-        tipoCliente: 'PROVEEDOR',
         cantidad: 5.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,
@@ -40,7 +40,6 @@ it('calcula los KPIs (ventas, total vendido, productos vendidos, compradores) de
     );
     app(RegistrarVentaProducto::class)->execute(
         productoId: $productoB->id,
-        tipoCliente: 'PUBLICO',
         cantidad: 3.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,
@@ -61,17 +60,16 @@ it('calcula los KPIs (ventas, total vendido, productos vendidos, compradores) de
     expect($filaProveedor['productoNombre'])->toBe('Queso Paria');
 });
 
-it('cuenta un comprador registrado como cliente distinto y filtra por tipo de cliente', function () {
+it('cuenta un comprador registrado como cliente distinto y filtra por el tipo de precio aplicado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $producto = vlq_crearProducto('Queso Madurado');
-    app(RegistrarProductoPrecio::class)->execute($producto->id, 'MAYORISTA', 19.0, $admin->id);
+    app(ConfigurarPreciosProducto::class)->execute($producto->id, null, 20.0, 19.0, 4.0, $admin->id);
     fixture_ingreso_producto($producto->id, 10.0, $admin->id);
 
-    $comprador = app(RegistrarComprador::class)->execute('Comercial X', 'MAYORISTA');
+    $comprador = app(RegistrarComprador::class)->execute('Comercial X');
 
     app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'MAYORISTA',
         cantidad: 4.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $admin->id,

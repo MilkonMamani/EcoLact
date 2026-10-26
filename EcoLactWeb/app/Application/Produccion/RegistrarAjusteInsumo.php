@@ -14,6 +14,7 @@ use DomainException;
  * ($nuevoStock, en la unidad base) y se registra el movimiento AJUSTE_ENTRADA
  * o AJUSTE_SALIDA por la diferencia. No debe usarse para compras ni para el
  * consumo de producción: esas operaciones generan sus propios movimientos.
+ * La LECHE no admite ajustes de entrada: su única fuente es Acopio.
  */
 final class RegistrarAjusteInsumo
 {
@@ -42,6 +43,12 @@ final class RegistrarAjusteInsumo
 
             if ($diferencia === 0.0) {
                 throw new DomainException('El nuevo stock es igual al stock actual: no hay nada que ajustar.');
+            }
+
+            // La leche solo ENTRA por Acopio (entregas aceptadas): un ajuste puede
+            // registrar una pérdida, pero nunca sumar litros a mano.
+            if ($insumo->esLeche() && $diferencia > 0) {
+                throw new DomainException('La leche solo ingresa desde Acopio. Un ajuste solo puede registrar una pérdida de leche.');
             }
 
             return $this->registrarMovimiento->execute(

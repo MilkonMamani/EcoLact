@@ -36,7 +36,6 @@ it('la pantalla de movimientos muestra entradas de producción y salidas de vent
     fixture_ingreso_producto($producto->id, 10.0, $admin->id);
     $venta = app(RegistrarVentaProducto::class)->execute(
         productoId: $producto->id,
-        tipoCliente: 'PUBLICO',
         cantidad: 2.0,
         formaPago: 'CONTADO',
         registradoPorUserId: $ventasUser->id,

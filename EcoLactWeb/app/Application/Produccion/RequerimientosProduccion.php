@@ -56,6 +56,20 @@ final readonly class RequerimientosProduccion
     }
 
     /**
+     * Frase única que resume si se puede iniciar, para mostrarla sobre el botón.
+     */
+    public function resumen(): string
+    {
+        if ($this->productosSinReceta !== []) {
+            return 'Este producto todavía no tiene una receta configurada.';
+        }
+
+        return $this->faltantes() === []
+            ? 'Todos los insumos están disponibles.'
+            : 'No hay suficientes insumos para iniciar esta producción.';
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function toArray(): array
@@ -66,6 +80,7 @@ final readonly class RequerimientosProduccion
             'productos_sin_receta' => $this->productosSinReceta,
             'puede_iniciar' => $this->puedeIniciar(),
             'mensajes' => $this->mensajesDeBloqueo(),
+            'resumen' => $this->resumen(),
         ];
     }
 }
