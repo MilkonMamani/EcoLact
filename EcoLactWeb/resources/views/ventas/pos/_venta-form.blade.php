@@ -35,7 +35,7 @@
             @if ($registrada['descuento'])
                 Este importe será descontado de su liquidación.
             @endif
-            <a href="{{ route($portal.'.ventas.show', $registrada['id']) }}" data-vpos-ver="{{ $registrada['id'] }}">Ver venta {{ $registrada['codigo'] }}</a>
+            <a href="{{ route($portal.'.ventas.show', $registrada['id']) }}" data-vpos-ver="{{ $registrada['id'] }}" data-vpos-ver-boleta>Ver boleta {{ $registrada['codigo'] }}</a>
         </p>
     </div>
 @endif

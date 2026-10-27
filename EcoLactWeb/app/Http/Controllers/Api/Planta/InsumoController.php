@@ -183,26 +183,20 @@ final class InsumoController extends Controller
 
         $datos = $request->validated();
 
-        $insumoActual = $this->obtenerInsumo->execute($insumo->id)
-            ?? throw new DomainException('El insumo indicado no existe.');
-
-        $nuevoStock = $datos['tipo'] === 'ENTRADA'
-            ? $insumoActual->stockActual() + (float) $datos['cantidad']
-            : $insumoActual->stockActual() - (float) $datos['cantidad'];
-
-        if ($nuevoStock < 0.0) {
-            return response()->json([
-                'message' => sprintf('Stock insuficiente. Disponible: %s %s, solicitado: %s %s.', $insumoActual->stockActual(), $insumoActual->unidadBase(), $datos['cantidad'], $insumoActual->unidadBase()),
-            ], 422);
+        // La diferencia se aplica con el insumo bloqueado (sin pisar consumos
+        // que hayan llegado entre la consulta y la confirmación).
+        try {
+            $this->registrarAjusteInsumo->porDiferencia(
+                insumoId: $insumo->id,
+                direccion: $datos['tipo'],
+                cantidad: (float) $datos['cantidad'],
+                motivo: $datos['motivo'],
+                registradoPorUserId: $request->user()->id,
+                observacion: $datos['observacion'] ?? null,
+            );
+        } catch (DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
         }
-
-        $this->registrarAjusteInsumo->execute(
-            insumoId: $insumo->id,
-            nuevoStock: round($nuevoStock, 4),
-            motivo: $datos['motivo'],
-            registradoPorUserId: $request->user()->id,
-            observacion: $datos['observacion'] ?? null,
-        );
 
         return response()->json(['data' => $this->serializar($this->obtenerInsumo->execute($insumo->id))]);
     }

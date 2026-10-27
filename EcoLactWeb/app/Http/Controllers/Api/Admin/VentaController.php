@@ -6,9 +6,11 @@ use App\Application\Ventas\Contracts\VentasListadoQuery;
 use App\Application\Ventas\VentasFiltro;
 use App\Http\Controllers\Api\Concerns\PaginaFilas;
 use App\Http\Controllers\Controller;
+use App\Http\Support\BoletaVenta;
 use App\Infrastructure\Persistence\Models\VentaProductoModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -70,5 +72,13 @@ final class VentaController extends Controller
                 'fecha' => $venta->fecha?->format(DATE_ATOM),
             ],
         ]);
+    }
+
+    /** PDF de la boleta (EcoLact_Venta_<codigo>.pdf), derivado de la venta registrada. */
+    public function boleta(VentaProductoModel $venta): Response
+    {
+        Gate::authorize('view', $venta);
+
+        return BoletaVenta::pdf($venta);
     }
 }

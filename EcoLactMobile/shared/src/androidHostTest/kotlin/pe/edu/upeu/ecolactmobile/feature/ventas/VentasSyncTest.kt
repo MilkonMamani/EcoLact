@@ -26,9 +26,15 @@ class VentasSyncTest {
     private var response = """{"data":{"id":19,"producto_id":1,"cantidad":5,"precio_unitario":5,"importe_total":25,"tipo_cliente":"PUBLICO","forma_pago":"CONTADO","fecha":"2026-10-27T15:15:00Z"}}"""
     private val keys = mutableListOf<String?>()
     private var body = ""
+    private val pdf = "%PDF-1.7 boleta".encodeToByteArray()
+    private val boletas = mutableListOf<Pair<String, String?>>()
     private val http = HttpClient(MockEngine { req ->
+        if (req.url.encodedPath.endsWith("/boleta.pdf")) {
+            boletas += req.url.encodedPath to req.headers[HttpHeaders.Accept]
+            return@MockEngine respond(pdf, HttpStatusCode.OK, headersOf(HttpHeaders.ContentType, "application/pdf"))
+        }
         keys += req.headers["Idempotency-Key"]
-        body = (req.body as OutgoingContent.ByteArrayContent).bytes().decodeToString()
+        (req.body as? OutgoingContent.ByteArrayContent)?.let { body = it.bytes().decodeToString() }
         respond(response, status, headersOf(HttpHeaders.ContentType, "application/json"))
     }) { install(ContentNegotiation) { json(ApiJson) } }
     private val api = VentasApi(http)
@@ -56,12 +62,47 @@ class VentasSyncTest {
         cache.put("ventas.7.historial", listOf(completa))
         val ventas = repo.ventas.first()
         assertEquals(1, ventas.size)
-        assertEquals("V-0019", ventas.single().codigo)
+        assertEquals("V-00019", ventas.single().codigo)
         assertEquals(local.localId, ventas.single().localId)
         assertEquals("2026-10-27T15:15:00Z", ventas.single().fecha)
         assertEquals(listOf(local.localId), keys)
         assertTrue(body.contains("2026-10-27T15:15:00Z"))
         assertTrue(body.contains("precio_mostrado"))
+    }
+
+    @Test fun ventaPendienteNoTieneBoletaYTrasSincronizarSeDescargaElPdf() = runBlocking {
+        presente()
+        val local = repo.registrar(request, producto, null, quote, "Lucía")
+        online.value = true
+        val pendiente = repo.ventas.first().single()
+        assertFalse(pendiente.boletaDisponible)
+        assertEquals(MENSAJE_BOLETA_PENDIENTE, assertFailsWith<IllegalArgumentException> { repo.boletaPdf(pendiente) }.message)
+        assertTrue(boletas.isEmpty(), "Sin venta sincronizada no se pide boleta al servidor")
+
+        val row = queue.pending().single()
+        assertIs<SyncPushResult.Success>(VentasSyncHandler(api, cache) { 7 }.push(row.id, row.payload_json))
+        queue.markSynced(row.id, 19)
+        val sincronizada = repo.ventas.first().single()
+        assertEquals(local.localId, sincronizada.localId)
+        assertTrue(sincronizada.boletaDisponible)
+        assertEquals("EcoLact_Venta_V-00019.pdf", sincronizada.nombreArchivoBoleta)
+        assertEquals("EcoLact - Boleta de venta V-00019", sincronizada.textoCompartirBoleta)
+
+        // Descargar y Compartir usan el MISMO PDF de Laravel: los bytes llegan intactos.
+        assertContentEquals(pdf, repo.boletaPdf(sincronizada))
+        assertEquals(listOf("/ventas/ventas/19/boleta.pdf" to "application/pdf"), boletas.map { (ruta, accept) -> ruta.substringAfter("/api/v1") to accept })
+    }
+
+    @Test fun ventaRechazadaNoGeneraBoleta() = runBlocking {
+        presente()
+        repo.registrar(request, producto, null, quote, "Lucía")
+        val row = queue.pending().single()
+        queue.markNeedsReview(row.id, "No hay stock suficiente.")
+        online.value = true
+        val rechazada = repo.ventas.first().single()
+        assertFalse(rechazada.boletaDisponible)
+        assertFailsWith<IllegalArgumentException> { repo.boletaPdf(rechazada) }
+        assertTrue(boletas.isEmpty())
     }
 
     @Test fun asistenciaAnteriorNoAutorizaYDescuentoOfflineNoSeEncola() = runBlocking {

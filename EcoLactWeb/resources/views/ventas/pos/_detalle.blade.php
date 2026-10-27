@@ -32,4 +32,14 @@
     @if ($venta['descuento'])
         <p class="caja-detalle-nota">Este importe se descuenta del pago semanal del proveedor.</p>
     @endif
+
+    @if ($venta['boleta'])
+        <details class="vpos-boleta" data-vpos-boleta>
+            <summary class="vpos-boleta-ver">Ver boleta</summary>
+            @include('ventas.pos._boleta', ['boleta' => $venta['boleta']])
+            <a href="{{ $venta['urlBoleta'] }}" class="vpos-boleta-descargar" download>
+                <x-ui.icon name="download" class="h-4 w-4" /> Descargar PDF
+            </a>
+        </details>
+    @endif
 </div>

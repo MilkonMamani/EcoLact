@@ -3,6 +3,7 @@
 namespace App\Application\Produccion;
 
 use App\Application\Shared\TransactionManager;
+use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\InsumoMovimiento;
 use App\Domain\Produccion\InsumoRepository;
 use App\Domain\Shared\Enums\MotivoMovimientoInsumo;
@@ -45,20 +46,54 @@ final class RegistrarAjusteInsumo
                 throw new DomainException('El nuevo stock es igual al stock actual: no hay nada que ajustar.');
             }
 
-            // La leche solo ENTRA por Acopio (entregas aceptadas): un ajuste puede
-            // registrar una pérdida, pero nunca sumar litros a mano.
-            if ($insumo->esLeche() && $diferencia > 0) {
-                throw new DomainException('La leche solo ingresa desde Acopio. Un ajuste solo puede registrar una pérdida de leche.');
-            }
-
-            return $this->registrarMovimiento->execute(
-                insumoId: $insumoId,
-                motivo: $diferencia > 0 ? MotivoMovimientoInsumo::AJUSTE_ENTRADA : MotivoMovimientoInsumo::AJUSTE_SALIDA,
-                direccion: $diferencia > 0 ? MotivoMovimientoInsumo::ENTRADA : MotivoMovimientoInsumo::SALIDA,
-                cantidad: abs($diferencia),
-                registradoPorUserId: $registradoPorUserId,
-                observacion: trim($motivo.($observacion ? ' — '.$observacion : '')),
-            );
+            return $this->registrar($insumo, $diferencia, $motivo, $registradoPorUserId, $observacion);
         });
+    }
+
+    /**
+     * Ajuste expresado como entrada o salida de una cantidad ("ingresé 10 kg",
+     * "se mermaron 2 kg"). La diferencia se aplica sobre el saldo leído con la
+     * fila bloqueada: si otra operación movió el stock entre que la persona lo
+     * vio y lo confirmó, no se pisa ese movimiento. Si la salida dejaría el
+     * stock negativo, RegistrarMovimientoInsumo la rechaza.
+     */
+    public function porDiferencia(
+        int $insumoId,
+        string $direccion,
+        float $cantidad,
+        string $motivo,
+        int $registradoPorUserId,
+        ?string $observacion = null,
+    ): InsumoMovimiento {
+        if ($cantidad <= 0.0) {
+            throw new DomainException('La cantidad debe ser mayor que cero.');
+        }
+
+        return $this->transacciones->run(function () use ($insumoId, $direccion, $cantidad, $motivo, $registradoPorUserId, $observacion): InsumoMovimiento {
+            $insumo = $this->insumos->bloquearPorId($insumoId)
+                ?? throw new DomainException('El insumo indicado no existe.');
+
+            $diferencia = round($direccion === MotivoMovimientoInsumo::ENTRADA ? $cantidad : -$cantidad, 4);
+
+            return $this->registrar($insumo, $diferencia, $motivo, $registradoPorUserId, $observacion);
+        });
+    }
+
+    private function registrar(Insumo $insumo, float $diferencia, string $motivo, int $registradoPorUserId, ?string $observacion): InsumoMovimiento
+    {
+        // La leche solo ENTRA por Acopio (entregas aceptadas): un ajuste puede
+        // registrar una pérdida, pero nunca sumar litros a mano.
+        if ($insumo->esLeche() && $diferencia > 0) {
+            throw new DomainException('La leche solo ingresa desde Acopio. Un ajuste solo puede registrar una pérdida de leche.');
+        }
+
+        return $this->registrarMovimiento->execute(
+            insumoId: (int) $insumo->id(),
+            motivo: $diferencia > 0 ? MotivoMovimientoInsumo::AJUSTE_ENTRADA : MotivoMovimientoInsumo::AJUSTE_SALIDA,
+            direccion: $diferencia > 0 ? MotivoMovimientoInsumo::ENTRADA : MotivoMovimientoInsumo::SALIDA,
+            cantidad: abs($diferencia),
+            registradoPorUserId: $registradoPorUserId,
+            observacion: trim($motivo.($observacion ? ' — '.$observacion : '')),
+        );
     }
 }

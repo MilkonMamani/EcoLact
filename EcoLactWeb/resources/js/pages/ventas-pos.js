@@ -490,7 +490,7 @@ function cerrarPanel() {
     urlAntes = null;
 }
 
-async function verVenta(id, href) {
+async function verVenta(id, href, abrirBoleta = false) {
     solicitud?.abort();
     solicitud = new AbortController();
     urlAntes ??= window.location.href;
@@ -512,6 +512,10 @@ async function verVenta(id, href) {
 
         panel.innerHTML = await respuesta.text();
         panel.querySelector('[data-vpos-cerrar]')?.focus();
+
+        if (abrirBoleta) {
+            panel.querySelector('[data-vpos-boleta]')?.setAttribute('open', '');
+        }
     } catch (error) {
         if (error.name !== 'AbortError') {
             panel.innerHTML = '<div class="caja-detalle"><div class="caja-detalle-cabecera"><p class="caja-detalle-kicker">Detalle de la venta</p><button type="button" class="caja-cerrar" data-vpos-cerrar aria-label="Cerrar detalle">✕</button></div><p class="vpos-vacio">No se pudo cargar el detalle. Inténtalo de nuevo.</p></div>';
@@ -527,7 +531,7 @@ pagina.addEventListener('click', (evento) => {
         const id = ver?.dataset.vposVer ?? fila.dataset.vposFila;
         const href = ver?.href ?? fila.querySelector('[data-vpos-ver]').href;
         evento.preventDefault();
-        verVenta(id, href);
+        verVenta(id, href, ver?.hasAttribute('data-vpos-ver-boleta') ?? false);
 
         return;
     }

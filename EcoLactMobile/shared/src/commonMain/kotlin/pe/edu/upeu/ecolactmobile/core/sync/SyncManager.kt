@@ -40,6 +40,10 @@ class SyncManager(
         const val MAX_INTENTOS_TRANSITORIOS = 5
 
         const val MENSAJE_SYNC_SIN_ASISTENCIA = "No se pudo sincronizar esta operación porque no existe una asistencia válida para ese momento."
+
+        /** Texto que queda en la fila rechazada; el rechazo por asistencia se explica en términos de sincronización. */
+        fun mensajeParaRevision(mensaje: String): String =
+            if (mensaje == ApiException.MENSAJE_ASISTENCIA_REQUERIDA) MENSAJE_SYNC_SIN_ASISTENCIA else mensaje
     }
 
     fun register(handler: SyncOperationHandler) {
@@ -84,8 +88,7 @@ class SyncManager(
                 is SyncPushResult.Rejected -> {
                     // Rechazo por asistencia (evaluada a la hora del EVENTO): la operación no se
                     // borra; queda para revisión con un mensaje claro.
-                    val mensaje = if (result.message == ApiException.MENSAJE_ASISTENCIA_REQUERIDA) MENSAJE_SYNC_SIN_ASISTENCIA else result.message
-                    queueRepository.markNeedsReview(row.id, mensaje)
+                    queueRepository.markNeedsReview(row.id, mensajeParaRevision(result.message))
                     rejected++
                 }
                 is SyncPushResult.TransientFailure -> {

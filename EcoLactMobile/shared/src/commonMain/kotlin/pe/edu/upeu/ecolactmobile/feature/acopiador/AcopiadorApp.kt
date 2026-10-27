@@ -23,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.unit.dp
 import pe.edu.upeu.ecolactmobile.core.session.UserSession
 import pe.edu.upeu.ecolactmobile.core.ui.navigation.Navigator
 import pe.edu.upeu.ecolactmobile.core.ui.navigation.PlatformBackHandler
@@ -59,6 +62,10 @@ import pe.edu.upeu.ecolactmobile.feature.acopiador.screens.AcopiadorSeguimientoV
 import pe.edu.upeu.ecolactmobile.feature.acopiador.screens.RegistrarViewModel
 import pe.edu.upeu.ecolactmobile.feature.calidad.components.AvisoSincronizacion
 import pe.edu.upeu.ecolactmobile.feature.notificaciones.NotificacionesRepository
+import pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaApi
+import pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGate
+import pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaRequeridaBanner
+import pe.edu.upeu.ecolactmobile.feature.trabajador.LocalAutorizacion
 import pe.edu.upeu.ecolactmobile.feature.trabajador.MiQrTrabajadorScreen
 import pe.edu.upeu.ecolactmobile.feature.trabajador.MiQrViewModel
 import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProviderTopBar
@@ -80,6 +87,11 @@ import pe.edu.upeu.ecolactmobile.feature.proveedor.screens.ProveedorNotificacion
 fun AcopiadorApp(container: AppContainer, session: UserSession) {
     val connectivity = container.connectivityObserver
     val isOnlineFlow = connectivity.isOnline
+    // Regla global: sin asistencia válida hoy se consulta todo, pero no se opera (el servidor valida igual).
+    val asistencia = rememberScreenModel(session.userId) {
+        AsistenciaGate(AsistenciaApi(container.httpClient), container.cacheRepository, session.userId, connectivity.isOnline)
+    }
+    val autorizacion by asistencia.estado.collectAsState()
     val repository = remember(session.userId) {
         AcopiadorRepository(
             api = container.acopiadorApi,
@@ -87,6 +99,7 @@ fun AcopiadorApp(container: AppContainer, session: UserSession) {
             syncQueue = container.syncQueueRepository,
             isOnline = { connectivity.isOnline.value },
             userId = session.userId,
+            puedeOperarSinConexion = { asistencia.puedeOperarSinConexion() },
         )
     }
     val notificaciones = remember(session.userId) {
@@ -192,7 +205,13 @@ fun AcopiadorApp(container: AppContainer, session: UserSession) {
                 }
             },
         ) { padding ->
-            Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            CompositionLocalProvider(LocalAutorizacion provides autorizacion) {
+                Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+                    // Un solo aviso, en Inicio; las acciones se deshabilitan donde están.
+                    if (current == AcopiadorRoute.Inicio) {
+                        AsistenciaRequeridaBanner(autorizacion, onVerQr = { abrir(AcopiadorRoute.MiQr) }, Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp))
+                    }
+                    Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
                 when (val route = current) {
                     AcopiadorRoute.Inicio -> AcopiadorInicioScreen(
                         viewModel = entregasVm,
@@ -266,6 +285,8 @@ fun AcopiadorApp(container: AppContainer, session: UserSession) {
                         val vm = rememberScreenModel { MiQrViewModel(repository.observeAsistencia(), isOnlineFlow) { repository.refreshAsistencia() } }
                         MiQrTrabajadorScreen(vm, rol = "Acopiador", nombreFallback = nombre)
                     }
+                }
+            }
                 }
             }
         }

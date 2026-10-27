@@ -1,16 +1,23 @@
 package pe.edu.upeu.ecolactmobile.feature.ventas
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import pe.edu.upeu.ecolactmobile.core.session.UserSession
 import pe.edu.upeu.ecolactmobile.core.ui.components.ConnectionDot
+import pe.edu.upeu.ecolactmobile.core.ui.components.rememberPdfAcciones
 import pe.edu.upeu.ecolactmobile.core.ui.icons.EcoLactIcons
 import pe.edu.upeu.ecolactmobile.core.ui.navigation.*
 import pe.edu.upeu.ecolactmobile.core.ui.state.rememberScreenModel
@@ -33,6 +40,7 @@ fun VentasApp(container: AppContainer, session: UserSession) {
     val vm = rememberScreenModel(session.userId) { VentasViewModel(repository, container.syncManager, onlineFlow) }
     val notificaciones = remember(session.userId) { NotificacionesRepository(container.notificacionesApi, container.cacheRepository, container.syncQueueRepository, session.userId) { onlineFlow.value } }
     val notificacionesVm = rememberScreenModel(session.userId) { ProveedorNotificacionesViewModel(notificaciones, onlineFlow) }
+    val noLeidas by remember(notificaciones) { notificaciones.observeNoLeidas() }.collectAsState(0)
     val perfil by vm.perfil.collectAsState()
     val ventas by vm.ventas.collectAsState()
     val catalogo by vm.catalogo.collectAsState()
@@ -50,6 +58,7 @@ fun VentasApp(container: AppContainer, session: UserSession) {
     val navigator = remember(session.userId) { Navigator(VentasRoute.INICIO) }
     val drawer = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val pdf = rememberPdfAcciones()
     var producto by remember { mutableStateOf<ProductoVenta?>(null) }
     var cliente by remember { mutableStateOf<ClienteVenta?>(null) }
     var tipoCliente by remember { mutableStateOf("PUBLICO") }
@@ -84,7 +93,7 @@ fun VentasApp(container: AppContainer, session: UserSession) {
                         "SISTEMA" to listOf(VentasRoute.QR, VentasRoute.PERFIL),
                     ).forEach { (grupo, rutas) ->
                         DrawerSectionHeader(grupo)
-                        rutas.forEach { r -> DrawerItem(if (r == VentasRoute.HISTORIAL) "Historial de ventas" else r.titulo, icono(r), navigator.current == r, onClick = { abrir(r) }) }
+                        rutas.forEach { r -> DrawerItem(if (r == VentasRoute.HISTORIAL) "Historial de ventas" else r.titulo, icono(r), navigator.current == r, onClick = { abrir(r) }, contador = if (r == VentasRoute.NOTIFICACIONES) noLeidas else 0) }
                     }
                 }
                 HorizontalDivider()
@@ -92,26 +101,22 @@ fun VentasApp(container: AppContainer, session: UserSession) {
             }
         }) {
             Scaffold(containerColor = EcoLactColors.Fondo, topBar = {
-                ProviderTopBar(navigator.current.titulo, navigator.current.principal, online, 0, false,
-                    onMenu = { scope.launch { drawer.open() } }, onBack = { navigator.pop() }, onCampana = {})
+                ProviderTopBar(navigator.current.titulo, navigator.current.principal, online, noLeidas, navigator.current != VentasRoute.NOTIFICACIONES,
+                    onMenu = { scope.launch { drawer.open() } }, onBack = { navigator.pop() }, onCampana = { navigator.navigate(VentasRoute.NOTIFICACIONES) })
             }, bottomBar = {
-                if (navigator.current.principal) NavigationBar(containerColor = EcoLactColors.Blanco) {
-                    listOf(VentasRoute.INICIO, VentasRoute.VENDER, VentasRoute.HISTORIAL).forEach { r ->
-                        NavigationBarItem(selected = navigator.current == r, onClick = { abrir(r) }, icon = { Icon(icono(r), null) }, label = { Text(if (r == VentasRoute.VENDER) "Vender" else r.titulo) },
-                            colors = NavigationBarItemDefaults.colors(indicatorColor = EcoLactColors.VerdeClaro, selectedIconColor = EcoLactColors.VerdePrincipal, selectedTextColor = EcoLactColors.VerdePrincipal))
-                    }
-                }
+                if (navigator.current.principal) VentasBottomNavigation(navigator.current) { abrir(it) }
             }) { padding ->
                 Column(Modifier.fillMaxSize().padding(padding)) {
                     if (loading || busy) LinearProgressIndicator(Modifier.fillMaxWidth())
-                    error?.let { Text(it, color = EcoLactColors.Rojo, style = MaterialTheme.typography.bodySmall, modifier = Modifier.fillMaxWidth().padding(12.dp)) }
+                    error?.let { Text(it, color = EcoLactColors.Rojo, style = MaterialTheme.typography.bodySmall, modifier = Modifier.fillMaxWidth().background(EcoLactColors.RojoClaro).padding(horizontal = 16.dp, vertical = 10.dp)) }
                     Box(Modifier.weight(1f)) {
                         when (navigator.current) {
                             VentasRoute.INICIO -> VentasInicioScreen(nombre, ventas, autorizacion, { abrir(VentasRoute.VENDER) }, { abrir(VentasRoute.HISTORIAL) }, { abrir(VentasRoute.QR) }) { seleccion = it; abrir(VentasRoute.DETALLE) }
-                            VentasRoute.VENDER, VentasRoute.PRODUCTOS -> VentasCatalogoScreen(catalogo?.value?.productos.orEmpty(), navigator.current == VentasRoute.VENDER, online, catalogo?.cachedAtIso) {
+                            VentasRoute.PRODUCTOS -> VentasProductosScreen(catalogo?.value?.productos.orEmpty(), online, catalogo?.cachedAtIso)
+                            VentasRoute.VENDER -> VentasCatalogoScreen(catalogo?.value?.productos.orEmpty(), online, catalogo?.cachedAtIso) {
                                 producto = it; cliente = null; tipoCliente = "PUBLICO"; vm.limpiarVenta(); abrir(VentasRoute.CLIENTE)
                             }
-                            VentasRoute.CLIENTE -> VentasClienteScreen(compradores?.value.orEmpty(), catalogo?.value?.proveedores.orEmpty(), onNuevo = { abrir(VentasRoute.NUEVO_COMPRADOR) }) { tipo, c ->
+                            VentasRoute.CLIENTE -> VentasClienteScreen(producto, compradores?.value.orEmpty(), catalogo?.value?.proveedores.orEmpty(), onNuevo = { abrir(VentasRoute.NUEVO_COMPRADOR) }) { tipo, c ->
                                 tipoCliente = tipo; cliente = c; vm.cambiarPago("CONTADO"); abrir(VentasRoute.RESUMEN)
                             }
                             VentasRoute.RESUMEN -> producto?.let { p -> VentasResumenScreen(p, tipoCliente, cliente, quote, busy, online, cantidad, formaPago,
@@ -121,11 +126,15 @@ fun VentasApp(container: AppContainer, session: UserSession) {
                             VentasRoute.CONFIRMACION -> resolved?.let { v -> VentasConfirmacionScreen(v, busy, { seleccion = v; abrir(VentasRoute.BOLETA) }, { vm.limpiarVenta(); abrir(VentasRoute.VENDER) }, { abrir(VentasRoute.HISTORIAL) }) }
                             VentasRoute.HISTORIAL -> VentasHistorialScreen(ventas) { seleccion = it; abrir(VentasRoute.DETALLE) }
                             VentasRoute.DETALLE -> resolved?.let { v -> VentasDetalleScreen(v) { seleccion = v; abrir(VentasRoute.BOLETA) } }
-                            VentasRoute.BOLETA -> resolved?.takeIf { it.id > 0 }?.let { VentasBoletaScreen(it) }
+                            VentasRoute.BOLETA -> resolved?.takeIf { it.boletaDisponible }?.let { v ->
+                                VentasBoletaScreen(v, busy,
+                                    descargar = { vm.boletaPdf(v) { pdf.descargar(it, v.nombreArchivoBoleta) } },
+                                    compartir = { vm.boletaPdf(v) { pdf.compartir(it, v.nombreArchivoBoleta, v.textoCompartirBoleta) } })
+                            }
                             VentasRoute.COMPRADORES -> VentasCompradoresScreen(compradores?.value.orEmpty()) { abrir(VentasRoute.NUEVO_COMPRADOR) }
                             VentasRoute.NUEVO_COMPRADOR -> VentasNuevoCompradorScreen(busy, online) { datos -> vm.nuevoComprador(datos) { navigator.pop() } }
                             VentasRoute.QR -> MiQrTrabajadorContenido(nombre, iniciales, "Personal de ventas", perfil?.value?.dni, perfil?.value?.qr_token, "No hay QR guardado. Conéctate o consulta con el administrador.")
-                            VentasRoute.PERFIL -> VentasPerfilScreen(nombre, iniciales, session.username, perfil?.value?.dni)
+                            VentasRoute.PERFIL -> VentasPerfilScreen(nombre, iniciales, session.username, perfil?.value?.dni) { confirmarSalida = true }
                             VentasRoute.COMUNICADOS -> VentasComunicadosScreen(comunicados?.value.orEmpty())
                             VentasRoute.NOTIFICACIONES -> ProveedorNotificacionesScreen(notificacionesVm)
                         }
@@ -143,10 +152,35 @@ fun VentasApp(container: AppContainer, session: UserSession) {
 private fun icono(r: VentasRoute) = when (r) {
     VentasRoute.INICIO -> EcoLactIcons.Home
     VentasRoute.VENDER -> EcoLactIcons.ShoppingCart
-    VentasRoute.HISTORIAL -> EcoLactIcons.Article
+    VentasRoute.HISTORIAL -> EcoLactIcons.History
+    VentasRoute.COMUNICADOS -> EcoLactIcons.Campaign
     VentasRoute.PRODUCTOS -> EcoLactIcons.Inventory
-    VentasRoute.COMPRADORES, VentasRoute.PERFIL -> EcoLactIcons.Person
+    VentasRoute.COMPRADORES -> EcoLactIcons.People
+    VentasRoute.PERFIL -> EcoLactIcons.Person
     VentasRoute.QR -> EcoLactIcons.QrCode
     VentasRoute.NOTIFICACIONES -> EcoLactIcons.Notifications
     else -> EcoLactIcons.Article
+}
+
+/** Inicio · Vender · Historial, con el mismo aspecto que la barra inferior de los otros roles. */
+@Composable
+private fun VentasBottomNavigation(actual: VentasRoute, onSeleccionar: (VentasRoute) -> Unit) {
+    Column(Modifier.fillMaxWidth().background(EcoLactColors.Blanco)) {
+        HorizontalDivider(color = EcoLactColors.Bordes)
+        Row(Modifier.fillMaxWidth().navigationBarsPadding().height(64.dp)) {
+            listOf(VentasRoute.INICIO to "Inicio", VentasRoute.VENDER to "Vender", VentasRoute.HISTORIAL to "Historial").forEach { (r, label) ->
+                val selected = r == actual
+                Column(
+                    Modifier.weight(1f).fillMaxHeight().selectable(selected = selected, role = Role.Tab, onClick = { onSeleccionar(r) }),
+                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+                ) {
+                    Box(Modifier.size(width = 56.dp, height = 30.dp).background(if (selected) EcoLactColors.VerdeClaro else Color.Transparent, RoundedCornerShape(15.dp)), contentAlignment = Alignment.Center) {
+                        Icon(icono(r), contentDescription = null, tint = if (selected) EcoLactColors.VerdePrincipal else EcoLactColors.TextoSecundario, modifier = Modifier.size(22.dp))
+                    }
+                    Text(label, style = MaterialTheme.typography.labelMedium, fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                        color = if (selected) EcoLactColors.VerdeOscuro else EcoLactColors.TextoSecundario, modifier = Modifier.padding(top = 2.dp))
+                }
+            }
+        }
+    }
 }

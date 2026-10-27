@@ -45,6 +45,6 @@ fun VentasInicioPreview() {
 @Preview(widthDp = 360, heightDp = 800)
 @Composable
 fun VentasResumenPreview() {
-    EcoLactTheme { VentasResumenScreen(ProductoVenta(1, "Queso Paria · 1 kg", 120.0), "PROVEEDOR",
+    EcoLactTheme { VentasResumenScreen(ProductoVenta(1, "Queso Paria · 1 kg", 120.0, minimoMayorista = 12.0), "PROVEEDOR",
         ClienteVenta(3, "Juan Quispe", "41234567"), CotizacionVenta(4.0, "PROVEEDOR", 8.0), false, false, "2", "CONTADO", {}, {}, { _, _ -> }, {}) }
 }

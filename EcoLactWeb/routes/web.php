@@ -319,6 +319,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('ventas', [VentaProductoController::class, 'index'])->name('ventas.index');
         Route::get('ventas/saldo-proveedor/{proveedor}', [VentaProductoController::class, 'saldoProveedor'])->whereNumber('proveedor')->name('ventas.saldo-proveedor');
         Route::get('ventas/{venta}', [VentaProductoController::class, 'show'])->name('ventas.show');
+        Route::get('ventas/{venta}/boleta.pdf', [VentaProductoController::class, 'boleta'])->name('ventas.boleta');
         Route::get('proveedores/{proveedor}/ventas', [VentaProductoController::class, 'porProveedor'])->name('proveedores.ventas.index');
         Route::post('ventas', [VentaProductoController::class, 'store'])->name('ventas.store');
 
@@ -432,7 +433,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         // ComunicadoPolicy::create ya admite CALIDAD).
         Route::get('comunicados', [AnalistaComunicadoController::class, 'index'])->name('comunicados.index');
         Route::get('comunicados/{comunicado}', [AnalistaComunicadoController::class, 'show'])->name('comunicados.show');
-        Route::post('comunicados', [ComunicadoController::class, 'store'])->name('comunicados.store');
+        Route::post('comunicados', [ComunicadoController::class, 'store'])->middleware('requiere.asistencia')->name('comunicados.store');
     });
 
     // ------------------------------------------------------------------
@@ -482,6 +483,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('ventas/crear', [PersonalVentasVentaController::class, 'create'])->name('ventas.create');
         Route::get('ventas/saldo-proveedor/{proveedor}', [PersonalVentasVentaController::class, 'saldoProveedor'])->whereNumber('proveedor')->name('ventas.saldo-proveedor');
         Route::get('ventas/{venta}', [PersonalVentasVentaController::class, 'show'])->name('ventas.show');
+        Route::get('ventas/{venta}/boleta.pdf', [PersonalVentasVentaController::class, 'boleta'])->name('ventas.boleta');
         Route::post('ventas', [PersonalVentasVentaController::class, 'store'])->middleware('requiere.asistencia')->name('ventas.store');
 
         // Productos: Stock de productos (con ingreso de inventario recibido

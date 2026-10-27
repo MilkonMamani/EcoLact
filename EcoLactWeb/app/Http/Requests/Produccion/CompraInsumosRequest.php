@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Produccion;
 
 use App\Http\Controllers\Web\Admin\CompraInsumoController;
+use App\Http\Support\FechaEventoMovil;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Validator;
@@ -45,6 +46,8 @@ class CompraInsumosRequest extends FormRequest
             'imagen_boleta' => ['nullable', 'string', 'max:255'],
             // Foto adjuntada a mano en "Registrar compra" (sin pasar por el OCR).
             'imagen' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+            // App móvil: hora real de la confirmación; si la boleta no trae fecha, la compra es de ese día.
+            'fecha_hora_evento' => FechaEventoMovil::reglas(),
         ];
     }
 
@@ -86,6 +89,7 @@ class CompraInsumosRequest extends FormRequest
             'imagen.max' => 'La foto de la boleta no puede pesar más de 8 MB.',
             'ruc.digits' => 'El RUC debe tener 11 dígitos.',
             'fecha.before_or_equal' => 'La fecha de la compra no puede ser futura.',
+            ...FechaEventoMovil::mensajes('fecha_hora_evento'),
         ];
     }
 }

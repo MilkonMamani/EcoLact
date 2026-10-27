@@ -1,8 +1,10 @@
 package pe.edu.upeu.ecolactmobile.feature.ventas
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
+import pe.edu.upeu.ecolactmobile.core.network.requireSuccess
 import pe.edu.upeu.ecolactmobile.core.network.toEnvelopeData
 import pe.edu.upeu.ecolactmobile.feature.trabajador.MiAsistencia
 
@@ -18,6 +20,10 @@ class VentasApi(private val client: HttpClient) {
     suspend fun registrar(request: VentaRequest, localId: String): Venta = client.post("ventas/ventas") {
         contentType(ContentType.Application.Json); header("Idempotency-Key", localId); setBody(request)
     }.toEnvelopeData()
+    /** PDF oficial de la boleta, generado por Laravel desde la venta registrada (el mismo que descarga la web). */
+    suspend fun boletaPdf(ventaId: Long): ByteArray = client.get("ventas/ventas/$ventaId/boleta.pdf") {
+        accept(ContentType.Application.Pdf)
+    }.requireSuccess().body()
     suspend fun comprador(request: NuevoComprador): ClienteVenta = client.post("ventas/compradores") {
         contentType(ContentType.Application.Json); setBody(request)
     }.toEnvelopeData()

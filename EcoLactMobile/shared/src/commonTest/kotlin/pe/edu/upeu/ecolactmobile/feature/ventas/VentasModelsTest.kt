@@ -43,4 +43,40 @@ class VentasModelsTest {
         assertEquals("RUC", comprador.etiquetaDocumento)
         assertEquals("20601234567", comprador.documentoBoleta)
     }
+
+    @Test fun boletaSoloParaVentasAceptadasPorElServidor() {
+        assertTrue(venta().boletaDisponible)
+        assertEquals("EcoLact_Venta_V-00018.pdf", venta().nombreArchivoBoleta)
+        assertEquals("EcoLact_Venta_V-00018.pdf", venta().copy(codigoServidor = "V-00018").nombreArchivoBoleta)
+        assertFalse(venta().copy(id = 0, localId = "abc").boletaDisponible, "PENDING_SYNC")
+        assertFalse(venta().copy(id = 0, localId = "abc", error = "Stock cambió").boletaDisponible, "NEEDS_REVIEW / error")
+        assertFalse(venta().copy(estado = "ANULADA").boletaDisponible)
+    }
+
+    @Test fun kpisDelDiaSoloCuentanVentasAceptadasYEfectivo() {
+        val ahora = pe.edu.upeu.ecolactmobile.core.util.nowIso()
+        val ventas = listOf(
+            venta().copy(id = 1, fecha = ahora, cantidad = 12.0, importe_total = 54.0),
+            venta().copy(id = 2, fecha = ahora, proveedor_id = 9, forma_pago = "DESCUENTO_PLANILLA", cantidad = 2.0, importe_total = 8.0),
+            venta().copy(id = 0, localId = "pendiente", fecha = ahora, importe_total = 99.0),
+            venta().copy(id = 3, fecha = "2020-01-01T10:00:00Z", importe_total = 500.0),
+        )
+        val r = resumenDelDia(ventas)
+        assertEquals(2, r.ventas)
+        assertEquals(54.0, r.cobrado)
+        assertEquals(14.0, r.unidades)
+    }
+
+    @Test fun productoYDocumentoSePresentanSinInventarDatos() {
+        assertEquals("Queso Paria", producto.nombreBase)
+        assertNull(producto.presentacion)
+        val conPresentacion = producto.copy(nombre = "Queso Paria · 1 kg")
+        assertEquals("Queso Paria", conPresentacion.nombreBase)
+        assertEquals("1 kg", conPresentacion.presentacion)
+        assertEquals("DNI 41234567", ClienteVenta(1, "Juan Torres", "41234567").documentoVisible)
+        assertEquals("RUC 20601234567", ClienteVenta(2, "Distribuidora ABC SAC", "20601234567").documentoVisible)
+        assertEquals("Sin documento", ClienteVenta(3, "Sin doc").documentoVisible)
+        assertEquals("12", formatCantidad(12.0))
+        assertEquals("2.50", formatCantidad(2.5))
+    }
 }

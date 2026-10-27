@@ -5,11 +5,18 @@ use App\Application\Produccion\GuardarPresentacionInsumo;
 use App\Application\Ventas\ConfigurarPreciosProducto;
 use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\Receta;
+use App\Infrastructure\Persistence\Models\CompraInsumoDetalleModel;
 use App\Infrastructure\Persistence\Models\CompraInsumoModel;
 use App\Infrastructure\Persistence\Models\InsumoModel;
+use App\Infrastructure\Persistence\Models\InsumoMovimientoModel;
+use App\Infrastructure\Persistence\Models\LoteProduccionInsumoModel;
 use App\Infrastructure\Persistence\Models\LoteProduccionModel;
+use App\Infrastructure\Persistence\Models\MovimientoCajaModel;
+use App\Infrastructure\Persistence\Models\ProduccionDetalleModel;
 use App\Infrastructure\Persistence\Models\ProductoModel;
+use App\Infrastructure\Persistence\Models\ProductoMovimientoModel;
 use App\Infrastructure\Persistence\Models\ProductoPrecioModel;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -177,4 +184,157 @@ it('entrega el QR del encargado para mostrarlo sin conexión', function () {
         ->assertOk()
         ->assertJsonPath('data.rol', 'Encargado de planta')
         ->assertJsonStructure(['data' => ['qr_token', 'dni', 'nombres', 'apellidos']]);
+});
+
+/** Hora de un evento offline de hace $horas, con asistencia PRESENTE ese día de negocio. */
+function eventoPlantaHace(User $planta, int $horas): string
+{
+    $evento = now()->subHours($horas);
+    fixture_presente_hoy($planta, $evento->copy()->timezone(config('app.zona_horaria_negocio'))->toDateString());
+
+    return $evento->toIso8601String();
+}
+
+it('al reintentar el inicio con la misma clave guarda un solo juego de consumos y descuenta una vez', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [$queso] = escenarioPlantaMovil($admin->id);
+    $planta = fixture_usuario('ENCARGADO_PLANTA');
+    $cuerpo = ['productos' => [['producto_id' => $queso->id, 'cantidad' => 2]]];
+
+    foreach ([1, 2] as $intento) {
+        $this->actingAs($planta, 'sanctum')
+            ->postJson(route('api.planta.produccion.store'), $cuerpo, ['Idempotency-Key' => 'prod-consumos'])
+            ->assertCreated();
+    }
+
+    expect(LoteProduccionModel::count())->toBe(1);
+    // Leche, cuajo y sal: una fotografía y un movimiento de consumo por insumo.
+    expect(LoteProduccionInsumoModel::count())->toBe(3);
+    expect(InsumoMovimientoModel::where('motivo', 'CONSUMO_PRODUCCION')->count())->toBe(3);
+});
+
+it('finalizar dos veces con la misma clave ingresa el producto una sola vez; otra clave se rechaza', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [$queso] = escenarioPlantaMovil($admin->id);
+    $planta = fixture_usuario('ENCARGADO_PLANTA');
+    $loteId = $this->actingAs($planta, 'sanctum')
+        ->postJson(route('api.planta.produccion.store'), ['productos' => [['producto_id' => $queso->id, 'cantidad' => 10]]], ['Idempotency-Key' => 'prod-fin'])
+        ->assertCreated()->json('data.id');
+    $detalle = ProduccionDetalleModel::where('lote_produccion_id', $loteId)->sole();
+    $cuerpo = ['obtenido' => [$detalle->id => 9]];
+
+    $this->postJson(route('api.planta.produccion.finalizar', $loteId), $cuerpo, ['Idempotency-Key' => 'fin-1'])->assertOk();
+    $this->postJson(route('api.planta.produccion.finalizar', $loteId), $cuerpo, ['Idempotency-Key' => 'fin-1'])
+        ->assertOk()->assertHeader('Idempotent-Replayed', 'true');
+    // Otro intento (otra clave, p. ej. desde la web) choca con el lote ya FINALIZADO.
+    $this->postJson(route('api.planta.produccion.finalizar', $loteId), ['obtenido' => [$detalle->id => 7]], ['Idempotency-Key' => 'fin-2'])
+        ->assertUnprocessable();
+
+    expect(ProductoMovimientoModel::where('tipo', 'INGRESO_PRODUCCION')->count())->toBe(1);
+    expect((float) ProductoMovimientoModel::where('tipo', 'INGRESO_PRODUCCION')->sole()->cantidad)->toBe(9.0);
+    expect((float) $detalle->fresh()->cantidad_obtenida)->toBe(9.0);
+    expect((float) $detalle->fresh()->merma)->toBe(1.0);
+});
+
+it('una clave ya usada en otro lote no repite la respuesta de ese lote', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [$queso] = escenarioPlantaMovil($admin->id);
+    $planta = fixture_usuario('ENCARGADO_PLANTA');
+    $lineas = ['productos' => [['producto_id' => $queso->id, 'cantidad' => 1]]];
+    $a = $this->actingAs($planta, 'sanctum')->postJson(route('api.planta.produccion.store'), $lineas, ['Idempotency-Key' => 'lote-a'])->json('data.id');
+    $b = $this->postJson(route('api.planta.produccion.store'), $lineas, ['Idempotency-Key' => 'lote-b'])->json('data.id');
+    $detalleA = ProduccionDetalleModel::where('lote_produccion_id', $a)->sole();
+    $detalleB = ProduccionDetalleModel::where('lote_produccion_id', $b)->sole();
+
+    $this->postJson(route('api.planta.produccion.finalizar', $a), ['obtenido' => [$detalleA->id => 1]], ['Idempotency-Key' => 'fin-x'])->assertOk();
+    $this->postJson(route('api.planta.produccion.finalizar', $b), ['obtenido' => [$detalleB->id => 1]], ['Idempotency-Key' => 'fin-x'])
+        ->assertUnprocessable()->assertJsonPath('message', 'La clave de idempotencia ya se usó en otra operación.');
+
+    expect(LoteProduccionModel::find($b)->estado)->toBe('EN_PROCESO');
+});
+
+it('inicio y cierre offline conservan la hora real del evento y la observación de cierre', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [$queso] = escenarioPlantaMovil($admin->id);
+    $planta = fixture_usuario('ENCARGADO_PLANTA');
+    $inicio = eventoPlantaHace($planta, 3);
+    $fin = eventoPlantaHace($planta, 1);
+
+    $loteId = $this->actingAs($planta, 'sanctum')->postJson(route('api.planta.produccion.store'), [
+        'productos' => [['producto_id' => $queso->id, 'cantidad' => 1]], 'fecha_hora_evento' => $inicio,
+    ], ['Idempotency-Key' => 'prod-offline'])->assertCreated()->json('data.id');
+    $detalle = ProduccionDetalleModel::where('lote_produccion_id', $loteId)->sole();
+    $this->postJson(route('api.planta.produccion.finalizar', $loteId), [
+        'obtenido' => [$detalle->id => 1], 'fecha_hora_evento' => $fin, 'observacion' => 'Cuajó lento',
+    ], ['Idempotency-Key' => 'fin-offline'])->assertOk();
+
+    $lote = LoteProduccionModel::find($loteId);
+    expect($lote->fecha_hora_inicio->timestamp)->toBe(strtotime($inicio));
+    expect($lote->fecha_hora_fin->timestamp)->toBe(strtotime($fin));
+    expect($lote->observacion_cierre)->toBe('Cuajó lento');
+    expect(InsumoMovimientoModel::where('motivo', 'CONSUMO_PRODUCCION')->first()->fecha->timestamp)->toBe(strtotime($inicio));
+    expect(ProductoMovimientoModel::where('tipo', 'INGRESO_PRODUCCION')->sole()->fecha->timestamp)->toBe(strtotime($fin));
+});
+
+it('reintentar una compra no duplica detalles, movimientos de stock ni la salida de caja', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [, $cuajo, $sal] = escenarioPlantaMovil($admin->id);
+    $saco = app(GuardarPresentacionInsumo::class)->execute((int) $sal->id(), 'Saco', 25.0, 'kg');
+    $frasco = app(GuardarPresentacionInsumo::class)->execute((int) $cuajo->id(), 'Frasco', 1.0, 'L');
+    $planta = fixture_usuario('ENCARGADO_PLANTA');
+    $cuerpo = ['lineas' => [
+        ['insumo_id' => $sal->id(), 'presentacion_id' => $saco->id(), 'cantidad' => 2],
+        ['insumo_id' => $cuajo->id(), 'presentacion_id' => $frasco->id(), 'cantidad' => 1],
+    ], 'total' => 230];
+
+    foreach ([1, 2, 3] as $intento) {
+        $this->actingAs($planta, 'sanctum')
+            ->postJson(route('api.planta.compras-insumo.store'), $cuerpo, ['Idempotency-Key' => 'compra-caja'])
+            ->assertCreated();
+    }
+
+    expect(CompraInsumoModel::count())->toBe(1);
+    expect(CompraInsumoDetalleModel::count())->toBe(2);
+    expect(InsumoMovimientoModel::where('motivo', 'INGRESO_COMPRA')->count())->toBe(2);
+    expect(MovimientoCajaModel::count())->toBe(1);
+    expect(MovimientoCajaModel::sole()->tipo)->toBe('SALIDA');
+    expect((float) MovimientoCajaModel::sole()->monto)->toBe(230.0);
+    // 500 ml + 1 frasco de 1 L.
+    expect((float) InsumoModel::find($cuajo->id())->stock_actual)->toBe(1500.0);
+});
+
+it('el movimiento manual suma o resta la cantidad sobre el saldo actual y nunca mete leche', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [, , $sal] = escenarioPlantaMovil($admin->id);
+    $planta = fixture_usuario('ENCARGADO_PLANTA');
+    $movimiento = fn (int $insumoId, string $tipo, float $cantidad) => $this->actingAs($planta, 'sanctum')
+        ->postJson(route('api.planta.insumos.movimiento', $insumoId), ['tipo' => $tipo, 'motivo' => 'Conteo', 'cantidad' => $cantidad]);
+    // Los fixtures cargan el stock inicial como ajustes.
+    $ajustesPrevios = InsumoMovimientoModel::whereIn('motivo', ['AJUSTE_ENTRADA', 'AJUSTE_SALIDA'])->count();
+
+    $movimiento($sal->id(), 'ENTRADA', 500)->assertOk();
+    $movimiento($sal->id(), 'SALIDA', 99999)->assertUnprocessable();
+    $movimiento(fixture_leche()->id, 'ENTRADA', 10)->assertUnprocessable()
+        ->assertJsonPath('message', 'La leche solo ingresa desde Acopio. Un ajuste solo puede registrar una pérdida de leche.');
+
+    expect((float) InsumoModel::find($sal->id())->stock_actual)->toBe(5500.0);
+    expect((float) fixture_leche()->fresh()->stock_actual)->toBe(245.0);
+    expect(InsumoMovimientoModel::whereIn('motivo', ['AJUSTE_ENTRADA', 'AJUSTE_SALIDA'])->count())->toBe($ajustesPrevios + 1);
+});
+
+it('una compra confirmada offline sin fecha en la boleta queda con la fecha del evento', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    [, , $sal] = escenarioPlantaMovil($admin->id);
+    $saco = app(GuardarPresentacionInsumo::class)->execute((int) $sal->id(), 'Saco', 25.0, 'kg');
+    $planta = fixture_usuario('ENCARGADO_PLANTA');
+    $evento = now()->subDays(2)->setTime(15, 0);
+    $diaNegocio = $evento->copy()->timezone(config('app.zona_horaria_negocio'))->toDateString();
+    fixture_presente_hoy($planta, $diaNegocio);
+
+    $this->actingAs($planta, 'sanctum')->postJson(route('api.planta.compras-insumo.store'), [
+        'lineas' => [['insumo_id' => $sal->id(), 'presentacion_id' => $saco->id(), 'cantidad' => 1]],
+        'fecha_hora_evento' => $evento->toIso8601String(),
+    ], ['Idempotency-Key' => 'compra-offline'])->assertCreated();
+
+    expect(CompraInsumoModel::sole()->fecha->toDateString())->toBe($diaNegocio);
 });

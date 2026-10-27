@@ -183,6 +183,29 @@ body.vpos-page { background: #fff; }
 .vpos-detalle-doc { display: block; color: var(--fichas-muted); font-size: .76rem; font-weight: 400; }
 .vpos .caja-detalle-monto { color: var(--fichas-green); }
 
+/* Boleta de venta (misma hoja que el PDF: ventas.pos._boleta). */
+.vpos-boleta { margin-top: 1rem; }
+.vpos-boleta-ver { cursor: pointer; display: inline-flex; align-items: center; min-height: 2.5rem; padding: 0 1rem; border-radius: .5rem; background: var(--fichas-green); color: #fff; font-weight: 600; font-size: .875rem; list-style: none; }
+.vpos-boleta-ver::-webkit-details-marker { display: none; }
+.vpos-boleta[open] .vpos-boleta-ver { background: transparent; color: var(--fichas-green); padding: 0; }
+.vpos-boleta .boleta { margin-top: .75rem; border: 1px solid var(--fichas-border, #e5e7eb); border-radius: .75rem; padding: 1.25rem; background: #fff; font-size: .85rem; }
+.vpos-boleta .boleta table { width: 100%; border-collapse: collapse; }
+.vpos-boleta .boleta td, .vpos-boleta .boleta th { padding: .2rem 0; vertical-align: top; text-align: left; }
+.boleta-cabecera { text-align: center; margin-bottom: .75rem; }
+.boleta-cabecera p { margin: 0; }
+.boleta-marca { font-size: 1.4rem; font-weight: 700; color: var(--fichas-green); }
+.boleta-tipo { font-size: .72rem; letter-spacing: .15em; }
+.boleta-codigo { font-weight: 600; margin-top: .2rem; }
+.boleta-etiqueta { display: block; font-size: .65rem; text-transform: uppercase; letter-spacing: .06em; color: var(--fichas-muted); }
+.vpos-boleta .boleta-derecha { text-align: right; }
+.boleta-separada { border-top: 1px solid var(--fichas-border, #e5e7eb); margin-top: .65rem; padding-top: .65rem; }
+.vpos-boleta .boleta-detalle th { font-size: .65rem; text-transform: uppercase; color: var(--fichas-muted); background: #f3f4f6; padding: .3rem .25rem; }
+.vpos-boleta .boleta-detalle td { padding: .35rem .25rem; }
+.boleta-total td { font-weight: 700; font-size: 1rem; }
+.boleta-total .boleta-derecha { font-size: 1.2rem; color: var(--fichas-green); }
+.boleta-nota { margin: .35rem 0 0; font-size: .75rem; color: var(--fichas-muted); }
+.vpos-boleta-descargar { display: inline-flex; align-items: center; gap: .4rem; margin-top: .75rem; min-height: 2.5rem; padding: 0 1rem; border-radius: .5rem; border: 1px solid var(--fichas-green); color: var(--fichas-green); font-weight: 600; font-size: .875rem; }
+
 /* Móvil: historial como filas apiladas (venta · total / cliente · producto / fecha · pago). */
 @media (max-width: 639px) {
     .vpos-tabla { overflow: hidden; }

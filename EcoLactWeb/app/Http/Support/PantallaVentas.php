@@ -72,7 +72,7 @@ final class PantallaVentas
                 fn (Proveedor $p): array => ['id' => $p->id(), 'nombre' => $p->nombreCompleto(), 'documento' => $p->dni()],
                 array_filter($this->proveedores->execute(), fn (Proveedor $p): bool => $p->estado() === EstadoUsuario::ACTIVO),
             )),
-            'seleccion' => $seleccion !== null ? $this->detalle($seleccion) : null,
+            'seleccion' => $seleccion !== null ? $this->detalle($seleccion, $portal) : null,
         ]);
     }
 
@@ -85,7 +85,7 @@ final class PantallaVentas
     public function show(string $portal, Request $request, VentaProductoModel $venta): View
     {
         if ($request->ajax()) {
-            return view('ventas.pos._detalle', ['venta' => $this->detalle($venta)]);
+            return view('ventas.pos._detalle', ['venta' => $this->detalle($venta, $portal)]);
         }
 
         return $this->index($portal, $request, $venta);
@@ -181,12 +181,16 @@ final class PantallaVentas
     }
 
     /**
-     * Detalle comercial de una venta (sin datos técnicos de inventario).
+     * Detalle comercial de una venta (sin datos técnicos de inventario) y,
+     * si está REGISTRADA, su boleta con el enlace al PDF.
      *
+     * @param  'admin'|'ventas'  $portal
      * @return array<string, mixed>
      */
-    private function detalle(VentaProductoModel $venta): array
+    private function detalle(VentaProductoModel $venta, string $portal): array
     {
+        $tieneBoleta = $venta->estado === 'REGISTRADA';
+
         $venta->loadMissing(['proveedor', 'comprador', 'registradoPor']);
 
         return [
@@ -204,6 +208,8 @@ final class PantallaVentas
             'descuento' => $venta->forma_pago === 'DESCUENTO_PLANILLA',
             'registradoPor' => $venta->registradoPor?->username ?? '—',
             'estado' => $venta->estado,
+            'boleta' => $tieneBoleta ? BoletaVenta::datos($venta) : null,
+            'urlBoleta' => $tieneBoleta ? route($portal.'.ventas.boleta', $venta->id) : null,
         ];
     }
 

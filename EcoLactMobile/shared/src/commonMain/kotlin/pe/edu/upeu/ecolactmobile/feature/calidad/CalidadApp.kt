@@ -23,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.unit.dp
 import pe.edu.upeu.ecolactmobile.core.session.UserSession
 import pe.edu.upeu.ecolactmobile.core.ui.navigation.Navigator
 import pe.edu.upeu.ecolactmobile.core.ui.navigation.PlatformBackHandler
@@ -68,6 +71,10 @@ import pe.edu.upeu.ecolactmobile.feature.notificaciones.NotificacionesRepository
 import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProviderTopBar
 import pe.edu.upeu.ecolactmobile.feature.proveedor.screens.ProveedorNotificacionesScreen
 import pe.edu.upeu.ecolactmobile.feature.proveedor.screens.ProveedorNotificacionesViewModel
+import pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaApi
+import pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGate
+import pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaRequeridaBanner
+import pe.edu.upeu.ecolactmobile.feature.trabajador.LocalAutorizacion
 import pe.edu.upeu.ecolactmobile.feature.trabajador.MiQrTrabajadorScreen
 import pe.edu.upeu.ecolactmobile.feature.trabajador.MiQrViewModel
 
@@ -82,6 +89,11 @@ import pe.edu.upeu.ecolactmobile.feature.trabajador.MiQrViewModel
 fun CalidadApp(container: AppContainer, session: UserSession) {
     val connectivity = container.connectivityObserver
     val isOnlineFlow = connectivity.isOnline
+    // Regla global: sin asistencia válida hoy se consulta todo, pero no se opera (el servidor valida igual).
+    val asistencia = rememberScreenModel(session.userId) {
+        AsistenciaGate(AsistenciaApi(container.httpClient), container.cacheRepository, session.userId, connectivity.isOnline)
+    }
+    val autorizacion by asistencia.estado.collectAsState()
     val repository = remember(session.userId) {
         CalidadRepository(
             api = container.calidadApi,
@@ -91,6 +103,7 @@ fun CalidadApp(container: AppContainer, session: UserSession) {
             isOnline = { connectivity.isOnline.value },
             database = container.database,
             userId = session.userId,
+            puedeOperarSinConexion = { asistencia.puedeOperarSinConexion() },
         )
     }
     val notificaciones = remember(session.userId) {
@@ -198,7 +211,13 @@ fun CalidadApp(container: AppContainer, session: UserSession) {
                 }
             },
         ) { padding ->
-            Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            CompositionLocalProvider(LocalAutorizacion provides autorizacion) {
+                Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+                    // Un solo aviso, en Inicio; las acciones se deshabilitan donde están.
+                    if (current == CalidadRoute.Inicio) {
+                        AsistenciaRequeridaBanner(autorizacion, onVerQr = { abrir(CalidadRoute.MiQr) }, Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp))
+                    }
+                    Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
                 when (val route = current) {
                     CalidadRoute.Inicio -> CalidadInicioScreen(
                         viewModel = panelVm,
@@ -311,6 +330,8 @@ fun CalidadApp(container: AppContainer, session: UserSession) {
                         MiQrTrabajadorScreen(vm, rol = "Analista de calidad", nombreFallback = nombre)
                     }
                     CalidadRoute.Perfil -> CalidadPerfilScreen(session, nombre, iniciales, pedirCierre)
+                }
+            }
                 }
             }
         }

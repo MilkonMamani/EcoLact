@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Concerns\SerializaLoteProduccion;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Produccion\FinalizarProduccionRequest;
 use App\Http\Requests\Produccion\RequerimientosProduccionRequest;
+use App\Http\Support\FechaEventoMovil;
 use App\Infrastructure\Persistence\Models\LoteProduccionModel;
 use DomainException;
 use Illuminate\Http\JsonResponse;
@@ -114,6 +115,8 @@ final class ProduccionController extends Controller
                 lineas: $datos['productos'],
                 registradoPorUserId: $request->user()->id,
                 observacion: $datos['observacion'] ?? null,
+                // Hora real del inicio en el teléfono (offline), no la de sincronización.
+                fechaHoraInicio: FechaEventoMovil::parse($datos['fecha_hora_evento'] ?? null),
             );
         } catch (ProduccionBloqueadaException $e) {
             return response()->json(['message' => $e->getMessage(), 'motivos' => $e->motivos], 422);
@@ -132,8 +135,16 @@ final class ProduccionController extends Controller
     {
         Gate::authorize('update', $lote);
 
+        $datos = $request->validated();
+
         try {
-            $this->finalizarProduccion->execute($lote->id, $request->validated()['obtenido'], $request->user()->id);
+            $this->finalizarProduccion->execute(
+                loteId: $lote->id,
+                cantidadesObtenidas: $datos['obtenido'],
+                registradoPorUserId: $request->user()->id,
+                fechaHoraFin: FechaEventoMovil::parse($datos['fecha_hora_evento'] ?? null),
+                observacion: $datos['observacion'] ?? null,
+            );
         } catch (DomainException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }

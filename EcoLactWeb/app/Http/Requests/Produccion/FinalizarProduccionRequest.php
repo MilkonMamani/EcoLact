@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Produccion;
 
+use App\Http\Support\FechaEventoMovil;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -24,6 +25,8 @@ class FinalizarProduccionRequest extends FormRequest
             'obtenido' => ['required', 'array', 'min:1'],
             'obtenido.*' => ['required', 'numeric', 'min:0'],
             'observacion' => ['nullable', 'string', 'max:500'],
+            // App móvil: hora real del cierre, aunque se sincronice después.
+            'fecha_hora_evento' => FechaEventoMovil::reglas(),
         ];
     }
 
@@ -37,6 +40,7 @@ class FinalizarProduccionRequest extends FormRequest
             'obtenido.*.required' => 'Indique la cantidad realmente obtenida de cada producto (puede ser 0).',
             'obtenido.*.numeric' => 'La cantidad obtenida debe ser un número.',
             'obtenido.*.min' => 'La cantidad obtenida no puede ser negativa.',
+            ...FechaEventoMovil::mensajes('fecha_hora_evento'),
         ];
     }
 }

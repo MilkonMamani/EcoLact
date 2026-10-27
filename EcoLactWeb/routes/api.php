@@ -122,6 +122,7 @@ Route::prefix('v1')->group(function () {
 
             Route::get('ventas', [VentaController::class, 'index'])->name('ventas.index');
             Route::get('ventas/{venta}', [VentaController::class, 'show'])->name('ventas.show');
+            Route::get('ventas/{venta}/boleta.pdf', [VentaController::class, 'boleta'])->name('ventas.boleta');
 
             Route::get('comunicados', [ComunicadoController::class, 'index'])->name('comunicados.index');
             Route::get('comunicados/{comunicado}', [ComunicadoController::class, 'show'])->name('comunicados.show');
@@ -244,6 +245,8 @@ Route::prefix('v1')->group(function () {
             Route::get('ventas', [VentasVentaController::class, 'index'])->name('ventas.index');
             Route::get('ventas/crear', [VentasVentaController::class, 'crear'])->name('ventas.crear');
             Route::get('ventas/{venta}', [VentasVentaController::class, 'show'])->name('ventas.show');
+            // Boleta: PDF derivado de la venta registrada (mismo documento que la web).
+            Route::get('ventas/{venta}/boleta.pdf', [VentasVentaController::class, 'boleta'])->name('ventas.boleta');
             Route::post('ventas', [VentasVentaController::class, 'store'])->middleware(['idempotente', 'requiere.asistencia:fecha_hora_evento'])->name('ventas.store');
 
             Route::get('productos', [VentasProductoController::class, 'index'])->name('productos.index');

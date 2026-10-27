@@ -63,7 +63,9 @@ final class FinalizarProduccion
                 throw new DomainException('El lote no tiene productos planificados.');
             }
 
-            $fin = $fechaHoraFin ?? new DateTimeImmutable;
+            // La hora de cierre puede venir del teléfono (offline): si su reloj
+            // quedó atrás del inicio registrado, el lote cierra a la hora de inicio.
+            $fin = max($fechaHoraFin ?? new DateTimeImmutable, $lote->fechaHoraInicio());
 
             foreach ($detalles as $detalle) {
                 $valor = $cantidadesObtenidas[$detalle->id()] ?? null;

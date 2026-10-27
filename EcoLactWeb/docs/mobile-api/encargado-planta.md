@@ -116,5 +116,10 @@ data: {
 - `GET /notificaciones`, `PATCH /notificaciones/{id}/leida` → ver `administrador.md` sección 7.
 - **No hay endpoint de comunicados para este rol todavía** (no estaba en el alcance que pediste construir). Pídelo aparte si lo necesitas — el dominio ya soporta lectura de comunicados dirigidos a cualquier usuario, es solo exponerlo.
 
-## 7. Offline — conflicto de stock (ya conocido, sin resolver aún)
-Si dos dispositivos consumen el mismo insumo mientras ambos están offline, el servidor no fusiona los cambios automáticamente: el segundo `POST` que llegue puede fallar con `422` si el stock ya no alcanza, o —si llega antes de que el primero sincronice— dejar el stock inconsistente. El mockup ya proponía una pantalla de "revisión requerida" para este caso; el backend actual no genera esa alerta por sí solo, tendría que detectarse en el cliente comparando el stock local contra el que devuelve el servidor al sincronizar.
+## 7. Offline — conflicto de stock
+Si dos dispositivos consumen el mismo insumo mientras ambos están offline, el servidor los serializa: cada inicio de producción vuelve a calcular la receta y bloquea los insumos (`FOR UPDATE`) antes de descontar, así que el stock nunca queda negativo ni inconsistente. El `POST` que llegue cuando ya no alcanza recibe `422 { message, motivos }` y la app lo deja en "revisión requerida".
+
+## 8. Reintentos y hora real del evento (auditoría 2026-10-27)
+- `POST /planta/produccion`, `POST /planta/produccion/{lote}/finalizar` y `POST /planta/compras-insumo` exigen la cabecera `Idempotency-Key` = id local de la operación. Un reintento con la misma clave devuelve la respuesta original (`Idempotent-Replayed: true`) sin crear otro lote, consumir insumos, ingresar producto, crear otra compra ni otra salida de caja. La clave queda ligada al método + ruta concreta: reutilizarla en otro lote devuelve `422`.
+- Las tres aceptan `fecha_hora_evento` (ISO 8601 con desfase). Producción guarda con ella `fecha_hora_inicio` / `fecha_hora_fin` y la fecha de los movimientos de stock; si el cierre llega con una hora anterior al inicio (reloj del teléfono), el lote cierra a la hora de inicio. Una compra sin `fecha` de boleta queda con el día del evento en la zona del negocio.
+- `finalizar` acepta `observacion` (observación de cierre).

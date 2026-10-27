@@ -11,9 +11,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\Admin\CompraInsumoController as AdminCompraInsumoController;
 use App\Http\Requests\Produccion\CompraInsumosRequest;
 use App\Http\Requests\Produccion\ProcesarBoletaCompraRequest;
+use App\Http\Support\FechaEventoMovil;
 use App\Infrastructure\Persistence\Models\CompraInsumoDetalleModel;
 use App\Infrastructure\Persistence\Models\CompraInsumoModel;
 use App\Infrastructure\Persistence\Models\InsumoModel;
+use Carbon\CarbonImmutable;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -135,6 +137,13 @@ final class CompraInsumoController extends Controller
         Gate::authorize('create', InsumoModel::class);
 
         $datos = $request->validated();
+
+        // Boleta sin fecha confirmada offline: la compra es del día del evento
+        // (en la zona del negocio), no del día en que se sincronizó.
+        $evento = FechaEventoMovil::parse($datos['fecha_hora_evento'] ?? null);
+        if (($datos['fecha'] ?? null) === null && $evento !== null) {
+            $datos['fecha'] = CarbonImmutable::instance($evento)->timezone(config('app.zona_horaria_negocio'))->toDateString();
+        }
 
         try {
             $compra = $this->registrarCompra->execute($datos['lineas'], $datos, $request->user()->id);

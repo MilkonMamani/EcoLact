@@ -88,7 +88,7 @@ final class RegistrarVentaProducto
             ?? throw new DomainException($this->motivoSinPrecio($esProveedor, $tarifas->minimoMayorista()));
 
         if ($precioEsperado !== null && abs($precioEsperado - $precioVigente->precio()) > 0.001) {
-            throw new DomainException('El precio cambiÃ³. Revisa la venta antes de registrarla nuevamente.');
+            throw new DomainException('El precio cambió. Revisa la venta antes de registrarla nuevamente.');
         }
 
         $importeTotal = round($cantidad * $precioVigente->precio(), 2);

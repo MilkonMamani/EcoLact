@@ -78,6 +78,13 @@ class VentasRepository(
         venta
     }
 
+    /** Consultar no requiere asistencia; sí conexión, porque el PDF lo genera Laravel. */
+    suspend fun boletaPdf(venta: Venta): ByteArray {
+        require(venta.boletaDisponible) { MENSAJE_BOLETA_PENDIENTE }
+        require(online()) { "Necesitas conexión para obtener el PDF de la boleta." }
+        return api.boletaPdf(venta.id)
+    }
+
     suspend fun registrarComprador(datos: NuevoComprador) {
         require(asistencia.autorizacionAhora().puedeOperar) { ApiException.MENSAJE_ASISTENCIA_REQUERIDA }
         require(online()) { "Necesitas conexión para registrar un comprador." }

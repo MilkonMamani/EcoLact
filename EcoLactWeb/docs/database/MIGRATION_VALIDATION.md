@@ -1,6 +1,21 @@
 # Resultado de migrations EcoLact
 
-Fecha: 2026-09-09. Entorno verificado: PHP 8.3.16, Laravel 13.31.0 y MySQL 8.4.3.
+## Estado actual (validado 2026-10-27)
+
+Detalle completo, decisiones y pendientes: [`DATABASE_AUDIT_FINAL.md`](DATABASE_AUDIT_FINAL.md). Autoridad: las migrations y el código actuales, no el SQL de septiembre.
+
+- 110 migrations. En MySQL local (`ecolactv1`) 109 Ran; `2026_10_31_100000_reforzar_integridad_para_datos_reales` revisada con `migrate --pretend` y pendiente de aplicar tras un backup.
+- 68 tablas: 59 funcionales + 9 técnicas (cache, cache_locks, failed_jobs, job_batches, jobs, migrations, password_reset_tokens, personal_access_tokens, sessions). Ya no son 29: se agregaron rutas y recorridos, recetas, insumos y presentaciones, compras de insumo, obligaciones y pagos, trabajadores y asistencia, caja, muestreo de calidad, categorías de producto e idempotencia de la API. `producto_stock`, `producto_insumos` y `lote_produccion_entregas` se eliminaron a propósito.
+- 112 foreign keys tras la migration nueva (91 RESTRICT, 18 SET NULL y 3 CASCADE en DELETE; todas CASCADE en UPDATE).
+- 49 índices UNIQUE (sin contar PK) y 114 no únicos tras la migration nueva.
+- UNIQUE que protegen datos reales: `entregas.token_idempotencia`, `api_idempotencia(user_id, clave)`, `muestreos_calidad.entrega_id`, `analisis_calidad.entrega_id`, `movimientos_caja(referencia_tipo, referencia_id)`, `jornadas_personal(trabajador_id, fecha)`, `trabajadores.user_id`, `trabajadores.qr_token`, `proveedores.qr_token`, `lote_produccion_insumos(lote_produccion_id, insumo_id)`, `pagos.obligacion_pago_id`, `obligaciones_pago(proveedor_id, semana_proveedor)`.
+- Verificación automatizada: `tests/Feature/Database/EsquemaDatosRealesTest.php` (tablas, columnas, UNIQUE, FK y rechazo de huérfanos).
+
+---
+
+## Informe histórico (2026-09-09)
+
+Entorno verificado entonces: PHP 8.3.16, Laravel 13.31.0 y MySQL 8.4.3. Lo que sigue describe el esquema inicial de 29 tablas y no se mantiene.
 
 ## Autoridad utilizada
 

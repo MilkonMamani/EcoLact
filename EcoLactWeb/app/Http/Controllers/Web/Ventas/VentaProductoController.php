@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Web\Ventas;
 use App\Application\Ventas\ObtenerVentasProveedor;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ventas\StoreVentaProductoRequest;
+use App\Http\Support\BoletaVenta;
 use App\Http\Support\PantallaVentas;
 use App\Infrastructure\Persistence\Models\VentaProductoModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
@@ -39,6 +41,14 @@ final class VentaProductoController extends Controller
         Gate::authorize('view', $venta);
 
         return $this->pantalla->show('admin', $request, $venta);
+    }
+
+    /** PDF de la boleta (EcoLact_Venta_<codigo>.pdf), derivado de la venta registrada. */
+    public function boleta(VentaProductoModel $venta): Response
+    {
+        Gate::authorize('view', $venta);
+
+        return BoletaVenta::pdf($venta);
     }
 
     public function porProveedor(int $proveedorId): View

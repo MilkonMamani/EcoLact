@@ -1,9 +1,11 @@
 package pe.edu.upeu.ecolactmobile.feature.ventas
 
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pe.edu.upeu.ecolactmobile.core.sync.SyncManager
 import pe.edu.upeu.ecolactmobile.core.ui.state.ScreenModel
 import pe.edu.upeu.ecolactmobile.core.util.nowIso
@@ -64,6 +66,12 @@ class VentasViewModel(
 
     fun nuevoComprador(datos: NuevoComprador, onSuccess: () -> Unit) = ejecutar {
         repository.registrarComprador(datos); onSuccess()
+    }
+
+    /** Obtiene el PDF de la boleta y lo entrega a [usar] (descargar o compartir) en el hilo principal. */
+    fun boletaPdf(venta: Venta, usar: (ByteArray) -> Unit) = ejecutar {
+        val pdf = repository.boletaPdf(venta)
+        withContext(Dispatchers.Main) { usar(pdf) }
     }
 
     private fun ejecutar(block: suspend () -> Unit) {

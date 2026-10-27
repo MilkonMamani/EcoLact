@@ -159,24 +159,14 @@ final class InsumoController extends Controller
 
         $datos = $request->validated();
 
-        $insumoActual = $this->obtenerInsumo->execute($insumo->id)
-            ?? throw new DomainException('El insumo indicado no existe.');
-
-        $nuevoStock = $datos['tipo'] === 'ENTRADA'
-            ? $insumoActual->stockActual() + (float) $datos['cantidad']
-            : $insumoActual->stockActual() - (float) $datos['cantidad'];
-
-        if ($nuevoStock < 0.0) {
-            return redirect()->back()->withInput()->with(
-                'error',
-                sprintf('No hay suficiente %s. Disponible: %s %s, solicitado: %s %s.', $insumoActual->nombre(), $insumoActual->stockActual(), $insumoActual->unidadBase(), $datos['cantidad'], $insumoActual->unidadBase())
-            );
-        }
-
+        // La diferencia se aplica con el insumo bloqueado (sin pisar consumos
+        // que hayan llegado entre la consulta y la confirmación); una salida
+        // mayor al stock la rechaza el caso de uso.
         try {
-            $this->registrarAjusteInsumo->execute(
+            $this->registrarAjusteInsumo->porDiferencia(
                 insumoId: $insumo->id,
-                nuevoStock: round($nuevoStock, 4),
+                direccion: $datos['tipo'],
+                cantidad: (float) $datos['cantidad'],
                 motivo: $datos['motivo'],
                 registradoPorUserId: $request->user()->id,
                 observacion: $datos['observacion'] ?? null,

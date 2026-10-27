@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Produccion;
 
+use App\Http\Support\FechaEventoMovil;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -26,6 +27,8 @@ class RequerimientosProduccionRequest extends FormRequest
             'productos.*.producto_id' => ['required', 'integer', 'exists:productos,id'],
             'productos.*.cantidad' => ['required', 'numeric', 'gt:0'],
             'observacion' => ['nullable', 'string', 'max:500'],
+            // App móvil: hora real del inicio, aunque se sincronice después.
+            'fecha_hora_evento' => FechaEventoMovil::reglas(),
         ];
     }
 
@@ -40,6 +43,7 @@ class RequerimientosProduccionRequest extends FormRequest
             'productos.*.producto_id.required' => 'Elija el producto de cada línea.',
             'productos.*.cantidad.gt' => 'La cantidad de cada producto debe ser mayor que cero.',
             'productos.*.cantidad.required' => 'Indique la cantidad de cada producto.',
+            ...FechaEventoMovil::mensajes('fecha_hora_evento'),
         ];
     }
 }

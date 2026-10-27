@@ -2,6 +2,7 @@
 
 use App\Application\Ventas\ConfigurarPreciosProducto;
 use App\Application\Ventas\RegistrarVentaProducto;
+use App\Infrastructure\Persistence\Models\ProductoMovimientoModel;
 use App\Infrastructure\Persistence\Models\VentaProductoModel;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -61,6 +62,8 @@ it('reintenta una venta una sola vez y conserva la fecha real del evento', funct
 
     $this->assertDatabaseCount('ventas_producto', 1);
     $this->assertDatabaseCount('movimientos_caja', 1);
+    // El stock del producto se descuenta una sola vez.
+    expect(ProductoMovimientoModel::where('tipo', 'VENTA')->count())->toBe(1);
     expect(VentaProductoModel::sole()->fecha->timestamp)->toBe(strtotime($evento));
 });
 
