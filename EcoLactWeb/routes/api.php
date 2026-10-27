@@ -30,12 +30,16 @@ use App\Http\Controllers\Api\Calidad\AnalisisCalidadController as CalidadAnalisi
 use App\Http\Controllers\Api\Calidad\ComunicadoController as CalidadComunicadoController;
 use App\Http\Controllers\Api\Calidad\DashboardController as CalidadDashboardController;
 use App\Http\Controllers\Api\Calidad\EntregaController as CalidadEntregaController;
+use App\Http\Controllers\Api\Calidad\MuestreoController as CalidadMuestreoController;
 use App\Http\Controllers\Api\Calidad\ProveedorController as CalidadProveedorController;
 use App\Http\Controllers\Api\Comunicacion\NotificacionController;
+use App\Http\Controllers\Api\Planta\CompraInsumoController as PlantaCompraInsumoController;
 use App\Http\Controllers\Api\Planta\DashboardController as PlantaDashboardController;
 use App\Http\Controllers\Api\Planta\InsumoController as PlantaInsumoController;
+use App\Http\Controllers\Api\Planta\PerfilController as PlantaPerfilController;
 use App\Http\Controllers\Api\Planta\ProduccionController as PlantaProduccionController;
 use App\Http\Controllers\Api\Planta\ProductoController as PlantaProductoController;
+use App\Http\Controllers\Api\Planta\RecetaController as PlantaRecetaController;
 use App\Http\Controllers\Api\Proveedor\AnalisisController as ProveedorAnalisisController;
 use App\Http\Controllers\Api\Proveedor\CompraController as ProveedorCompraController;
 use App\Http\Controllers\Api\Proveedor\ComunicadoController as ProveedorComunicadoController;
@@ -45,10 +49,14 @@ use App\Http\Controllers\Api\Proveedor\LiquidacionController as ProveedorLiquida
 use App\Http\Controllers\Api\Proveedor\PagoController as ProveedorPagoController;
 use App\Http\Controllers\Api\Proveedor\PerfilController as ProveedorPerfilController;
 use App\Http\Controllers\Api\Proveedor\QrController as ProveedorQrController;
+use App\Http\Controllers\Api\Trabajador\EstadoAsistenciaController as TrabajadorEstadoAsistenciaController;
+use App\Http\Controllers\Api\Trabajador\MiAsistenciaController as TrabajadorMiAsistenciaController;
 use App\Http\Controllers\Api\Ventas\CompradorController as VentasCompradorController;
 use App\Http\Controllers\Api\Ventas\DashboardController as VentasDashboardController;
+use App\Http\Controllers\Api\Ventas\MovilController;
 use App\Http\Controllers\Api\Ventas\ProductoController as VentasProductoController;
 use App\Http\Controllers\Api\Ventas\VentaController as VentasVentaController;
+use App\Http\Controllers\Web\Calidad\TicketAnalizadorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -74,6 +82,8 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
+        // ¿Puede operar hoy? (asistencia registrada por el administrador). Solo lectura.
+        Route::get('/me/asistencia', TrabajadorEstadoAsistenciaController::class)->middleware('active')->name('api.me.asistencia');
 
         Route::middleware(['active', 'role:ADMINISTRADOR'])->prefix('admin')->name('api.admin.')->group(function () {
             Route::get('dashboard', DashboardController::class)->name('dashboard');
@@ -138,78 +148,110 @@ Route::prefix('v1')->group(function () {
 
             Route::get('entregas', [AcopiadorEntregaController::class, 'index'])->name('entregas.index');
             Route::get('entregas/{entrega}', [AcopiadorEntregaController::class, 'show'])->name('entregas.show');
-            Route::post('entregas', [AcopiadorEntregaController::class, 'store'])->name('entregas.store');
+            Route::post('entregas', [AcopiadorEntregaController::class, 'store'])->middleware('requiere.asistencia:fecha_hora_evento,fecha_hora')->name('entregas.store');
 
             Route::get('recorridos', [AcopiadorRecorridoController::class, 'index'])->name('recorridos.index');
             Route::get('recorridos/{recorrido}', [AcopiadorRecorridoController::class, 'show'])->name('recorridos.show');
-            Route::patch('recorridos/{recorrido}/iniciar', [AcopiadorRecorridoController::class, 'iniciar'])->name('recorridos.iniciar');
-            Route::patch('recorridos/{recorrido}/finalizar', [AcopiadorRecorridoController::class, 'finalizar'])->name('recorridos.finalizar');
+            Route::patch('recorridos/{recorrido}/iniciar', [AcopiadorRecorridoController::class, 'iniciar'])->middleware('requiere.asistencia:fecha_hora_evento')->name('recorridos.iniciar');
+            Route::patch('recorridos/{recorrido}/finalizar', [AcopiadorRecorridoController::class, 'finalizar'])->middleware('requiere.asistencia:fecha_hora_evento')->name('recorridos.finalizar');
             Route::post('recorridos/{recorrido}/identificar', [AcopiadorRecorridoController::class, 'identificar'])->name('recorridos.identificar');
-            Route::post('recorridos/{recorrido}/paradas/{parada}/acopio', [AcopiadorRecorridoController::class, 'registrarAcopio'])->name('recorridos.paradas.acopio');
-            Route::post('recorridos/{recorrido}/paradas/{parada}/no-entrego', [AcopiadorRecorridoController::class, 'noEntrego'])->name('recorridos.paradas.no-entrego');
+            Route::post('recorridos/{recorrido}/paradas/{parada}/acopio', [AcopiadorRecorridoController::class, 'registrarAcopio'])->middleware('requiere.asistencia:fecha_hora_evento')->name('recorridos.paradas.acopio');
+            Route::post('recorridos/{recorrido}/paradas/{parada}/no-entrego', [AcopiadorRecorridoController::class, 'noEntrego'])->middleware('requiere.asistencia:fecha_hora_evento')->name('recorridos.paradas.no-entrego');
 
             Route::get('seguimiento-calidad', [AcopiadorSeguimientoCalidadController::class, 'index'])->name('seguimiento-calidad.index');
             Route::get('seguimiento-calidad/{entrega}', [AcopiadorSeguimientoCalidadController::class, 'show'])->name('seguimiento-calidad.show');
 
             Route::get('comunicados', [AcopiadorComunicadoController::class, 'index'])->name('comunicados.index');
             Route::get('comunicados/{comunicado}', [AcopiadorComunicadoController::class, 'show'])->name('comunicados.show');
+
+            // Solo lectura: su QR (lo escanea el administrador) y sus jornadas del mes.
+            Route::get('mi-asistencia', TrabajadorMiAsistenciaController::class)->name('mi-asistencia');
         });
 
         Route::middleware(['active', 'role:CALIDAD'])->prefix('calidad')->name('api.calidad.')->group(function () {
             Route::get('dashboard', CalidadDashboardController::class)->name('dashboard');
+            // Solo lectura: su QR (lo escanea el administrador) y sus jornadas del mes.
+            Route::get('mi-asistencia', TrabajadorMiAsistenciaController::class)->name('mi-asistencia');
 
             Route::get('entregas', [CalidadEntregaController::class, 'index'])->name('entregas.index');
-            Route::post('entregas', [CalidadEntregaController::class, 'store'])->name('entregas.store');
+            Route::post('entregas', [CalidadEntregaController::class, 'store'])->middleware('requiere.asistencia:fecha_hora_evento,fecha_hora')->name('entregas.store');
             Route::get('entregas/{entrega}', [CalidadEntregaController::class, 'show'])->name('entregas.show');
             Route::get('entregas/{entrega}/analisis-calidad', [CalidadAnalisisCalidadController::class, 'porEntrega'])->name('entregas.analisis-calidad.show');
 
+            // Muestreo: Calidad solo analiza las entregas que selecciona.
+            Route::get('muestreos', [CalidadMuestreoController::class, 'index'])->name('muestreos.index');
+            Route::get('muestreos/elegibles', [CalidadMuestreoController::class, 'elegibles'])->name('muestreos.elegibles');
+            Route::post('muestreos/aleatorio', [CalidadMuestreoController::class, 'aleatorio'])->middleware('requiere.asistencia')->name('muestreos.aleatorio');
+            Route::post('muestreos', [CalidadMuestreoController::class, 'store'])->middleware('requiere.asistencia:fecha_seleccion,fecha_hora_evento')->name('muestreos.store');
+            Route::get('muestreos/{muestreo}', [CalidadMuestreoController::class, 'show'])->whereNumber('muestreo')->name('muestreos.show');
+
+            // OCR del ticket: solo PROPONE valores (mismo controlador que el portal web).
+            Route::post('analisis-calidad/escanear-ticket', TicketAnalizadorController::class)->middleware('requiere.asistencia:fecha_hora_evento,fecha_captura_local')->name('analisis-calidad.escanear-ticket');
             Route::get('analisis-calidad', [CalidadAnalisisCalidadController::class, 'index'])->name('analisis-calidad.index');
             Route::get('analisis-calidad/{analisis}', [CalidadAnalisisCalidadController::class, 'show'])->name('analisis-calidad.show');
-            Route::post('analisis-calidad', [CalidadAnalisisCalidadController::class, 'store'])->name('analisis-calidad.store');
-            Route::patch('analisis-calidad/{analisis}/finalizar', [CalidadAnalisisCalidadController::class, 'finalizar'])->name('analisis-calidad.finalizar');
+            Route::post('analisis-calidad', [CalidadAnalisisCalidadController::class, 'store'])->middleware('requiere.asistencia:fecha_analisis,fecha_captura_local,fecha_hora_evento')->name('analisis-calidad.store');
+            Route::patch('analisis-calidad/{analisis}/finalizar', [CalidadAnalisisCalidadController::class, 'finalizar'])->middleware('requiere.asistencia:fecha_hora_evento')->name('analisis-calidad.finalizar');
 
             Route::get('proveedores', [CalidadProveedorController::class, 'index'])->name('proveedores.index');
             Route::get('proveedores/{proveedor}', [CalidadProveedorController::class, 'show'])->name('proveedores.show');
 
             Route::get('comunicados', [CalidadComunicadoController::class, 'index'])->name('comunicados.index');
             Route::get('comunicados/{comunicado}', [CalidadComunicadoController::class, 'show'])->name('comunicados.show');
-            Route::post('comunicados', [CalidadComunicadoController::class, 'store'])->name('comunicados.store');
+            Route::post('comunicados', [CalidadComunicadoController::class, 'store'])->middleware('requiere.asistencia')->name('comunicados.store');
         });
 
         Route::middleware(['active', 'role:ENCARGADO_PLANTA'])->prefix('planta')->name('api.planta.')->group(function () {
             Route::get('dashboard', PlantaDashboardController::class)->name('dashboard');
+            // Su perfil y su QR de asistencia (lo escanea el administrador; aquí no se marca nada).
+            Route::get('perfil', PlantaPerfilController::class)->name('perfil');
 
             Route::get('produccion', [PlantaProduccionController::class, 'index'])->name('produccion.index');
             Route::get('produccion/leche-disponible', [PlantaProduccionController::class, 'lecheDisponible'])->name('produccion.leche-disponible');
             Route::get('produccion/{lote}', [PlantaProduccionController::class, 'show'])->name('produccion.show');
             Route::post('produccion/requerimientos', [PlantaProduccionController::class, 'requerimientos'])->name('produccion.requerimientos');
-            Route::post('produccion', [PlantaProduccionController::class, 'store'])->name('produccion.store');
-            Route::post('produccion/{lote}/finalizar', [PlantaProduccionController::class, 'finalizar'])->name('produccion.finalizar');
+            // Escrituras que la app puede reintentar desde su cola offline: Idempotency-Key.
+            Route::post('produccion', [PlantaProduccionController::class, 'store'])->middleware(['requiere.asistencia:fecha_hora_evento', 'idempotente'])->name('produccion.store');
+            Route::post('produccion/{lote}/finalizar', [PlantaProduccionController::class, 'finalizar'])->middleware(['requiere.asistencia:fecha_hora_evento', 'idempotente'])->name('produccion.finalizar');
+
+            // Recetas: solo lectura (las configura el ADMINISTRADOR).
+            Route::get('recetas', [PlantaRecetaController::class, 'index'])->name('recetas.index');
+
+            // Compras de insumos: el OCR de la boleta solo PROPONE; la persona revisa y confirma.
+            Route::get('compras-insumo', [PlantaCompraInsumoController::class, 'index'])->name('compras-insumo.index');
+            Route::get('compras-insumo/catalogo', [PlantaCompraInsumoController::class, 'catalogo'])->name('compras-insumo.catalogo');
+            Route::post('compras-insumo/boleta', [PlantaCompraInsumoController::class, 'boleta'])->middleware('requiere.asistencia:fecha_hora_evento')->name('compras-insumo.boleta');
+            Route::post('compras-insumo/previsualizar', [PlantaCompraInsumoController::class, 'previsualizar'])->name('compras-insumo.previsualizar');
+            Route::post('compras-insumo', [PlantaCompraInsumoController::class, 'store'])->middleware(['requiere.asistencia:fecha_hora_evento', 'idempotente'])->name('compras-insumo.store');
 
             Route::get('insumos', [PlantaInsumoController::class, 'index'])->name('insumos.index');
             Route::get('insumos/movimientos', [PlantaInsumoController::class, 'movimientos'])->name('insumos.movimientos');
             Route::get('insumos/{insumo}', [PlantaInsumoController::class, 'show'])->name('insumos.show');
-            Route::post('insumos', [PlantaInsumoController::class, 'store'])->name('insumos.store');
-            Route::post('insumos/{insumo}/movimiento', [PlantaInsumoController::class, 'registrarMovimiento'])->name('insumos.movimiento');
+            Route::post('insumos', [PlantaInsumoController::class, 'store'])->middleware('requiere.asistencia')->name('insumos.store');
+            Route::post('insumos/{insumo}/movimiento', [PlantaInsumoController::class, 'registrarMovimiento'])->middleware('requiere.asistencia')->name('insumos.movimiento');
 
             Route::get('productos', [PlantaProductoController::class, 'index'])->name('productos.index');
             Route::get('productos/{producto}', [PlantaProductoController::class, 'show'])->name('productos.show');
         });
 
         Route::middleware(['active', 'role:VENTAS'])->prefix('ventas')->name('api.ventas.')->group(function () {
+            Route::get('movil', [MovilController::class, 'index'])->name('movil');
+            Route::get('catalogo', [MovilController::class, 'catalogo'])->name('catalogo');
+            Route::post('cotizar', [MovilController::class, 'cotizar'])->name('cotizar');
+            Route::get('mi-asistencia', TrabajadorMiAsistenciaController::class)->name('mi-asistencia');
+            Route::get('comunicados', [CalidadComunicadoController::class, 'index'])->name('comunicados.index');
             Route::get('dashboard', VentasDashboardController::class)->name('dashboard');
 
             Route::get('ventas', [VentasVentaController::class, 'index'])->name('ventas.index');
             Route::get('ventas/crear', [VentasVentaController::class, 'crear'])->name('ventas.crear');
             Route::get('ventas/{venta}', [VentasVentaController::class, 'show'])->name('ventas.show');
-            Route::post('ventas', [VentasVentaController::class, 'store'])->name('ventas.store');
+            Route::post('ventas', [VentasVentaController::class, 'store'])->middleware(['idempotente', 'requiere.asistencia:fecha_hora_evento'])->name('ventas.store');
 
             Route::get('productos', [VentasProductoController::class, 'index'])->name('productos.index');
             Route::get('productos/movimientos', [VentasProductoController::class, 'movimientos'])->name('productos.movimientos');
             Route::get('productos/{producto}', [VentasProductoController::class, 'show'])->name('productos.show');
 
             Route::get('compradores', [VentasCompradorController::class, 'index'])->name('compradores.index');
-            Route::post('compradores', [VentasCompradorController::class, 'store'])->name('compradores.store');
+            Route::post('compradores', [VentasCompradorController::class, 'store'])->middleware('requiere.asistencia')->name('compradores.store');
         });
 
         Route::middleware(['active', 'role:PROVEEDOR'])->prefix('proveedor')->name('api.proveedor.')->group(function () {

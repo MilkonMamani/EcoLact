@@ -17,8 +17,9 @@ it('el dashboard de calidad muestra los KPIs y las secciones principales', funct
     $response = $this->actingAs($analista)->get(route('calidad.dashboard'));
 
     $response->assertOk();
-    $response->assertSee('Pendientes de análisis');
-    $response->assertSee('Análisis pendientes');
+    $response->assertSee('Muestras pendientes');
+    $response->assertSee('Seleccionar muestra');
+    $response->assertDontSee('Pendientes de análisis');
     $response->assertSee('Últimos análisis');
     $response->assertSee('Comunicados recientes');
 });

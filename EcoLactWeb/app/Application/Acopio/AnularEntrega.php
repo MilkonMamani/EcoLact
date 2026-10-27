@@ -6,6 +6,7 @@ use App\Application\Pago\Contracts\EntregasPagablesQuery;
 use App\Application\Pago\SincronizarPagosProveedor;
 use App\Application\Produccion\RevertirIngresoLeche;
 use App\Application\Shared\TransactionManager;
+use App\Domain\Calidad\MuestreoCalidadRepository;
 use App\Domain\Entrega\Entrega;
 use App\Domain\Entrega\EntregaRepository;
 use App\Domain\Shared\Enums\EstadoEntrega;
@@ -32,6 +33,7 @@ final class AnularEntrega
         private readonly SincronizarPagosProveedor $pagosProveedor,
         private readonly RevertirIngresoLeche $revertirIngresoLeche,
         private readonly TransactionManager $transacciones,
+        private readonly MuestreoCalidadRepository $muestreos,
     ) {}
 
     public function execute(int $entregaId, string $motivo, int $anuladaPorUserId): Entrega
@@ -68,6 +70,13 @@ final class AnularEntrega
                 recorridoDetalleId: $entrega->recorridoDetalleId(),
                 tokenIdempotencia: $entrega->tokenIdempotencia(),
             ));
+
+            // Si Calidad la había seleccionado como muestra, deja de estar pendiente.
+            $muestreo = $this->muestreos->buscarPorEntregaId($entrega->id());
+            if ($muestreo !== null && $muestreo->estaPendiente()) {
+                $muestreo->cancelar();
+                $this->muestreos->actualizar($muestreo);
+            }
 
             // La entrega anulada deja de contar: se recalcula el pago pendiente.
             $this->pagosProveedor->execute($entrega->proveedorId());

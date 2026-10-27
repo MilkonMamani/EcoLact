@@ -1,0 +1,13 @@
+-- v2 → v3: compras de insumos del encargado de planta en preparación (ver PlantaCompraBorrador.sq).
+CREATE TABLE IF NOT EXISTS planta_compra_borrador (
+    id TEXT NOT NULL PRIMARY KEY,
+    origen TEXT NOT NULL,
+    estado TEXT NOT NULL,
+    foto BLOB,
+    foto_mime TEXT,
+    imagen_boleta TEXT,
+    datos_json TEXT NOT NULL,
+    mensaje TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);

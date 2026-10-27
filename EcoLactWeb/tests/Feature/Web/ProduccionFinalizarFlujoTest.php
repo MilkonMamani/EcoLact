@@ -14,6 +14,9 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
 /** Queso Paria · 1 kg: 10 L leche + 15 ml cuajo + 30 g sal por unidad. */
 function quesoParia(int $userId, float $leche = 172.0, float $sal = 1000.0): ProductoModel
 {

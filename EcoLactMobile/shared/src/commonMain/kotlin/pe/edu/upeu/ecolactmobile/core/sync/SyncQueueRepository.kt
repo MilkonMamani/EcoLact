@@ -1,5 +1,9 @@
 package pe.edu.upeu.ecolactmobile.core.sync
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import pe.edu.upeu.ecolactmobile.core.database.EcoLactDatabase
 import pe.edu.upeu.ecolactmobile.core.database.Sync_queue
 import pe.edu.upeu.ecolactmobile.core.util.generateLocalId
@@ -26,6 +30,9 @@ class SyncQueueRepository(database: EcoLactDatabase) {
     }
 
     fun pending(): List<Sync_queue> = queries.selectPending().executeAsList()
+
+    /** Toda la cola, re-emitida en cada cambio (para pantallas de estado de sincronización). */
+    fun observeAll(): Flow<List<Sync_queue>> = queries.selectAll().asFlow().mapToList(Dispatchers.Default)
     fun needsReview(): List<Sync_queue> = queries.selectNeedsReview().executeAsList()
     fun all(): List<Sync_queue> = queries.selectAll().executeAsList()
     fun byOperationType(operationType: String): List<Sync_queue> =

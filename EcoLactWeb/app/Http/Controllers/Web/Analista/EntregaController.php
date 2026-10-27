@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Web\Analista;
 use App\Application\Acopio\Contracts\EntregasListadoQuery;
 use App\Application\Acopio\EntregasFiltro;
 use App\Application\Acopio\ObtenerEntrega;
+use App\Application\Calidad\Contracts\MuestreosCalidadQuery;
 use App\Application\Calidad\RegistrarEntregaMuestreada;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Entrega\StoreEntregaRequest;
 use App\Infrastructure\Persistence\Models\EntregaModel;
+use DateTimeImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -17,9 +19,9 @@ use Illuminate\View\View;
 /**
  * Portal del rol CALIDAD: de CUALQUIER zona (nunca acotado a una zona
  * propia como el ACOPIADOR), para poder revisar el acopio del día y elegir
- * a qué proveedor le hace el control de calidad. Solo lectura, salvo
- * `store`: registrar una muestra que el analista toma directamente del
- * proveedor (antes de que pase por el acopiador) — ver
+ * qué entregas selecciona como muestra. Solo lectura, salvo `store`: el
+ * MUESTREO DIRECTO, cuando el analista toma la muestra directamente del
+ * proveedor antes del acopio normal (inspección sorpresa) — ver
  * RegistrarEntregaMuestreada.
  */
 final class EntregaController extends Controller
@@ -28,6 +30,7 @@ final class EntregaController extends Controller
         private readonly EntregasListadoQuery $entregasListadoQuery,
         private readonly ObtenerEntrega $obtenerEntrega,
         private readonly RegistrarEntregaMuestreada $registrarEntregaMuestreada,
+        private readonly MuestreosCalidadQuery $muestreos,
     ) {}
 
     public function index(Request $request): View
@@ -44,8 +47,13 @@ final class EntregaController extends Controller
             hasta: $request->string('hasta')->toString() ?: null,
         );
 
+        $datos = $this->entregasListadoQuery->obtener($filtro);
+
         return view('calidad.entregas.index', [
-            'datos' => $this->entregasListadoQuery->obtener($filtro),
+            'datos' => $datos,
+            // Estado de muestreo por entrega: decide si la acción es "Analizar" o "Seleccionar como muestra".
+            'muestras' => $this->muestreos->estadosPorEntrega(array_map(static fn (array $fila): int => (int) $fila['id'], $datos->filas)),
+            'kpisMuestreo' => $this->muestreos->kpis(new DateTimeImmutable),
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Ventas;
 
+use App\Http\Support\FechaEventoMovil;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -40,6 +41,8 @@ class StoreVentaProductoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'fecha_hora_evento' => FechaEventoMovil::reglas(),
+            'precio_mostrado' => ['nullable', 'numeric', 'gte:0'],
             'cliente' => ['required', 'string', 'in:PUBLICO,COMPRADOR,PROVEEDOR'],
             'producto_id' => ['required', 'integer', 'exists:productos,id'],
             'cantidad' => ['required', 'numeric', 'gt:0'],

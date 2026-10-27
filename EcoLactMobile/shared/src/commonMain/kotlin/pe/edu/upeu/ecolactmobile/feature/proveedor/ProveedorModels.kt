@@ -72,6 +72,8 @@ data class EntregaDetalleEntrega(
     val litros: Double,
     val zona_id: Long? = null,
     val estado: String,
+    val zona_nombre: String? = null,
+    val acopiador_nombre: String? = null,
 )
 
 @Serializable
@@ -100,6 +102,11 @@ data class LiquidacionResumen(
     val fecha_calculo: String? = null,
     val tuvo_incidencia: Boolean = false,
     val saldo_pendiente: Double? = null,
+    /** Semana liquidada (lunes a domingo). Opcionales: backends anteriores no los envían. */
+    val fecha_inicio: String? = null,
+    val fecha_fin: String? = null,
+    /** Compras de producto descontadas del pago de esa semana (positivo). */
+    val compras_descontadas: Double? = null,
 )
 
 @Serializable
@@ -128,18 +135,20 @@ data class PagoLiquidacion(
     val observacion: String? = null,
 )
 
-/**
- * `entregas` e `incidencia` NO tienen shape confirmado en proveedor.md (el documento los deja
- * como "..." / sin detallar). `entregas` se modela reusando el shape ya documentado en otras
- * partes del mismo rol (id, fecha_hora, litros) porque es lo más consistente con el resto de la
- * API, pero no está 100% verificado contra una respuesta real — confirmar antes de depender de
- * campos adicionales. `incidencia` se deja como JSON crudo: solo se usa para saber si existe
- * (no null), sin asumir su estructura interna.
- */
+/** Fila de entrega dentro del detalle de liquidación (ObtenerDetalleLiquidacion: fecha ya formateada "d/m/Y"). */
+@Serializable
+data class LiquidacionEntregaFila(
+    val fecha: String,
+    val litros: Double,
+    val resultado: String? = null,
+    val pagables: Double = 0.0,
+)
+
+/** `incidencia` se deja como JSON crudo: solo se usa para saber si existe (no null). */
 @Serializable
 data class LiquidacionDetalleResponse(
     val liquidacion: LiquidacionResumen,
-    val entregas: List<EntregaResumen> = emptyList(),
+    val entregas: List<LiquidacionEntregaFila> = emptyList(),
     val incidencia: JsonElement? = null,
     val compras: List<CompraResumen> = emptyList(),
     val ajustes: List<AjusteLiquidacion> = emptyList(),
@@ -232,6 +241,7 @@ data class MiQrResponse(
     val dni: String,
     val zona_id: Long? = null,
     val estado: String,
+    val zona_nombre: String? = null,
 )
 
 // ---- 6. Comunicados ----
@@ -265,4 +275,5 @@ data class ProveedorPerfil(
     val zona_id: Long? = null,
     val estado: String,
     val fecha_registro: String? = null,
+    val zona_nombre: String? = null,
 )

@@ -19,9 +19,13 @@ open class ResourceViewModel<T>(private val loader: suspend () -> CacheOutcome<T
         refresh()
     }
 
-    fun refresh() {
+    /**
+     * [silent] = true mantiene en pantalla los datos actuales mientras recarga (usado tras una
+     * sincronización automática, para no hacer parpadear la pantalla con un spinner).
+     */
+    fun refresh(silent: Boolean = false) {
         scope.launch {
-            _state.value = UiState.Loading
+            if (!silent || _state.value !is UiState.Success) _state.value = UiState.Loading
             try {
                 when (val outcome = loader()) {
                     is CacheOutcome.Fresh -> _state.value = UiState.Success(outcome.data, fromCache = false)
@@ -29,6 +33,7 @@ open class ResourceViewModel<T>(private val loader: suspend () -> CacheOutcome<T
                         UiState.Success(outcome.data, fromCache = true, cachedAtIso = outcome.cachedAtIso)
                 }
             } catch (e: Exception) {
+                if (silent && _state.value is UiState.Success) return@launch
                 _state.value = UiState.Error(e.message ?: "No se pudo cargar la información")
             }
         }

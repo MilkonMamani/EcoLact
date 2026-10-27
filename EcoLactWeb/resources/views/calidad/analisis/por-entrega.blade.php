@@ -19,7 +19,23 @@
             <div class="mt-4">
                 <x-ui.button :href="route('calidad.analisis-calidad.show', $analisis->id())" variant="secondary" size="sm" as="a">Ver detalle completo →</x-ui.button>
             </div>
+        @elseif (! $analisis && ! in_array($muestra['estado'] ?? null, ['SELECCIONADA', 'EN_ANALISIS'], true))
+            {{-- Calidad trabaja por muestreo: solo se analizan entregas seleccionadas. --}}
+            <x-ui.alert variant="info" :dismissible="false">
+                Esta entrega no fue seleccionada como muestra. Selecciónala para poder analizarla.
+            </x-ui.alert>
+            @if ($entrega->estado === 'PENDIENTE_ANALISIS' && $muestra === null)
+                <form method="POST" action="{{ route('calidad.muestreo.store') }}" class="mt-4">
+                    @csrf
+                    <input type="hidden" name="entrega_id" value="{{ $entrega->id }}">
+                    <input type="hidden" name="metodo_seleccion" value="MANUAL">
+                    <x-ui.button type="submit">Seleccionar como muestra</x-ui.button>
+                </form>
+            @endif
         @else
+            @if ($muestra)
+                <p class="text-sm text-text-muted">Muestra {{ strtolower($muestra['metodoSeleccion']) }} · seleccionada el {{ \Illuminate\Support\Carbon::parse($muestra['fechaSeleccion'])->format('d/m/Y H:i') }}</p>
+            @endif
             @if ($analisis)
                 <x-ui.alert variant="info" :dismissible="false">
                     Este análisis está en <strong>borrador</strong>. Puedes corregir los valores registrando de nuevo, o confirmarlo abajo cuando esté listo.

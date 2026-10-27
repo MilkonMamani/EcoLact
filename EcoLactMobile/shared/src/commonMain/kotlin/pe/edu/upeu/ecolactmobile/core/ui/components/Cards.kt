@@ -35,7 +35,7 @@ fun KpiCard(
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
             .padding(16.dp),
     ) {
-        Text("$icon $value", style = MaterialTheme.typography.titleMedium, color = EcoLactColors.TextoPrincipal)
+        Text(if (icon.isEmpty()) value else "$icon $value", style = MaterialTheme.typography.titleMedium, color = EcoLactColors.TextoPrincipal)
         Text(label, style = MaterialTheme.typography.bodyMedium, color = EcoLactColors.TextoSecundario)
     }
 }

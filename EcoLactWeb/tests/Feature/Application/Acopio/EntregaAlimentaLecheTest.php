@@ -62,8 +62,16 @@ it('las entregas se acumulan en el stock de Leche', function () {
 });
 
 it('un reintento con el mismo token de idempotencia no duplica el ingreso de leche', function () {
-    registrarEntregaDePrueba(20.0, 'token-abc');
-    registrarEntregaDePrueba(20.0, 'token-abc');
+    [, $proveedor, $acopiador] = registrarEntregaDePrueba(20.0, 'token-abc');
+
+    // El reintento lo hace el mismo acopiador (el token no sirve para la entrega de otro usuario).
+    app(RegistrarEntrega::class)->execute(
+        metodoIdentificacion: 'DNI',
+        identificador: $proveedor->dni,
+        acopiadorUserId: $acopiador->user_id,
+        litros: 20.0,
+        tokenIdempotencia: 'token-abc',
+    );
 
     expect(stockDeLeche())->toBe(20.0);
     expect(InsumoMovimientoModel::where('origen_tipo', 'ENTREGA')->count())->toBe(1);

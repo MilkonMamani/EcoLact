@@ -49,6 +49,7 @@ final class PantallaVentas
     public function index(string $portal, Request $request, ?VentaProductoModel $seleccion = null): View
     {
         $filtro = VentasFiltro::resolver(
+            vendedorId: $portal === 'ventas' ? $request->user()->id : null,
             periodo: $request->string('periodo')->toString() ?: null,
             desde: $request->string('desde')->toString() ?: null,
             hasta: $request->string('hasta')->toString() ?: null,

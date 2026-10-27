@@ -6,6 +6,7 @@ use App\Application\Pago\SincronizarPagosProveedor;
 use App\Application\Shared\TransactionManager;
 use App\Domain\Calidad\AnalisisCalidad;
 use App\Domain\Calidad\AnalisisCalidadRepository;
+use App\Domain\Calidad\MuestreoCalidadRepository;
 use App\Domain\Comunicacion\Notificacion;
 use App\Domain\Comunicacion\Repositories\NotificacionRepository;
 use App\Domain\Entrega\Entrega;
@@ -39,6 +40,7 @@ final class FinalizarAnalisisCalidad
         private readonly RegistrarAdvertenciaCalidad $registrarAdvertencia,
         private readonly SincronizarPagosProveedor $pagosProveedor,
         private readonly TransactionManager $transacciones,
+        private readonly MuestreoCalidadRepository $muestreos,
     ) {}
 
     public function execute(int $analisisId, int $confirmadoPorUserId): AnalisisCalidad
@@ -59,6 +61,14 @@ final class FinalizarAnalisisCalidad
             $analisis->confirmar($resultado, $confirmadoPorUserId);
 
             $analisisConfirmado = $this->analisisCalidad->actualizar($analisis);
+
+            // La muestra (si la entrega llegó por muestreo) sale de "Muestras pendientes".
+            $muestreo = $this->muestreos->buscarPorEntregaId($analisisConfirmado->entregaId());
+
+            if ($muestreo !== null && $muestreo->estaPendiente()) {
+                $muestreo->marcarAnalizada();
+                $this->muestreos->actualizar($muestreo);
+            }
 
             $entrega = $this->entregas->buscarPorId($analisisConfirmado->entregaId());
 

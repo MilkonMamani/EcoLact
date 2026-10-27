@@ -16,14 +16,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 /**
- * Entregas de CUALQUIER zona, solo lectura para elegir a quién le hace
- * control de calidad (mismo alcance que Web\Analista\EntregaController) —
- * salvo `store`, que es la única escritura permitida: registrar la muestra
- * que el analista toma directamente del proveedor cuando el resultado va a
- * ser RECHAZADA y esa leche nunca llega al acopiador (ver
- * RegistrarEntregaMuestreada). Para proveedores aceptados/observados, la
- * entrega la sigue registrando el Acopiador como siempre — el analista NO
- * usa este endpoint en ese caso.
+ * Entregas de CUALQUIER zona, solo lectura para el control de calidad
+ * (mismo alcance que Web\Analista\EntregaController) — salvo `store`, la
+ * única escritura: el MUESTREO DIRECTO, cuando el analista toma la muestra
+ * directamente del proveedor antes del acopio normal (inspección sorpresa,
+ * ver RegistrarEntregaMuestreada). La entrega queda con su muestra
+ * SELECCIONADA lista para analizar.
  */
 final class EntregaController extends Controller
 {

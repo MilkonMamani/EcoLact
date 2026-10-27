@@ -1,14 +1,12 @@
 package pe.edu.upeu.ecolactmobile.feature.calidad.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,16 +18,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import pe.edu.upeu.ecolactmobile.core.cache.CacheOutcome
-import pe.edu.upeu.ecolactmobile.core.ui.components.EmptyBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ErrorBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ListItemCard
-import pe.edu.upeu.ecolactmobile.core.ui.components.LoadingBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.OfflineBanner
+import pe.edu.upeu.ecolactmobile.core.ui.components.DatosGuardadosNote
+import pe.edu.upeu.ecolactmobile.core.ui.icons.EcoLactIcons
 import pe.edu.upeu.ecolactmobile.core.ui.state.ScreenModel
 import pe.edu.upeu.ecolactmobile.core.ui.state.UiState
 import pe.edu.upeu.ecolactmobile.core.ui.theme.EcoLactColors
 import pe.edu.upeu.ecolactmobile.feature.calidad.CalidadProveedoresListResponse
 import pe.edu.upeu.ecolactmobile.feature.calidad.CalidadRepository
+import pe.edu.upeu.ecolactmobile.feature.proveedor.Tono
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.CargandoBox
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.EstadoError
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.EstadoVacio
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemSubtitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemTitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProveedorPantalla
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProviderListItem
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.StatusChip
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.anchoContenido
 
 class CalidadProveedoresViewModel(private val repository: CalidadRepository) : ScreenModel() {
     private val _state = MutableStateFlow<UiState<CalidadProveedoresListResponse>>(UiState.Loading)
@@ -64,35 +69,39 @@ class CalidadProveedoresViewModel(private val repository: CalidadRepository) : S
 fun CalidadProveedoresScreen(viewModel: CalidadProveedoresViewModel, onVerProveedor: (Long) -> Unit) {
     val state by viewModel.state.collectAsState()
     val q by viewModel.q.collectAsState()
+    val s = state
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        OutlinedTextField(
-            value = q,
-            onValueChange = viewModel::onQChange,
-            label = { Text("Nombre o DNI") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        when (val s = state) {
-            is UiState.Loading -> LoadingBox()
-            is UiState.Error -> ErrorBox(s.message, onRetry = viewModel::load)
+    ProveedorPantalla(verticalSpacing = Arrangement.spacedBy(0.dp)) {
+        item {
+            OutlinedTextField(
+                value = q,
+                onValueChange = viewModel::onQChange,
+                placeholder = { Text("Buscar proveedor o DNI...") },
+                leadingIcon = { Icon(EcoLactIcons.Search, contentDescription = null) },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = EcoLactColors.Blanco,
+                    unfocusedContainerColor = EcoLactColors.Blanco,
+                    focusedBorderColor = EcoLactColors.VerdePrincipal,
+                    unfocusedBorderColor = EcoLactColors.Bordes,
+                ),
+                modifier = Modifier.anchoContenido().padding(bottom = 12.dp),
+            )
+        }
+        when (s) {
+            is UiState.Loading -> item { CargandoBox() }
+            is UiState.Error -> item { EstadoError(s.message, viewModel::load) }
             is UiState.Success -> {
-                Column(modifier = Modifier.padding(top = 12.dp)) {
-                    if (s.fromCache) OfflineBanner(s.cachedAtIso, Modifier.padding(bottom = 12.dp))
-                    if (s.data.filas.isEmpty()) {
-                        EmptyBox("No se encontraron proveedores")
-                    } else {
-                        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            items(s.data.filas, key = { it.id }) { proveedor ->
-                                ListItemCard(onClick = { onVerProveedor(proveedor.id) }) {
-                                    Text(proveedor.nombre, style = MaterialTheme.typography.bodyLarge)
-                                    Text("${proveedor.zonaNombre ?: ""} · DNI ${proveedor.dni}", color = EcoLactColors.TextoSecundario)
-                                    if (proveedor.advertencias > 0) {
-                                        Text("⚠ ${proveedor.advertencias} advertencias", color = EcoLactColors.Amarillo)
-                                    }
-                                }
-                            }
+                val filas = s.data.filas
+                if (s.fromCache) item { DatosGuardadosNote(s.cachedAtIso, Modifier.anchoContenido().padding(bottom = 8.dp)) }
+                if (filas.isEmpty()) item { EstadoVacio("No se encontraron proveedores.") }
+                itemsIndexed(filas, key = { _, p -> p.id }) { i, proveedor ->
+                    ProviderListItem(primera = i == 0, ultima = i == filas.lastIndex, onClick = { onVerProveedor(proveedor.id) }) {
+                        ItemTitulo(proveedor.nombre)
+                        ItemSubtitulo(listOfNotNull(proveedor.zonaNombre, "DNI ${proveedor.dni}").joinToString(" · "))
+                        if (proveedor.advertencias > 0) {
+                            StatusChip("${proveedor.advertencias} advertencias", Tono.ATENCION, Modifier.padding(top = 4.dp))
                         }
                     }
                 }

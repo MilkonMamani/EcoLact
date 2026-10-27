@@ -5,32 +5,38 @@ namespace App\Http\Controllers\Api\Acopiador;
 use App\Application\Acopiador\DashboardAcopiadorData;
 use App\Application\Acopiador\ObtenerDashboardAcopiador;
 use App\Domain\Comunicacion\Comunicado;
-use App\Domain\Entrega\Entrega;
+use App\Http\Controllers\Api\Acopiador\Concerns\SerializaEntregasAcopiador;
 use App\Http\Controllers\Controller;
+use App\Infrastructure\Persistence\Models\AcopiadorModel;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 final class DashboardController extends Controller
 {
+    use SerializaEntregasAcopiador;
+
     public function __construct(
         private readonly ObtenerDashboardAcopiador $obtenerDashboardAcopiador,
     ) {}
 
     public function __invoke(Request $request): JsonResponse
     {
-        $zonaId = $request->user()->acopiador?->zona_id
+        $acopiador = $request->user()->acopiador
             ?? throw new DomainException('No existe un acopiador asociado al usuario autenticado.');
 
         $dashboard = $this->obtenerDashboardAcopiador->execute(
             userId: $request->user()->id,
-            zonaId: $zonaId,
+            zonaId: $acopiador->zona_id,
             periodo: $request->query('periodo'),
             desde: $request->query('desde'),
             hasta: $request->query('hasta'),
         );
 
-        return response()->json(['data' => $this->serializar($dashboard)]);
+        return response()->json(['data' => [
+            ...$this->serializar($dashboard),
+            'acopiador' => $this->serializarAcopiador($acopiador),
+        ]]);
     }
 
     /** @return array<string, mixed> */
@@ -38,27 +44,30 @@ final class DashboardController extends Controller
     {
         return [
             'kpis' => $dashboard->kpis,
-            'ultimas_entregas' => array_map($this->serializarEntrega(...), $dashboard->ultimasEntregas),
+            'ultimas_entregas' => $this->serializarEntregas($dashboard->ultimasEntregas),
             'resultados_por_entrega' => $dashboard->resultadosPorEntrega,
             'proveedores_atendidos' => $dashboard->proveedoresAtendidos,
             'comunicados_recientes' => array_map($this->serializarComunicado(...), $dashboard->comunicadosRecientes),
         ];
     }
 
-    /** @return array<string, mixed> */
-    private function serializarEntrega(Entrega $entrega): array
+    /**
+     * Cabecera de la app ("Juan Pérez · Acopiador · Collana 1") y "Mi perfil",
+     * para mostrarse también sin conexión desde la copia local.
+     *
+     * @return array<string, mixed>
+     */
+    private function serializarAcopiador(AcopiadorModel $acopiador): array
     {
         return [
-            'id' => $entrega->id(),
-            'proveedor_id' => $entrega->proveedorId(),
-            'acopiador_id' => $entrega->acopiadorId(),
-            'zona_id' => $entrega->zonaId(),
-            'registrado_por_user_id' => $entrega->registradoPorUserId(),
-            'fecha_hora' => $entrega->fechaHora()->format(DATE_ATOM),
-            'litros' => $entrega->litros(),
-            'metodo_identificacion' => $entrega->metodoIdentificacion(),
-            'estado' => $entrega->estado()->value,
-            'observacion' => $entrega->observacion(),
+            'id' => $acopiador->id,
+            'nombres' => $acopiador->nombres,
+            'apellidos' => $acopiador->apellidos,
+            'dni' => $acopiador->dni,
+            'telefono' => $acopiador->telefono,
+            'estado' => $acopiador->estado,
+            'zona_id' => $acopiador->zona_id,
+            'zona_nombre' => $acopiador->zona?->nombre,
         ];
     }
 

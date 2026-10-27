@@ -12,7 +12,9 @@ use DomainException;
 /**
  * Marca una parada como "no entregó": acción explícita y distinta de
  * registrar un acopio, con motivo obligatorio. NO crea ninguna entrega
- * (ficticia ni de otro tipo).
+ * (ficticia ni de otro tipo). Idempotente: volver a marcar una parada que
+ * ya está en NO_ENTREGO la devuelve tal cual; una parada RECOLECTADO no se
+ * puede pasar a NO_ENTREGO (su entrega ya existe).
  */
 final class MarcarNoEntrego
 {
@@ -44,6 +46,15 @@ final class MarcarNoEntrego
 
         if ($acopiador === null || $recorrido->acopiadorId() !== $acopiador->id()) {
             throw new DomainException('No tienes permiso para operar sobre este recorrido.');
+        }
+
+        // Reenvío de la misma marca (p. ej. la cola offline del móvil): no cambia nada.
+        if ($parada->estado() === EstadoParadaRecorrido::NO_ENTREGO) {
+            return $parada;
+        }
+
+        if ($parada->estado() === EstadoParadaRecorrido::RECOLECTADO) {
+            throw new DomainException('Esta parada ya tiene un acopio registrado; no se puede marcar como "no entregó".');
         }
 
         if (! $recorrido->estaAbierto()) {

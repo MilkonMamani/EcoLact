@@ -28,10 +28,16 @@ suspend fun HttpResponse.requireSuccess(): HttpResponse {
 suspend fun HttpResponse.toApiException(): ApiException {
     val bodyText = runCatching { bodyAsText() }.getOrDefault("")
     val (message, errors) = parseErrorBody(bodyText)
+    val code = parseCode(bodyText)
     return when (status) {
         HttpStatusCode.Unauthorized -> ApiException.Unauthorized(message ?: "No autorizado")
-        HttpStatusCode.Forbidden -> ApiException.Forbidden(message ?: "Esta acción no está permitida para su rol")
+        HttpStatusCode.Forbidden -> if (code == ApiException.CODIGO_ASISTENCIA_REQUERIDA) {
+            ApiException.Forbidden(ApiException.MENSAJE_ASISTENCIA_REQUERIDA, code)
+        } else {
+            ApiException.Forbidden(message ?: "Esta acción no está permitida para su rol", code)
+        }
         HttpStatusCode.NotFound -> ApiException.NotFound(message ?: "No encontrado")
+        HttpStatusCode.Conflict -> ApiException.Conflict(message ?: "La operación entra en conflicto con otra ya registrada")
         HttpStatusCode.UnprocessableEntity -> ApiException.Validation(message ?: "Error de validación", errors)
         else -> if (status.value >= 500) {
             ApiException.ServerError(message ?: "Error del servidor", status.value)
@@ -40,6 +46,9 @@ suspend fun HttpResponse.toApiException(): ApiException {
         }
     }
 }
+
+private fun parseCode(bodyText: String): String? =
+    runCatching { ApiJson.parseToJsonElement(bodyText).jsonObject["code"]?.jsonPrimitive?.contentOrNull }.getOrNull()
 
 private fun parseErrorBody(bodyText: String): Pair<String?, Map<String, List<String>>> {
     if (bodyText.isBlank()) return null to emptyMap()

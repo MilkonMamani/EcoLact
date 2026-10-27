@@ -51,7 +51,7 @@ it('Calidad muestra también las entregas sin análisis como Pendiente', functio
         ->assertSee('14/09/2026')
         ->getContent();
 
-    expect(substr_count($html, 'title="Pendiente de análisis"'))->toBe(2)
+    expect(substr_count($html, 'title="Sin análisis"'))->toBe(2)
         ->and($html)->toContain(route('admin.entregas.analisis-calidad.index', $entregas['luis']))
         ->and($html)->toContain(route('admin.entregas.analisis-calidad.index', $entregas['milkon_pendiente']))
         ->and($html)->toContain(route('admin.analisis-calidad.show', AnalisisCalidadModel::firstOrFail()));

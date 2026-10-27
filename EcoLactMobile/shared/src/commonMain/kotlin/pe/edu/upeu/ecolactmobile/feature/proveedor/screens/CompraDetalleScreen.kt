@@ -1,52 +1,57 @@
 package pe.edu.upeu.ecolactmobile.feature.proveedor.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import pe.edu.upeu.ecolactmobile.core.ui.components.ErrorBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.LoadingBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.OfflineBanner
-import pe.edu.upeu.ecolactmobile.core.ui.state.ResourceViewModel
-import pe.edu.upeu.ecolactmobile.core.ui.state.UiState
-import pe.edu.upeu.ecolactmobile.core.ui.theme.EcoLactColors
+import kotlinx.coroutines.flow.StateFlow
+import pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModel
+import pe.edu.upeu.ecolactmobile.core.util.formatFecha
+import pe.edu.upeu.ecolactmobile.core.util.formatSoles
 import pe.edu.upeu.ecolactmobile.feature.proveedor.CompraDetalleResponse
+import pe.edu.upeu.ecolactmobile.feature.proveedor.FORMA_PAGO_DESCUENTO
 import pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorRepository
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ContenidoLocal
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemTitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProveedorPantalla
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProviderListItem
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.SummaryCard
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.SummaryRow
 
-class ProveedorCompraDetalleViewModel(repository: ProveedorRepository, compraId: Long) :
-    ResourceViewModel<CompraDetalleResponse>({ repository.compraDetalle(compraId) })
+class ProveedorCompraDetalleViewModel(repository: ProveedorRepository, isOnline: StateFlow<Boolean>, compraId: Long) :
+    LocalFirstViewModel<CompraDetalleResponse>(
+        source = repository.observeCompraDetalle(compraId),
+        isOnline = isOnline,
+        refresher = { repository.refreshCompraDetalle(compraId) },
+        refreshOnStart = true,
+    )
 
 @Composable
-fun ProveedorCompraDetalleScreen(viewModel: ProveedorCompraDetalleViewModel) {
+fun ProveedorCompraDetalleScreen(viewModel: ProveedorCompraDetalleViewModel, onVerPago: (Long) -> Unit) {
     val state by viewModel.state.collectAsState()
 
-    when (val s = state) {
-        is UiState.Loading -> LoadingBox()
-        is UiState.Error -> ErrorBox(s.message, onRetry = viewModel::refresh)
-        is UiState.Success -> {
-            val data = s.data
-            Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                if (s.fromCache) OfflineBanner(s.cachedAtIso)
-                Text(data.producto_nombre ?: "Producto #${data.producto_id}", style = MaterialTheme.typography.titleLarge)
-                Text("${data.cantidad} unidades × S/ ${data.precio_unitario}", color = EcoLactColors.TextoSecundario)
-                Text("Total: S/ ${data.importe_total}", style = MaterialTheme.typography.titleMedium)
-                Text("Forma de pago: ${data.forma_pago}", color = EcoLactColors.TextoSecundario)
-                Text(data.fecha, color = EcoLactColors.TextoSecundario)
-                if (data.forma_pago == "DESCUENTO_PLANILLA" && data.liquidacion_relacionada_id != null) {
-                    Text(
-                        "Con cargo a la liquidación #${data.liquidacion_relacionada_id}",
-                        color = EcoLactColors.AzulInstitucional,
-                    )
+    ContenidoLocal(state, onRetry = viewModel::refresh) { s ->
+        val data = s.data
+        ProveedorPantalla {
+            item {
+                SummaryCard {
+                    SummaryRow("Producto", data.producto_nombre ?: "Producto", primera = true)
+                    SummaryRow("Cantidad", formatUnidades(data.cantidad))
+                    SummaryRow("Precio unitario", formatSoles(data.precio_unitario))
+                    SummaryRow("Total", formatSoles(data.importe_total), destacado = true)
+                    SummaryRow("Forma de pago", formaPagoLabel(data.forma_pago))
+                    SummaryRow("Fecha", formatFecha(data.fecha))
+                }
+            }
+            val liquidacionId = data.liquidacion_relacionada_id
+            if (data.forma_pago == FORMA_PAGO_DESCUENTO && liquidacionId != null) {
+                item {
+                    ProviderListItem(
+                        primera = true,
+                        ultima = true,
+                        onClick = { onVerPago(liquidacionId) },
+                    ) {
+                        ItemTitulo("Ver el pago donde se descontó")
+                    }
                 }
             }
         }

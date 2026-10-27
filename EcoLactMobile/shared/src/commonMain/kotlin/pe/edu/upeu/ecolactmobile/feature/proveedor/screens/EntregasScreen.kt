@@ -3,112 +3,155 @@ package pe.edu.upeu.ecolactmobile.feature.proveedor.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import pe.edu.upeu.ecolactmobile.core.cache.CacheOutcome
-import pe.edu.upeu.ecolactmobile.core.ui.components.EmptyBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ErrorBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ListItemCard
-import pe.edu.upeu.ecolactmobile.core.ui.components.LoadingBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.OfflineBanner
-import pe.edu.upeu.ecolactmobile.core.ui.components.ResultadoCalidadChip
-import pe.edu.upeu.ecolactmobile.core.ui.state.ScreenModel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import pe.edu.upeu.ecolactmobile.core.ui.components.DatosGuardadosNote
+import pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModel
 import pe.edu.upeu.ecolactmobile.core.ui.state.UiState
 import pe.edu.upeu.ecolactmobile.core.ui.theme.EcoLactColors
+import pe.edu.upeu.ecolactmobile.core.util.formatHora
+import pe.edu.upeu.ecolactmobile.core.util.formatLitros
+import pe.edu.upeu.ecolactmobile.core.util.hoy
+import pe.edu.upeu.ecolactmobile.feature.proveedor.EntregaResumen
 import pe.edu.upeu.ecolactmobile.feature.proveedor.EntregasListResponse
+import pe.edu.upeu.ecolactmobile.feature.proveedor.EstadoEntregaVisual
+import pe.edu.upeu.ecolactmobile.feature.proveedor.FiltroSemana
 import pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorRepository
+import pe.edu.upeu.ecolactmobile.feature.proveedor.ResumenSemana
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ContenidoLocal
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.EstadoVacio
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.FechaBadge
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.FiltroDesplegable
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemSubtitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemTitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProveedorPantalla
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProviderListItem
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.StatusChip
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.anchoContenido
+import pe.edu.upeu.ecolactmobile.feature.proveedor.estadoEntrega
+import pe.edu.upeu.ecolactmobile.feature.proveedor.filtrarEntregas
+import pe.edu.upeu.ecolactmobile.feature.proveedor.resumenSemana
 
-/** Filtro soportado por el backend: `estado` (PENDIENTE_ANALISIS | ANALIZADA). No hay tabs de periodo ni búsqueda en proveedor.md para este endpoint. */
-enum class EntregaFiltro(val label: String, val estadoParam: String?) {
-    TODAS("Todas", null),
-    PENDIENTES("Pendientes", "PENDIENTE_ANALISIS"),
-    ANALIZADAS("Analizadas", "ANALIZADA"),
-}
+/** Lo que pinta la pantalla: resumen fijo de esta semana + la lista ya filtrada. */
+data class EntregasVista(val resumen: ResumenSemana, val filas: List<EntregaResumen>, val hayEntregas: Boolean)
 
-class ProveedorEntregasViewModel(private val repository: ProveedorRepository) : ScreenModel() {
-    private val _state = MutableStateFlow<UiState<EntregasListResponse>>(UiState.Loading)
-    val state: StateFlow<UiState<EntregasListResponse>> = _state.asStateFlow()
+/** Estados que se pueden filtrar (null = todos). */
+private val ESTADOS_FILTRO: List<EstadoEntregaVisual?> = listOf(
+    null,
+    EstadoEntregaVisual.ACEPTADA,
+    EstadoEntregaVisual.OBSERVADA,
+    EstadoEntregaVisual.PENDIENTE,
+    EstadoEntregaVisual.RECHAZADA,
+)
 
-    var filtro = MutableStateFlow(EntregaFiltro.TODAS)
-        private set
+class ProveedorEntregasViewModel(repository: ProveedorRepository, isOnline: StateFlow<Boolean>) :
+    LocalFirstViewModel<EntregasListResponse>(repository.observeEntregas(), isOnline, { repository.refreshEntregas() }) {
 
-    init {
-        load()
-    }
+    val semana = MutableStateFlow(FiltroSemana.TODAS)
+    val estado = MutableStateFlow<EstadoEntregaVisual?>(null)
 
-    fun onFiltroChange(filtro: EntregaFiltro) {
-        this.filtro.value = filtro
-        load()
-    }
-
-    fun load() {
-        scope.launch {
-            _state.value = UiState.Loading
-            try {
-                when (val outcome = repository.entregas(filtro.value.estadoParam)) {
-                    is CacheOutcome.Fresh -> _state.value = UiState.Success(outcome.data, fromCache = false)
-                    is CacheOutcome.Stale -> _state.value =
-                        UiState.Success(outcome.data, fromCache = true, cachedAtIso = outcome.cachedAtIso)
-                }
-            } catch (e: Exception) {
-                _state.value = UiState.Error(e.message ?: "No se pudieron cargar las entregas")
+    /** Los filtros se aplican sobre la copia local: responden al instante y funcionan offline. */
+    val vista: StateFlow<UiState<EntregasVista>> = combine(state, semana, estado) { s, semana, estado ->
+        when (s) {
+            is UiState.Success -> {
+                val hoy = hoy()
+                UiState.Success(
+                    EntregasVista(
+                        resumen = resumenSemana(s.data.filas, hoy),
+                        filas = filtrarEntregas(s.data.filas, semana, estado, hoy),
+                        hayEntregas = s.data.filas.isNotEmpty(),
+                    ),
+                    fromCache = s.fromCache,
+                    cachedAtIso = s.cachedAtIso,
+                )
             }
+            is UiState.Error -> s
+            UiState.Loading -> UiState.Loading
         }
-    }
+    }.stateIn(scope, SharingStarted.Eagerly, UiState.Loading)
 }
 
 @Composable
 fun ProveedorEntregasScreen(viewModel: ProveedorEntregasViewModel, onVerEntrega: (Long) -> Unit) {
-    val state by viewModel.state.collectAsState()
-    val filtroActual by viewModel.filtro.collectAsState()
+    val state by viewModel.vista.collectAsState()
+    val semana by viewModel.semana.collectAsState()
+    val estado by viewModel.estado.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-            EntregaFiltro.entries.forEach { filtro ->
-                FilterChip(
-                    selected = filtro == filtroActual,
-                    onClick = { viewModel.onFiltroChange(filtro) },
-                    label = { Text(filtro.label) },
-                )
-            }
-        }
-
-        when (val s = state) {
-            is UiState.Loading -> LoadingBox()
-            is UiState.Error -> ErrorBox(s.message, onRetry = viewModel::load)
-            is UiState.Success -> {
-                Column(modifier = Modifier.padding(top = 12.dp)) {
-                    if (s.fromCache) OfflineBanner(s.cachedAtIso, Modifier.padding(bottom = 12.dp))
-                    if (s.data.filas.isEmpty()) {
-                        EmptyBox("No tienes entregas registradas")
-                    } else {
-                        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            items(s.data.filas, key = { it.id }) { entrega ->
-                                ListItemCard(onClick = { onVerEntrega(entrega.id) }) {
-                                    Text(entrega.fecha_hora, style = MaterialTheme.typography.bodyMedium, color = EcoLactColors.TextoSecundario)
-                                    Text("${entrega.litros} L", style = MaterialTheme.typography.titleMedium)
-                                    ResultadoCalidadChip(entrega.resultado, Modifier.padding(top = 4.dp))
-                                }
+    ContenidoLocal(state, onRetry = viewModel::refresh) { s ->
+        val vista = s.data
+        ProveedorPantalla(verticalSpacing = Arrangement.spacedBy(0.dp)) {
+            item {
+                Column(Modifier.anchoContenido(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        buildAnnotatedString {
+                            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold, color = EcoLactColors.TextoPrincipal)) {
+                                append(formatLitros(vista.resumen.litros))
                             }
-                        }
+                            append(" esta semana  ·  ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold, color = EcoLactColors.TextoPrincipal)) {
+                                append("${vista.resumen.entregas}")
+                            }
+                            append(if (vista.resumen.entregas == 1) " entrega" else " entregas")
+                        },
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = EcoLactColors.TextoSecundario,
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FiltroDesplegable(
+                            label = if (semana == FiltroSemana.TODAS) "Semana" else semana.label,
+                            activo = semana != FiltroSemana.TODAS,
+                            opciones = FiltroSemana.entries.map { it.label },
+                            onSeleccionar = { viewModel.semana.value = FiltroSemana.entries[it] },
+                        )
+                        FiltroDesplegable(
+                            label = estado?.label ?: "Estado",
+                            activo = estado != null,
+                            opciones = ESTADOS_FILTRO.map { it?.label ?: "Todos los estados" },
+                            onSeleccionar = { viewModel.estado.value = ESTADOS_FILTRO[it] },
+                        )
+                    }
+                    if (s.fromCache) DatosGuardadosNote(s.cachedAtIso)
+                }
+            }
+            item { Spacer(Modifier.height(12.dp)) }
+
+            if (vista.filas.isEmpty()) {
+                item {
+                    EstadoVacio(if (vista.hayEntregas) "No hay entregas con estos filtros." else "Aún no tienes entregas registradas.")
+                }
+            } else {
+                itemsIndexed(vista.filas, key = { _, e -> e.id }) { index, entrega ->
+                    val estadoVisual = estadoEntrega(entrega.estado, entrega.resultado)
+                    ProviderListItem(
+                        primera = index == 0,
+                        ultima = index == vista.filas.lastIndex,
+                        onClick = { onVerEntrega(entrega.id) },
+                        leading = { FechaBadge(entrega.fecha_hora) },
+                        trailing = { ItemSubtitulo(formatHora(entrega.fecha_hora)) },
+                    ) {
+                        ItemTitulo(formatLitros(entrega.litros))
+                        StatusChip(estadoVisual.label, estadoVisual.tono)
                     }
                 }
             }
         }
     }
 }
+

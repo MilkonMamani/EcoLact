@@ -6,14 +6,14 @@
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <x-ui.stat-card label="Litros registrados" :value="number_format($datos->kpis['litrosRegistrados'], 2).' L'" hint="Según filtros aplicados" />
         <x-ui.stat-card label="Entregas" :value="$datos->kpis['entregas']" />
-        <x-ui.stat-card label="Pendientes de análisis" :value="$datos->kpis['pendientesAnalisis']" accent="warning" />
+        <x-ui.stat-card label="Muestras pendientes" :value="$kpisMuestreo['pendientes']" accent="warning" hint="Solo las seleccionadas se analizan" />
         <x-ui.stat-card label="Analizadas" :value="$datos->kpis['analizadas']" accent="success" />
     </div>
 
-    <x-ui.card title="Entregas" subtitle="Consulta las entregas registradas y su estado de análisis.">
+    <x-ui.card title="Entregas" subtitle="Elige qué entregas serán muestra de calidad. Las no seleccionadas no se analizan.">
         <x-slot:actions>
             @can('create', \App\Infrastructure\Persistence\Models\EntregaModel::class)
-                <x-ui.button data-modal-open="modal-nueva-muestra" size="sm" as="button" type="button">+ Nueva muestra</x-ui.button>
+                <x-ui.button data-modal-open="modal-nueva-muestra" size="sm" as="button" type="button">Muestreo directo</x-ui.button>
             @endcan
         </x-slot:actions>
 
@@ -91,8 +91,16 @@
                             </td>
                             <td class="py-3 pl-4">
                                 <x-tables.actions>
-                                    @if ($fila['estado'] === 'PENDIENTE_ANALISIS')
-                                        <x-ui.action-button type="analyze" label="Analizar entrega" :href="route('calidad.entregas.analisis.index', $fila['id'])" />
+                                    @php($muestra = $muestras[$fila['id']] ?? null)
+                                    @if (in_array($muestra, ['SELECCIONADA', 'EN_ANALISIS'], true))
+                                        <x-ui.action-button type="analyze" label="Analizar muestra" :href="route('calidad.entregas.analisis.index', $fila['id'])" />
+                                    @elseif ($muestra === null && $fila['estado'] === 'PENDIENTE_ANALISIS')
+                                        <form method="POST" action="{{ route('calidad.muestreo.store') }}">
+                                            @csrf
+                                            <input type="hidden" name="entrega_id" value="{{ $fila['id'] }}">
+                                            <input type="hidden" name="metodo_seleccion" value="MANUAL">
+                                            <x-ui.action-button type="create" label="Seleccionar como muestra" submit />
+                                        </form>
                                     @else
                                         <x-ui.action-button type="view" label="Ver entrega" :href="route('calidad.entregas.show', $fila['id'])" />
                                     @endif
@@ -105,8 +113,8 @@
         @endif
     </x-ui.card>
 
-    <x-ui.modal id="modal-nueva-muestra" title="Nueva muestra">
-        <p class="mb-4 text-sm text-text-muted">Identifica al proveedor cuya leche vas a muestrear ANTES de que llegue al acopiador. Al guardar, continúas directo con el análisis (valores, evidencia y confirmación).</p>
+    <x-ui.modal id="modal-nueva-muestra" title="Muestreo directo">
+        <p class="mb-4 text-sm text-text-muted">Inspección en campo: identifica al proveedor y toma la muestra ANTES del acopio normal. Queda como muestra pendiente y continúas con el análisis.</p>
         <form method="POST" action="{{ route('calidad.entregas.store') }}" class="space-y-4">
             @csrf
             <x-forms.select name="metodo_identificacion" label="Identificar por" required :options="['DNI' => 'DNI', 'QR' => 'Código QR']" />

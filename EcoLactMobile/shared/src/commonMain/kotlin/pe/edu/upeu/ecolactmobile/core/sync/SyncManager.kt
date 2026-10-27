@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import pe.edu.upeu.ecolactmobile.core.network.ApiException
 
 /**
  * Motor de sincronización genérico: recorre la cola PENDING en orden de creación y la despacha
@@ -37,6 +38,8 @@ class SyncManager(
          * pasa a NEEDS_REVIEW igual que un 422 real, en vez de seguir PENDING para siempre.
          */
         const val MAX_INTENTOS_TRANSITORIOS = 5
+
+        const val MENSAJE_SYNC_SIN_ASISTENCIA = "No se pudo sincronizar esta operación porque no existe una asistencia válida para ese momento."
     }
 
     fun register(handler: SyncOperationHandler) {
@@ -63,7 +66,7 @@ class SyncManager(
 
         for (row in queueRepository.pending()) {
             val handler = handlers[row.operation_type]
-            if (handler == null) {
+            if (handler == null || !handler.canPush(row.payload_json)) {
                 // No debería pasar en producción: significa que se encoló un tipo de operación
                 // sin registrar su handler. La dejamos PENDING en vez de perderla.
                 stillPending++
@@ -79,7 +82,10 @@ class SyncManager(
                     succeeded++
                 }
                 is SyncPushResult.Rejected -> {
-                    queueRepository.markNeedsReview(row.id, result.message)
+                    // Rechazo por asistencia (evaluada a la hora del EVENTO): la operación no se
+                    // borra; queda para revisión con un mensaje claro.
+                    val mensaje = if (result.message == ApiException.MENSAJE_ASISTENCIA_REQUERIDA) MENSAJE_SYNC_SIN_ASISTENCIA else result.message
+                    queueRepository.markNeedsReview(row.id, mensaje)
                     rejected++
                 }
                 is SyncPushResult.TransientFailure -> {

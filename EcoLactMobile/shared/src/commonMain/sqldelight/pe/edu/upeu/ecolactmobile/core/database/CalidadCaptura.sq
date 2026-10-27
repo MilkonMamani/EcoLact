@@ -1,0 +1,37 @@
+-- Foto del ticket del analizador y lo que el OCR propuso, por entrega, mientras el análisis no
+-- se confirme. Ciclo: PENDIENTE_OCR (foto tomada sin internet) → REQUIERE_REVISION (el servidor
+-- leyó el ticket; el analista DEBE revisar) → se borra al confirmar el análisis. Nunca pasa de
+-- PENDIENTE_OCR a confirmado sin revisión.
+-- valores_json: Map<código, Double?> — null = "No detectado" (nunca 0).
+-- fecha_captura_local: hora real en que se tomó la foto; fecha_sincronizacion: cuándo llegó al servidor.
+CREATE TABLE calidad_captura (
+    entrega_id INTEGER NOT NULL PRIMARY KEY,
+    muestreo_id INTEGER,
+    foto BLOB,
+    foto_mime TEXT,
+    ticket_path TEXT,
+    estado TEXT NOT NULL,
+    valores_json TEXT,
+    mensaje_ocr TEXT,
+    fecha_captura_local TEXT NOT NULL,
+    fecha_sincronizacion TEXT,
+    updated_at TEXT NOT NULL
+);
+
+upsertCaptura:
+INSERT OR REPLACE INTO calidad_captura(entrega_id, muestreo_id, foto, foto_mime, ticket_path, estado, valores_json, mensaje_ocr, fecha_captura_local, fecha_sincronizacion, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+marcarOcrProcesado:
+UPDATE calidad_captura
+SET ticket_path = ?, estado = 'REQUIERE_REVISION', valores_json = ?, mensaje_ocr = ?, fecha_sincronizacion = ?, updated_at = ?
+WHERE entrega_id = ? AND estado = 'PENDIENTE_OCR';
+
+selectCaptura:
+SELECT * FROM calidad_captura WHERE entrega_id = ?;
+
+selectCapturasResumen:
+SELECT entrega_id, estado, fecha_captura_local FROM calidad_captura;
+
+deleteCaptura:
+DELETE FROM calidad_captura WHERE entrega_id = ?;

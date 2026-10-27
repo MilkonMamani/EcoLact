@@ -6,7 +6,7 @@
     $resultado = $confirmado ? $analisis->resultado : null;
     $resultados = ['ACEPTADA' => 'Aceptada', 'OBSERVADA' => 'Observada', 'RECHAZADA' => 'Rechazada'];
     $estados = [
-        'PENDIENTE' => ['Pendiente de análisis', 'clock', 'is-pendiente'],
+        'PENDIENTE' => ['Sin análisis', 'clock', 'is-pendiente'],
         'BORRADOR' => ['Borrador (sin confirmar)', 'pen-line', 'is-borrador'],
         'CONFIRMADO' => ['Confirmado', 'check-double', 'is-confirmado'],
     ];
@@ -75,7 +75,7 @@
             <div class="calidad-detalle-pendiente">
                 <x-ui.icon name="clock" class="h-5 w-5" />
                 <div>
-                    <p class="font-semibold">Pendiente de análisis</p>
+                    <p class="font-semibold">Sin análisis de calidad</p>
                     <p>Esta entrega todavía no tiene análisis de calidad. El análisis es opcional: la entrega igual se acopia y se paga.</p>
                 </div>
             </div>

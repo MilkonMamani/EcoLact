@@ -62,6 +62,8 @@ final class RegistrarVentaProducto
         int $registradoPorUserId,
         ?int $proveedorId = null,
         ?int $compradorId = null,
+        ?DateTimeImmutable $fechaEvento = null,
+        ?float $precioEsperado = null,
     ): VentaProducto {
         if ($proveedorId !== null && $compradorId !== null) {
             throw new DomainException('Una venta es para un proveedor o para un comprador registrado, no para ambos.');
@@ -85,11 +87,15 @@ final class RegistrarVentaProducto
         $precioVigente = $tarifas->aplicable($esProveedor, $cantidad)
             ?? throw new DomainException($this->motivoSinPrecio($esProveedor, $tarifas->minimoMayorista()));
 
+        if ($precioEsperado !== null && abs($precioEsperado - $precioVigente->precio()) > 0.001) {
+            throw new DomainException('El precio cambiÃ³. Revisa la venta antes de registrarla nuevamente.');
+        }
+
         $importeTotal = round($cantidad * $precioVigente->precio(), 2);
 
         return $this->transacciones->run(function () use (
             $productoId, $proveedorId, $compradorId, $cantidad, $precioVigente,
-            $importeTotal, $formaPago, $registradoPorUserId, $cliente, $producto,
+            $importeTotal, $formaPago, $registradoPorUserId, $cliente, $producto, $fechaEvento,
         ): VentaProducto {
             // Se valida el saldo DENTRO de la transacción con la fila del
             // producto bloqueada, para que dos ventas simultáneas no vendan
@@ -122,7 +128,7 @@ final class RegistrarVentaProducto
                 formaPago: $formaPago,
                 periodoId: $periodo?->id(),
                 estado: 'REGISTRADA',
-                fecha: new DateTimeImmutable,
+                fecha: $fechaEvento ?? new DateTimeImmutable,
                 registradoPorUserId: $registradoPorUserId,
             ));
 
@@ -133,7 +139,7 @@ final class RegistrarVentaProducto
                 cantidad: $cantidad,
                 loteProduccionId: null,
                 ventaProductoId: $venta->id(),
-                fecha: new DateTimeImmutable,
+                fecha: $fechaEvento ?? new DateTimeImmutable,
                 registradoPorUserId: $registradoPorUserId,
             ));
 

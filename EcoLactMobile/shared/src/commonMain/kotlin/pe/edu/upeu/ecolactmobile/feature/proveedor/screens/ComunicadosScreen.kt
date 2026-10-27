@@ -1,61 +1,49 @@
 package pe.edu.upeu.ecolactmobile.feature.proveedor.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import pe.edu.upeu.ecolactmobile.core.ui.components.EmptyBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ErrorBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ListItemCard
-import pe.edu.upeu.ecolactmobile.core.ui.components.LoadingBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.OfflineBanner
-import pe.edu.upeu.ecolactmobile.core.ui.state.ResourceViewModel
-import pe.edu.upeu.ecolactmobile.core.ui.state.UiState
-import pe.edu.upeu.ecolactmobile.core.ui.theme.EcoLactColors
+import kotlinx.coroutines.flow.StateFlow
+import pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModel
+import pe.edu.upeu.ecolactmobile.core.util.formatFecha
 import pe.edu.upeu.ecolactmobile.feature.proveedor.ComunicadosListResponse
 import pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorRepository
+import pe.edu.upeu.ecolactmobile.feature.proveedor.Tono
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ContenidoLocal
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.EstadoVacio
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemSubtitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemTitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProveedorPantalla
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProviderListItem
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.StatusChip
 
-class ProveedorComunicadosViewModel(repository: ProveedorRepository) :
-    ResourceViewModel<ComunicadosListResponse>({ repository.comunicados() })
+class ProveedorComunicadosViewModel(repository: ProveedorRepository, isOnline: StateFlow<Boolean>) :
+    LocalFirstViewModel<ComunicadosListResponse>(repository.observeComunicados(), isOnline, { repository.refreshComunicados() })
 
 @Composable
 fun ProveedorComunicadosScreen(viewModel: ProveedorComunicadosViewModel, onVerComunicado: (Long) -> Unit) {
     val state by viewModel.state.collectAsState()
 
-    when (val s = state) {
-        is UiState.Loading -> LoadingBox()
-        is UiState.Error -> ErrorBox(s.message, onRetry = viewModel::refresh)
-        is UiState.Success -> {
-            val data = s.data
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-                if (s.fromCache) OfflineBanner(s.cachedAtIso, Modifier.padding(bottom = 12.dp))
-                if (data.filas.isEmpty()) {
-                    EmptyBox("No hay comunicados")
-                } else {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        items(data.filas, key = { it.id }) { comunicado ->
-                            ListItemCard(onClick = { onVerComunicado(comunicado.id) }) {
-                                Text(
-                                    comunicado.titulo,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = if (comunicado.leido == false) EcoLactColors.TextoPrincipal else EcoLactColors.TextoSecundario,
-                                )
-                                Text(comunicado.fecha_publicacion, color = EcoLactColors.TextoSecundario)
-                                if (comunicado.leido == false) {
-                                    Text("● Nuevo", color = EcoLactColors.AzulInstitucional)
-                                }
-                            }
-                        }
-                    }
+    ContenidoLocal(state, onRetry = viewModel::refresh) { s ->
+        val filas = s.data.filas
+        ProveedorPantalla(verticalSpacing = Arrangement.spacedBy(0.dp)) {
+            if (filas.isEmpty()) {
+                item { EstadoVacio("No hay comunicados.") }
+            }
+            itemsIndexed(filas, key = { _, c -> c.id }) { index, comunicado ->
+                val nuevo = comunicado.leido == false
+                ProviderListItem(
+                    primera = index == 0,
+                    ultima = index == filas.lastIndex,
+                    onClick = { onVerComunicado(comunicado.id) },
+                    trailing = { if (nuevo) StatusChip("Nuevo", Tono.EXITO) },
+                ) {
+                    ItemTitulo(comunicado.titulo, fontWeight = if (nuevo) FontWeight.SemiBold else FontWeight.Normal)
+                    ItemSubtitulo(formatFecha(comunicado.fecha_publicacion))
                 }
             }
         }

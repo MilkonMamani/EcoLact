@@ -1,0 +1,43 @@
+-- Compra de insumos en preparación en el teléfono del encargado de planta, hasta que el servidor
+-- la registre. Ciclo: PENDIENTE_OCR (foto de la boleta tomada sin internet) → REQUIERE_REVISION
+-- (el servidor leyó la boleta, o es un registro manual; la persona DEBE revisar) → PENDIENTE_SYNC
+-- (confirmada en el teléfono, en la cola) → se borra cuando el servidor la registra. El OCR nunca
+-- confirma: de PENDIENTE_OCR jamás se pasa a registrada sin revisión.
+-- datos_json: BorradorCompra (cabecera + líneas insumo/presentación/cantidad).
+-- imagen_boleta: ruta de la foto ya guardada en el servidor (null mientras no se subió).
+CREATE TABLE planta_compra_borrador (
+    id TEXT NOT NULL PRIMARY KEY,
+    origen TEXT NOT NULL,
+    estado TEXT NOT NULL,
+    foto BLOB,
+    foto_mime TEXT,
+    imagen_boleta TEXT,
+    datos_json TEXT NOT NULL,
+    mensaje TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+insertBorrador:
+INSERT INTO planta_compra_borrador(id, origen, estado, foto, foto_mime, imagen_boleta, datos_json, mensaje, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+guardarDatos:
+UPDATE planta_compra_borrador SET datos_json = ?, estado = ?, mensaje = ?, updated_at = ? WHERE id = ?;
+
+marcarOcrProcesado:
+UPDATE planta_compra_borrador
+SET imagen_boleta = ?, estado = 'REQUIERE_REVISION', datos_json = ?, mensaje = ?, updated_at = ?
+WHERE id = ? AND estado = 'PENDIENTE_OCR';
+
+guardarImagenBoleta:
+UPDATE planta_compra_borrador SET imagen_boleta = ?, updated_at = ? WHERE id = ?;
+
+selectBorrador:
+SELECT * FROM planta_compra_borrador WHERE id = ?;
+
+selectResumen:
+SELECT id, origen, estado, datos_json, mensaje, created_at FROM planta_compra_borrador ORDER BY created_at DESC;
+
+deleteBorrador:
+DELETE FROM planta_compra_borrador WHERE id = ?;

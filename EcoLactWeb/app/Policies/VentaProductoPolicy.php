@@ -30,7 +30,7 @@ class VentaProductoPolicy
     public function view(User $user, VentaProductoModel $venta): bool
     {
         if ($user->esVentas()) {
-            return true;
+            return (int) $venta->registrado_por_user_id === (int) $user->id;
         }
 
         return $user->esProveedor() && $user->proveedor !== null && $user->proveedor->id === $venta->proveedor_id;

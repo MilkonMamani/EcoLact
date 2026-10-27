@@ -37,6 +37,7 @@ final class ObtenerDashboardVentas
         [$fechaDesde, $fechaHasta] = $this->rangoPeriodo($periodo, $desde, $hasta);
 
         $ventasDelPeriodo = collect($this->obtenerVentas->execute())
+            ->filter(fn (VentaProducto $v): bool => $v->registradoPorUserId() === $userId)
             ->filter(fn (VentaProducto $v): bool => $v->fecha() >= $fechaDesde && $v->fecha() <= $fechaHasta)
             ->sortByDesc(fn (VentaProducto $v) => [$v->fecha(), $v->id()])
             ->values();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Proveedor;
 
 use App\Application\Proveedor\ObtenerMiQr;
+use App\Domain\Zona\ZonaRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ final class QrController extends Controller
 {
     public function __construct(
         private readonly ObtenerMiQr $obtenerMiQr,
+        private readonly ZonaRepository $zonas,
     ) {}
 
     public function show(Request $request): JsonResponse
@@ -29,7 +31,14 @@ final class QrController extends Controller
                 'dni' => $proveedor->dni(),
                 'zona_id' => $proveedor->zonaId(),
                 'estado' => $proveedor->estado()->value,
+                // La app muestra "Proveedor · <zona>" sin otra consulta.
+                'zona_nombre' => $this->zonaNombre($proveedor->zonaId()),
             ],
         ]);
+    }
+
+    private function zonaNombre(?int $zonaId): ?string
+    {
+        return $zonaId === null ? null : $this->zonas->buscarPorId($zonaId)?->nombre();
     }
 }

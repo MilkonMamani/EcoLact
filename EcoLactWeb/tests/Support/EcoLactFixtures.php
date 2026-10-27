@@ -14,8 +14,10 @@ use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
 use App\Infrastructure\Persistence\Models\CategoriaProductoModel;
 use App\Infrastructure\Persistence\Models\EntregaModel;
 use App\Infrastructure\Persistence\Models\InsumoModel;
+use App\Infrastructure\Persistence\Models\JornadaPersonalModel;
 use App\Infrastructure\Persistence\Models\LoteProduccionInsumoModel;
 use App\Infrastructure\Persistence\Models\LoteProduccionModel;
+use App\Infrastructure\Persistence\Models\MuestreoCalidadModel;
 use App\Infrastructure\Persistence\Models\ParametroCalidadModel;
 use App\Infrastructure\Persistence\Models\PrecioLecheModel;
 use App\Infrastructure\Persistence\Models\ProductoModel;
@@ -24,6 +26,7 @@ use App\Infrastructure\Persistence\Models\ProveedorModel;
 use App\Infrastructure\Persistence\Models\ReglaCalidadModel;
 use App\Infrastructure\Persistence\Models\ReglaPagoCalidadModel;
 use App\Infrastructure\Persistence\Models\RoleModel;
+use App\Infrastructure\Persistence\Models\TrabajadorModel;
 use App\Infrastructure\Persistence\Models\ZonaModel;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -241,6 +244,21 @@ if (! function_exists('fixture_regla_calidad')) {
     }
 }
 
+if (! function_exists('fixture_muestra')) {
+    /** Selecciona la entrega como muestra de calidad (Calidad solo analiza muestras). */
+    function fixture_muestra(EntregaModel $entrega, ?int $analistaUserId = null, string $metodo = 'MANUAL'): MuestreoCalidadModel
+    {
+        return MuestreoCalidadModel::create([
+            'entrega_id' => $entrega->id,
+            'seleccionado_por_user_id' => $analistaUserId ?? fixture_usuario('CALIDAD')->id,
+            'metodo_seleccion' => $metodo,
+            'tipo_control' => $metodo === 'MANUAL' ? 'RUTINARIO' : null,
+            'fecha_seleccion' => now(),
+            'estado' => 'SELECCIONADA',
+        ]);
+    }
+}
+
 if (! function_exists('fixture_analisis_confirmado')) {
     function fixture_analisis_confirmado(
         EntregaModel $entrega,
@@ -433,5 +451,59 @@ if (! function_exists('fixture_categoria_id')) {
             ['nombre_normalizado' => CategoriaProductoModel::normalizar($nombre)],
             ['nombre' => $nombre, 'estado' => 'ACTIVA'],
         )->id;
+    }
+}
+
+if (! function_exists('fixture_presente_hoy')) {
+    /**
+     * Asistencia válida del día para un usuario del personal: su ficha de
+     * trabajador (si no la tiene) y una jornada PRESENTE, como la que registra
+     * el ADMINISTRADOR al escanear su QR. Sin esto, la regla global de
+     * operación (RequiereAsistencia) le permite consultar pero no operar.
+     */
+    function fixture_presente_hoy(User $user, ?string $fecha = null): TrabajadorModel
+    {
+        $trabajador = TrabajadorModel::firstOrCreate(['user_id' => $user->id], [
+            'dni' => fixture_next_dni(),
+            'nombres' => 'Personal',
+            'apellidos' => 'De prueba',
+            'estado' => 'ACTIVO',
+            'fecha_ingreso' => now()->subMonth(),
+            'qr_token' => fixture_qr_token(),
+        ]);
+        $dia = $fecha ?? now(config('app.zona_horaria_negocio'))->format('Y-m-d');
+
+        if (! JornadaPersonalModel::where('trabajador_id', $trabajador->id)->whereDate('fecha', $dia)->exists()) {
+            JornadaPersonalModel::create([
+                'trabajador_id' => $trabajador->id,
+                'rol_id' => $user->role_id,
+                'fecha' => $dia,
+                'estado' => 'PRESENTE',
+                'origen' => 'QR',
+                'hora_marcacion' => now(),
+            ]);
+        }
+
+        return $trabajador;
+    }
+}
+
+if (! function_exists('fixture_personal_con_asistencia_hoy')) {
+    /**
+     * Para pruebas que NO tratan de asistencia: todo usuario del personal
+     * (rol que marca asistencia y es remunerado: no ADMINISTRADOR ni
+     * PROVEEDOR) que se cree en la prueba queda con su jornada PRESENTE de
+     * hoy, igual que si el administrador hubiera escaneado su QR. Se activa
+     * por archivo en un beforeEach; la regla misma se prueba sin esto.
+     */
+    function fixture_personal_con_asistencia_hoy(): void
+    {
+        User::created(function (User $user): void {
+            $rol = RoleModel::find($user->role_id);
+
+            if ($rol !== null && $rol->controla_asistencia && $rol->es_remunerable) {
+                fixture_presente_hoy($user);
+            }
+        });
     }
 }

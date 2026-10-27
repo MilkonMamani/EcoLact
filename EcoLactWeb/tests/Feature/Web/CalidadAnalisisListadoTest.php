@@ -53,7 +53,7 @@ it('muestra al analista real que confirmó cada análisis', function () {
         ->assertOk()
         ->assertSeeInOrder(['Milkon Mamani', '#', '45.00 L', 'Aceptada', 'Análisis confirmado', 'David Lopez'])
         ->assertSeeInOrder(['Rosa Quispe', 'Rechazada', 'Análisis confirmado', 'admin'])
-        ->assertSeeInOrder(['Ana Condori', 'Pendiente de análisis']);
+        ->assertSeeInOrder(['Ana Condori', 'Sin análisis']);
 });
 
 it('filtra por analista usando quien confirmó el análisis', function () {
@@ -129,7 +129,7 @@ it('el detalle de una entrega sin análisis indica Pendiente y ofrece registrarl
 
     $this->actingAs($admin)->get(route('admin.entregas.analisis-calidad.detalle', $entregas['ana']))
         ->assertOk()
-        ->assertSee('Pendiente de análisis')
+        ->assertSee('Sin análisis de calidad')
         ->assertSee('Registrar análisis')
         ->assertSee(route('admin.entregas.analisis-calidad.index', $entregas['ana']), false);
 });

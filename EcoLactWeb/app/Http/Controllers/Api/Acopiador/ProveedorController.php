@@ -9,6 +9,7 @@ use App\Domain\Proveedor\Proveedor;
 use App\Http\Controllers\Controller;
 use App\Infrastructure\Persistence\Models\EntregaModel;
 use App\Infrastructure\Persistence\Models\ProveedorModel;
+use App\Infrastructure\Persistence\Models\ZonaModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -109,7 +110,11 @@ final class ProveedorController extends Controller
             'nombre_completo' => $proveedor->nombreCompleto(),
             'telefono' => $proveedor->telefono(),
             'zona_id' => $proveedor->zonaId(),
+            'zona_nombre' => $proveedor->zonaId() === null ? null : ZonaModel::whereKey($proveedor->zonaId())->value('nombre'),
             'estado' => $proveedor->estado()->value,
+            // Mismo valor que el QR impreso del proveedor: el teléfono lo guarda para
+            // identificarlo sin conexión. Solo se expone a acopiadores de su zona.
+            'qr_token' => $proveedor->qrToken(),
         ];
     }
 }

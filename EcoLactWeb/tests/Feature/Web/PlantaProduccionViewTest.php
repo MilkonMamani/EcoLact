@@ -9,6 +9,9 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
 it('la pantalla de producción muestra los KPIs y el historial', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $encargado = fixture_usuario('ENCARGADO_PLANTA');

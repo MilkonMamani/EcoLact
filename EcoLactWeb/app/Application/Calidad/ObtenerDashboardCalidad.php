@@ -2,15 +2,16 @@
 
 namespace App\Application\Calidad;
 
-use App\Application\Acopio\Contracts\EntregasListadoQuery;
-use App\Application\Acopio\EntregasFiltro;
 use App\Application\Calidad\Contracts\AnalisisCalidadListadoQuery;
+use App\Application\Calidad\Contracts\MuestreosCalidadQuery;
 use App\Application\Comunicacion\ObtenerComunicados;
+use DateTimeImmutable;
 
 /**
- * Compone el Dashboard de CALIDAD a partir de las Query ya existentes para
- * Entregas y Análisis de calidad (las mismas que usa el listado admin), sin
- * duplicar su lógica de agregación.
+ * Compone el Dashboard de CALIDAD. Calidad trabaja por MUESTREO: lo
+ * pendiente son las muestras seleccionadas (MuestreosCalidadQuery), nunca
+ * todas las entregas sin análisis. Los KPIs del periodo salen de la misma
+ * Query de análisis que el listado admin.
  */
 final class ObtenerDashboardCalidad
 {
@@ -19,16 +20,15 @@ final class ObtenerDashboardCalidad
     private const MAX_COMUNICADOS_PREVIA = 3;
 
     public function __construct(
-        private readonly EntregasListadoQuery $entregasListadoQuery,
+        private readonly MuestreosCalidadQuery $muestreos,
         private readonly AnalisisCalidadListadoQuery $analisisCalidadListadoQuery,
         private readonly ObtenerComunicados $obtenerComunicados,
     ) {}
 
     public function execute(int $userId, ?string $periodo, ?string $desde, ?string $hasta): DashboardCalidadData
     {
-        $pendientes = $this->entregasListadoQuery->obtener(
-            EntregasFiltro::resolver(busqueda: null, zonaId: null, acopiadorId: null, estado: 'PENDIENTE_ANALISIS', fecha: null, desde: null, hasta: null)
-        );
+        $muestras = $this->muestreos->pendientes();
+        $kpisMuestreo = $this->muestreos->kpis(new DateTimeImmutable);
 
         $analisis = $this->analisisCalidadListadoQuery->obtener(
             AnalisisCalidadFiltro::resolver(busqueda: null, zonaId: null, resultado: null, estado: null, fecha: $periodo, desde: $desde, hasta: $hasta)
@@ -38,14 +38,15 @@ final class ObtenerDashboardCalidad
         usort($comunicados, static fn ($a, $b): int => $b->fechaPublicacion() <=> $a->fechaPublicacion());
 
         return new DashboardCalidadData(
-            pendientesAnalisis: $pendientes->kpis['pendientesAnalisis'],
+            muestrasPendientes: $kpisMuestreo['pendientes'],
+            analizadasHoy: $kpisMuestreo['analizadas_hoy'],
             kpisPeriodo: [
                 'analizados' => $analisis->kpis['total'],
                 'aceptados' => $analisis->kpis['aceptadas'],
                 'observados' => $analisis->kpis['observadas'],
                 'rechazados' => $analisis->kpis['rechazadas'],
             ],
-            pendientesFilas: array_slice($pendientes->filas, 0, self::MAX_FILAS_PREVIA),
+            muestrasFilas: array_slice($muestras, 0, self::MAX_FILAS_PREVIA),
             ultimosAnalisisFilas: array_slice($analisis->filas, 0, self::MAX_FILAS_PREVIA),
             comunicadosRecientes: array_slice($comunicados, 0, self::MAX_COMUNICADOS_PREVIA),
         );

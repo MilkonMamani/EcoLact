@@ -8,8 +8,10 @@ use App\Application\Liquidacion\ObtenerDetalleLiquidacion;
 use App\Application\Liquidacion\ObtenerLiquidaciones;
 use App\Application\Liquidacion\ObtenerResumenLiquidacionesProveedor;
 use App\Domain\Pago\AjusteLiquidacion;
+use App\Domain\Pago\AjusteLiquidacionRepository;
 use App\Domain\Pago\Liquidacion;
 use App\Domain\Pago\PagoProveedor;
+use App\Domain\Pago\PeriodoLiquidacionRepository;
 use App\Domain\Ventas\VentaProducto;
 use App\Http\Controllers\Controller;
 use App\Infrastructure\Persistence\Models\LiquidacionModel;
@@ -24,6 +26,8 @@ final class LiquidacionController extends Controller
         private readonly ObtenerResumenLiquidacionesProveedor $obtenerResumenLiquidacionesProveedor,
         private readonly ObtenerDetalleLiquidacion $obtenerDetalleLiquidacion,
         private readonly CalcularPago $calcularPago,
+        private readonly PeriodoLiquidacionRepository $periodos,
+        private readonly AjusteLiquidacionRepository $ajustesLiquidacion,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -44,6 +48,7 @@ final class LiquidacionController extends Controller
         $filas = $filtradas->map(fn (Liquidacion $liquidacion): array => [
             ...$this->serializarLiquidacion($liquidacion),
             'saldo_pendiente' => max(0.0, $this->calcularPago->execute($liquidacion->id())),
+            'compras_descontadas' => $this->comprasDescontadas($liquidacion->id()),
         ])->all();
 
         $resumen = $proveedorId !== null ? $this->obtenerResumenLiquidacionesProveedor->execute($proveedorId) : null;
@@ -103,7 +108,34 @@ final class LiquidacionController extends Controller
             'estado' => $liquidacion->estado()->value,
             'fecha_calculo' => $liquidacion->fechaCalculo()->format(DATE_ATOM),
             'tuvo_incidencia' => $liquidacion->tuvoIncidencia(),
+            ...$this->serializarPeriodo($liquidacion->periodoId()),
         ];
+    }
+
+    /**
+     * Semana liquidada, para que la app muestre "Semana 43" y sus fechas.
+     *
+     * @return array{fecha_inicio: ?string, fecha_fin: ?string}
+     */
+    private function serializarPeriodo(int $periodoId): array
+    {
+        $periodo = $this->periodos->buscarPorId($periodoId);
+
+        return [
+            'fecha_inicio' => $periodo?->fechaInicio()->format('Y-m-d'),
+            'fecha_fin' => $periodo?->fechaFin()->format('Y-m-d'),
+        ];
+    }
+
+    /** Compras de producto descontadas del pago (ajustes DESCUENTO_PRODUCTO, guardados en negativo). */
+    private function comprasDescontadas(int $liquidacionId): float
+    {
+        $descuentos = array_filter(
+            $this->ajustesLiquidacion->listarPorLiquidacion($liquidacionId),
+            fn (AjusteLiquidacion $ajuste): bool => $ajuste->tipo() === 'DESCUENTO_PRODUCTO',
+        );
+
+        return round(-array_sum(array_map(fn (AjusteLiquidacion $ajuste): float => $ajuste->monto(), $descuentos)), 2);
     }
 
     /** @return array<string, mixed> */

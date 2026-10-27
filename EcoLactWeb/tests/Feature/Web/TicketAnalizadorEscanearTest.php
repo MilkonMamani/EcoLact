@@ -14,11 +14,17 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
 function ticket_entrega_pendiente()
 {
     $zona = fixture_zona();
 
-    return fixture_entrega(fixture_proveedor($zona), fixture_acopiador($zona), 30.0);
+    $entrega = fixture_entrega(fixture_proveedor($zona), fixture_acopiador($zona), 30.0);
+    fixture_muestra($entrega);
+
+    return $entrega;
 }
 
 function ticket_ocr_lee(array $lecturas): void

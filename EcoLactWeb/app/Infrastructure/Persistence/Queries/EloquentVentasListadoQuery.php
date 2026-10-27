@@ -94,6 +94,10 @@ final class EloquentVentasListadoQuery implements VentasListadoQuery
             ->leftJoin('compradores as c', 'c.id', '=', 'v.comprador_id')
             ->whereBetween('v.fecha', [$filtro->fechaDesde->toDateTimeString(), $filtro->fechaHasta->toDateTimeString()]);
 
+        if ($filtro->vendedorId !== null) {
+            $query->where('v.registrado_por_user_id', $filtro->vendedorId);
+        }
+
         if ($filtro->busqueda !== null) {
             $busqueda = '%'.$filtro->busqueda.'%';
             $ventaId = preg_match('/^v-?0*(\d+)$/i', $filtro->busqueda, $codigo) === 1 ? (int) $codigo[1] : null;

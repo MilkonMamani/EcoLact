@@ -62,9 +62,17 @@ final class EntregaController extends Controller
         $analisis = collect($this->obtenerAnalisisProveedor->execute($request->user()->id))
             ->first(fn ($item) => $item->entregaId() === $entrega->id);
 
+        $entrega->load(['zona', 'acopiador']);
+        $acopiador = $entrega->acopiador;
+
         return response()->json([
             'data' => [
-                'entrega' => $this->serializar($this->obtenerEntrega->execute($entrega->id)),
+                'entrega' => [
+                    ...$this->serializar($this->obtenerEntrega->execute($entrega->id)),
+                    // Solo en el detalle: nombres legibles para el proveedor (sin ids técnicos).
+                    'zona_nombre' => $entrega->zona?->nombre,
+                    'acopiador_nombre' => $acopiador === null ? null : trim($acopiador->nombres.' '.$acopiador->apellidos),
+                ],
                 'analisis' => $analisis === null ? null : [
                     'id' => $analisis->id(),
                     'resultado' => $analisis->resultado()?->value,

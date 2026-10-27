@@ -19,6 +19,7 @@ final readonly class VentasFiltro
         public ?string $tipoCliente,
         public ?string $formaPago,
         public ?string $estado,
+        public ?int $vendedorId = null,
     ) {}
 
     public static function resolver(
@@ -29,6 +30,7 @@ final readonly class VentasFiltro
         ?string $tipoCliente,
         ?string $formaPago,
         ?string $estado,
+        ?int $vendedorId = null,
     ): self {
         $periodo ??= 'esta_semana';
         $hoy = CarbonImmutable::now(config('app.timezone'));
@@ -45,6 +47,7 @@ final readonly class VentasFiltro
 
         return new self(
             periodo: in_array($periodo, ['hoy', 'esta_semana', 'este_mes', 'personalizado'], true) ? $periodo : 'esta_semana',
+            vendedorId: $vendedorId,
             fechaDesde: $fechaDesde,
             fechaHasta: $fechaHasta,
             busqueda: $busqueda !== null && trim($busqueda) !== '' ? trim($busqueda) : null,

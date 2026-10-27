@@ -19,7 +19,10 @@
             <p class="ecolact-sidebar-heading">Análisis</p>
 
             <x-layout.sidebar-link icon="quality" :href="route('calidad.analisis-calidad.index')" :active="request()->routeIs('calidad.analisis-calidad.*')">
-                Análisis de calidad
+                Muestras y análisis
+            </x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="inventory" :href="route('calidad.muestreo.index')" :active="request()->routeIs('calidad.muestreo.*')">
+                Seleccionar muestra
             </x-layout.sidebar-link>
             <x-layout.sidebar-link icon="milk" :href="route('calidad.entregas.index')" :active="request()->routeIs('calidad.entregas.*')">
                 Entregas

@@ -2,24 +2,33 @@
 
 namespace App\Http\Controllers\Api\Acopiador;
 
+use App\Application\Acopio\ObtenerEntrega;
 use App\Application\Acopio\ObtenerEntregas;
+use App\Application\Calidad\ControlCalidadEntrega;
 use App\Application\Calidad\ObtenerAnalisisCalidad;
-use App\Application\Calidad\ObtenerAnalisisPorZona;
-use App\Domain\Calidad\AnalisisCalidad;
 use App\Domain\Entrega\Entrega;
+use App\Http\Controllers\Api\Acopiador\Concerns\SerializaEntregasAcopiador;
 use App\Http\Controllers\Controller;
 use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
 use App\Infrastructure\Persistence\Models\EntregaModel;
+use App\Infrastructure\Persistence\Models\MuestreoCalidadModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * Seguimiento de calidad (solo lectura) de las entregas de la zona. Con el
+ * muestreo, no toda entrega se analiza: cada fila trae `control_calidad`
+ * (SIN_MUESTREO, SELECCIONADA, EN_ANALISIS, ACEPTADA, OBSERVADA, RECHAZADA o
+ * ANULADA) en vez de dar a entender que todas esperan análisis.
+ */
 final class SeguimientoCalidadController extends Controller
 {
+    use SerializaEntregasAcopiador;
+
     public function __construct(
         private readonly ObtenerEntregas $obtenerEntregas,
-        private readonly ObtenerAnalisisPorZona $obtenerAnalisisPorZona,
+        private readonly ObtenerEntrega $obtenerEntrega,
         private readonly ObtenerAnalisisCalidad $obtenerAnalisisCalidad,
     ) {}
 
@@ -30,50 +39,43 @@ final class SeguimientoCalidadController extends Controller
         $zonaId = $request->user()->acopiador?->zona_id;
         $entregas = $zonaId !== null ? $this->obtenerEntregas->execute($zonaId) : [];
 
-        /** @var Collection<int, AnalisisCalidad> $analisisPorEntrega */
-        $analisisPorEntrega = $zonaId !== null
-            ? collect($this->obtenerAnalisisPorZona->execute($zonaId))->keyBy(fn (AnalisisCalidad $a) => $a->entregaId())
-            : collect();
+        $ordenadas = collect($entregas)
+            ->filter(fn (Entrega $e): bool => ! $request->filled('proveedor_id') || $e->proveedorId() === $request->integer('proveedor_id'))
+            ->sortByDesc(fn (Entrega $e) => $e->fechaHora())
+            ->values();
 
-        $filtradas = collect($entregas)->filter(function (Entrega $entrega) use ($request, $analisisPorEntrega): bool {
-            if ($request->filled('proveedor_id') && $entrega->proveedorId() !== $request->integer('proveedor_id')) {
+        $filas = collect($this->serializarEntregas($ordenadas->all()))->filter(function (array $fila) use ($request): bool {
+            if ($request->filled('estado_analisis') && $fila['estado'] !== $request->string('estado_analisis')->toString()) {
                 return false;
             }
 
-            if ($request->filled('estado_analisis') && $entrega->estado()->value !== $request->string('estado_analisis')->toString()) {
+            if ($request->filled('control_calidad') && $fila['control_calidad'] !== $request->string('control_calidad')->toString()) {
                 return false;
             }
 
             if ($request->filled('resultado')) {
-                $resultado = $analisisPorEntrega->get($entrega->id())?->resultado()?->value;
-                $filtroResultado = $request->string('resultado')->toString();
+                $filtro = $request->string('resultado')->toString();
 
-                if ($filtroResultado === 'sin_resultado' ? $resultado !== null : $resultado !== $filtroResultado) {
-                    return false;
-                }
+                return $filtro === 'sin_resultado' ? $fila['resultado'] === null : $fila['resultado'] === $filtro;
             }
 
             return true;
-        })->sortByDesc(fn (Entrega $e) => $e->fechaHora())->values();
+        })->values();
+
+        $contar = fn (array $controles): int => $filas->filter(fn (array $f): bool => in_array($f['control_calidad'], $controles, true))->count();
 
         return response()->json([
             'data' => [
                 'kpis' => [
-                    'pendientes' => $filtradas->filter(fn (Entrega $e): bool => $e->estado()->value === 'PENDIENTE_ANALISIS')->count(),
-                    'analizadas' => $filtradas->filter(fn (Entrega $e): bool => $e->estado()->value === 'ANALIZADA')->count(),
-                    'aceptadas' => $filtradas->filter(fn (Entrega $e): bool => $analisisPorEntrega->get($e->id())?->resultado()?->value === 'ACEPTADA')->count(),
-                    'con_observaciones' => $filtradas->filter(
-                        fn (Entrega $e): bool => in_array($analisisPorEntrega->get($e->id())?->resultado()?->value, ['OBSERVADA', 'RECHAZADA'], true)
-                    )->count(),
+                    'sin_muestreo' => $contar([ControlCalidadEntrega::SIN_MUESTREO]),
+                    'en_control' => $contar([ControlCalidadEntrega::SELECCIONADA, ControlCalidadEntrega::EN_ANALISIS]),
+                    'aceptadas' => $contar(['ACEPTADA']),
+                    'con_observaciones' => $contar(['OBSERVADA', 'RECHAZADA']),
+                    // Compatibilidad con versiones anteriores de la app.
+                    'pendientes' => $contar([ControlCalidadEntrega::SELECCIONADA, ControlCalidadEntrega::EN_ANALISIS]),
+                    'analizadas' => $contar(['ACEPTADA', 'OBSERVADA', 'RECHAZADA']),
                 ],
-                'filas' => $filtradas->map(fn (Entrega $e): array => [
-                    'id' => $e->id(),
-                    'proveedor_id' => $e->proveedorId(),
-                    'fecha_hora' => $e->fechaHora()->format(DATE_ATOM),
-                    'litros' => $e->litros(),
-                    'estado' => $e->estado()->value,
-                    'resultado' => $analisisPorEntrega->get($e->id())?->resultado()?->value,
-                ])->all(),
+                'filas' => $filas->all(),
             ],
         ]);
     }
@@ -82,13 +84,22 @@ final class SeguimientoCalidadController extends Controller
     {
         Gate::authorize('view', $entrega);
 
+        $fila = $this->serializarEntrega($this->obtenerEntrega->execute($entrega->id));
         $analisis = $this->obtenerAnalisisCalidad->porEntrega($entrega->id);
+        $muestreo = MuestreoCalidadModel::where('entrega_id', $entrega->id)->first();
 
         return response()->json([
             'data' => [
                 'entrega_id' => $entrega->id,
                 'estado' => $entrega->estado,
-                'analisis' => $analisis === null ? null : [
+                'control_calidad' => $fila['control_calidad'],
+                'entrega' => $fila,
+                'muestreo' => $muestreo === null ? null : [
+                    'estado' => $muestreo->estado,
+                    'fecha_seleccion' => $muestreo->fecha_seleccion?->format(DATE_ATOM),
+                ],
+                // Solo el resultado confirmado: el acopiador no ve borradores ni parámetros técnicos.
+                'analisis' => $analisis === null || $analisis->estado()->value !== 'CONFIRMADO' ? null : [
                     'id' => $analisis->id(),
                     'estado' => $analisis->estado()->value,
                     'resultado' => $analisis->resultado()?->value,

@@ -15,6 +15,9 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
 /*
 |--------------------------------------------------------------------------
 | Etapa 10.2.1 — Tests de routing por rol

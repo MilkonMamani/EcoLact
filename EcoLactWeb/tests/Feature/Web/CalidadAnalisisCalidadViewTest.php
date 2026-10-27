@@ -8,18 +8,42 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
-it('la pestaña de pendientes muestra las entregas sin análisis', function () {
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
+it('la pestaña Muestras pendientes lista solo las entregas seleccionadas como muestra', function () {
     $analista = fixture_usuario('CALIDAD');
     $zona = fixture_zona();
     $proveedor = fixture_proveedor($zona);
     $acopiador = fixture_acopiador($zona);
-    fixture_entrega($proveedor, $acopiador, 30.0);
+    $muestreada = fixture_entrega($proveedor, $acopiador, 30.0);
+    $noMuestreada = fixture_entrega($proveedor, $acopiador, 25.0);
+    fixture_muestra($muestreada, $analista->id);
 
-    $response = $this->actingAs($analista)->get(route('calidad.analisis-calidad.index'));
+    $this->actingAs($analista)->get(route('calidad.analisis-calidad.index'))
+        ->assertOk()
+        ->assertSee('Muestras pendientes')
+        ->assertSee(route('calidad.entregas.analisis.index', $muestreada->id), false)
+        ->assertDontSee(route('calidad.entregas.analisis.index', $noMuestreada->id), false);
+});
 
-    $response->assertOk();
-    $response->assertSee('Pendientes de análisis');
-    $response->assertSee('Analizar');
+it('una entrega no seleccionada no se puede analizar desde el portal de Calidad', function () {
+    $analista = fixture_usuario('CALIDAD');
+    $zona = fixture_zona();
+    $entrega = fixture_entrega(fixture_proveedor($zona), fixture_acopiador($zona), 30.0);
+    fixture_parametro('GRASA');
+
+    $this->actingAs($analista)->get(route('calidad.entregas.analisis.index', $entrega->id))
+        ->assertOk()
+        ->assertSee('Esta entrega no fue seleccionada como muestra')
+        ->assertSee('Seleccionar como muestra');
+
+    $this->actingAs($analista)->post(route('calidad.analisis-calidad.store'), [
+        'entrega_id' => $entrega->id,
+        'valores' => ['GRASA' => 4.0],
+    ])->assertRedirect()->assertSessionHas('error');
+
+    $this->assertDatabaseMissing('analisis_calidad', ['entrega_id' => $entrega->id]);
 });
 
 it('la pestaña de historial muestra los análisis confirmados', function () {
@@ -44,10 +68,12 @@ it('permite registrar valores de un análisis y confirmarlo, calculando el resul
     $acopiador = fixture_acopiador($zona);
     $entrega = fixture_entrega($proveedor, $acopiador, 30.0);
 
+    fixture_muestra($entrega, $analista->id);
+
     $densidad = fixture_parametro('DENSIDAD');
     fixture_regla_calidad($densidad->id, 1.028, 1.034, 'RECHAZADA');
 
-    // La pantalla de "analizar" debe cargar sin error para una entrega pendiente.
+    // La pantalla de "analizar" debe cargar sin error para una muestra pendiente.
     $this->actingAs($analista)->get(route('calidad.entregas.analisis.index', $entrega->id))
         ->assertOk()
         ->assertSee('Parámetros de calidad');

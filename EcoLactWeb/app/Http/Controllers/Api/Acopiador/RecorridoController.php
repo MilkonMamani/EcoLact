@@ -16,9 +16,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Recorrido\IdentificarParadaRequest;
 use App\Http\Requests\Recorrido\MarcarNoEntregoRequest;
 use App\Http\Requests\Recorrido\RegistrarAcopioRecorridoRequest;
+use App\Http\Support\FechaEventoMovil;
 use App\Infrastructure\Persistence\Models\RecorridoAcopioModel;
 use App\Infrastructure\Persistence\Models\RecorridoDetalleModel;
-use DateTimeImmutable;
 use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -63,7 +63,11 @@ final class RecorridoController extends Controller
     {
         Gate::authorize('update', $recorrido);
 
-        $this->iniciarRecorrido->execute($recorrido->id, $request->user()->acopiador->id);
+        try {
+            $this->iniciarRecorrido->execute($recorrido->id, $request->user()->acopiador->id);
+        } catch (DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
 
         return response()->json(['data' => $this->serializarVista($this->recorridoVistaQuery->obtener($recorrido->id))]);
     }
@@ -72,7 +76,11 @@ final class RecorridoController extends Controller
     {
         Gate::authorize('update', $recorrido);
 
-        $this->finalizarRecorrido->execute($recorrido->id, $request->user()->acopiador->id);
+        try {
+            $this->finalizarRecorrido->execute($recorrido->id, $request->user()->acopiador->id);
+        } catch (DomainException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
 
         return response()->json(['data' => $this->serializarVista($this->recorridoVistaQuery->obtener($recorrido->id))]);
     }
@@ -101,6 +109,13 @@ final class RecorridoController extends Controller
         }
 
         $datos = $request->validated();
+        // Mismo contrato que POST /entregas: `fecha_hora_evento` = hora real del acopio en el
+        // teléfono (puede llegar horas después, desde la cola offline). `fecha_hora_ordeño` se
+        // sigue aceptando por compatibilidad. Nunca se usa la hora de sincronización.
+        $evento = $request->validate(
+            ['fecha_hora_evento' => FechaEventoMovil::reglas(), 'fecha_hora_ordeño' => FechaEventoMovil::reglas()],
+            [...FechaEventoMovil::mensajes('fecha_hora_evento'), ...FechaEventoMovil::mensajes('fecha_hora_ordeño')],
+        );
 
         try {
             $resultado = $this->registrarAcopioDeRecorrido->execute(
@@ -108,7 +123,7 @@ final class RecorridoController extends Controller
                 acopiadorUserId: $request->user()->id,
                 litros: (float) $datos['litros'],
                 tokenIdempotencia: $datos['token_idempotencia'],
-                fechaHoraOrdeño: isset($datos['fecha_hora_ordeño']) ? new DateTimeImmutable($datos['fecha_hora_ordeño']) : null,
+                fechaHoraOrdeño: FechaEventoMovil::parse($evento['fecha_hora_evento'] ?? $evento['fecha_hora_ordeño'] ?? null),
                 observacion: $datos['observacion'] ?? null,
             );
         } catch (DomainException $e) {

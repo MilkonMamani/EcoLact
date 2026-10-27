@@ -6,6 +6,7 @@ use App\Domain\Calidad\AnalisisCalidad;
 use App\Domain\Calidad\AnalisisCalidadDetalle;
 use App\Domain\Calidad\AnalisisCalidadDetalleRepository;
 use App\Domain\Calidad\AnalisisCalidadRepository;
+use App\Domain\Calidad\MuestreoCalidadRepository;
 use App\Domain\Calidad\ParametroCalidadRepository;
 use App\Domain\Entrega\EntregaRepository;
 use App\Domain\Shared\Enums\EstadoAnalisis;
@@ -26,11 +27,17 @@ final class RegistrarAnalisisCalidad
         private readonly AnalisisCalidadRepository $analisisCalidad,
         private readonly AnalisisCalidadDetalleRepository $detalles,
         private readonly ParametroCalidadRepository $parametros,
+        private readonly MuestreoCalidadRepository $muestreos,
     ) {}
 
     /**
      * @param  array<string, float>  $valores  Valores ya extraídos, indexados por código de parámetro (ej. 'DENSIDAD', 'GRASA').
      * @param  array<string, string>  $origenes  OCR si el analista aceptó el valor propuesto por el ticket; MANUAL (por defecto) si lo escribió o corrigió.
+     * @param  DateTimeImmutable|null  $fechaAnalisis  Hora REAL del análisis en el teléfono (aunque llegue después por sincronización offline). Por defecto, ahora.
+     * @param  DateTimeImmutable|null  $fechaCapturaLocal  Hora en que se tomó la foto del ticket, si la hay.
+     * @param  bool  $exigirMuestra  Portal y móvil del analista: Calidad trabaja por MUESTREO y solo analiza
+     *                               entregas seleccionadas como muestra. Un análisis ya iniciado antes del
+     *                               muestreo (histórico) puede continuarse. La corrección administrativa no lo exige.
      */
     public function execute(
         int $entregaId,
@@ -38,12 +45,20 @@ final class RegistrarAnalisisCalidad
         ?string $imagenPath = null,
         ?string $observacion = null,
         array $origenes = [],
+        ?DateTimeImmutable $fechaAnalisis = null,
+        ?DateTimeImmutable $fechaCapturaLocal = null,
+        bool $exigirMuestra = false,
     ): AnalisisCalidad {
         if ($this->entregas->buscarPorId($entregaId) === null) {
             throw new DomainException('La entrega indicada no existe.');
         }
 
         $analisis = $this->analisisCalidad->buscarPorEntregaId($entregaId);
+        $muestreo = $this->muestreos->buscarPorEntregaId($entregaId);
+
+        if ($exigirMuestra && $analisis === null && ($muestreo === null || ! $muestreo->estaPendiente())) {
+            throw new DomainException('Esta entrega no fue seleccionada como muestra. Selecciónala en Muestreo antes de analizarla.');
+        }
 
         if ($analisis !== null && $analisis->estaConfirmado()) {
             throw new DomainException('El análisis de esta entrega ya fue confirmado y no puede modificarse.');
@@ -70,7 +85,7 @@ final class RegistrarAnalisisCalidad
                 imagenPath: $imagenPath,
                 estado: EstadoAnalisis::BORRADOR,
                 resultado: null,
-                fechaAnalisis: new DateTimeImmutable,
+                fechaAnalisis: $this->horaDelEvento($fechaAnalisis),
                 confirmadoPorUserId: null,
                 observacion: $observacion,
             ));
@@ -103,6 +118,20 @@ final class RegistrarAnalisisCalidad
             ));
         }
 
+        // Si la entrega llegó por muestreo, la muestra pasa a EN_ANALISIS.
+        if ($muestreo !== null && $muestreo->estaPendiente()) {
+            $muestreo->iniciarAnalisis($fechaCapturaLocal !== null ? $this->horaDelEvento($fechaCapturaLocal) : null);
+            $this->muestreos->actualizar($muestreo);
+        }
+
         return $analisis;
+    }
+
+    /** Nunca una hora futura: un reloj adelantado en el teléfono no mueve el análisis. */
+    private function horaDelEvento(?DateTimeImmutable $fecha): DateTimeImmutable
+    {
+        $ahora = new DateTimeImmutable;
+
+        return $fecha !== null && $fecha < $ahora ? $fecha : $ahora;
     }
 }

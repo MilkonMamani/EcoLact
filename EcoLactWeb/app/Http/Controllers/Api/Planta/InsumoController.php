@@ -9,6 +9,8 @@ use App\Application\Produccion\RegistrarAjusteInsumo;
 use App\Application\Produccion\RegistrarInsumo;
 use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\InsumoMovimiento;
+use App\Domain\Produccion\PresentacionInsumo;
+use App\Domain\Produccion\PresentacionInsumoRepository;
 use App\Domain\Shared\Enums\TipoInsumo;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Produccion\StoreInsumoRequest;
@@ -28,6 +30,7 @@ final class InsumoController extends Controller
         private readonly ObtenerInsumos $obtenerInsumos,
         private readonly ObtenerInsumo $obtenerInsumo,
         private readonly ObtenerMovimientosInsumos $obtenerMovimientosInsumos,
+        private readonly PresentacionInsumoRepository $presentaciones,
     ) {}
 
     public function index(Request $request): JsonResponse
@@ -81,6 +84,15 @@ final class InsumoController extends Controller
         return response()->json([
             'data' => [
                 'insumo' => $this->serializar($this->obtenerInsumo->execute($insumo->id)),
+                // Presentaciones de compra configuradas (Saco 25 kg = 25 000 g); solo activas.
+                'presentaciones' => array_values(array_map(static fn (PresentacionInsumo $p): array => [
+                    'id' => (int) $p->id(),
+                    'nombre' => $p->nombre(),
+                    'etiqueta' => $p->etiqueta(),
+                    'cantidad' => $p->cantidad(),
+                    'unidad' => $p->unidad(),
+                    'cantidad_base' => $p->cantidadBase(),
+                ], array_filter($this->presentaciones->listarPorInsumo($insumo->id), static fn (PresentacionInsumo $p): bool => $p->estaActiva()))),
                 'movimientos' => InsumoMovimientoModel::where('insumo_id', $insumo->id)
                     ->orderByDesc('fecha')
                     ->limit(10)
@@ -92,6 +104,8 @@ final class InsumoController extends Controller
                         'cantidad' => (float) $m->cantidad,
                         'fecha' => $m->fecha?->format(DATE_ATOM),
                         'observacion' => $m->observacion,
+                        'origen_tipo' => $m->origen_tipo,
+                        'origen_id' => $m->origen_id,
                     ]),
             ],
         ]);
@@ -211,6 +225,9 @@ final class InsumoController extends Controller
             'stock_minimo' => $insumo->stockMinimo(),
             'estado' => $insumo->estado(),
             'esta_bajo_minimo' => $insumo->estaBajoMinimo(),
+            'descripcion' => $insumo->descripcion(),
+            // La leche no se compra ni se ajusta a mano: sube con Acopio y baja con Producción.
+            'es_leche' => $insumo->esLeche(),
         ];
     }
 }

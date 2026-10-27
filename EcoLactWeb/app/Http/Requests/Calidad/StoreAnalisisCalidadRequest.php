@@ -42,6 +42,9 @@ class StoreAnalisisCalidadRequest extends FormRequest
             'origenes' => ['nullable', 'array'],
             'origenes.*' => ['in:OCR,MANUAL'],
             'observacion' => ['nullable', 'string'],
+            // Hora real en el teléfono (análisis hecho sin conexión y sincronizado después).
+            'fecha_analisis' => ['nullable', 'date'],
+            'fecha_captura_local' => ['nullable', 'date'],
         ];
     }
 

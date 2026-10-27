@@ -17,6 +17,7 @@ use App\Http\Controllers\Web\Analista\AnalisisCalidadController as AnalistaAnali
 use App\Http\Controllers\Web\Analista\ComunicadoController as AnalistaComunicadoController;
 use App\Http\Controllers\Web\Analista\DashboardController as AnalistaDashboardController;
 use App\Http\Controllers\Web\Analista\EntregaController as AnalistaEntregaController;
+use App\Http\Controllers\Web\Analista\MuestreoController as AnalistaMuestreoController;
 use App\Http\Controllers\Web\Analista\ProveedorController as AnalistaProveedorController;
 use App\Http\Controllers\Web\AnalistaCalidadController;
 use App\Http\Controllers\Web\Auth\HomeRedirectController;
@@ -366,7 +367,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('entregas', [AcopiadorEntregaController::class, 'index'])->name('entregas.index');
         Route::get('entregas/crear', [AcopiadorEntregaController::class, 'create'])->name('entregas.create');
         Route::get('entregas/{entrega}', [AcopiadorEntregaController::class, 'show'])->name('entregas.show');
-        Route::post('entregas', [AcopiadorEntregaController::class, 'store'])->name('entregas.store');
+        Route::post('entregas', [AcopiadorEntregaController::class, 'store'])->middleware('requiere.asistencia')->name('entregas.store');
 
         // Recorridos: mapa + lista ordenada de paradas, identificación por
         // DNI/QR y registro de acopio. El acopiador nunca crea sus propios
@@ -374,11 +375,11 @@ Route::middleware(['auth', 'active'])->group(function () {
         // solo abre, opera y consulta los que ya le fueron asignados.
         Route::get('recorridos', [AcopiadorRecorridoController::class, 'index'])->name('recorridos.index');
         Route::get('recorridos/{recorrido}', [AcopiadorRecorridoController::class, 'show'])->name('recorridos.show');
-        Route::patch('recorridos/{recorrido}/iniciar', [AcopiadorRecorridoController::class, 'iniciar'])->name('recorridos.iniciar');
-        Route::patch('recorridos/{recorrido}/finalizar', [AcopiadorRecorridoController::class, 'finalizar'])->name('recorridos.finalizar');
+        Route::patch('recorridos/{recorrido}/iniciar', [AcopiadorRecorridoController::class, 'iniciar'])->middleware('requiere.asistencia')->name('recorridos.iniciar');
+        Route::patch('recorridos/{recorrido}/finalizar', [AcopiadorRecorridoController::class, 'finalizar'])->middleware('requiere.asistencia')->name('recorridos.finalizar');
         Route::post('recorridos/{recorrido}/identificar', [AcopiadorRecorridoController::class, 'identificar'])->name('recorridos.identificar');
-        Route::post('recorridos/{recorrido}/paradas/{parada}/acopio', [AcopiadorRecorridoController::class, 'registrarAcopio'])->name('recorridos.paradas.acopio');
-        Route::post('recorridos/{recorrido}/paradas/{parada}/no-entrego', [AcopiadorRecorridoController::class, 'noEntrego'])->name('recorridos.paradas.no-entrego');
+        Route::post('recorridos/{recorrido}/paradas/{parada}/acopio', [AcopiadorRecorridoController::class, 'registrarAcopio'])->middleware('requiere.asistencia')->name('recorridos.paradas.acopio');
+        Route::post('recorridos/{recorrido}/paradas/{parada}/no-entrego', [AcopiadorRecorridoController::class, 'noEntrego'])->middleware('requiere.asistencia')->name('recorridos.paradas.no-entrego');
 
         // Seguimiento de calidad: SOLO LECTURA (ver el resultado de lo que
         // él recolectó). Registrar/finalizar es exclusivo de CALIDAD.
@@ -401,19 +402,24 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::prefix('calidad')->as('calidad.')->middleware('role:CALIDAD')->group(function () {
         Route::get('dashboard', [AnalistaDashboardController::class, 'index'])->name('dashboard');
 
-        // Entregas: lectura de cualquier zona, para elegir a quién
-        // analizar.
+        // Muestreo: Calidad solo analiza las entregas que selecciona como
+        // muestra (al azar —lo sortea el servidor— o manualmente).
+        Route::get('muestreo', [AnalistaMuestreoController::class, 'index'])->name('muestreo.index');
+        Route::post('muestreo', [AnalistaMuestreoController::class, 'store'])->middleware('requiere.asistencia')->name('muestreo.store');
+
+        // Entregas: lectura de cualquier zona, para elegir qué muestrear;
+        // store = muestreo directo en campo.
         Route::get('entregas', [AnalistaEntregaController::class, 'index'])->name('entregas.index');
-        Route::post('entregas', [AnalistaEntregaController::class, 'store'])->name('entregas.store');
+        Route::post('entregas', [AnalistaEntregaController::class, 'store'])->middleware('requiere.asistencia')->name('entregas.store');
         Route::get('entregas/{entrega}', [AnalistaEntregaController::class, 'show'])->name('entregas.show');
         Route::get('entregas/{entrega}/analisis', [AnalistaAnalisisCalidadController::class, 'porEntrega'])->name('entregas.analisis.index');
 
         // Análisis de calidad: registrar y finalizar es exclusivo de este rol.
         Route::get('analisis-calidad', [AnalistaAnalisisCalidadController::class, 'index'])->name('analisis-calidad.index');
         Route::get('analisis-calidad/{analisis}', [AnalistaAnalisisCalidadController::class, 'show'])->name('analisis-calidad.show');
-        Route::post('analisis-calidad', [AnalistaAnalisisCalidadController::class, 'store'])->name('analisis-calidad.store');
-        Route::post('analisis-calidad/escanear-ticket', TicketAnalizadorController::class)->name('analisis-calidad.escanear-ticket');
-        Route::patch('analisis-calidad/{analisis}/finalizar', [AnalistaAnalisisCalidadController::class, 'finalizar'])->name('analisis-calidad.finalizar');
+        Route::post('analisis-calidad', [AnalistaAnalisisCalidadController::class, 'store'])->middleware('requiere.asistencia')->name('analisis-calidad.store');
+        Route::post('analisis-calidad/escanear-ticket', TicketAnalizadorController::class)->middleware('requiere.asistencia')->name('analisis-calidad.escanear-ticket');
+        Route::patch('analisis-calidad/{analisis}/finalizar', [AnalistaAnalisisCalidadController::class, 'finalizar'])->middleware('requiere.asistencia')->name('analisis-calidad.finalizar');
 
         // Proveedores: lectura de cualquier zona, para elegir destinatarios
         // de comunicados y revisar su historial.
@@ -441,8 +447,8 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('produccion/crear', [PlantaProduccionController::class, 'create'])->name('produccion.create');
         Route::post('produccion/requerimientos', [PlantaProduccionController::class, 'requerimientos'])->name('produccion.requerimientos');
         Route::get('produccion/{lote}', [PlantaProduccionController::class, 'show'])->name('produccion.show');
-        Route::post('produccion', [PlantaProduccionController::class, 'store'])->name('produccion.store');
-        Route::post('produccion/{lote}/finalizar', [PlantaProduccionController::class, 'finalizar'])->name('produccion.finalizar');
+        Route::post('produccion', [PlantaProduccionController::class, 'store'])->middleware('requiere.asistencia')->name('produccion.store');
+        Route::post('produccion/{lote}/finalizar', [PlantaProduccionController::class, 'finalizar'])->middleware('requiere.asistencia')->name('produccion.finalizar');
 
         // Recetas: solo lectura para el encargado (las configura el ADMINISTRADOR).
         Route::get('recetas', [PlantaRecetaController::class, 'index'])->name('recetas.index');
@@ -452,9 +458,9 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('insumos', [PlantaInsumoController::class, 'index'])->name('insumos.index');
         Route::get('insumos/movimientos', [PlantaInsumoController::class, 'movimientos'])->name('insumos.movimientos');
         Route::get('insumos/{insumo}', [PlantaInsumoController::class, 'show'])->name('insumos.show');
-        Route::post('insumos', [PlantaInsumoController::class, 'store'])->name('insumos.store');
-        Route::patch('insumos/{insumo}', [PlantaInsumoController::class, 'update'])->name('insumos.update');
-        Route::post('insumos/{insumo}/movimiento', [PlantaInsumoController::class, 'registrarMovimiento'])->name('insumos.movimiento');
+        Route::post('insumos', [PlantaInsumoController::class, 'store'])->middleware('requiere.asistencia')->name('insumos.store');
+        Route::patch('insumos/{insumo}', [PlantaInsumoController::class, 'update'])->middleware('requiere.asistencia')->name('insumos.update');
+        Route::post('insumos/{insumo}/movimiento', [PlantaInsumoController::class, 'registrarMovimiento'])->middleware('requiere.asistencia')->name('insumos.movimiento');
 
         // Productos: SOLO LECTURA del stock generado por producción (el
         // ajuste manual de inventario de productos terminados sigue siendo
@@ -476,7 +482,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('ventas/crear', [PersonalVentasVentaController::class, 'create'])->name('ventas.create');
         Route::get('ventas/saldo-proveedor/{proveedor}', [PersonalVentasVentaController::class, 'saldoProveedor'])->whereNumber('proveedor')->name('ventas.saldo-proveedor');
         Route::get('ventas/{venta}', [PersonalVentasVentaController::class, 'show'])->name('ventas.show');
-        Route::post('ventas', [PersonalVentasVentaController::class, 'store'])->name('ventas.store');
+        Route::post('ventas', [PersonalVentasVentaController::class, 'store'])->middleware('requiere.asistencia')->name('ventas.store');
 
         // Productos: Stock de productos (con ingreso de inventario recibido
         // de planta) + Movimientos (historial completo de entradas/salidas).
@@ -485,7 +491,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::get('productos/{producto}', [PersonalVentasProductoController::class, 'show'])->name('productos.show');
 
         Route::get('compradores', [PersonalVentasCompradorController::class, 'index'])->name('compradores.index');
-        Route::post('compradores', [PersonalVentasCompradorController::class, 'store'])->name('compradores.store');
+        Route::post('compradores', [PersonalVentasCompradorController::class, 'store'])->middleware('requiere.asistencia')->name('compradores.store');
 
         // NO se permite: configurar precios (ProductoPrecioPolicy es
         // exclusiva de ADMINISTRADOR), producción, insumos, proveedores,

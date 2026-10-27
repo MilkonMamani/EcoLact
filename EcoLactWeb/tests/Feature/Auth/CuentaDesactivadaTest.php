@@ -11,6 +11,9 @@ require_once __DIR__.'/../../Support/PagosFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
 /*
  * Solo el administrador desactiva. Un trabajador o proveedor desactivado queda en
  * "solo consulta": puede entrar y ver todo lo que hizo antes, pero no registrar,

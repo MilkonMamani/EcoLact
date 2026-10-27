@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\IdempotenciaApi;
+use App\Http\Middleware\RequiereAsistencia;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Support\SesionWeb;
 use Illuminate\Foundation\Application;
@@ -22,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'active' => EnsureUserIsActive::class,
+            'idempotente' => IdempotenciaApi::class,
+            // Personal sin asistencia válida: consulta sí, opera no (ver EstadoAsistenciaActual).
+            'requiere.asistencia' => RequiereAsistencia::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

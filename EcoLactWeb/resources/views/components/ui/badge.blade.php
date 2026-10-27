@@ -22,6 +22,10 @@
         'PENDIENTE_ANALISIS' => 'bg-warning/10 text-warning ring-warning/20',
         'ANALIZADA' => 'bg-success/10 text-success ring-success/20',
         'ANULADA' => 'bg-danger/10 text-danger ring-danger/20',
+        // Muestreo de calidad
+        'SELECCIONADA' => 'bg-warning/10 text-warning ring-warning/20',
+        'EN_ANALISIS' => 'bg-info/10 text-info ring-info/20',
+        'CANCELADA' => 'bg-text-muted/10 text-text-muted ring-text-muted/20',
 
         // Productos terminados
         'DISPONIBLE' => 'bg-success/10 text-success ring-success/20',
@@ -81,13 +85,13 @@
         // Positivo / final correcto → doble check verde
         'positivo' => ['ANALIZADA', 'ACEPTADA', 'CONFIRMADO', 'PUBLICADO', 'FINALIZADO', 'RECOLECTADO', 'PAGADA', 'PAGADO', 'PRESENTE', 'ACTIVO', 'ACTIVA', 'DISPONIBLE', 'CONFIGURADA', 'REGISTRADA', 'CERRADO', 'SUCCESS'],
         // Pendiente / en curso → reloj ámbar
-        'pendiente' => ['PENDIENTE_ANALISIS', 'PENDIENTE', 'SIN_REGISTRO', 'BORRADOR', 'EN_CURSO', 'EN_PROCESO', 'EN_PROGRESO', 'PROGRAMADA', 'REGISTRADO', 'PARCIALMENTE_PAGADA', 'ABIERTO', 'INFO'],
+        'pendiente' => ['PENDIENTE_ANALISIS', 'SELECCIONADA', 'EN_ANALISIS', 'PENDIENTE', 'SIN_REGISTRO', 'BORRADOR', 'EN_CURSO', 'EN_PROCESO', 'EN_PROGRESO', 'PROGRAMADA', 'REGISTRADO', 'PARCIALMENTE_PAGADA', 'ABIERTO', 'INFO'],
         // Observación / requiere atención → advertencia amarilla
         'advertencia' => ['OBSERVADA', 'SIN_STOCK', 'NO_ENTREGO', 'WARNING'],
         // Negativo / rechazado → X roja
         'negativo' => ['RECHAZADA', 'ANULADA', 'ANULADO', 'CANCELADO', 'FALTA', 'SIN_RECETA', 'INACTIVO', 'INACTIVA', 'DANGER'],
         // Sin efecto (no aplica / vencido / sin configurar) → neutro gris
-        'neutro' => ['VENCIDA', 'SIN_CONFIGURAR', 'NO_APLICABLE', 'FUTURO'],
+        'neutro' => ['CANCELADA', 'VENCIDA', 'SIN_CONFIGURAR', 'NO_APLICABLE', 'FUTURO'],
     ];
     $estilosCompactos = [
         'positivo' => ['check-double', 'is-positivo'],
@@ -104,6 +108,7 @@
         'EN_CURSO' => 'En curso', 'EN_PROCESO' => 'En proceso', 'EN_PROGRESO' => 'En progreso', 'SIN_STOCK' => 'Sin stock',
         'SIN_RECETA' => 'Sin receta', 'SIN_CONFIGURAR' => 'Sin configurar', 'NO_APLICABLE' => 'No aplica',
         'PARCIALMENTE_PAGADA' => 'Parcialmente pagada',
+        'SELECCIONADA' => 'Muestra pendiente', 'EN_ANALISIS' => 'En análisis',
     ];
     $etiqueta = $slot->isEmpty() ? ($nombres[$key] ?? str($key)->replace('_', ' ')->lower()->ucfirst()->toString()) : trim(strip_tags((string) $slot));
 @endphp

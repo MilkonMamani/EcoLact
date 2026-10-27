@@ -1,123 +1,115 @@
 package pe.edu.upeu.ecolactmobile.feature.planta.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import pe.edu.upeu.ecolactmobile.core.ui.components.ChipTone
-import pe.edu.upeu.ecolactmobile.core.ui.components.EmptyBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ErrorBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.ListItemCard
-import pe.edu.upeu.ecolactmobile.core.ui.components.LoadingBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.OfflineBanner
-import pe.edu.upeu.ecolactmobile.core.ui.components.StatusChip
-import pe.edu.upeu.ecolactmobile.core.ui.state.ResourceViewModel
-import pe.edu.upeu.ecolactmobile.core.ui.state.UiState
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import pe.edu.upeu.ecolactmobile.core.cache.CachedValue
+import pe.edu.upeu.ecolactmobile.core.ui.icons.EcoLactIcons
+import pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModel
 import pe.edu.upeu.ecolactmobile.core.ui.theme.EcoLactColors
-import pe.edu.upeu.ecolactmobile.feature.planta.InsumosListResponse
+import pe.edu.upeu.ecolactmobile.feature.planta.InsumoFila
 import pe.edu.upeu.ecolactmobile.feature.planta.PlantaRepository
-import pe.edu.upeu.ecolactmobile.feature.planta.ProductosListResponse
+import pe.edu.upeu.ecolactmobile.feature.planta.ProductoFila
+import pe.edu.upeu.ecolactmobile.feature.planta.components.PestanasSegmento
+import pe.edu.upeu.ecolactmobile.feature.planta.formatCantidad
+import pe.edu.upeu.ecolactmobile.feature.planta.formatUnidadesLargo
+import pe.edu.upeu.ecolactmobile.feature.planta.nivelInsumo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.Tono
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ContenidoLocal
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.EstadoVacio
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemSubtitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ItemTitulo
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProveedorPantalla
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProviderListItem
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.StatusChip
 
-class PlantaInsumosViewModel(repository: PlantaRepository) :
-    ResourceViewModel<InsumosListResponse>({ repository.insumos() })
+data class InventarioData(val insumos: List<InsumoFila>, val productos: List<ProductoFila>)
 
-class PlantaProductosViewModel(repository: PlantaRepository) :
-    ResourceViewModel<ProductosListResponse>({ repository.productos() })
+class PlantaInventarioViewModel(private val repository: PlantaRepository, isOnline: StateFlow<Boolean>) :
+    LocalFirstViewModel<InventarioData>(
+        combine(repository.observeInsumos(), repository.observeProductos()) { insumos, productos ->
+            val base = insumos ?: productos
+            base?.let { CachedValue(InventarioData(insumos?.value?.filas.orEmpty(), productos?.value?.filas.orEmpty()), it.cachedAtIso) }
+        },
+        isOnline,
+        {
+            repository.refreshInsumos()
+            repository.refreshProductos()
+        },
+    )
 
+/** Inventario de consulta: insumos (con su estado) y productos terminados en SOLO LECTURA. */
 @Composable
 fun PlantaInventarioScreen(
-    insumosViewModel: PlantaInsumosViewModel,
-    productosViewModel: PlantaProductosViewModel,
+    viewModel: PlantaInventarioViewModel,
+    tab: Int,
+    onTab: (Int) -> Unit,
     onVerInsumo: (Long) -> Unit,
-    onNuevoInsumo: () -> Unit,
     onVerProducto: (Long) -> Unit,
 ) {
-    var tab by remember { mutableStateOf(0) }
+    val state by viewModel.state.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(selected = tab == 0, onClick = { tab = 0 }, label = { Text("Insumos") })
-            FilterChip(selected = tab == 1, onClick = { tab = 1 }, label = { Text("Productos") })
-        }
-
-        if (tab == 0) {
-            Button(
-                onClick = onNuevoInsumo,
-                modifier = Modifier.fillMaxWidth().height(44.dp).padding(vertical = 8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = EcoLactColors.VerdePrincipal),
-            ) { Text("+ Registrar insumo") }
-
-            val state by insumosViewModel.state.collectAsState()
-            when (val s = state) {
-                is UiState.Loading -> LoadingBox()
-                is UiState.Error -> ErrorBox(s.message, onRetry = insumosViewModel::refresh)
-                is UiState.Success -> {
-                    Column {
-                        if (s.fromCache) OfflineBanner(s.cachedAtIso, Modifier.padding(bottom = 12.dp))
-                        if (s.data.filas.isEmpty()) {
-                            EmptyBox("No hay insumos registrados")
-                        } else {
-                            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                items(s.data.filas, key = { it.id }) { insumo ->
-                                    ListItemCard(onClick = { onVerInsumo(insumo.id) }) {
-                                        Text(insumo.nombre, style = MaterialTheme.typography.bodyLarge)
-                                        Text("${insumo.stock_actual} ${insumo.unidad_medida ?: ""}", color = EcoLactColors.TextoSecundario)
-                                        StatusChip(
-                                            if (insumo.esta_bajo_minimo) "🔴 Bajo" else "🟢 Normal",
-                                            if (insumo.esta_bajo_minimo) ChipTone.ERROR else ChipTone.EXITO,
-                                            Modifier.padding(top = 4.dp),
-                                        )
-                                    }
-                                }
-                            }
+    ContenidoLocal(state, onRetry = viewModel::refresh) { s ->
+        val datos = s.data
+        ProveedorPantalla(verticalSpacing = Arrangement.spacedBy(12.dp)) {
+            item {
+                PestanasSegmento(listOf("Insumos (${datos.insumos.size})", "Productos (${datos.productos.size})"), tab, onTab)
+            }
+            if (tab == 0) {
+                if (datos.insumos.isEmpty()) item { EstadoVacio("No hay insumos registrados.") }
+                // La leche primero: es el insumo principal y viene del acopio.
+                val insumos = datos.insumos.sortedByDescending { it.esLeche }
+                insumos.forEachIndexed { index, insumo ->
+                    item(key = "i-${insumo.id}") {
+                        val nivel = nivelInsumo(insumo)
+                        ProviderListItem(
+                            primera = index == 0,
+                            ultima = index == insumos.lastIndex,
+                            onClick = { onVerInsumo(insumo.id) },
+                            leading = { IconoFila(if (insumo.esLeche) EcoLactIcons.LocalShipping else EcoLactIcons.Inventory) },
+                            trailing = { StatusChip(nivel.label, nivel.tono) },
+                        ) {
+                            ItemTitulo(insumo.nombre)
+                            ItemSubtitulo(formatCantidad(insumo.stock_actual, insumo.unidad))
                         }
                     }
                 }
-            }
-        } else {
-            val state by productosViewModel.state.collectAsState()
-            when (val s = state) {
-                is UiState.Loading -> LoadingBox()
-                is UiState.Error -> ErrorBox(s.message, onRetry = productosViewModel::refresh)
-                is UiState.Success -> {
-                    Column(modifier = Modifier.padding(top = 8.dp)) {
-                        if (s.fromCache) OfflineBanner(s.cachedAtIso, Modifier.padding(bottom = 12.dp))
-                        if (s.data.filas.isEmpty()) {
-                            EmptyBox("No hay productos registrados")
-                        } else {
-                            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                items(s.data.filas, key = { it.id }) { producto ->
-                                    ListItemCard(onClick = { onVerProducto(producto.id) }) {
-                                        Text(producto.nombre, style = MaterialTheme.typography.bodyLarge)
-                                        Text(
-                                            "${producto.cantidad_actual} ${producto.unidad_medida ?: ""}",
-                                            color = if (producto.sin_stock) EcoLactColors.Rojo else EcoLactColors.TextoSecundario,
-                                        )
-                                    }
-                                }
-                            }
+            } else {
+                if (datos.productos.isEmpty()) item { EstadoVacio("Todavía no hay productos terminados.") }
+                datos.productos.forEachIndexed { index, producto ->
+                    item(key = "p-${producto.id}") {
+                        ProviderListItem(
+                            primera = index == 0,
+                            ultima = index == datos.productos.lastIndex,
+                            onClick = { onVerProducto(producto.id) },
+                            leading = { IconoFila(EcoLactIcons.ShoppingBag) },
+                            trailing = if (producto.sin_stock) ({ StatusChip("Sin stock", Tono.ERROR) }) else null,
+                        ) {
+                            ItemTitulo(producto.nombre)
+                            ItemSubtitulo(formatUnidadesLargo(producto.cantidad_actual, producto.unidad_medida))
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+internal fun IconoFila(icon: ImageVector) {
+    Box(Modifier.size(40.dp).background(EcoLactColors.VerdeClaro, RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center) {
+        Icon(icon, contentDescription = null, tint = EcoLactColors.VerdePrincipal, modifier = Modifier.size(22.dp))
     }
 }

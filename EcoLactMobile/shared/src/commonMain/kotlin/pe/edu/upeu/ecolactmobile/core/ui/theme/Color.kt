@@ -18,6 +18,13 @@ object EcoLactColors {
     val Amarillo = Color(0xFFD9A91A)
     val AmarilloClaro = Color(0xFFFFF6DB)
 
+    /** Solo para el estado de conectividad: "sin internet / trabajando con datos locales". */
+    val Naranja = Color(0xFFE07A1F)
+    val NaranjaClaro = Color(0xFFFDF0E3)
+
+    /** Texto sobre [NaranjaClaro] (estado "Observada"/"Pendiente" en chips): el naranja puro no da contraste suficiente. */
+    val NaranjaOscuro = Color(0xFF8F4A10)
+
     val Rojo = Color(0xFFC9363E)
     val RojoClaro = Color(0xFFFCEAEC)
 

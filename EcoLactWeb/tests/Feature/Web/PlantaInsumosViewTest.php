@@ -7,6 +7,9 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
 it('la pantalla de inventario de insumos muestra los KPIs y distingue niveles de stock', function () {
     $encargado = fixture_usuario('ENCARGADO_PLANTA');
     fixture_insumo('Cuajo', 'ml', 50.0, 100.0);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Proveedor;
 
 use App\Application\Proveedor\ObtenerProveedor;
 use App\Domain\Proveedor\Proveedor;
+use App\Domain\Zona\ZonaRepository;
 use App\Http\Controllers\Controller;
 use DomainException;
 use Illuminate\Http\JsonResponse;
@@ -18,6 +19,7 @@ final class PerfilController extends Controller
 {
     public function __construct(
         private readonly ObtenerProveedor $obtenerProveedor,
+        private readonly ZonaRepository $zonas,
     ) {}
 
     public function show(Request $request): JsonResponse
@@ -45,6 +47,12 @@ final class PerfilController extends Controller
             'zona_id' => $proveedor->zonaId(),
             'estado' => $proveedor->estado()->value,
             'fecha_registro' => $proveedor->fechaRegistro()->format('Y-m-d'),
+            'zona_nombre' => $this->zonaNombre($proveedor->zonaId()),
         ];
+    }
+
+    private function zonaNombre(?int $zonaId): ?string
+    {
+        return $zonaId === null ? null : $this->zonas->buscarPorId($zonaId)?->nombre();
     }
 }

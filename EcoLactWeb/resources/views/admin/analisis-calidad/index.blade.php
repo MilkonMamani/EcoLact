@@ -10,7 +10,7 @@
         $filtrosActivos = request()->anyFilled(['q', 'fecha', 'zona_id', 'resultado', 'analista_id', 'estado']);
         $resultados = ['ACEPTADA' => 'Aceptada', 'OBSERVADA' => 'Observada', 'RECHAZADA' => 'Rechazada'];
         $estados = [
-            'PENDIENTE' => ['Pendiente de análisis', 'clock', 'is-pendiente'],
+            'PENDIENTE' => ['Sin análisis', 'clock', 'is-pendiente'],
             'BORRADOR' => ['Análisis en borrador (sin confirmar)', 'pen-line', 'is-borrador'],
             'CONFIRMADO' => ['Análisis confirmado', 'check-double', 'is-confirmado'],
         ];
@@ -59,7 +59,7 @@
                 <x-forms.select name="zona_id" label="Zona" :sticky="false" :options="collect($datos->zonas)->pluck('nombre', 'id')->all()" :value="request('zona_id')" placeholder="Todas" />
                 <x-forms.select name="resultado" label="Resultado" :sticky="false" :options="$resultados" :value="request('resultado')" placeholder="Todos" />
                 <x-forms.select name="analista_id" label="Analista" :sticky="false" :options="collect($datos->analistas)->pluck('nombre', 'id')->all()" :value="request('analista_id')" placeholder="Todos" />
-                <x-forms.select name="estado" label="Estado" :sticky="false" :options="['PENDIENTE' => 'Pendiente', 'BORRADOR' => 'Borrador', 'CONFIRMADO' => 'Confirmado']" :value="request('estado')" placeholder="Todos" />
+                <x-forms.select name="estado" label="Estado" :sticky="false" :options="['PENDIENTE' => 'Sin análisis', 'BORRADOR' => 'Borrador', 'CONFIRMADO' => 'Confirmado']" :value="request('estado')" placeholder="Todos" />
 
                 @if (request()->filled('orden'))
                     <input type="hidden" name="orden" value="{{ $filtro->orden }}">

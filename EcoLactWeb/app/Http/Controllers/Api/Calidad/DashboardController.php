@@ -31,9 +31,11 @@ final class DashboardController extends Controller
     private function serializar(DashboardCalidadData $dashboard): array
     {
         return [
-            'pendientes_analisis' => $dashboard->pendientesAnalisis,
+            // Muestras seleccionadas sin analizar (no todas las entregas).
+            'muestras_pendientes' => $dashboard->muestrasPendientes,
+            'analizadas_hoy' => $dashboard->analizadasHoy,
             'kpis_periodo' => $dashboard->kpisPeriodo,
-            'pendientes_filas' => $dashboard->pendientesFilas,
+            'muestras_filas' => $dashboard->muestrasFilas,
             'ultimos_analisis_filas' => $dashboard->ultimosAnalisisFilas,
             'comunicados_recientes' => array_map($this->serializarComunicado(...), $dashboard->comunicadosRecientes),
         ];

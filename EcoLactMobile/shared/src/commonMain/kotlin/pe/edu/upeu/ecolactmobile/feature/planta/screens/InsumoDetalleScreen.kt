@@ -3,117 +3,119 @@ package pe.edu.upeu.ecolactmobile.feature.planta.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import pe.edu.upeu.ecolactmobile.core.ui.components.ErrorBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.LoadingBox
-import pe.edu.upeu.ecolactmobile.core.ui.components.OfflineBanner
-import pe.edu.upeu.ecolactmobile.core.ui.components.SectionTitle
-import pe.edu.upeu.ecolactmobile.core.ui.state.ResourceViewModel
-import pe.edu.upeu.ecolactmobile.core.ui.state.ScreenModel
-import pe.edu.upeu.ecolactmobile.core.ui.state.UiState
+import pe.edu.upeu.ecolactmobile.core.ui.icons.EcoLactIcons
+import pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModel
 import pe.edu.upeu.ecolactmobile.core.ui.theme.EcoLactColors
+import pe.edu.upeu.ecolactmobile.feature.calidad.components.BotonPrincipal
+import pe.edu.upeu.ecolactmobile.feature.calidad.components.BotonSecundario
 import pe.edu.upeu.ecolactmobile.feature.planta.InsumoDetalleResponse
 import pe.edu.upeu.ecolactmobile.feature.planta.PlantaRepository
-import pe.edu.upeu.ecolactmobile.feature.planta.RegistrarMovimientoRequest
+import pe.edu.upeu.ecolactmobile.feature.planta.components.AvisoInfo
+import pe.edu.upeu.ecolactmobile.feature.planta.components.TituloBloque
+import pe.edu.upeu.ecolactmobile.feature.planta.descripcionMovimiento
+import pe.edu.upeu.ecolactmobile.feature.planta.formatCantidad
+import pe.edu.upeu.ecolactmobile.feature.planta.formatCantidadConSigno
+import pe.edu.upeu.ecolactmobile.feature.planta.formatFechaHoraLarga
+import pe.edu.upeu.ecolactmobile.feature.planta.nivelInsumo
+import pe.edu.upeu.ecolactmobile.feature.planta.nombreUnidad
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ContenidoLocal
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.EstadoVacio
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.ProveedorPantalla
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.StatusChip
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.SummaryCard
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.SummaryRow
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.SummaryRowSlot
+import pe.edu.upeu.ecolactmobile.feature.proveedor.components.anchoContenido
+import pe.edu.upeu.ecolactmobile.feature.trabajador.NotaRequiereAsistencia
 
-class InsumoDetalleViewModel(repository: PlantaRepository, insumoId: Long) :
-    ResourceViewModel<InsumoDetalleResponse>({ repository.insumoDetalle(insumoId) })
+class InsumoDetalleViewModel(repository: PlantaRepository, isOnline: StateFlow<Boolean>, id: Long) :
+    LocalFirstViewModel<InsumoDetalleResponse>(repository.observeInsumoDetalle(id), isOnline, { repository.refreshInsumoDetalle(id) }, refreshOnStart = true)
 
-data class MovimientoFormState(val tipo: String = "ENTRADA", val motivo: String = "", val cantidad: String = "", val enviando: Boolean = false, val error: String? = null)
-
-class MovimientoFormViewModel(private val repository: PlantaRepository, private val insumoId: Long, private val onGuardado: () -> Unit) : ScreenModel() {
-    private val _state = MutableStateFlow(MovimientoFormState())
-    val state: StateFlow<MovimientoFormState> = _state.asStateFlow()
-
-    fun onTipoChange(v: String) = _state.update { it.copy(tipo = v) }
-    fun onMotivoChange(v: String) = _state.update { it.copy(motivo = v) }
-    fun onCantidadChange(v: String) = _state.update { it.copy(cantidad = v) }
-
-    fun registrar() {
-        val cantidad = _state.value.cantidad.toDoubleOrNull()
-        if (cantidad == null || cantidad <= 0 || _state.value.motivo.isBlank()) {
-            _state.update { it.copy(error = "Ingrese motivo y una cantidad válida") }
-            return
-        }
-        scope.launch {
-            _state.update { it.copy(enviando = true, error = null) }
-            repository.registrarMovimiento(insumoId, RegistrarMovimientoRequest(_state.value.tipo, _state.value.motivo, cantidad))
-                .onSuccess { _state.update { MovimientoFormState() }; onGuardado() }
-                .onFailure { e -> _state.update { it.copy(enviando = false, error = e.message ?: "No se pudo registrar el movimiento") } }
-        }
-    }
-}
-
+/**
+ * Detalle de un insumo. La LECHE es especial: no se compra ni se ajusta a mano (sube con Acopio,
+ * baja con Producción), así que no muestra los botones de compra.
+ */
 @Composable
-fun InsumoDetalleScreen(viewModel: InsumoDetalleViewModel, formViewModel: MovimientoFormViewModel) {
+fun InsumoDetalleScreen(viewModel: InsumoDetalleViewModel, onEscanearBoleta: () -> Unit, onCompraManual: () -> Unit) {
     val state by viewModel.state.collectAsState()
-    val form by formViewModel.state.collectAsState()
 
-    when (val s = state) {
-        is UiState.Loading -> LoadingBox()
-        is UiState.Error -> ErrorBox(s.message, onRetry = viewModel::refresh)
-        is UiState.Success -> {
-            val insumo = s.data.insumo
-            Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                if (s.fromCache) OfflineBanner(s.cachedAtIso)
-                Text(insumo.nombre, style = MaterialTheme.typography.titleLarge)
-                Text("${insumo.stock_actual} ${insumo.unidad_medida ?: ""}", style = MaterialTheme.typography.titleMedium)
-                insumo.stock_minimo?.let { Text("Stock mínimo: $it", color = EcoLactColors.TextoSecundario) }
-
-                if (s.data.movimientos.isNotEmpty()) {
-                    SectionTitle("Movimientos recientes")
-                    s.data.movimientos.forEach {
-                        Text("${it.fecha} · ${it.tipo} ${it.cantidad} · ${it.motivo ?: ""}", color = EcoLactColors.TextoSecundario)
+    ContenidoLocal(state, onRetry = viewModel::refresh) { s ->
+        val insumo = s.data.insumo
+        val unidad = insumo.unidad
+        ProveedorPantalla(verticalSpacing = Arrangement.spacedBy(14.dp)) {
+            item {
+                Row(Modifier.anchoContenido(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(insumo.nombre, style = MaterialTheme.typography.titleLarge, color = EcoLactColors.TextoPrincipal)
+                        val subtitulo = if (insumo.esLeche) "Del sistema (acopio)" else insumo.descripcion
+                        subtitulo?.takeIf { it.isNotBlank() }?.let {
+                            Text(it, style = MaterialTheme.typography.bodyMedium, color = EcoLactColors.TextoSecundario)
+                        }
+                    }
+                    val nivel = nivelInsumo(insumo)
+                    if (!insumo.esLeche) StatusChip(nivel.label, nivel.tono)
+                }
+            }
+            item {
+                SummaryCard {
+                    SummaryRow("Stock actual", formatCantidad(insumo.stock_actual, unidad), primera = true, destacado = true)
+                    if (!insumo.esLeche) insumo.stock_minimo?.let { SummaryRow("Stock mínimo", formatCantidad(it, unidad)) }
+                    SummaryRow("Unidad base", nombreUnidad(unidad))
+                }
+            }
+            if (insumo.esLeche) {
+                item { AvisoInfo("La leche aumenta automáticamente con cada acopio y se descuenta al iniciar una producción. No se compra ni se ajusta a mano.") }
+            } else {
+                item { TituloBloque("Presentaciones de compra") }
+                item {
+                    if (s.data.presentaciones.isEmpty()) {
+                        EstadoVacio("Sin presentaciones configuradas. Las configura el administrador.")
+                    } else {
+                        SummaryCard {
+                            s.data.presentaciones.forEachIndexed { index, p ->
+                                SummaryRow(p.etiqueta, "= ${formatCantidad(p.cantidad_base, unidad)}", primera = index == 0)
+                            }
+                        }
                     }
                 }
-
-                SectionTitle("Registrar movimiento")
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(selected = form.tipo == "ENTRADA", onClick = { formViewModel.onTipoChange("ENTRADA") }, label = { Text("Entrada") })
-                    FilterChip(selected = form.tipo == "SALIDA", onClick = { formViewModel.onTipoChange("SALIDA") }, label = { Text("Salida") })
+            }
+            item { TituloBloque("Movimientos recientes") }
+            item {
+                if (s.data.movimientos.isEmpty()) {
+                    EstadoVacio("Sin movimientos todavía.")
+                } else {
+                    SummaryCard {
+                        s.data.movimientos.forEachIndexed { index, m ->
+                            val entrada = m.tipo == "ENTRADA"
+                            SummaryRowSlot(m.fecha?.let(::formatFechaHoraLarga) ?: "—", primera = index == 0) {
+                                Column(horizontalAlignment = Alignment.End) {
+                                    Text(descripcionMovimiento(m), style = MaterialTheme.typography.bodyMedium, color = EcoLactColors.TextoPrincipal)
+                                    Text(
+                                        formatCantidadConSigno(m.cantidad, unidad, entrada),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = if (entrada) EcoLactColors.VerdeOscuro else EcoLactColors.TextoPrincipal,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
-                OutlinedTextField(form.motivo, formViewModel::onMotivoChange, label = { Text("Motivo") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(
-                    form.cantidad,
-                    formViewModel::onCantidadChange,
-                    label = { Text("Cantidad") },
-                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                form.error?.let { Text(it, color = EcoLactColors.Rojo) }
-                Button(
-                    onClick = formViewModel::registrar,
-                    enabled = !form.enviando,
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = EcoLactColors.VerdePrincipal),
-                ) {
-                    if (form.enviando) CircularProgressIndicator(modifier = Modifier.height(20.dp), color = EcoLactColors.Blanco)
-                    else Text("Registrar movimiento")
-                }
+            }
+            if (!insumo.esLeche) {
+                item { BotonPrincipal("Escanear boleta", onEscanearBoleta, icon = EcoLactIcons.PhotoCamera, operacion = true) }
+                item { BotonSecundario("Registrar compra manual", onCompraManual, icon = EcoLactIcons.Edit, operacion = true) }
+                item { NotaRequiereAsistencia() }
             }
         }
     }

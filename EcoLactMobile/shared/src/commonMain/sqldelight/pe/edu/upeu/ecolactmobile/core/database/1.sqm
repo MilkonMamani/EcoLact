@@ -1,0 +1,14 @@
+-- v1 → v2: foto/OCR local del análisis de calidad (ver CalidadCaptura.sq).
+CREATE TABLE IF NOT EXISTS calidad_captura (
+    entrega_id INTEGER NOT NULL PRIMARY KEY,
+    muestreo_id INTEGER,
+    foto BLOB,
+    foto_mime TEXT,
+    ticket_path TEXT,
+    estado TEXT NOT NULL,
+    valores_json TEXT,
+    mensaje_ocr TEXT,
+    fecha_captura_local TEXT NOT NULL,
+    fecha_sincronizacion TEXT,
+    updated_at TEXT NOT NULL
+);

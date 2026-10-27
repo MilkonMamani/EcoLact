@@ -77,6 +77,11 @@ final class RegistrarEntrega
             $existente = $this->entregas->buscarPorTokenIdempotencia($tokenIdempotencia);
 
             if ($existente !== null) {
+                // El token lo genera el teléfono: nunca devolver la entrega de otra persona.
+                if ($existente->registradoPorUserId() !== $acopiadorUserId) {
+                    throw new DomainException('La clave de idempotencia ya fue usada por otro usuario.');
+                }
+
                 return $existente;
             }
         }
@@ -129,7 +134,10 @@ final class RegistrarEntrega
                 acopiadorId: $acopiador?->id(),
                 zonaId: $proveedor->zonaId() ?? throw new DomainException('El proveedor no tiene una ruta ni zona asignada; no se puede registrar la entrega.'),
                 registradoPorUserId: $acopiadorUserId,
-                fechaHora: $fechaHora ?? new DateTimeImmutable,
+                // Hora real del acopio: la del evento si el cliente la envió (móvil, también
+                // offline) o la del servidor si no (Web, clientes antiguos). created_at
+                // queda como hora de llegada/sincronización.
+                fechaHora: $fechaHora ?? DateTimeImmutable::createFromInterface(now()),
                 litros: $litros,
                 metodoIdentificacion: $metodoIdentificacion,
                 estado: EstadoEntrega::PENDIENTE_ANALISIS,

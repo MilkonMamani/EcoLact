@@ -152,3 +152,25 @@ Nuevo módulo: el ADMINISTRADOR configura, por Zona, una o varias **Rutas** (lis
   ```
   No crea ninguna entrega.
 - Autorización: cada endpoint verifica que el recorrido pertenezca al acopiador autenticado (nunca al ID de la URL por sí solo); un recorrido ajeno responde `403`.
+
+## 10. Offline-first del acopiador (actualización)
+
+- `POST /acopiador/entregas`:
+  - Cabecera `Idempotency-Key` (opcional, máx. 64): se guarda como `entregas.token_idempotencia`. Reintentar con la misma clave devuelve la MISMA entrega (resuelve la limitación de la sección 4). Una clave usada por otro usuario → `422`.
+  - `fecha_hora` = hora REAL del acopio en el teléfono (también si se sincroniza horas después). Límites (`FechaEventoMovil`): no futura (tolerancia 10 min) y no más de 7 días atrás → `422`. Se normaliza a la zona horaria de la app. `fecha_registro` en la respuesta = llegada al servidor.
+  - Errores de negocio (proveedor inactivo, de otra zona, QR/DNI inexistente) → `422` (antes `500`), para que la cola offline los marque "Error de sincronización" sin reintentar.
+- Forma de cada entrega (listado, detalle, dashboard, seguimiento): agrega `proveedor_nombre`, `proveedor_dni`, `zona_nombre`, `fecha_registro`, `muestreo_estado` y `control_calidad` (`SIN_MUESTREO`, `SELECCIONADA`, `EN_ANALISIS`, `ACEPTADA`, `OBSERVADA`, `RECHAZADA`, `ANULADA`; ver `ControlCalidadEntrega`). Con el muestreo, una entrega sin muestra es "Sin muestreo", no "Pendiente de análisis".
+- `GET /acopiador/entregas?desde=Y-m-d`: acota el historial que guarda el teléfono.
+- `GET /acopiador/proveedores`: cada fila trae `qr_token` y `zona_nombre` (identificación por QR sin conexión; solo proveedores de su zona).
+- `GET /acopiador/dashboard`: agrega `acopiador` `{ nombres, apellidos, dni, telefono, estado, zona_id, zona_nombre }` (cabecera y "Mi perfil").
+- `GET /acopiador/comunicados`: cada fila trae `leido`; abrir el detalle lo marca leído (igual que proveedor).
+- `POST …/paradas/{id}/no-entrego`: idempotente (repetirlo no cambia nada); sobre una parada ya `RECOLECTADO` → `422`. `iniciar`/`finalizar` responden `422` en errores de negocio. `fecha_hora_ordeño` usa los mismos límites que `fecha_hora`.
+- `GET /acopiador/mi-asistencia` (solo lectura): `{ registrado, qr_token, controla_asistencia, hora_cierre, abierta_hoy, hoy, jornadas[] }`. La asistencia la registra el ADMINISTRADOR escaneando ese QR (`POST /admin/asistencia/qr`); el trabajador no marca su propia asistencia.
+
+### 10.1 Hora del acopio vs. hora de sincronización
+
+- Request (móvil): `fecha_hora_evento` — ISO 8601 **con desfase obligatorio** (`2026-10-27T09:35:12-05:00`), capturada UNA vez al pulsar "Guardar entrega" y guardada en el payload de `sync_queue`; cada reintento reenvía la misma junto con el mismo `Idempotency-Key`. `fecha_hora` se sigue aceptando (versiones anteriores). Sin ninguna → hora del servidor (Web, clientes antiguos).
+- Mismo contrato en `POST …/paradas/{id}/acopio` (`fecha_hora_evento`; `fecha_hora_ordeño` por compatibilidad).
+- BD: `entregas.fecha_hora` = hora real del acopio (guardada en UTC, convenio del proyecto: 09:35 Perú = 14:35 UTC). `entregas.created_at` = llegada al servidor (`fecha_registro` en la respuesta). No hay columnas nuevas.
+- Validación centralizada en `config/acopio.php` (`ACOPIO_MOVIL_MAX_DESFASE_RELOJ_MINUTOS`=10, `ACOPIO_MOVIL_MAX_DIAS_ATRASO`=7): más futura → 422 "no puede estar en el futuro"; más antigua → 422; sin desfase → 422.
+- La regla de 10 minutos para corregir litros (`Entrega::MINUTOS_EDICION_LITROS`) cuenta desde `fecha_hora` (el acopio), así que sincronizar tarde no abre una nueva ventana. El móvil aplica la misma regla a entregas aún no enviadas.

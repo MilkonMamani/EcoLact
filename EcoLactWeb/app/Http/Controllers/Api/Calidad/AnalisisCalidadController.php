@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\Calidad;
 
-use App\Application\Acopio\Contracts\EntregasListadoQuery;
-use App\Application\Acopio\EntregasFiltro;
 use App\Application\Calidad\AnalisisCalidadFiltro;
 use App\Application\Calidad\Contracts\AnalisisCalidadListadoQuery;
+use App\Application\Calidad\Contracts\MuestreosCalidadQuery;
 use App\Application\Calidad\FinalizarAnalisisCalidad;
 use App\Application\Calidad\ObtenerAnalisisCalidad;
 use App\Application\Calidad\ObtenerParametrosCalidad;
+use App\Application\Calidad\ObtenerReglasVigentesCalidad;
 use App\Application\Calidad\RegistrarAnalisisCalidad;
 use App\Domain\Calidad\AnalisisCalidad;
 use App\Http\Controllers\Api\Concerns\PaginaFilas;
@@ -17,6 +17,8 @@ use App\Http\Requests\Calidad\FinalizarAnalisisCalidadRequest;
 use App\Http\Requests\Calidad\StoreAnalisisCalidadRequest;
 use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
 use App\Infrastructure\Persistence\Models\EntregaModel;
+use DateTimeImmutable;
+use DomainException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -29,14 +31,16 @@ final class AnalisisCalidadController extends Controller
         private readonly RegistrarAnalisisCalidad $registrarAnalisisCalidad,
         private readonly FinalizarAnalisisCalidad $finalizarAnalisisCalidad,
         private readonly ObtenerAnalisisCalidad $obtenerAnalisisCalidad,
-        private readonly EntregasListadoQuery $entregasListadoQuery,
+        private readonly MuestreosCalidadQuery $muestreos,
         private readonly AnalisisCalidadListadoQuery $analisisCalidadListadoQuery,
         private readonly ObtenerParametrosCalidad $obtenerParametrosCalidad,
+        private readonly ObtenerReglasVigentesCalidad $obtenerReglasVigentes,
     ) {}
 
     /**
-     * "Pendientes" (entregas sin análisis) o "Historial" (análisis ya
-     * registrados), según ?tab=. Mismo criterio que calidad.analisis-calidad.index.
+     * "Pendientes" (muestras seleccionadas sin analizar, NO todas las
+     * entregas sin análisis) o "Historial" (análisis ya registrados), según
+     * ?tab=. Mismo criterio que calidad.analisis-calidad.index.
      */
     public function index(Request $request): JsonResponse
     {
@@ -45,20 +49,13 @@ final class AnalisisCalidadController extends Controller
         $tab = $request->query('tab') === 'historial' ? 'historial' : 'pendientes';
 
         if ($tab === 'pendientes') {
-            $pendientes = $this->entregasListadoQuery->obtener(EntregasFiltro::resolver(
+            [$filas, $meta] = $this->paginar($this->muestreos->pendientes(
                 busqueda: $request->string('q')->toString() ?: null,
                 zonaId: $request->filled('zona_id') ? (int) $request->query('zona_id') : null,
-                acopiadorId: null,
-                estado: 'PENDIENTE_ANALISIS',
-                fecha: $request->string('fecha')->toString() ?: null,
-                desde: $request->string('desde')->toString() ?: null,
-                hasta: $request->string('hasta')->toString() ?: null,
-            ));
-
-            [$filas, $meta] = $this->paginar($pendientes->filas, $request);
+            ), $request);
 
             return response()->json([
-                'data' => ['tab' => 'pendientes', 'kpis' => $pendientes->kpis, 'zonas' => $pendientes->zonas, 'filas' => $filas],
+                'data' => ['tab' => 'pendientes', 'kpis' => $this->muestreos->kpis(new DateTimeImmutable), 'zonas' => $this->muestreos->zonas(), 'filas' => $filas],
                 'meta' => $meta,
             ]);
         }
@@ -108,6 +105,8 @@ final class AnalisisCalidadController extends Controller
                     ],
                     array_filter($this->obtenerParametrosCalidad->execute(), static fn ($parametro): bool => $parametro->estaActivo()),
                 )),
+                // Solo para la vista previa del móvil; el resultado real se calcula al finalizar.
+                'reglas' => $this->obtenerReglasVigentes->execute(),
             ],
         ]);
     }
@@ -123,16 +122,25 @@ final class AnalisisCalidadController extends Controller
 
         $datos = $request->validated();
 
+        // La foto puede venir adjunta o ya subida por "Escanear ticket" (ticket_path validado en el Request).
         $imagenPath = $request->hasFile('imagen')
             ? $request->file('imagen')->store('analisis-calidad', 'public')
-            : null;
+            : ($datos['ticket_path'] ?? null);
 
-        $analisis = $this->registrarAnalisisCalidad->execute(
-            entregaId: (int) $datos['entrega_id'],
-            valores: $datos['valores'],
-            imagenPath: $imagenPath,
-            observacion: $datos['observacion'] ?? null,
-        );
+        try {
+            $analisis = $this->registrarAnalisisCalidad->execute(
+                entregaId: (int) $datos['entrega_id'],
+                valores: $datos['valores'],
+                imagenPath: $imagenPath,
+                observacion: $datos['observacion'] ?? null,
+                origenes: $datos['origenes'] ?? [],
+                fechaAnalisis: isset($datos['fecha_analisis']) ? new DateTimeImmutable($datos['fecha_analisis']) : null,
+                fechaCapturaLocal: isset($datos['fecha_captura_local']) ? new DateTimeImmutable($datos['fecha_captura_local']) : null,
+                exigirMuestra: true,
+            );
+        } catch (DomainException $excepcion) {
+            return response()->json(['message' => $excepcion->getMessage()], 422);
+        }
 
         return response()->json(['data' => $this->serializar($analisis)], 201);
     }
@@ -141,7 +149,12 @@ final class AnalisisCalidadController extends Controller
     {
         Gate::authorize('update', $analisis);
 
-        $this->finalizarAnalisisCalidad->execute($analisis->id, $request->user()->id);
+        try {
+            $this->finalizarAnalisisCalidad->execute($analisis->id, $request->user()->id);
+        } catch (DomainException $excepcion) {
+            // Ej. falta una regla vigente: error de negocio, no se reintenta solo.
+            return response()->json(['message' => $excepcion->getMessage()], 422);
+        }
 
         return response()->json(['data' => $this->serializar($this->obtenerAnalisisCalidad->porId($analisis->id))]);
     }

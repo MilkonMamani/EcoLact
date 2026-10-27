@@ -39,6 +39,7 @@ final class EloquentAnalisisCalidadListadoQuery implements AnalisisCalidadListad
                 'p.apellidos',
                 'p.dni',
                 'e.id as entrega_id',
+                'e.litros',
                 'z.nombre as zona_nombre',
                 'u.username as confirmado_por',
             )
@@ -55,6 +56,9 @@ final class EloquentAnalisisCalidadListadoQuery implements AnalisisCalidadListad
                 'resultado' => $fila->resultado,
                 'estado' => $fila->estado,
                 'confirmadoPor' => $fila->confirmado_por,
+                // Para el móvil: litros de la entrega y la fecha en ISO (hora local del teléfono).
+                'litros' => (float) $fila->litros,
+                'fechaIso' => CarbonImmutable::parse($fila->fecha_analisis, config('app.timezone'))->format(DATE_ATOM),
             ])
             ->all();
 

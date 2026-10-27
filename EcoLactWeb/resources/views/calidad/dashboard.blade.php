@@ -8,7 +8,7 @@
             <h1 class="text-lg font-semibold text-text">Dashboard</h1>
             <p class="text-sm text-text-muted">Resumen de la actividad de Calidad.</p>
         </div>
-        <x-ui.button :href="route('calidad.analisis-calidad.index')" size="sm" as="a">Ver pendientes de análisis</x-ui.button>
+        <x-ui.button :href="route('calidad.muestreo.index')" size="sm" as="a">+ Seleccionar muestra</x-ui.button>
     </div>
 
     <form method="GET" class="flex flex-wrap items-end gap-3">
@@ -33,21 +33,19 @@
         <x-ui.button type="submit" variant="secondary" size="sm">Filtrar</x-ui.button>
     </form>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <x-ui.stat-card label="Pendientes de análisis" :value="$dashboard->pendientesAnalisis" accent="warning" hint="Estado actual" />
-        <x-ui.stat-card label="Analizados" :value="$dashboard->kpisPeriodo['analizados']" hint="Según periodo" />
-        <x-ui.stat-card label="Aceptados" :value="$dashboard->kpisPeriodo['aceptados']" accent="success" hint="Según periodo" />
-        <x-ui.stat-card label="Observados / Rechazados" :value="$dashboard->kpisPeriodo['observados'] . ' / ' . $dashboard->kpisPeriodo['rechazados']" hint="Según periodo" />
+    <div class="grid gap-4 sm:grid-cols-2">
+        <x-ui.stat-card label="Muestras pendientes" :value="$dashboard->muestrasPendientes" accent="warning" hint="Seleccionadas, por analizar" />
+        <x-ui.stat-card label="Analizadas" :value="$dashboard->kpisPeriodo['analizados']" :hint="'Hoy: '.$dashboard->analizadasHoy.' · Aceptadas '.$dashboard->kpisPeriodo['aceptados'].' · Observadas '.$dashboard->kpisPeriodo['observados'].' · Rechazadas '.$dashboard->kpisPeriodo['rechazados']" />
     </div>
 
     <div class="grid gap-4 lg:grid-cols-2">
-        <x-ui.card title="Análisis pendientes" subtitle="Entregas que todavía no cuentan con un análisis de calidad.">
+        <x-ui.card title="Muestras pendientes" subtitle="Entregas seleccionadas como muestra que falta analizar.">
             <x-slot:actions>
                 <x-ui.button :href="route('calidad.analisis-calidad.index')" variant="ghost" size="sm" as="a">Ver todos →</x-ui.button>
             </x-slot:actions>
 
-            @if (count($dashboard->pendientesFilas) === 0)
-                <x-ui.empty-state title="No tienes análisis pendientes" description="Todas las entregas registradas ya cuentan con seguimiento de calidad." :icon="false" />
+            @if (count($dashboard->muestrasFilas) === 0)
+                <x-ui.empty-state title="No tienes muestras pendientes" description="Selecciona una entrega como muestra para analizarla." :icon="false" />
             @else
                 <x-tables.table>
                     <thead>
@@ -55,16 +53,18 @@
                             <th class="py-2 pr-4">Fecha</th>
                             <th class="py-2 pr-4">Proveedor</th>
                             <th class="py-2 pr-4">Litros</th>
+                            <th class="py-2 pr-4">Método</th>
                             <th class="py-2 pl-4 text-right">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($dashboard->pendientesFilas as $fila)
+                        @foreach ($dashboard->muestrasFilas as $fila)
                             <tr class="border-b border-text-muted/5 last:border-0">
-                                <td class="py-2 pr-4 whitespace-nowrap text-text">{{ $fila['fecha'] }}</td>
+                                <td class="py-2 pr-4 whitespace-nowrap text-text">{{ \Illuminate\Support\Carbon::parse($fila['fechaHora'])->format('d/m/Y H:i') }}</td>
                                 <td class="py-2 pr-4 text-text">{{ $fila['proveedorNombre'] }}</td>
                                 <td class="py-2 pr-4 text-text">{{ number_format($fila['litros'], 2) }} L</td>
-                                <td class="py-2 pl-4 text-right"><a class="text-primary hover:underline" href="{{ route('calidad.entregas.analisis.index', $fila['id']) }}">Analizar →</a></td>
+                                <td class="py-2 pr-4 text-text-muted">{{ ucfirst(strtolower($fila['metodoSeleccion'])) }}</td>
+                                <td class="py-2 pl-4 text-right"><a class="text-primary hover:underline" href="{{ route('calidad.entregas.analisis.index', $fila['entregaId']) }}">Analizar →</a></td>
                             </tr>
                         @endforeach
                     </tbody>

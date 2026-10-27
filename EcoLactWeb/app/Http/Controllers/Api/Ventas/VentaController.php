@@ -9,13 +9,16 @@ use App\Application\Ventas\ObtenerProductosActivos;
 use App\Application\Ventas\ObtenerStockProducto;
 use App\Application\Ventas\RegistrarVentaProducto;
 use App\Application\Ventas\VentasFiltro;
+use App\Domain\Ventas\VentaProducto;
 use App\Http\Controllers\Api\Concerns\PaginaFilas;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ventas\StoreVentaProductoRequest;
+use App\Http\Support\FechaEventoMovil;
 use App\Infrastructure\Persistence\Models\VentaProductoModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 
 final class VentaController extends Controller
 {
@@ -35,6 +38,7 @@ final class VentaController extends Controller
         Gate::authorize('viewGeneral', VentaProductoModel::class);
 
         $filtro = VentasFiltro::resolver(
+            vendedorId: $request->user()->id,
             periodo: $request->string('periodo')->toString() ?: null,
             desde: $request->string('desde')->toString() ?: null,
             hasta: $request->string('hasta')->toString() ?: null,
@@ -122,18 +126,26 @@ final class VentaController extends Controller
 
         $datos = $request->venta();
 
-        $venta = $this->registrarVentaProducto->execute(
-            productoId: $datos['producto_id'],
-            cantidad: $datos['cantidad'],
-            formaPago: $datos['forma_pago'],
-            registradoPorUserId: $request->user()->id,
-            proveedorId: $datos['proveedor_id'],
-            compradorId: $datos['comprador_id'],
-        );
+        try {
+            $venta = $this->registrarVentaProducto->execute(
+                productoId: $datos['producto_id'],
+                cantidad: $datos['cantidad'],
+                formaPago: $datos['forma_pago'],
+                registradoPorUserId: $request->user()->id,
+                proveedorId: $datos['proveedor_id'],
+                compradorId: $datos['comprador_id'],
+                fechaEvento: FechaEventoMovil::parse($request->validated('fecha_hora_evento')),
+                precioEsperado: $request->has('precio_mostrado') ? (float) $request->validated('precio_mostrado') : null,
+            );
+
+        } catch (\DomainException|\InvalidArgumentException $e) {
+            throw ValidationException::withMessages(['venta' => $e->getMessage()]);
+        }
 
         return response()->json([
             'data' => [
                 'id' => $venta->id(),
+                'codigo' => VentaProducto::codigo($venta->id()),
                 'producto_id' => $venta->productoId(),
                 'tipo_cliente' => $venta->tipoCliente(),
                 'cantidad' => $venta->cantidad(),

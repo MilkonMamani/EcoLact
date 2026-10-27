@@ -35,6 +35,8 @@
                     <div class="flex justify-between gap-4"><dt class="text-text-muted">Acopiador</dt><dd class="text-text">{{ $entrega?->acopiador ? trim($entrega->acopiador->nombres.' '.$entrega->acopiador->apellidos) : '—' }}</dd></div>
                     <div class="flex justify-between gap-4"><dt class="text-text-muted">Litros entregados</dt><dd class="text-text">{{ $entrega ? number_format((float) $entrega->litros, 2) : '0.00' }} L</dd></div>
                     <div class="flex justify-between gap-4"><dt class="text-text-muted">Identificación</dt><dd class="text-text">{{ $entrega?->metodo_identificacion ?? '—' }}</dd></div>
+                    {{-- Análisis anteriores al muestreo no tienen muestra: se muestran igual. --}}
+                    <div class="flex justify-between gap-4"><dt class="text-text-muted">Método de muestreo</dt><dd class="text-text">{{ isset($muestra) && $muestra ? ucfirst(strtolower($muestra['metodoSeleccion'])) : 'Sin muestreo (registro anterior)' }}</dd></div>
                 </dl>
             </div>
 

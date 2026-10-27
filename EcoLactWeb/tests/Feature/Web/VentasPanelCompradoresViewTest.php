@@ -8,6 +8,9 @@ require_once __DIR__.'/../../Support/EcoLactFixtures.php';
 
 uses(TestCase::class, RefreshDatabase::class);
 
+// Estas pruebas no tratan de asistencia: el personal ya tiene su jornada PRESENTE de hoy.
+beforeEach(fn () => fixture_personal_con_asistencia_hoy());
+
 it('la agenda de compradores registra uno nuevo sin pedir Público/Mayorista', function () {
     $ventasUser = fixture_usuario('VENTAS');
 

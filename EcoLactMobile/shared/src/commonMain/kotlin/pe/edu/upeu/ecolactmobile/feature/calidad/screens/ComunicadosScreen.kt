@@ -27,6 +27,7 @@ import pe.edu.upeu.ecolactmobile.core.ui.state.UiState
 import pe.edu.upeu.ecolactmobile.core.ui.theme.EcoLactColors
 import pe.edu.upeu.ecolactmobile.feature.calidad.CalidadComunicado
 import pe.edu.upeu.ecolactmobile.feature.calidad.CalidadRepository
+import pe.edu.upeu.ecolactmobile.feature.trabajador.LocalAutorizacion
 
 class CalidadComunicadosViewModel(repository: CalidadRepository) :
     ResourceViewModel<List<CalidadComunicado>>({ repository.comunicados() })
@@ -39,6 +40,7 @@ fun CalidadComunicadosScreen(viewModel: CalidadComunicadosViewModel, onVerComuni
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Button(
             onClick = onNuevo,
+            enabled = LocalAutorizacion.current.puedeOperar,
             modifier = Modifier.fillMaxWidth().height(48.dp).padding(bottom = 12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = EcoLactColors.VerdePrincipal),
         ) {

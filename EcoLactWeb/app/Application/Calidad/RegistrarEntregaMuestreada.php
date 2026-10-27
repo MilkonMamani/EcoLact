@@ -2,30 +2,31 @@
 
 namespace App\Application\Calidad;
 
+use App\Application\Shared\TransactionManager;
+use App\Domain\Calidad\MuestreoCalidad;
+use App\Domain\Calidad\MuestreoCalidadRepository;
 use App\Domain\Entrega\Entrega;
 use App\Domain\Entrega\EntregaRepository;
 use App\Domain\Proveedor\ProveedorRepository;
 use App\Domain\Shared\Enums\EstadoEntrega;
+use App\Domain\Shared\Enums\EstadoMuestreo;
 use App\Domain\Shared\Enums\EstadoUsuario;
+use App\Domain\Shared\Enums\MetodoSeleccionMuestreo;
 use DateTimeImmutable;
 use DomainException;
 use InvalidArgumentException;
 
 /**
- * Registra la entrega de una muestra que el analista de calidad toma
- * directamente del proveedor, ANTES de que pase por el acopiador — a
- * diferencia de RegistrarEntrega (exclusivo del Acopiador), aquí no hay
- * acopiador involucrado todavía (acopiadorId queda null).
+ * MUESTREO DIRECTO: el analista llega al proveedor, lo identifica (QR o DNI)
+ * y toma la muestra directamente, ANTES del acopio normal (inspección
+ * sorpresa). Es el flujo secundario de Calidad; el principal es seleccionar
+ * una entrega ya registrada por el acopiador (SeleccionarMuestraCalidad).
  *
- * Este es el caso de un proveedor elegido al azar para muestreo: si el
- * análisis resulta ACEPTADA u OBSERVADA, el analista avisa verbalmente al
- * acopiador y es este quien registra la entrega normalmente (flujo de
- * siempre, sin cambios). Este Use Case es solo para cuando el resultado va
- * a ser RECHAZADA y la leche nunca llega a acopiarse: aun así queda un
- * registro (entrega + análisis) para que el historial de calidad, las
- * advertencias y el conteo de sanciones del proveedor sigan funcionando
- * igual que con cualquier otra entrega. Esos litros nunca cuentan como
- * inventario de leche: esta entrega NO genera ingreso de leche (ver RegistrarEntrega).
+ * Crea la entrega de la muestra (sin acopiador: acopiadorId queda null) y su
+ * muestreo DIRECTA en estado SELECCIONADA, así aparece de inmediato en
+ * "Muestras pendientes" para analizarla con el flujo de siempre. Esos litros
+ * son solo la muestra: esta entrega NO genera ingreso de leche (ver
+ * RegistrarEntrega).
  */
 final class RegistrarEntregaMuestreada
 {
@@ -34,6 +35,8 @@ final class RegistrarEntregaMuestreada
     public function __construct(
         private readonly ProveedorRepository $proveedores,
         private readonly EntregaRepository $entregas,
+        private readonly MuestreoCalidadRepository $muestreos,
+        private readonly TransactionManager $transacciones,
     ) {}
 
     public function execute(
@@ -59,17 +62,34 @@ final class RegistrarEntregaMuestreada
             throw new DomainException('El proveedor no está habilitado para registrar entregas.');
         }
 
-        return $this->entregas->guardar(new Entrega(
-            id: null,
-            proveedorId: $proveedor->id(),
-            acopiadorId: null,
-            zonaId: $proveedor->zonaId(),
-            registradoPorUserId: $analistaUserId,
-            fechaHora: new DateTimeImmutable,
-            litros: $litros,
-            metodoIdentificacion: $metodoIdentificacion,
-            estado: EstadoEntrega::PENDIENTE_ANALISIS,
-            observacion: $observacion,
-        ));
+        $ahora = new DateTimeImmutable;
+
+        return $this->transacciones->run(function () use ($proveedor, $metodoIdentificacion, $analistaUserId, $litros, $observacion, $ahora): Entrega {
+            $entrega = $this->entregas->guardar(new Entrega(
+                id: null,
+                proveedorId: $proveedor->id(),
+                acopiadorId: null,
+                zonaId: $proveedor->zonaId(),
+                registradoPorUserId: $analistaUserId,
+                fechaHora: $ahora,
+                litros: $litros,
+                metodoIdentificacion: $metodoIdentificacion,
+                estado: EstadoEntrega::PENDIENTE_ANALISIS,
+                observacion: $observacion,
+            ));
+
+            $this->muestreos->guardar(new MuestreoCalidad(
+                id: null,
+                entregaId: $entrega->id() ?? throw new DomainException('No se pudo registrar la entrega de la muestra.'),
+                seleccionadoPorUserId: $analistaUserId,
+                metodoSeleccion: MetodoSeleccionMuestreo::DIRECTA,
+                tipoControl: null,
+                fechaSeleccion: $ahora,
+                estado: EstadoMuestreo::SELECCIONADA,
+                observacion: $observacion,
+            ));
+
+            return $entrega;
+        });
     }
 }

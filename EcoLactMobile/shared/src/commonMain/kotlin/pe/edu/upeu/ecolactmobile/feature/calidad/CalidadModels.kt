@@ -2,14 +2,12 @@ package pe.edu.upeu.ecolactmobile.feature.calidad
 
 import kotlinx.serialization.Serializable
 
-// ---- NUEVO (Etapa 3): Registrar entrega por muestreo directo ----
+// ---- MUESTREO DIRECTO ----
 //
-// `POST /calidad/entregas` (App\Application\Calidad\RegistrarEntregaMuestreada) — caso acotado:
-// el analista toma una muestra directamente del proveedor, ANTES de que pase por el acopiador,
-// cuando anticipa que el resultado va a ser RECHAZADA (si va a ser ACEPTADA/OBSERVADA, avisa
-// verbalmente al acopiador de siempre — este endpoint NO es un "acopio general" para CALIDAD).
-// `acopiador_id` siempre sale null en la respuesta: nunca hubo acopiador involucrado. Es la
-// pantalla concreta que materializa "el analista también puede acopiar" en el negocio real.
+// `POST /calidad/entregas` (App\Application\Calidad\RegistrarEntregaMuestreada): el analista
+// llega al proveedor, lo identifica (QR/DNI) y toma la muestra antes del acopio normal
+// (inspección sorpresa). El servidor crea la entrega de la muestra y su muestreo DIRECTA, que
+// aparece de inmediato en "Muestras pendientes". `acopiador_id` sale null: no hubo acopiador.
 
 @Serializable
 data class CalidadEntregaMuestreadaRequest(
@@ -17,6 +15,8 @@ data class CalidadEntregaMuestreadaRequest(
     val identificador: String,
     val litros: Double,
     val observacion: String? = null,
+    /** Hora real del muestreo en campo (se fija al guardar y viaja igual en cada reintento). */
+    val fecha_hora_evento: String? = null,
 )
 
 @Serializable
@@ -115,6 +115,9 @@ data class HistorialFila(
     val resultado: String,
     val estado: String,
     val confirmadoPor: String? = null,
+    val litros: Double? = null,
+    /** Misma fecha que [fecha] pero en ISO, para mostrarla en hora local. */
+    val fechaIso: String? = null,
 )
 
 @Serializable
@@ -142,10 +145,20 @@ data class AnalisisBorradorInfo(
 @Serializable
 data class ParametroActivo(val id: Long, val codigo: String, val nombre: String, val unidad: String? = null)
 
+/** Regla vigente de un parámetro: solo para PREVISUALIZAR el resultado; el servidor lo recalcula al confirmar. */
+@Serializable
+data class ReglaVigente(
+    val codigo: String,
+    val valor_minimo: Double? = null,
+    val valor_maximo: Double? = null,
+    val resultado_incumplimiento: String,
+)
+
 @Serializable
 data class AnalisisPrevioResponse(
     val analisis: AnalisisBorradorInfo? = null,
     val parametros: List<ParametroActivo> = emptyList(),
+    val reglas: List<ReglaVigente> = emptyList(),
 )
 
 // ---- Detalle completo (historial) ----
@@ -248,4 +261,92 @@ data class CrearComunicadoRequest(
     val fecha_evento: String? = null,
     val estado: String? = null,
     val fecha_publicacion: String? = null,
+)
+
+// ---- MUESTREO (flujo principal): Calidad solo analiza las entregas que selecciona ----
+
+/** Entrega registrada por el acopiador que todavía puede entrar a control de calidad. */
+@Serializable
+data class EntregaElegible(
+    val entregaId: Long,
+    val proveedorNombre: String,
+    val proveedorDni: String? = null,
+    val zonaNombre: String? = null,
+    val acopiadorNombre: String? = null,
+    val litros: Double,
+    val fechaHora: String,
+    /** Hasta cuándo el acopiador puede corregir litros (10 min). Solo informativo: NO limita a Calidad. */
+    val litrosEditablesHasta: String? = null,
+    val entregaEstado: String? = null,
+)
+
+@Serializable
+data class ElegiblesResponse(val filas: List<EntregaElegible> = emptyList())
+
+/** Muestra seleccionada (SELECCIONADA / EN_ANALISIS / ANALIZADA). */
+@Serializable
+data class MuestraCalidad(
+    val id: Long,
+    val entregaId: Long,
+    val proveedorNombre: String,
+    val proveedorDni: String? = null,
+    val zonaNombre: String? = null,
+    val acopiadorNombre: String? = null,
+    val litros: Double,
+    val fechaHora: String,
+    val litrosEditablesHasta: String? = null,
+    val entregaEstado: String? = null,
+    val metodoSeleccion: String,
+    val tipoControl: String? = null,
+    val fechaSeleccion: String,
+    val fechaCapturaLocal: String? = null,
+    val estado: String,
+    val observacion: String? = null,
+)
+
+@Serializable
+data class MuestrasKpis(val pendientes: Int = 0, val analizadas_hoy: Int = 0)
+
+@Serializable
+data class AnalistaNombre(val nombres: String, val apellidos: String)
+
+@Serializable
+data class MuestrasResponse(
+    val kpis: MuestrasKpis = MuestrasKpis(),
+    val filas: List<MuestraCalidad> = emptyList(),
+    val analista: AnalistaNombre? = null,
+)
+
+/** Sorteo hecho por el servidor; [propuesta_token] prueba que la muestra fue realmente aleatoria. */
+@Serializable
+data class PropuestaAleatoria(val entrega: EntregaElegible, val propuesta_token: String)
+
+@Serializable
+data class SeleccionarMuestraRequest(
+    val entrega_id: Long,
+    val metodo_seleccion: String, // "ALEATORIA" | "MANUAL"
+    val tipo_control: String? = null, // "RUTINARIO" | "DIRIGIDO"
+    val propuesta_token: String? = null,
+    /** Hora real en el teléfono (puede sincronizarse mucho después). */
+    val fecha_seleccion: String? = null,
+    val observacion: String? = null,
+)
+
+// ---- OCR del ticket (POST /calidad/analisis-calidad/escanear-ticket) ----
+
+@Serializable
+data class TicketValorDetectado(val parametro_id: Long, val codigo: String, val nombre: String, val valor: Double, val unidad: String? = null)
+
+@Serializable
+data class TicketParametroNoDetectado(val codigo: String, val nombre: String)
+
+/** `success=false` con `ticket_path`: la foto se guardó pero no se pudo leer (el analista ingresa a mano). */
+@Serializable
+data class TicketOcrResponse(
+    val success: Boolean,
+    val ticket_path: String? = null,
+    val valores: List<TicketValorDetectado> = emptyList(),
+    val no_detectados: List<TicketParametroNoDetectado> = emptyList(),
+    val suficientes: Boolean = false,
+    val mensaje: String? = null,
 )

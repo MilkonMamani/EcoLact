@@ -40,15 +40,12 @@ fun App(container: AppContainer) {
             )
         } else {
             when (session!!.role) {
-                Role.PROVEEDOR -> ProveedorApp(container)
+                Role.PROVEEDOR -> ProveedorApp(container, session!!)
                 Role.ACOPIADOR -> AcopiadorApp(container, session!!)
                 Role.CALIDAD -> CalidadApp(container, session!!)
                 Role.ENCARGADO_PLANTA -> PlantaApp(container, session!!)
-                // ADMINISTRADOR y VENTAS se gestionan desde el sistema web (decisión Etapa 2:
-                // la app móvil se enfoca en Acopio, Calidad y Producción+Insumos — un shell
-                // completo de Admin/Ventas replicaría el dashboard web, contra lo que pide el
-                // enunciado de "app más ligera").
-                Role.ADMINISTRADOR, Role.VENTAS -> RolNoDisponibleEnMovil(session!!, container)
+                Role.VENTAS -> pe.edu.upeu.ecolactmobile.feature.ventas.VentasApp(container, session!!)
+                Role.ADMINISTRADOR -> RolNoDisponibleEnMovil(session!!, container)
             }
         }
     }

@@ -15,7 +15,8 @@ INSERT INTO sync_queue(id, operation_type, payload_json, status, created_at, upd
 VALUES (?, ?, ?, 'PENDING', ?, ?, NULL, NULL, 0);
 
 selectPending:
-SELECT * FROM sync_queue WHERE status = 'PENDING' ORDER BY created_at ASC;
+-- rowid desempata operaciones del mismo milisegundo: siempre en orden de inserción.
+SELECT * FROM sync_queue WHERE status = 'PENDING' ORDER BY created_at ASC, rowid ASC;
 
 selectAll:
 SELECT * FROM sync_queue ORDER BY created_at DESC;

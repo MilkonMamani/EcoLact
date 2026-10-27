@@ -29,6 +29,7 @@ final class EloquentLotesProduccionListadoQuery implements LotesProduccionListad
             ->selectRaw("(SELECT COALESCE(SUM(c.cantidad_usada), 0) FROM lote_produccion_insumos AS c INNER JOIN insumos AS i ON i.id = c.insumo_id WHERE c.lote_produccion_id = l.id AND i.codigo = 'LECHE') as litros_leche")
             ->selectRaw('(SELECT COUNT(*) FROM produccion_detalles AS d WHERE d.lote_produccion_id = l.id) as productos_count')
             ->selectRaw('(SELECT SUM(d.cantidad_obtenida) FROM produccion_detalles AS d WHERE d.lote_produccion_id = l.id) as productos_obtenidos')
+            ->selectRaw('(SELECT SUM(d.cantidad_planificada) FROM produccion_detalles AS d WHERE d.lote_produccion_id = l.id) as productos_planificados')
             ->orderByDesc('l.fecha_hora_inicio')
             ->get();
 
@@ -50,6 +51,7 @@ final class EloquentLotesProduccionListadoQuery implements LotesProduccionListad
                     // Solo se puede sumar lo obtenido con una unidad si todos los productos la comparten.
                     'unidadObtenido' => count($unidades) === 1 ? $unidades[0] : null,
                     'obtenido' => $fila->productos_obtenidos !== null ? round((float) $fila->productos_obtenidos, 2) : null,
+                    'planificado' => round((float) ($fila->productos_planificados ?? 0), 2),
                     'estado' => $fila->estado,
                 ];
             })
