@@ -8,9 +8,13 @@ use Illuminate\Validation\Validator;
 
 /**
  * Valida el modal "Asignar proveedor a zona y ruta": zona, ruta (que debe
- * pertenecer a esa zona), punto de recolección (latitud/longitud, siempre
- * juntas) y referencia opcional. El proveedor llega por el parámetro de
- * ruta {proveedor}.
+ * pertenecer a esa zona), punto de recolección y referencia opcional. El
+ * proveedor llega por el parámetro de ruta {proveedor}.
+ *
+ * Este formulario existe para ubicar a cada proveedor en el mapa: latitud y
+ * longitud son obligatorias AQUÍ (el esquema las sigue admitiendo nulas para
+ * los proveedores todavía sin ubicar). Que el punto caiga en la zona de la
+ * ruta lo verifica GuardarAsignacionProveedor con las delimitaciones.
  */
 class GuardarAsignacionProveedorRequest extends FormRequest
 {
@@ -27,8 +31,8 @@ class GuardarAsignacionProveedorRequest extends FormRequest
         return [
             'zona_id' => ['required', 'integer', 'exists:zonas,id'],
             'ruta_id' => ['required', 'integer', 'exists:rutas,id'],
-            'latitud' => ['nullable', 'required_with:longitud', 'numeric', 'between:-90,90'],
-            'longitud' => ['nullable', 'required_with:latitud', 'numeric', 'between:-180,180'],
+            'latitud' => ['required', 'numeric', 'between:-90,90'],
+            'longitud' => ['required', 'numeric', 'between:-180,180'],
             'referencia_ubicacion' => ['nullable', 'string', 'max:255'],
         ];
     }
@@ -43,12 +47,12 @@ class GuardarAsignacionProveedorRequest extends FormRequest
             'zona_id.exists' => 'La zona indicada no existe.',
             'ruta_id.required' => 'Selecciona una ruta.',
             'ruta_id.exists' => 'La ruta indicada no existe.',
+            'latitud.required' => 'Marca en el mapa la ubicación del proveedor.',
             'latitud.numeric' => 'La latitud debe ser un número.',
             'latitud.between' => 'La latitud debe estar entre -90 y 90.',
-            'latitud.required_with' => 'Indica también la latitud: la latitud y la longitud van juntas.',
+            'longitud.required' => 'Marca en el mapa la ubicación del proveedor.',
             'longitud.numeric' => 'La longitud debe ser un número.',
             'longitud.between' => 'La longitud debe estar entre -180 y 180.',
-            'longitud.required_with' => 'Indica también la longitud: la latitud y la longitud van juntas.',
             'referencia_ubicacion.max' => 'La referencia no puede superar los 255 caracteres.',
         ];
     }

@@ -1,0 +1,90 @@
+
+site_name: "Informe EcoLact"
+site_description: "Documentación técnica del sistema EcoLact"
+site_author: "Equipo CodeCraft"
+
+
+extra_css:
+  - stylesheets/extra.css
+
+theme:
+  name: material
+  language: es
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    
+
+plugins:
+  - search
+
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.details
+  - pymdownx.tabbed
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+
+nav:
+  - Inicio: index.md
+
+  - Sistema:
+      - Visión general: sistema/index.md
+      - Problema y solución: sistema/problema-solucion.md
+      - Actores y roles: sistema/actores-roles.md
+      - Módulos: sistema/modulos.md
+      - Reglas de negocio: sistema/reglas-negocio.md
+      - Alcance: sistema/alcance.md
+
+  - Flujos:
+      - Vista general: flujos/index.md
+      - Acopio de leche: flujos/acopio.md
+      - Control de calidad: flujos/calidad.md
+      - Producción: flujos/produccion.md
+      - Insumos y compras: flujos/insumos.md
+      - Ventas y caja: flujos/ventas-caja.md
+      - Liquidación y pagos: flujos/liquidacion-pagos.md
+      - Flujo financiero: flujos/finanzas.md
+      - Integración móvil y web: flujos/integracion.md
+
+  - Arquitectura:
+      - Vista general: arquitectura/index.md
+      - Backend Laravel: arquitectura/backend.md
+      - Aplicación móvil: arquitectura/mobile.md
+      - Modelo de dominio: arquitectura/dominio.md
+      - Base de datos: arquitectura/base-datos.md
+      - API REST: arquitectura/api.md
+      - Seguridad: arquitectura/seguridad.md
+      - Integración: arquitectura/integracion.md
+
+  - Desarrollo:
+      - Empezar: desarrollo/index.md
+      - Estructura del repositorio: desarrollo/repositorio.md
+      - Backend: desarrollo/backend.md
+      - App móvil: desarrollo/mobile.md
+      - Base de datos y seeders: desarrollo/base-datos.md
+      - Variables de entorno: desarrollo/configuracion.md
+      - Git y convenciones: desarrollo/git.md
+
+  - Pruebas:
+      - Estrategia: pruebas/index.md
+      - Backend: pruebas/backend.md
+      - App móvil: pruebas/mobile.md
+      - Integración: pruebas/integracion.md
+      - Evidencias: pruebas/evidencias.md

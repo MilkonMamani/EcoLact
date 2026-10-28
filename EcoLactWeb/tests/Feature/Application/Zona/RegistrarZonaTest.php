@@ -23,4 +23,4 @@ it('registra una zona nueva', function () {
 it('rechaza registrar una zona con un nombre duplicado', function () {
     app(RegistrarZona::class)->execute(nombre: 'Faón', descripcion: null, estado: 'ACTIVO');
     app(RegistrarZona::class)->execute(nombre: 'Faón', descripcion: null, estado: 'ACTIVO');
-})->throws(DomainException::class, 'Ya existe una zona con el nombre Faón.');
+})->throws(DomainException::class, 'Ya existe una zona equivalente con el nombre Faón.');

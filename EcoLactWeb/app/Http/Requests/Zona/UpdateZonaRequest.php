@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Zona;
 
 use App\Domain\Zona\DelimitacionZona;
+use App\Domain\Zona\ZonaRepository;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -53,6 +54,17 @@ class UpdateZonaRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator): void {
+            if ($this->has('nombre') && ! $validator->errors()->has('nombre')) {
+                $equivalente = app(ZonaRepository::class)->buscarEquivalente(
+                    $this->string('nombre')->toString(),
+                    exceptoId: (int) $this->route('zona')?->getKey(),
+                );
+
+                if ($equivalente !== null) {
+                    $validator->errors()->add('nombre', "Ya existe una zona equivalente con el nombre {$equivalente->nombre()}.");
+                }
+            }
+
             $geojson = $this->input('poligono_geojson');
 
             if ($validator->errors()->has('poligono_geojson') || ! is_string($geojson) || trim($geojson) === '') {

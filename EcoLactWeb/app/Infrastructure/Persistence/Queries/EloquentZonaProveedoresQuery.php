@@ -85,6 +85,7 @@ final class EloquentZonaProveedoresQuery implements ZonaProveedoresQuery
             ->leftJoin('ruta_detalles as rd', 'rd.proveedor_id', '=', 'p.id')
             ->leftJoin('rutas as r', 'r.id', '=', 'rd.ruta_id')
             ->leftJoin('zonas as z', 'z.id', '=', 'r.zona_id')
+            ->leftJoin('zonas as zr', 'zr.id', '=', 'p.zona_id')
             ->select([
                 'p.id as proveedor_id',
                 'p.nombres',
@@ -99,6 +100,8 @@ final class EloquentZonaProveedoresQuery implements ZonaProveedoresQuery
                 'r.nombre as ruta_nombre',
                 'z.id as zona_id',
                 'z.nombre as zona_nombre',
+                'zr.id as zona_registrada_id',
+                'zr.nombre as zona_registrada_nombre',
             ]);
     }
 
@@ -117,6 +120,8 @@ final class EloquentZonaProveedoresQuery implements ZonaProveedoresQuery
             latitud: $fila->latitud !== null ? (float) $fila->latitud : null,
             longitud: $fila->longitud !== null ? (float) $fila->longitud : null,
             referenciaUbicacion: $fila->referencia_ubicacion,
+            zonaRegistradaId: $fila->zona_registrada_id !== null ? (int) $fila->zona_registrada_id : null,
+            zonaRegistradaNombre: $fila->zona_registrada_nombre,
         );
     }
 }

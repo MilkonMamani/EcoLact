@@ -91,6 +91,12 @@
                 @else
                     <p class="fichas-nota">Todavía no está asignado a una zona y ruta de acopio.</p>
                 @endif
+
+                @unless ($panel->tieneCoordenadas())
+                    <a href="{{ $urlAsignar }}" class="fichas-mapa">
+                        <x-ui.icon name="map-pin" class="h-4 w-4" /> Ubicar en mapa
+                    </a>
+                @endunless
             </div>
         </section>
 

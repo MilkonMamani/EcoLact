@@ -7,15 +7,16 @@ use App\Application\Shared\CampoActualizable;
 use App\Application\Zona\ActualizarZona;
 use App\Application\Zona\Contracts\ZonaPanelQuery;
 use App\Application\Zona\Contracts\ZonaProveedoresQuery;
-use App\Application\Zona\Contracts\ZonasListadoQuery;
 use App\Application\Zona\EliminarZona;
 use App\Application\Zona\GuardarDelimitacionZona;
 use App\Application\Zona\MoverProveedorDeZona;
 use App\Application\Zona\ProveedorAsignadoFila;
 use App\Application\Zona\RegistrarZona;
+use App\Application\Zona\UbicacionFueraDeZona;
 use App\Application\Zona\ZonaMapService;
 use App\Application\Zona\ZonaPanelData;
 use App\Application\Zona\ZonasFiltro;
+use App\Application\Zona\ZonasMapaData;
 use App\Domain\Ruta\RutaRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Zona\GuardarAsignacionProveedorRequest;
@@ -54,7 +55,6 @@ final class ZonaController extends Controller
         private readonly RegistrarZona $registrarZona,
         private readonly ActualizarZona $actualizarZona,
         private readonly EliminarZona $eliminarZona,
-        private readonly ZonasListadoQuery $zonasListadoQuery,
         private readonly ZonaPanelQuery $zonaPanelQuery,
         private readonly ZonaProveedoresQuery $zonaProveedoresQuery,
         private readonly RutaRepository $rutas,
@@ -84,7 +84,7 @@ final class ZonaController extends Controller
         return view('admin.zonas.index', [
             'mapaZonas' => $mapaZonas,
             'sinAsignar' => $this->zonaProveedoresQuery->contarSinAsignar(),
-            'catalogo' => $this->catalogoParaModal(),
+            'catalogo' => $this->catalogoParaModal($mapaZonas),
             ...$this->datosPanel($seleccion),
         ]);
     }
@@ -217,8 +217,9 @@ final class ZonaController extends Controller
     /**
      * Guarda el modal de asignación: zona + ruta + punto de recolección +
      * referencia. Responde JSON: el modal muestra los errores bajo cada
-     * campo y, al guardar, la pantalla se recarga sobre la zona destino
-     * con el mensaje de éxito (flash de sesión).
+     * campo (una ubicación fuera de la zona, junto al mapa) y, al guardar,
+     * la pantalla se recarga sobre la zona destino con el pin del proveedor
+     * enfocado (?proveedor=) y el mensaje de éxito (flash de sesión).
      */
     public function guardarAsignacion(GuardarAsignacionProveedorRequest $request, ProveedorModel $proveedor): JsonResponse
     {
@@ -237,7 +238,7 @@ final class ZonaController extends Controller
         } catch (DomainException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
-                'errors' => ['ruta_id' => [$e->getMessage()]],
+                'errors' => [($e instanceof UbicacionFueraDeZona ? 'latitud' : 'ruta_id') => [$e->getMessage()]],
             ], 422);
         }
 
@@ -245,7 +246,7 @@ final class ZonaController extends Controller
 
         return response()->json([
             'ok' => true,
-            'redirect' => route('admin.zonas.index', ['zona' => (int) $datos['zona_id']]),
+            'redirect' => route('admin.zonas.index', ['zona' => (int) $datos['zona_id'], 'proveedor' => $proveedor->id]),
         ]);
     }
 
@@ -297,20 +298,25 @@ final class ZonaController extends Controller
     }
 
     /**
-     * Zonas activas con sus rutas activas, listas para los selectores
-     * dependientes del modal de asignación. Una sola consulta de rutas para
-     * todas las zonas (sin N+1).
+     * Zonas activas con sus rutas activas para el modal de asignación. Sale de
+     * los MISMOS datos del mapa general (ZonaMapService): ids, nombres, colores
+     * y delimitaciones son idénticos en los dos mapas, y con esa geometría el
+     * modal pinta las zonas y detecta en cuál cae el click. Una sola consulta
+     * de rutas para todas las zonas (sin N+1).
      *
-     * @return list<array{id: int, nombre: string, rutas: list<array{id: int, nombre: string}>}>
+     * @return list<array{id: int, nombre: string, color: string, geometry: ?array<string, mixed>, rutas: list<array{id: int, nombre: string}>}>
      */
-    private function catalogoParaModal(): array
+    private function catalogoParaModal(ZonasMapaData $mapaZonas): array
     {
         $rutasPorZona = collect($this->rutas->listarActivas())->groupBy(fn ($ruta) => $ruta->zonaId());
 
-        return collect($this->zonasListadoQuery->obtener(ZonasFiltro::resolver(busqueda: null, estado: 'ACTIVO'))->filas)
+        return collect($mapaZonas->zonas)
+            ->filter(fn (array $zona): bool => $zona['estado'] === 'ACTIVO')
             ->map(fn (array $zona): array => [
                 'id' => $zona['id'],
                 'nombre' => $zona['nombre'],
+                'color' => $zona['color'],
+                'geometry' => $zona['geometry'],
                 'rutas' => ($rutasPorZona->get($zona['id']) ?? collect())
                     ->map(fn ($ruta): array => ['id' => $ruta->id(), 'nombre' => $ruta->nombre()])
                     ->values()

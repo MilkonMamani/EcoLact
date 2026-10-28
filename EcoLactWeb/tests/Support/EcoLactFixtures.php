@@ -141,6 +141,19 @@ if (! function_exists('fixture_zona')) {
     }
 }
 
+if (! function_exists('fixture_delimitar_zona')) {
+    /** Delimitación cuadrada de $lado grados centrada en (lat, lng), como GeoJSON Polygon. */
+    function fixture_delimitar_zona(ZonaModel $zona, float $lat, float $lng, float $lado = 0.1): ZonaModel
+    {
+        $m = $lado / 2;
+        $zona->update(['poligono_geojson' => json_encode(['type' => 'Polygon', 'coordinates' => [[
+            [$lng - $m, $lat + $m], [$lng + $m, $lat + $m], [$lng + $m, $lat - $m], [$lng - $m, $lat - $m], [$lng - $m, $lat + $m],
+        ]]])]);
+
+        return $zona;
+    }
+}
+
 if (! function_exists('fixture_usuario')) {
     function fixture_usuario(string $rolNombre, ?string $username = null): User
     {

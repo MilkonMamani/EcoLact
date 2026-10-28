@@ -4,6 +4,7 @@ use App\Application\Ruta\AsignarProveedorARuta;
 use App\Application\Ruta\GuardarAsignacionProveedor;
 use App\Application\Ruta\QuitarProveedorDeRuta;
 use App\Application\Ruta\RegistrarRuta;
+use App\Application\Zona\UbicacionFueraDeZona;
 use App\Infrastructure\Persistence\Models\ProveedorModel;
 use App\Infrastructure\Persistence\Models\RutaDetalleModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,7 +20,7 @@ function ordenesDeRuta(int $rutaId): array
 }
 
 it('asigna un proveedor sin ruta a una ruta guardando su ubicación y referencia', function () {
-    $zona = fixture_zona();
+    $zona = fixture_delimitar_zona(fixture_zona(), -15.8402, -70.0219);
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $proveedor = fixture_proveedor($zona);
 
@@ -53,7 +54,7 @@ it('permite asignar sin ubicación: el proveedor queda "sin ubicación" y sigue 
 });
 
 it('editar la ubicación dentro de la misma ruta conserva orden e historial y no duplica la asignación', function () {
-    $zona = fixture_zona();
+    $zona = fixture_delimitar_zona(fixture_zona(), -15.5, -70.5);
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $p1 = fixture_proveedor($zona);
     $p2 = fixture_proveedor($zona);
@@ -89,7 +90,7 @@ it('editar la ubicación puede limpiarla', function () {
 
 it('al cambiar de ruta traslada al proveedor con su nueva ubicación y compacta el orden de la ruta de origen', function () {
     $zonaA = fixture_zona('Collana 1');
-    $zonaB = fixture_zona('Collana 2');
+    $zonaB = fixture_delimitar_zona(fixture_zona('Collana 2'), -15.9, -70.1);
     $rutaA = app(RegistrarRuta::class)->execute(zonaId: $zonaA->id, nombre: 'Ruta 01');
     $rutaB = app(RegistrarRuta::class)->execute(zonaId: $zonaB->id, nombre: 'Ruta 02');
     $p1 = fixture_proveedor($zonaA);
@@ -115,6 +116,15 @@ it('rechaza asignar a una ruta inactiva', function () {
 
     app(GuardarAsignacionProveedor::class)->execute(proveedorId: $proveedor->id, rutaId: $ruta->id());
 })->throws(DomainException::class, 'No se puede asignar proveedores a una ruta inactiva.');
+
+it('rechaza una ubicación que cae en otra zona que la de la ruta', function () {
+    $zonaA = fixture_delimitar_zona(fixture_zona('Collana 1'), -15.6, -70.0);
+    fixture_delimitar_zona(fixture_zona('Collana 2'), -15.4, -70.0);
+    $rutaA = app(RegistrarRuta::class)->execute(zonaId: $zonaA->id, nombre: 'Ruta 01');
+    $proveedor = fixture_proveedor($zonaA);
+
+    app(GuardarAsignacionProveedor::class)->execute(proveedorId: $proveedor->id, rutaId: $rutaA->id(), latitud: -15.4, longitud: -70.0);
+})->throws(UbicacionFueraDeZona::class, 'La ubicación marcada está en Collana 2');
 
 it('rechaza una ruta inexistente', function () {
     $proveedor = fixture_proveedor(fixture_zona());

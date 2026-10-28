@@ -45,6 +45,7 @@ final class MoverProveedorDeZona
         private readonly RutaRepository $rutas,
         private readonly RutaDetalleRepository $rutaDetalles,
         private readonly AsignarProveedorARuta $asignarProveedorARuta,
+        private readonly LocalizadorZonas $localizador,
         private readonly AuditoriaRepository $auditorias,
         private readonly TransactionManager $transacciones,
     ) {}
@@ -81,7 +82,7 @@ final class MoverProveedorDeZona
         }
 
         $zonaActual = $this->zonas->buscarPorId($rutaActual->zonaId());
-        $zonaDestino = $this->localizarZona($latitud, $longitud, $rutaActual->zonaId());
+        $zonaDestino = $this->localizador->zonaEn($latitud, $longitud, preferidaId: $rutaActual->zonaId());
 
         if ($zonaDestino === null) {
             throw new DomainException('La ubicación seleccionada no pertenece a ninguna delimitación operativa.');
@@ -154,24 +155,6 @@ final class MoverProveedorDeZona
                 longitud: $longitud,
             );
         });
-    }
-
-    /**
-     * Zona cuya delimitación contiene el punto. Si dos delimitaciones se solapan y una de ellas
-     * es la zona actual del proveedor, se queda en ella (un ajuste fino no lo cambia de zona).
-     */
-    private function localizarZona(float $latitud, float $longitud, int $zonaActualId): ?Zona
-    {
-        $contenedoras = array_keys(array_filter(
-            $this->zonas->listarDelimitaciones(),
-            fn ($delimitacion): bool => $delimitacion->contiene($latitud, $longitud),
-        ));
-
-        if ($contenedoras === []) {
-            return null;
-        }
-
-        return $this->zonas->buscarPorId(in_array($zonaActualId, $contenedoras, true) ? $zonaActualId : $contenedoras[0]);
     }
 
     private function rutaDestino(Zona $zona, ?int $rutaDestinoId): Ruta

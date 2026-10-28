@@ -499,6 +499,8 @@
 .zonas-ubicacion { display: inline-flex; align-items: center; gap: .25rem; color: var(--fichas-muted); font-size: .75rem; }
 .zonas-ubicacion.is-registrada { color: var(--fichas-green); font-weight: 600; }
 .zonas-ubicacion.is-registrada:hover { text-decoration: underline; }
+.zonas-ubicacion.is-ubicar { color: var(--fichas-green-strong); font-weight: 600; cursor: pointer; }
+.zonas-ubicacion.is-ubicar:hover { text-decoration: underline; }
 .zonas-acciones { display: inline-flex; align-items: center; gap: .3rem; }
 .fichas-mini-tabla .is-accion:has(.zonas-acciones) { width: auto; }
 .asistencia-menu form { margin: 0; }

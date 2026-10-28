@@ -29,3 +29,12 @@ it('volver a ejecutarlo no pisa una delimitación ya dibujada ni el color elegid
         ->poligono_geojson->toBe($poligono);
     expect(DB::table('zonas')->count())->toBe(4);
 });
+
+it('es idempotente y no vuelve a crear una zona que ya existe con un nombre equivalente', function () {
+    DB::table('zonas')->insert(['nombre' => 'Collana1', 'estado' => 'ACTIVO']);
+
+    $this->seed(ZonaSeeder::class);
+    $this->seed(ZonaSeeder::class);
+
+    expect(DB::table('zonas')->orderBy('nombre')->pluck('nombre')->all())->toBe(['Collana 2', 'Collana1', 'Faon', 'Yasin']);
+});

@@ -24,6 +24,12 @@ interface ZonaRepository
 
     public function buscarPorNombre(string $nombre): ?Zona;
 
+    /**
+     * Zona cuyo nombre es equivalente (Zona::normalizarNombre) al indicado, sin contar
+     * $exceptoId (la propia zona al editarla).
+     */
+    public function buscarEquivalente(string $nombre, ?int $exceptoId = null): ?Zona;
+
     /** Color del mapa y delimitación operativa (null la quita). */
     public function guardarDelimitacion(int $zonaId, string $colorMapa, ?DelimitacionZona $delimitacion): void;
 

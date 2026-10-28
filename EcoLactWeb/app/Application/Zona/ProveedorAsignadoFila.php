@@ -6,6 +6,10 @@ namespace App\Application\Zona;
  * Fila de la tabla "Proveedores de la zona": un proveedor con su asignación
  * vigente (zona, ruta, orden y punto de recolección). Los campos de
  * asignación son null cuando el proveedor todavía no está en ninguna ruta.
+ *
+ * zonaRegistrada* es la caché proveedores.zona_id: un proveedor cargado con su
+ * zona pero aún sin ruta la trae, y el modal de asignación la propone como
+ * punto de partida. No es la asignación: esa la da la ruta.
  */
 final readonly class ProveedorAsignadoFila
 {
@@ -22,6 +26,8 @@ final readonly class ProveedorAsignadoFila
         public ?float $latitud,
         public ?float $longitud,
         public ?string $referenciaUbicacion,
+        public ?int $zonaRegistradaId = null,
+        public ?string $zonaRegistradaNombre = null,
     ) {}
 
     public function estaAsignado(): bool
@@ -52,6 +58,8 @@ final readonly class ProveedorAsignadoFila
             'latitud' => $this->latitud,
             'longitud' => $this->longitud,
             'referencia' => $this->referenciaUbicacion,
+            'zonaRegistradaId' => $this->zonaRegistradaId,
+            'zonaRegistradaNombre' => $this->zonaRegistradaNombre,
         ];
     }
 }

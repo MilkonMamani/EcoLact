@@ -41,4 +41,21 @@ final class Zona
     {
         return $this->estado === 'ACTIVO';
     }
+
+    /**
+     * Clave para comparar nombres de zona: "Collana1", "Collana 1" y "COLLANA  1" son la misma
+     * zona. Ignora mayúsculas y espacios repetidos y separa letras de números; no toca nada más
+     * (tildes, guiones o palabras distintas siguen siendo nombres distintos).
+     */
+    public static function normalizarNombre(string $nombre): string
+    {
+        $texto = preg_replace('/(?<=\p{L})(?=\p{N})|(?<=\p{N})(?=\p{L})/u', ' ', mb_strtolower(trim($nombre)));
+
+        return preg_replace('/\s+/u', ' ', (string) $texto) ?? '';
+    }
+
+    public function esEquivalenteA(string $nombre): bool
+    {
+        return self::normalizarNombre($this->nombre) === self::normalizarNombre($nombre);
+    }
 }

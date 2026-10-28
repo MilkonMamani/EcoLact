@@ -1,5 +1,15 @@
-import { alFallarGoogleMaps, cargarGoogleMaps, getMapId, getCsrfToken } from '../maps.js';
-import { iniciarEditorDelimitacion, iniciarMapaGeneral } from './zonas-mapa.js';
+import { alFallarGoogleMaps, cargarGoogleMaps, esCoordenadaValida, getMapId, getCsrfToken } from '../maps.js';
+import {
+    crearPinProveedor,
+    dibujarDelimitacion,
+    encuadrar,
+    iniciarEditorDelimitacion,
+    iniciarMapaGeneral,
+    limitesDeVertices,
+    resaltarDelimitacion,
+    verticesDeGeometria,
+    zonaQueContiene,
+} from './zonas-mapa.js';
 
 /**
  * Pantalla /admin/zonas. El panel por fetch, sus pestañas y el skeleton son los de
@@ -11,8 +21,8 @@ import { iniciarEditorDelimitacion, iniciarMapaGeneral } from './zonas-mapa.js';
  *  - editor de delimitación de "Editar zona" (zonas-mapa.js);
  *  - filtro local de la pestaña Proveedores;
  *  - "+ Asignar proveedor": buscador de proveedores (nombre o DNI) que abre el modal de asignación;
- *  - modal "Asignar proveedor a zona y ruta" con selector dependiente Zona → Ruta y mapa
- *    para fijar latitud/longitud.
+ *  - modal "Asignar proveedor a zona y ruta": mapa con las mismas delimitaciones del mapa general
+ *    donde un click ubica al proveedor y detecta su zona, y después Zona → Ruta.
  *
  * Google Maps se carga una sola vez por página (cargarGoogleMaps memoiza la promesa) y solo
  * cuando hace falta.
@@ -727,6 +737,19 @@ function iniciarBuscador(pagina, abrirAsignacion) {
 
 // ------------------------------------------------------ modal de asignación
 
+/**
+ * Modal "Asignar proveedor a zona y ruta". Primero se ubica, después se asigna:
+ *  - el mapa pinta SIEMPRE las zonas activas con la delimitación y el color del mapa general
+ *    (el catálogo sale de ZonaMapService, igual que [data-zonas-mapa-general-datos]) y se encuadra
+ *    para que se vean todas; sin delimitaciones, cae en el centro configurado con un aviso;
+ *  - un click (o arrastrar el marcador, o escribir latitud/longitud) coloca un único marcador,
+ *    rellena latitud/longitud y detecta la zona con point-in-polygon; la zona detectada queda
+ *    elegida en el selector y sus rutas activas se cargan;
+ *  - elegir otra zona en el selector la resalta y la encuadra (las demás siguen visibles);
+ *  - Guardar solo se habilita con una ubicación dentro de la zona elegida. El servidor vuelve
+ *    a verificarlo (GuardarAsignacionProveedor + LocalizadorZonas) antes de guardar.
+ * Un proveedor sin coordenadas no tiene marcador hasta que se hace click: nunca se inventa uno.
+ */
 function iniciarModalAsignacion(pagina) {
     const modal = document.getElementById('modal-asignacion');
     const formulario = modal.querySelector('[data-asignacion-form]');
@@ -740,7 +763,10 @@ function iniciarModalAsignacion(pagina) {
     const inputLng = formulario.querySelector('#asignacion-longitud');
     const inputReferencia = formulario.querySelector('#asignacion-referencia');
     const contenedorMapa = formulario.querySelector('[data-asignacion-mapa]');
+    const ayudaMapa = formulario.querySelector('[data-mapa-ayuda]');
     const avisoMapa = formulario.querySelector('[data-mapa-aviso]');
+    const zonaDetectadaEl = formulario.querySelector('[data-zona-detectada]');
+    const asignacionActual = modal.querySelector('[data-asignacion-actual]');
     const errorGeneral = formulario.querySelector('[data-error-general]');
     const botonGuardar = formulario.querySelector('[data-asignacion-guardar]');
 
@@ -750,18 +776,29 @@ function iniciarModalAsignacion(pagina) {
         lng: parseFloat(pagina.dataset.mapaLng),
         zoom: parseInt(pagina.dataset.mapaZoom, 10) || 10,
     };
+    const zonas = new Map(catalogo.map((zona) => [zona.id, {
+        zona,
+        vertices: verticesDeGeometria(zona.geometry, zona.nombre),
+        poligono: null,
+    }]));
+    const hayDelimitaciones = [...zonas.values()].some((item) => item.vertices.length >= 3);
+    const COLOR_SIN_ZONA = '#667085';
+    const ZOOM_PROVEEDOR = 15;
+    const AVISO_SIN_MAPA = 'No se pudo cargar el mapa. Verifica la configuración de Google Maps; mientras tanto puedes escribir la latitud y la longitud manualmente.';
 
+    let mapaNoDisponible = false;
     let proveedorId = null;
     let mapa = null;
     let marcador = null;
     let mapsLib = null;
+    let zonaDetectada = null;
 
     // --- selects dependientes -------------------------------------------
 
     const llenarZonas = (zonaId) => {
         selectZona.replaceChildren(new Option('Seleccionar zona', ''));
         catalogo.forEach((zona) => selectZona.append(new Option(zona.nombre, zona.id)));
-        selectZona.value = zonaId ? String(zonaId) : '';
+        selectZona.value = zonaId && zonas.has(zonaId) ? String(zonaId) : '';
     };
 
     const llenarRutas = (rutaId) => {
@@ -781,7 +818,15 @@ function iniciarModalAsignacion(pagina) {
         }
     };
 
-    selectZona.addEventListener('change', () => llenarRutas(null));
+    /** Cambia la zona del selector (y sus rutas) solo si es otra: la ruta elegida se conserva. */
+    const elegirZona = (zonaId) => {
+        if (selectZona.value === String(zonaId ?? '')) {
+            return;
+        }
+
+        selectZona.value = zonaId ? String(zonaId) : '';
+        llenarRutas(null);
+    };
 
     // Alta rápida de la "Ruta principal" de una zona que todavía no tiene
     // ninguna, sin salir del modal (ver RutaController::store, rama JSON).
@@ -851,23 +896,93 @@ function iniciarModalAsignacion(pagina) {
         });
     };
 
-    // --- mapa -------------------------------------------------------------
+    // --- ubicación → zona -------------------------------------------------
 
     const coordenadasValidas = () => {
         const lat = parseFloat(inputLat.value);
         const lng = parseFloat(inputLng.value);
 
-        if (Number.isNaN(lat) || Number.isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-            return null;
-        }
-
-        return { lat, lng };
+        return esCoordenadaValida(lat, lng) ? { lat, lng } : null;
     };
 
     const escribirCoordenadas = (lat, lng) => {
         inputLat.value = lat.toFixed(7);
         inputLng.value = lng.toFixed(7);
     };
+
+    const avisar = (texto) => {
+        avisoMapa.textContent = texto ?? '';
+        avisoMapa.hidden = !texto;
+    };
+
+    /** Las demás zonas siguen visibles; la elegida se resalta y, si se pide, se encuadra. */
+    const resaltarZona = (zonaId, { zoom = false } = {}) => {
+        zonas.forEach((item, id) => resaltarDelimitacion(item.poligono, id === zonaId));
+
+        const item = zonas.get(zonaId);
+
+        if (zoom && mapa && item?.vertices.length >= 3) {
+            encuadrar(mapa, limitesDeVertices(item.vertices), 32);
+        }
+    };
+
+    const mostrarZonaDetectada = () => {
+        const tono = (clase) => {
+            zonaDetectadaEl.classList.remove('text-text-muted', 'text-text', 'text-warning');
+            zonaDetectadaEl.classList.add(clase);
+        };
+
+        zonaDetectadaEl.replaceChildren();
+
+        if (!coordenadasValidas()) {
+            zonaDetectadaEl.textContent = 'Sin ubicación';
+            tono('text-text-muted');
+            return;
+        }
+
+        if (!zonaDetectada) {
+            zonaDetectadaEl.textContent = 'Fuera de las zonas operativas';
+            tono('text-warning');
+            return;
+        }
+
+        const punto = document.createElement('span');
+        punto.className = 'inline-block h-2.5 w-2.5 shrink-0 rounded-full';
+        punto.style.backgroundColor = zonaDetectada.color;
+        const nombre = document.createElement('strong');
+        nombre.className = 'font-semibold';
+        nombre.textContent = zonaDetectada.nombre;
+        zonaDetectadaEl.append(punto, nombre);
+        tono('text-text');
+    };
+
+    /**
+     * Guardar exige una ubicación dentro de la zona elegida. Explica en el aviso del mapa por qué
+     * no se puede guardar todavía.
+     */
+    const actualizarEstado = () => {
+        const coordenadas = coordenadasValidas();
+        const zonaElegida = selectZona.value ? zonas.get(parseInt(selectZona.value, 10))?.zona : null;
+
+        mostrarZonaDetectada();
+        ayudaMapa.textContent = coordenadas
+            ? 'Puedes arrastrar el marcador para afinar la ubicación.'
+            : 'Marca en el mapa la ubicación del proveedor.';
+
+        if (!hayDelimitaciones) {
+            avisar('No se pudieron cargar las delimitaciones de las zonas.');
+        } else if (coordenadas && !zonaDetectada) {
+            avisar('La ubicación seleccionada no pertenece a ninguna zona operativa.');
+        } else if (coordenadas && zonaElegida && zonaElegida.id !== zonaDetectada.id) {
+            avisar(`El marcador está en ${zonaDetectada.nombre}. Muévelo a ${zonaElegida.nombre} o vuelve a elegir ${zonaDetectada.nombre}.`);
+        } else {
+            avisar(mapaNoDisponible ? AVISO_SIN_MAPA : null);
+        }
+
+        botonGuardar.disabled = !(coordenadas && zonaDetectada && zonaElegida?.id === zonaDetectada.id);
+    };
+
+    const colorDelMarcador = () => zonaDetectada?.color ?? COLOR_SIN_ZONA;
 
     const colocarMarcador = (posicion) => {
         if (!mapa) {
@@ -876,19 +991,22 @@ function iniciarModalAsignacion(pagina) {
 
         if (marcador) {
             marcador.position = posicion;
+            marcador.content = crearPinProveedor(colorDelMarcador(), !zonaDetectada);
             return;
         }
 
         marcador = new mapsLib.AdvancedMarkerElement({
             map: mapa,
             position: posicion,
+            content: crearPinProveedor(colorDelMarcador(), !zonaDetectada),
             gmpDraggable: true,
-            title: 'Ubicación del proveedor',
+            title: 'Ubicación del proveedor (arrástralo para afinarla)',
+            zIndex: 30,
         });
 
         marcador.addListener('dragend', () => {
             const { lat, lng } = marcador.position;
-            escribirCoordenadas(typeof lat === 'function' ? lat() : lat, typeof lng === 'function' ? lng() : lng);
+            ubicar(typeof lat === 'function' ? lat() : lat, typeof lng === 'function' ? lng() : lng);
         });
     };
 
@@ -899,80 +1017,138 @@ function iniciarModalAsignacion(pagina) {
         }
     };
 
-    const sincronizarMapaConInputs = () => {
+    /**
+     * Nueva ubicación (click, arrastre o coordenadas escritas): detecta la zona, la elige en el
+     * selector (con sus rutas) y la resalta, sin cambiar el encuadre del mapa.
+     */
+    const ubicar = (lat, lng, { escribir = true } = {}) => {
+        if (escribir) {
+            escribirCoordenadas(lat, lng);
+        }
+
+        const preferida = selectZona.value ? parseInt(selectZona.value, 10) : null;
+        zonaDetectada = zonaQueContiene(zonas.values(), lat, lng, preferida);
+
+        if (zonaDetectada) {
+            elegirZona(zonaDetectada.id);
+        }
+
+        resaltarZona(zonaDetectada?.id ?? null);
+        colocarMarcador({ lat, lng });
+        actualizarEstado();
+    };
+
+    const alEditarCoordenadas = () => {
         const coordenadas = coordenadasValidas();
 
-        if (!mapa) {
+        if (coordenadas) {
+            ubicar(coordenadas.lat, coordenadas.lng, { escribir: false });
+            mapa?.panTo(coordenadas);
             return;
         }
 
-        if (coordenadas) {
-            colocarMarcador(coordenadas);
-            mapa.panTo(coordenadas);
-        } else {
-            quitarMarcador();
-        }
+        zonaDetectada = null;
+        quitarMarcador();
+        actualizarEstado();
     };
 
-    inputLat.addEventListener('change', sincronizarMapaConInputs);
-    inputLng.addEventListener('change', sincronizarMapaConInputs);
+    inputLat.addEventListener('change', alEditarCoordenadas);
+    inputLng.addEventListener('change', alEditarCoordenadas);
 
+    selectZona.addEventListener('change', () => {
+        llenarRutas(null);
+        resaltarZona(selectZona.value ? parseInt(selectZona.value, 10) : null, { zoom: true });
+        actualizarEstado();
+    });
+
+    // --- mapa -------------------------------------------------------------
+
+    // Sin Google Maps la zona se sigue detectando con las coordenadas escritas a mano.
     const sinMapa = () => {
-        avisoMapa.hidden = false;
-        avisoMapa.textContent = 'No se pudo cargar el mapa. Verifica la configuración de Google Maps; mientras tanto puedes escribir la latitud y la longitud manualmente.';
+        mapaNoDisponible = true;
         contenedorMapa.classList.add('hidden');
+        actualizarEstado();
     };
 
     alFallarGoogleMaps(sinMapa);
 
-    const prepararMapa = async () => {
-        if (window.__ecolactMapsFallo) {
-            sinMapa();
+    /** Todas las delimitaciones a la vista; sin ninguna, el centro configurado. */
+    const encuadrarZonas = () => {
+        const limites = new google.maps.LatLngBounds();
+
+        zonas.forEach((item) => {
+            if (item.vertices.length >= 3) {
+                limites.union(limitesDeVertices(item.vertices));
+            }
+        });
+
+        if (limites.isEmpty()) {
+            mapa.setCenter({ lat: centroInicial.lat, lng: centroInicial.lng });
+            mapa.setZoom(centroInicial.zoom);
             return;
         }
 
-        avisoMapa.hidden = true;
+        encuadrar(mapa, limites, 24);
+    };
 
-        if (!mapa) {
-            mapsLib = await cargarGoogleMaps();
+    const crearMapa = async () => {
+        mapsLib = await cargarGoogleMaps();
 
-            if (!mapsLib) {
-                sinMapa();
-                return;
+        if (!mapsLib) {
+            return false;
+        }
+
+        mapa = new mapsLib.Map(contenedorMapa, {
+            center: { lat: centroInicial.lat, lng: centroInicial.lng },
+            zoom: centroInicial.zoom,
+            mapId: getMapId(),
+            streetViewControl: false,
+            mapTypeControl: true,
+            clickableIcons: false,
+        });
+
+        // Polígonos no clicables: el click llega al mapa con su latLng exacto, dentro o fuera de una zona.
+        zonas.forEach((item) => {
+            if (item.vertices.length >= 3) {
+                item.poligono = dibujarDelimitacion(mapa, item.zona, { clickable: false });
             }
+        });
 
-            mapa = new mapsLib.Map(contenedorMapa, {
-                center: { lat: centroInicial.lat, lng: centroInicial.lng },
-                zoom: centroInicial.zoom,
-                mapId: getMapId(),
-                streetViewControl: false,
-                mapTypeControl: true,
-            });
+        mapa.addListener('click', (evento) => ubicar(evento.latLng.lat(), evento.latLng.lng()));
 
-            mapa.addListener('click', (evento) => {
-                const lat = evento.latLng.lat();
-                const lng = evento.latLng.lng();
-                colocarMarcador({ lat, lng });
-                escribirCoordenadas(lat, lng);
-            });
+        return true;
+    };
+
+    const prepararMapa = async () => {
+        if (window.__ecolactMapsFallo || (!mapa && !(await crearMapa()))) {
+            sinMapa();
+            return;
         }
 
         contenedorMapa.classList.remove('hidden');
 
         const coordenadas = coordenadasValidas();
+        resaltarZona(zonaDetectada?.id ?? (selectZona.value ? parseInt(selectZona.value, 10) : null));
 
         if (coordenadas) {
             colocarMarcador(coordenadas);
             mapa.setCenter(coordenadas);
-            mapa.setZoom(16);
+            mapa.setZoom(ZOOM_PROVEEDOR);
         } else {
             quitarMarcador();
-            mapa.setCenter({ lat: centroInicial.lat, lng: centroInicial.lng });
-            mapa.setZoom(centroInicial.zoom);
+            encuadrarZonas();
         }
     };
 
     // --- apertura ---------------------------------------------------------
+
+    const textoAsignacionActual = (datos) => {
+        if (datos.rutaId) {
+            return `Asignación actual: ${datos.zonaNombre} · ${datos.rutaNombre}`;
+        }
+
+        return datos.zonaRegistradaNombre ? `Zona registrada: ${datos.zonaRegistradaNombre} (todavía sin ruta)` : 'Todavía sin zona ni ruta.';
+    };
 
     const abrir = (datos) => {
         proveedorId = datos.proveedorId;
@@ -980,19 +1156,23 @@ function iniciarModalAsignacion(pagina) {
 
         modal.querySelector('[data-asignacion-nombre]').textContent = datos.nombre;
         modal.querySelector('[data-asignacion-dni]').textContent = datos.dni;
+        asignacionActual.textContent = textoAsignacionActual(datos);
+        asignacionActual.hidden = false;
 
-        // Un proveedor sin zona toma por defecto la zona que se está viendo.
-        const zonaInicial = datos.zonaId ?? zonaDelPanel(pagina);
-
-        llenarZonas(zonaInicial);
+        // Sin ruta, se parte de la zona registrada del proveedor o de la zona que se está viendo;
+        // el click en el mapa la corrige si el proveedor está en otra.
+        llenarZonas(datos.zonaId ?? datos.zonaRegistradaId ?? zonaDelPanel(pagina));
         llenarRutas(datos.rutaId);
 
         inputLat.value = datos.latitud ?? '';
         inputLng.value = datos.longitud ?? '';
         inputReferencia.value = datos.referencia ?? '';
 
+        const coordenadas = coordenadasValidas();
+        zonaDetectada = coordenadas ? zonaQueContiene(zonas.values(), coordenadas.lat, coordenadas.lng, datos.zonaId) : null;
+        actualizarEstado();
+
         disparador.click();
-        selectZona.focus();
 
         // El mapa se crea/ajusta con el modal ya visible para que tenga tamaño.
         window.requestAnimationFrame(() => prepararMapa());
@@ -1003,6 +1183,11 @@ function iniciarModalAsignacion(pagina) {
     formulario.addEventListener('submit', async (event) => {
         event.preventDefault();
         limpiarErrores();
+
+        if (botonGuardar.disabled) {
+            return;
+        }
+
         botonGuardar.disabled = true;
 
         const cuerpo = new FormData(formulario);
@@ -1018,6 +1203,7 @@ function iniciarModalAsignacion(pagina) {
             const json = await respuesta.json().catch(() => ({}));
 
             if (respuesta.ok && json.redirect) {
+                // Vuelve al mapa general con la zona destino y el pin del proveedor enfocado.
                 window.location.assign(json.redirect);
                 return;
             }
@@ -1033,7 +1219,7 @@ function iniciarModalAsignacion(pagina) {
             errorGeneral.hidden = false;
         }
 
-        botonGuardar.disabled = false;
+        actualizarEstado();
     });
 
     return { abrir };

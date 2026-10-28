@@ -22,6 +22,12 @@ function asignacionValida(int $zonaId, int $rutaId, array $extra = []): array
     ], $extra);
 }
 
+/** Zona con una delimitación de 1° alrededor del punto que usa asignacionValida(): el servidor verifica la zona del punto. */
+function zona_ubicable(string $nombre): ZonaModel
+{
+    return fixture_delimitar_zona(fixture_zona($nombre), -15.8402, -70.0219, 1.0);
+}
+
 // ---------------------------------------------------------------- listado
 
 it('muestra las zonas desde la base de datos y abre la seleccionada en el panel con su tabla de proveedores', function () {
@@ -45,7 +51,7 @@ it('muestra las zonas desde la base de datos y abre la seleccionada en el panel 
         ->assertSee('Buscar proveedor por nombre o DNI...')
         ->assertSeeInOrder(['Resumen', 'Proveedores', 'Acopiadores'])
         ->assertSeeInOrder(['Sandra Ccama Quispe', '72100012', 'Registrada'])
-        ->assertSeeInOrder(['Wilson Poma Mamani', '72100013', 'Sin ubicación'])
+        ->assertSeeInOrder(['Wilson Poma Mamani', '72100013', 'Ubicar en mapa'])
         ->assertDontSee('Proveedores sin zona');
     $response->assertSee('data-fichas-contenido data-ficha-id="'.$collana1->id.'"', false)
         ->assertSee('data-zonas-seleccionar="'.$collana1->id.'"', false);
@@ -79,7 +85,7 @@ it('el aviso "Proveedores sin zona" va aparte de la tabla y abre la lista con el
     $response = $this->actingAs($admin)->get(route('admin.zonas.index', ['zona' => 'sin-asignar']));
 
     $response->assertOk()
-        ->assertSeeInOrder(['Proveedores sin zona', 'Diana Choque', '72100077', 'Sin ubicación'])
+        ->assertSeeInOrder(['Proveedores sin zona', 'Diana Choque', '72100077', 'Ubicar en mapa'])
         ->assertSee('Asignar a zona a');
 });
 
@@ -246,7 +252,7 @@ it('no elimina una zona con rutas o proveedores y muestra el motivo', function (
 
 it('asigna un proveedor a zona y ruta guardando coordenadas y referencia, y el destino queda seleccionado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zona = fixture_zona('Collana 1');
+    $zona = zona_ubicable('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $proveedor = fixture_proveedor($zona);
 
@@ -254,7 +260,7 @@ it('asigna un proveedor a zona y ruta guardando coordenadas y referencia, y el d
         ->putJson(route('admin.zonas.proveedores.asignacion', $proveedor->id), asignacionValida($zona->id, $ruta->id()))
         ->assertOk()
         ->assertJsonPath('ok', true)
-        ->assertJsonPath('redirect', route('admin.zonas.index', ['zona' => $zona->id]));
+        ->assertJsonPath('redirect', route('admin.zonas.index', ['zona' => $zona->id, 'proveedor' => $proveedor->id]));
 
     $this->assertDatabaseHas('ruta_detalles', [
         'ruta_id' => $ruta->id(),
@@ -265,22 +271,23 @@ it('asigna un proveedor a zona y ruta guardando coordenadas y referencia, y el d
     $this->assertDatabaseHas('proveedores', ['id' => $proveedor->id, 'zona_id' => $zona->id]);
 });
 
-it('la ubicación es opcional al asignar', function () {
+it('la ubicación es obligatoria al asignar desde el mapa', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zona = fixture_zona('Collana 1');
+    $zona = zona_ubicable('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $proveedor = fixture_proveedor($zona);
 
     $this->actingAs($admin)
         ->putJson(route('admin.zonas.proveedores.asignacion', $proveedor->id), ['zona_id' => $zona->id, 'ruta_id' => $ruta->id()])
-        ->assertOk();
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['latitud' => 'Marca en el mapa la ubicación del proveedor.', 'longitud' => 'Marca en el mapa la ubicación del proveedor.']);
 
-    expect(RutaDetalleModel::where('proveedor_id', $proveedor->id)->value('latitud'))->toBeNull();
+    $this->assertDatabaseCount('ruta_detalles', 0);
 });
 
 it('editar la asignación actualiza la ubicación del proveedor sin duplicarlo ni cambiar su orden', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zona = fixture_zona('Collana 1');
+    $zona = zona_ubicable('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $p1 = fixture_proveedor($zona);
     $p2 = fixture_proveedor($zona);
@@ -300,7 +307,7 @@ it('editar la asignación actualiza la ubicación del proveedor sin duplicarlo n
 
 it('dos proveedores asignados a la misma ruta reciben órdenes distintos y consecutivos', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zona = fixture_zona('Collana 1');
+    $zona = zona_ubicable('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $a = fixture_proveedor($zona);
     $b = fixture_proveedor($zona);
@@ -327,7 +334,7 @@ it('valida que zona y ruta sean obligatorias y existan', function () {
 
 it('rechaza una ruta que no pertenece a la zona seleccionada', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zonaA = fixture_zona('Collana 1');
+    $zonaA = zona_ubicable('Collana 1');
     $zonaB = fixture_zona('Collana 2');
     $rutaDeB = app(RegistrarRuta::class)->execute(zonaId: $zonaB->id, nombre: 'Ruta 01');
     $proveedor = fixture_proveedor($zonaA);
@@ -342,7 +349,7 @@ it('rechaza una ruta que no pertenece a la zona seleccionada', function () {
 
 it('rechaza asignar a una ruta inactiva con el error bajo el campo ruta', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zona = fixture_zona('Collana 1');
+    $zona = zona_ubicable('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01', estado: 'INACTIVO');
     $proveedor = fixture_proveedor($zona);
 
@@ -354,7 +361,7 @@ it('rechaza asignar a una ruta inactiva con el error bajo el campo ruta', functi
 
 it('valida la latitud y la longitud', function (array $extra, string $campo, string $mensaje) {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zona = fixture_zona('Collana 1');
+    $zona = zona_ubicable('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $proveedor = fixture_proveedor($zona);
 
@@ -370,13 +377,13 @@ it('valida la latitud y la longitud', function (array $extra, string $campo, str
     'longitud mayor a 180' => [['longitud' => 185], 'longitud', 'La longitud debe estar entre -180 y 180.'],
     'longitud menor a -180' => [['longitud' => -181], 'longitud', 'La longitud debe estar entre -180 y 180.'],
     'latitud no numérica' => [['latitud' => 'abc'], 'latitud', 'La latitud debe ser un número.'],
-    'solo latitud' => [['longitud' => null], 'longitud', 'Indica también la longitud: la latitud y la longitud van juntas.'],
-    'solo longitud' => [['latitud' => null], 'latitud', 'Indica también la latitud: la latitud y la longitud van juntas.'],
+    'solo latitud' => [['longitud' => null], 'longitud', 'Marca en el mapa la ubicación del proveedor.'],
+    'solo longitud' => [['latitud' => null], 'latitud', 'Marca en el mapa la ubicación del proveedor.'],
 ]);
 
 it('valida que la referencia no supere 255 caracteres', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $zona = fixture_zona('Collana 1');
+    $zona = zona_ubicable('Collana 1');
     $ruta = app(RegistrarRuta::class)->execute(zonaId: $zona->id, nombre: 'Ruta 01');
     $proveedor = fixture_proveedor($zona);
 

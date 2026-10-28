@@ -41,7 +41,9 @@
                                     <x-ui.icon name="map-pin" class="h-3.5 w-3.5" /> Registrada
                                 </a>
                             @else
-                                <span class="zonas-ubicacion"><x-ui.icon name="map-pin" class="h-3.5 w-3.5" /> Sin ubicación</span>
+                                <button type="button" class="zonas-ubicacion is-ubicar" data-asignar-abrir="{{ json_encode($fila->paraModal()) }}" title="Ubicación no registrada: márcala en el mapa">
+                                    <x-ui.icon name="map-pin" class="h-3.5 w-3.5" /> Ubicar en mapa
+                                </button>
                             @endif
                         </td>
                         <td class="is-accion">

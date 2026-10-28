@@ -68,6 +68,22 @@ export function dibujarDelimitacion(mapa, zona, { clickable = true, estilo = 'no
     });
 }
 
+/** Resalta (o devuelve a su estilo normal) un polígono dibujado con dibujarDelimitacion(). */
+export function resaltarDelimitacion(poligono, activa) {
+    poligono?.setOptions({ ...ESTILOS[activa ? 'activa' : 'normal'], zIndex: activa ? 2 : 1 });
+}
+
+/**
+ * Zona cuya delimitación contiene el punto, entre `items` ({zona, vertices}). Si dos se solapan y
+ * una es `preferida` (p. ej. la zona actual del proveedor), gana esa, igual que en el servidor
+ * (LocalizadorZonas). Null si ninguna lo contiene.
+ */
+export function zonaQueContiene(items, lat, lng, preferida = null) {
+    const contenedoras = [...items].filter((item) => item.vertices.length >= 3 && contienePunto(item.vertices, lat, lng));
+
+    return (contenedoras.find((item) => item.zona.id === preferida) ?? contenedoras[0])?.zona ?? null;
+}
+
 /** Oscurece un color #rrggbb (fondo de la etiqueta: texto blanco legible incluso sobre mostaza). */
 export function oscurecer(color, proporcion = 0.22) {
     const canales = [1, 3, 5].map((i) => Math.round(parseInt(color.slice(i, i + 2), 16) * (1 - proporcion)));
@@ -123,7 +139,7 @@ export function encuadrar(mapa, limites, relleno = 40) {
     });
 }
 
-function limitesDeVertices(vertices) {
+export function limitesDeVertices(vertices) {
     const limites = new google.maps.LatLngBounds();
     vertices.forEach((vertice) => limites.extend(vertice));
 
@@ -239,7 +255,7 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
         });
 
         zonas.forEach((item, zonaId) => {
-            item.poligono?.setOptions({ ...ESTILOS[zonaId === id ? 'activa' : 'normal'], zIndex: zonaId === id ? 2 : 1 });
+            resaltarDelimitacion(item.poligono, zonaId === id);
             item.etiqueta?.classList.toggle('is-activa', zonaId === id);
         });
 
@@ -271,15 +287,7 @@ export function iniciarMapaGeneral(pagina, zonaInicial) {
         }
     });
 
-    /**
-     * Zona cuya delimitación contiene el punto; si dos se solapan y una es `preferida` (la zona
-     * actual del proveedor), gana esa, igual que en el servidor.
-     */
-    const zonaEn = (lat, lng, preferida = null) => {
-        const contenedoras = [...zonas.values()].filter((item) => item.vertices.length >= 3 && contienePunto(item.vertices, lat, lng));
-
-        return (contenedoras.find((item) => item.zona.id === preferida) ?? contenedoras[0])?.zona ?? null;
-    };
+    const zonaEn = (lat, lng, preferida = null) => zonaQueContiene(zonas.values(), lat, lng, preferida);
 
     const crearEtiqueta = (zona) => {
         const etiqueta = document.createElement('div');

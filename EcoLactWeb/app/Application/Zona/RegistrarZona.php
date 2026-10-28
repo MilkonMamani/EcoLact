@@ -14,8 +14,10 @@ final class RegistrarZona
 
     public function execute(string $nombre, ?string $descripcion, string $estado): Zona
     {
-        if ($this->zonas->buscarPorNombre($nombre) !== null) {
-            throw new DomainException("Ya existe una zona con el nombre {$nombre}.");
+        $equivalente = $this->zonas->buscarEquivalente($nombre);
+
+        if ($equivalente !== null) {
+            throw new DomainException("Ya existe una zona equivalente con el nombre {$equivalente->nombre()}.");
         }
 
         return $this->zonas->guardar(new Zona(

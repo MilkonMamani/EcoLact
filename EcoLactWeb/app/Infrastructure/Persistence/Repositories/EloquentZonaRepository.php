@@ -69,6 +69,17 @@ class EloquentZonaRepository implements ZonaRepository
         return $model ? $this->toEntity($model) : null;
     }
 
+    public function buscarEquivalente(string $nombre, ?int $exceptoId = null): ?Zona
+    {
+        $model = ZonaModel::query()
+            ->when($exceptoId !== null, fn ($query) => $query->whereKeyNot($exceptoId))
+            ->orderBy('id')
+            ->get()
+            ->first(fn (ZonaModel $zona): bool => Zona::normalizarNombre($zona->nombre) === Zona::normalizarNombre($nombre));
+
+        return $model ? $this->toEntity($model) : null;
+    }
+
     public function guardarDelimitacion(int $zonaId, string $colorMapa, ?DelimitacionZona $delimitacion): void
     {
         ZonaModel::whereKey($zonaId)->update([

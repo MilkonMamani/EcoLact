@@ -46,10 +46,10 @@ final class ActualizarZona
         }
 
         if ($nombre !== null && $nombre !== $zona->nombre()) {
-            $zonaConEseNombre = $this->zonas->buscarPorNombre($nombre);
+            $equivalente = $this->zonas->buscarEquivalente($nombre, exceptoId: $zona->id());
 
-            if ($zonaConEseNombre !== null && $zonaConEseNombre->id() !== $zona->id()) {
-                throw new DomainException("Ya existe otra zona con el nombre {$nombre}.");
+            if ($equivalente !== null) {
+                throw new DomainException("Ya existe una zona equivalente con el nombre {$equivalente->nombre()}.");
             }
         }
 

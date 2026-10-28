@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Domain\Zona\Zona;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,10 @@ class ZonaSeeder extends Seeder
      * Editar zona → Editar delimitación. Nunca se generan coordenadas.
      *
      * Es idempotente: una zona existente conserva su estado, su color
-     * elegido y su delimitación ya dibujada.
+     * elegido y su delimitación ya dibujada. "Existente" incluye una variante
+     * equivalente del nombre (Zona::normalizarNombre: "Collana1" ya es
+     * "Collana 1"), para no volver a crear duplicados; esas variantes se
+     * unen con `php artisan zonas:consolidar`.
      *
      * @var array<string, string>
      */
@@ -27,10 +31,10 @@ class ZonaSeeder extends Seeder
 
     public function run(): void
     {
-        foreach (self::ZONAS as $nombre => $color) {
-            $existe = DB::table('zonas')->where('nombre', $nombre)->exists();
+        $existentes = DB::table('zonas')->pluck('nombre')->map(fn (string $nombre): string => Zona::normalizarNombre($nombre));
 
-            if (! $existe) {
+        foreach (self::ZONAS as $nombre => $color) {
+            if (! $existentes->contains(Zona::normalizarNombre($nombre))) {
                 DB::table('zonas')->insert([
                     'nombre' => $nombre,
                     'estado' => 'ACTIVO',
