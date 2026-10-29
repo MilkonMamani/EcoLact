@@ -1,0 +1,13 @@
+{
+  "plan": "captura de exploración (explorar_editar_parametro.json)",
+  "capturas": [
+    {
+      "nombre": "par_06b_error_regla_activa",
+      "archivo": "evidencias/originales/parametros/par_06b_error_regla_activa.png",
+      "objetivos": {},
+      "textos_visibles": [
+        "No se puede desactivar el parámetro: tiene reglas de calidad activas asociadas. Desactívelas primero."
+      ]
+    }
+  ]
+}

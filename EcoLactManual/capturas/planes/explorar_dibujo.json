@@ -1,0 +1,11 @@
+{"salida": "evidencias/exploracion", "viewport": {"width": 1920, "height": 1080}, "pasos": [
+  {"accion": "ir", "url": "/admin/zonas", "ms": 6000},
+  {"accion": "clic", "selector": ".zonas-leyenda button:has-text('Zona Prueba Manual')"},
+  {"accion": "esperar", "ms": 2500},
+  {"accion": "clic", "selector": "[data-fichas-panel] [data-delimitacion-abrir]"},
+  {"accion": "esperar", "ms": 6000},
+  {"accion": "js", "codigo": "window.__n = document.querySelectorAll('[data-delimitacion-modo=dibujar]').length"},
+  {"accion": "clic", "selector": "[data-modal].is-open [data-delimitacion-modo='dibujar']"},
+  {"accion": "esperar", "ms": 1000},
+  {"accion": "captura", "nombre": "x_dibujo", "leer": ["[data-modal].is-open [data-delimitacion-editor]"]}
+]}

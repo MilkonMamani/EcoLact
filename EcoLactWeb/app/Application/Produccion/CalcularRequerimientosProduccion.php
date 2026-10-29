@@ -17,6 +17,11 @@ use DomainException;
  *   cada insumo y SUMADOS entre todos los productos (si tres productos usan
  *   leche, se muestra un solo total de leche).
  *
+ * Cada línea trae además SUS insumos (`lineas[i]['insumos']`): es lo que
+ * descuenta su propio lote cuando una planificación crea un lote por
+ * producto. El total de cada insumo es la suma exacta de esas porciones, así
+ * lo validado contra el stock es lo mismo que se descuenta.
+ *
  * Es la única fuente de estos números: la pantalla de previsualización y
  * IniciarProduccion usan este mismo cálculo, así lo que ve la persona es lo
  * que se descuenta. Con `$bloquearInsumos` (solo dentro de la transacción de
@@ -45,6 +50,8 @@ final class CalcularRequerimientosProduccion
         $lineasCalculadas = [];
         $sinReceta = [];
         $necesarioPorInsumo = [];
+        // Por línea e insumo, en unidad base: la porción que descontaría el lote de ese producto.
+        $necesarioPorLinea = [];
         // Un mismo insumo suele repetirse entre recetas (la leche): se lee una sola vez.
         $insumosLeidos = [];
 
@@ -76,13 +83,45 @@ final class CalcularRequerimientosProduccion
             }
 
             $factor = $receta->factorPara($cantidad);
+            $indice = count($lineasCalculadas) - 1;
+            $porcion = [];
 
             foreach ($receta->detalles() as $detalle) {
                 $insumo = ($insumosLeidos[$detalle->insumoId()] ??= $this->insumos->buscarPorId($detalle->insumoId()))
                     ?? throw new DomainException("Un ingrediente de la receta de {$producto->nombre()} ya no existe.");
 
-                $necesarioPorInsumo[$detalle->insumoId()] = ($necesarioPorInsumo[$detalle->insumoId()] ?? 0.0)
+                // Una receta guardada con otra magnitud (Sal en ml si la Sal se controla en kg)
+                // no se adivina: se pide corregirla antes de producir.
+                if (! UnidadMedida::sonCompatibles($detalle->unidad(), $insumo->unidadBase())) {
+                    throw new DomainException("La receta de {$producto->nombre()} indica {$insumo->nombre()} en {$detalle->unidad()}, pero {$insumo->nombre()} se controla en {$insumo->unidadBase()}. Corrige la receta antes de producir.");
+                }
+
+                $porcion[$detalle->insumoId()] = ($porcion[$detalle->insumoId()] ?? 0.0)
                     + UnidadMedida::convertir($detalle->cantidad() * $factor, $detalle->unidad(), $insumo->unidadBase());
+            }
+
+            foreach ($porcion as $insumoId => $necesario) {
+                $porcion[$insumoId] = round($necesario, 4);
+                $necesarioPorInsumo[$insumoId] = ($necesarioPorInsumo[$insumoId] ?? 0.0) + $porcion[$insumoId];
+            }
+
+            $necesarioPorLinea[$indice] = $porcion;
+        }
+
+        foreach ($lineasCalculadas as $indice => $linea) {
+            $lineasCalculadas[$indice]['insumos'] = [];
+
+            foreach ($necesarioPorLinea[$indice] ?? [] as $insumoId => $necesario) {
+                if ($necesario <= 0.0) {
+                    continue;
+                }
+
+                $lineasCalculadas[$indice]['insumos'][] = [
+                    'insumoId' => $insumoId,
+                    'nombre' => $insumosLeidos[$insumoId]->nombre(),
+                    'unidadBase' => $insumosLeidos[$insumoId]->unidadBase(),
+                    'necesario' => $necesario,
+                ];
             }
         }
 

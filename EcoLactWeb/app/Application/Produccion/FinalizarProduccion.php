@@ -106,6 +106,7 @@ final class FinalizarProduccion
                 registradoPorUserId: $lote->registradoPorUserId(),
                 observacion: $lote->observacion(),
                 observacionCierre: $observacion,
+                planificacionProduccionId: $lote->planificacionProduccionId(),
             ));
         });
     }

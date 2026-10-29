@@ -1,0 +1,22 @@
+{"descripcion": "Producción: lote FICTICIO de 2 unidades de Producto Prueba Manual (descuenta leche e insumo ficticio), finalización e historial. BD de prueba autorizada.",
+ "salida": "evidencias/originales/produccion", "conservar_texto": "Prueba Manual", "difuminar_textos": ["admin"],
+ "pasos": [
+  {"accion": "ir", "url": "/admin/produccion", "ms": 2500},
+  {"accion": "captura", "nombre": "pro_01_historial", "medir": {"menu": "#ecolact-sidebar a[href$='/admin/produccion']", "nueva": "main [data-modal-open='modal-nueva-produccion'] >> nth=0"}, "leer": ["main"]},
+  {"accion": "clic", "selector": "main [data-modal-open='modal-nueva-produccion'] >> nth=0"},
+  {"accion": "esperar", "ms": 1500},
+  {"accion": "js", "codigo": "const el=document.querySelector(\"#modal-nueva-produccion [name='productos[0][producto_id]']\"); const o=[...el.options].find(o=>o.text.includes('Producto Prueba Manual')); el.value=o.value; el.dispatchEvent(new Event('change',{bubbles:true}));"},
+  {"accion": "escribir", "selector": "#modal-nueva-produccion [name='productos[0][cantidad]']", "texto": "2"},
+  {"accion": "esperar", "ms": 3500},
+  {"accion": "captura", "nombre": "pro_02_requerimientos", "pagina_completa": true, "medir": {"producto": "#modal-nueva-produccion [data-producto]", "cantidad": "#modal-nueva-produccion [data-cantidad]", "recursos": "#modal-nueva-produccion [data-recursos]", "veredicto": "#modal-nueva-produccion [data-veredicto]", "iniciar": "#modal-nueva-produccion [data-iniciar]"}, "leer": ["#modal-nueva-produccion [data-modal-panel]"]},
+  {"accion": "clic", "selector": "#modal-nueva-produccion [data-iniciar]"},
+  {"accion": "esperar", "ms": 4000},
+  {"accion": "captura", "nombre": "pro_03_iniciada", "pagina_completa": true, "medir": {"mensaje": "[role=alert]", "obtenido": "input[name^='obtenido']", "finalizar": "[data-finalizar]"}, "leer": ["[role=alert]", "main"]},
+  {"accion": "escribir", "selector": "input[name^='obtenido']", "texto": "2"},
+  {"accion": "dialogos", "aceptar": true},
+  {"accion": "clic", "selector": "[data-finalizar]"},
+  {"accion": "esperar", "ms": 4000},
+  {"accion": "captura", "nombre": "pro_04_finalizada", "pagina_completa": true, "medir": {"mensaje": "[role=alert]"}, "leer": ["[role=alert]", "main"]},
+  {"accion": "ir", "url": "/admin/produccion", "ms": 2500},
+  {"accion": "captura", "nombre": "pro_05_historial_final", "medir": {"fila": "tbody tr:has-text('Producto Prueba Manual') >> nth=0"}, "leer": ["main"]}
+ ]}

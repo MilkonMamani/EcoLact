@@ -1,0 +1,886 @@
+[
+  {
+    "page": "index",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../assets/images/desarrollo/entorno-desarrollo.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Comenzar a desarrollar EcoLact",
+    "icons": 15,
+    "links": [
+      "https://developer.android.com/build/releases/agp-9-0-0-release-notes",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/",
+      "http://127.0.0.1:8766/site/desarrollo/backend/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/",
+      "http://127.0.0.1:8766/site/desarrollo/git/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/entorno-desarrollo.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.lock",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package-lock.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/libs.versions.toml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/build.gradle.kts",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "repositorio",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/estructura-repositorio.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Organización del proyecto",
+    "icons": 4,
+    "links": [
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/estructura-repositorio.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/resources/views",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/tests",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/settings.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/iosApp/iosApp.xcodeproj",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/docs/informeEcoLact/mkdocs.yml",
+      "http://127.0.0.1:8766/site/desarrollo/",
+      "http://127.0.0.1:8766/site/desarrollo/backend/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "backend",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/backend-dependencias.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/desarrollo/servidores.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/backend-servidor.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Backend Laravel 13",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/backend-dependencias.png",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/servidores.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/servidores.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/backend-servidor.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.lock",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "mobile",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/android-studio.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/desarrollo/conexion-mobile.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mobile-api.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mobile-gradle.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Aplicación móvil con Kotlin Multiplatform",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/android-studio.png",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/conexion-mobile.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/conexion-mobile.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mobile-api.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mobile-gradle.png",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/settings.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/libs.versions.toml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/src/main/res/xml/network_security_config.xml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/iosApp/iosApp.xcodeproj",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+      "http://127.0.0.1:8766/site/desarrollo/backend/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "base-datos",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/desarrollo/mysql.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mysql-base-datos.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mysql-migraciones.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Configuración de MySQL",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/mysql.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/mysql.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mysql-base-datos.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mysql-migraciones.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/RoleSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ParametroCalidadSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/PrecioLecheSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ReglaPagoCalidadSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaDelimitacionSeeder.php",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "configuracion",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/configuracion-entorno.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/configuracion-api.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Configuración del proyecto",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/configuracion-entorno.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/configuracion-api.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/services.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Ocr/TesseractOcr.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Ocr/PreprocesadorImagenTicket.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/src/main/res/xml/network_security_config.xml",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/git/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "git",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/git-historial.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Control de versiones con Git",
+    "icons": 6,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/git-historial.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/AGENTS.md",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/docs/informeEcoLact/mkdocs.yml",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "index",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../assets/images/desarrollo/entorno-desarrollo.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Comenzar a desarrollar EcoLact",
+    "icons": 15,
+    "links": [
+      "https://developer.android.com/build/releases/agp-9-0-0-release-notes",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/",
+      "http://127.0.0.1:8766/site/desarrollo/backend/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/",
+      "http://127.0.0.1:8766/site/desarrollo/git/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/entorno-desarrollo.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.lock",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package-lock.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/libs.versions.toml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/build.gradle.kts",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "repositorio",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/estructura-repositorio.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Organización del proyecto",
+    "icons": 4,
+    "links": [
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/estructura-repositorio.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/resources/views",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/tests",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/settings.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/iosApp/iosApp.xcodeproj",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/docs/informeEcoLact/mkdocs.yml",
+      "http://127.0.0.1:8766/site/desarrollo/",
+      "http://127.0.0.1:8766/site/desarrollo/backend/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "backend",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/backend-dependencias.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/desarrollo/servidores.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/backend-servidor.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Backend Laravel 13",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/backend-dependencias.png",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/servidores.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/servidores.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/backend-servidor.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.lock",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "mobile",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/android-studio.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/desarrollo/conexion-mobile.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mobile-api.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mobile-gradle.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Aplicación móvil con Kotlin Multiplatform",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/android-studio.png",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/conexion-mobile.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/conexion-mobile.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mobile-api.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mobile-gradle.png",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/settings.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/libs.versions.toml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/src/main/res/xml/network_security_config.xml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/iosApp/iosApp.xcodeproj",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+      "http://127.0.0.1:8766/site/desarrollo/backend/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "base-datos",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/desarrollo/mysql.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mysql-base-datos.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mysql-migraciones.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Configuración de MySQL",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/mysql.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/mysql.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mysql-base-datos.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mysql-migraciones.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/RoleSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ParametroCalidadSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/PrecioLecheSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ReglaPagoCalidadSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaDelimitacionSeeder.php",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "configuracion",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/configuracion-entorno.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/configuracion-api.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Configuración del proyecto",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/configuracion-entorno.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/configuracion-api.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/services.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Ocr/TesseractOcr.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Ocr/PreprocesadorImagenTicket.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/src/main/res/xml/network_security_config.xml",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/git/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "git",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/git-historial.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Control de versiones con Git",
+    "icons": 6,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/git-historial.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/AGENTS.md",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/docs/informeEcoLact/mkdocs.yml",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "index",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../assets/images/desarrollo/entorno-desarrollo.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Comenzar a desarrollar EcoLact",
+    "icons": 15,
+    "links": [
+      "https://developer.android.com/build/releases/agp-9-0-0-release-notes",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/",
+      "http://127.0.0.1:8766/site/desarrollo/backend/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/",
+      "http://127.0.0.1:8766/site/desarrollo/git/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/entorno-desarrollo.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.lock",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package-lock.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/libs.versions.toml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/build.gradle.kts",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "repositorio",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/estructura-repositorio.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Organización del proyecto",
+    "icons": 4,
+    "links": [
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/estructura-repositorio.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/resources/views",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/tests",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/settings.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/iosApp/iosApp.xcodeproj",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/docs/informeEcoLact/mkdocs.yml",
+      "http://127.0.0.1:8766/site/desarrollo/",
+      "http://127.0.0.1:8766/site/desarrollo/backend/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "backend",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/backend-dependencias.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/desarrollo/servidores.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/backend-servidor.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Backend Laravel 13",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/backend-dependencias.png",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/servidores.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/servidores.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/backend-servidor.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.lock",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php",
+      "http://127.0.0.1:8766/site/desarrollo/repositorio/",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "mobile",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/android-studio.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/desarrollo/conexion-mobile.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mobile-api.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mobile-gradle.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Aplicación móvil con Kotlin Multiplatform",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/android-studio.png",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/conexion-mobile.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/conexion-mobile.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mobile-api.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mobile-gradle.png",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/settings.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/libs.versions.toml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/src/main/res/xml/network_security_config.xml",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/iosApp/iosApp.xcodeproj",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+      "http://127.0.0.1:8766/site/desarrollo/backend/",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "base-datos",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/desarrollo/mysql.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mysql-base-datos.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/mysql-migraciones.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Configuración de MySQL",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/mysql.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/desarrollo/mysql.mmd",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mysql-base-datos.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/mysql-migraciones.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/RoleSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ParametroCalidadSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/PrecioLecheSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ReglaPagoCalidadSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaSeeder.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaDelimitacionSeeder.php",
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "configuracion",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/configuracion-entorno.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/desarrollo/configuracion-api.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Configuración del proyecto",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/desarrollo/mobile/",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/configuracion-entorno.png",
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/configuracion-api.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/services.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Ocr/TesseractOcr.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Ocr/PreprocesadorImagenTicket.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/androidApp/src/main/res/xml/network_security_config.xml",
+      "http://127.0.0.1:8766/site/desarrollo/base-datos/",
+      "http://127.0.0.1:8766/site/desarrollo/git/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "git",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/desarrollo/git-historial.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Control de versiones con Git",
+    "icons": 6,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/images/desarrollo/git-historial.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/.gitignore",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle.properties",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/AGENTS.md",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/docs/informeEcoLact/mkdocs.yml",
+      "http://127.0.0.1:8766/site/desarrollo/configuracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "regression": "Inicio",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/problema-solucion/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/actores-roles/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/modulos/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/reglas-negocio/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/alcance/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "flujos/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "arquitectura/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "pruebas/",
+    "status": 200,
+    "brokenImages": []
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_editar_parametro.json",
+  "fecha": "2026-10-28T11:02:23",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_editar_param",
+      "archivo": "evidencias/exploracion/x_editar_param.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Saltar al contenido\nEcoLact\nGestión integral\n\nDASHBOARD\n\nInicio\nAsistencia\n\nOPERACIÓN\n\nAcopio\nProveedores\nZonas\n\nPERSONAL\n\nTrabajadores\n\nCALIDAD\n\nCalidad\n\nCONFIGURACIÓN\n\nParámetros de calidad\nConfiguración de pagos\n\nFINANZAS\n\nCaja\nPagos\n\nPRODUCCIÓN\n\nRecetas\nProducción\n\nINVENTARIO\n\nInsumos\nProductos\n\nVENTAS\n\nVentas\nCompradores\n\nCOMUNICACIÓN\n\nComunicados\n\nADMINISTRACIÓN\n\nAuditoría\nA\nadmin\nAdministrador\nNo se puede desactivar el parámetro: tiene reglas de calidad activas asociadas. Desactívelas primero.\nConfiguración\n›\nParámetros de calidad\nParámetros de calidad\n\nDefine qué características se evalúan en cada análisis de leche.\n\nNuevo parámetro\nPARÁMETRO\tUNIDAD\tESTADO\tREGLA ACTUAL\tÚLTIMA ACTUALIZACIÓN\nAgua añadida\n\nPorcentaje de agua agregada a la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\nDensidad\n\nMide la densidad de la leche.\n\n\tg/mL\t\nActivo\n\tSin configurar\t26/10/2026\nGrasa\n\nContenido de grasa de la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\nLactosa\n\nContenido de lactosa de la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\npH\n\nMide la acidez o alcalinidad de la leche.\n\n\tpH\t\nActivo\n\tSin configurar\t26/10/2026\nProteína\n\nContenido de proteína de la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\nPrueba Manual\n\nParámetro ficticio del manual.\n\n\t%\t\nInactivo\n\t1 – 5 %\t28/10/2026\nTemperatura\n\nTemperatura de la leche al recibirla.\n\n\t°C\t\nActivo\n\tSin configurar\t26/10/2026\nPrueba Manual\nInactivo\n\n%\n\nInformación general\n\nQué se mide: nombre, unidad, estado y descripción.\n\nCódigo\nPRUEBA_MANUAL\nNombre\nPrueba Manual\nUnidad\n%\nEstado\nInactivo\nÚltima actualización\n28/10/2026\nDescripción\nParámetro ficticio del manual.\nEditar parámetro\nRegla de evaluación\n\nCuál es el rango aceptado para el valor medido.\n\nRango aceptado\n1 – 5 %\nSi incumple\nRechazada\nVigencia\n28/10/2026 – Sin fecha fin\nEstado\nActiva\nEditar regla\nEditar parámetro de calidad\n\nPrueba Manual · Código: PRUEBA_MANUAL\n\nNo se puede desactivar el parámetro: tiene reglas de calidad activas asociadas. Desactívelas primero.\n\nNombre *\nCódigo\n\nEl código es el identificador interno del parámetro y no se modifica.\n\nUnidad *\nEstado *\nSelecciona una opción\nActivo\nInactivo\nDescripción\nCancelar\nGuardar cambios\nEcoLact · 2026 · Del campo a tu mesa"
+      ],
+      "hora": "2026-10-28T11:02:34"
+    }
+  ],
+  "dialogos": []
+}

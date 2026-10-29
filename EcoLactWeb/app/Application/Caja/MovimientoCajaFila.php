@@ -8,6 +8,10 @@ use DateTimeImmutable;
 
 /**
  * Un movimiento tal como lo pintan el historial y su panel de detalle.
+ *
+ * `compraId` y `comprobanteId` (solo en salidas de Compras y gastos) enlazan
+ * con la compra de origen y con su primer comprobante, por ids guardados:
+ * Caja no guarda una copia del archivo.
  */
 final readonly class MovimientoCajaFila
 {
@@ -27,7 +31,8 @@ final readonly class MovimientoCajaFila
         public int $referenciaId,
         public string $registradoPor,
         public DateTimeImmutable $fecha,
-        public ?string $imagenBoleta = null,
+        public ?int $compraId = null,
+        public ?int $comprobanteId = null,
     ) {}
 
     public function esEntrada(): bool

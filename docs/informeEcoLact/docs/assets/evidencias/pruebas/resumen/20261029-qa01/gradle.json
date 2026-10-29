@@ -1,0 +1,10 @@
+{
+  "command": "cmd /c gradlew.bat --version",
+  "cwd": "C:\\CICLO VI\\EcoLact\\EcoLactMobile",
+  "started": "2026-10-29T01:16:10.482694-05:00",
+  "ended": "2026-10-29T01:16:11.488496-05:00",
+  "duration_seconds": 1.006,
+  "exit_code": 0,
+  "log": "gradle.log",
+  "sha256": "1c8f9d852e21d3f820f38e3f188d13466fbe174646e85aba338c603bdd31cff4"
+}

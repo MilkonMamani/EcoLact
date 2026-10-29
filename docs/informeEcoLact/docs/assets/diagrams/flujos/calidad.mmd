@@ -1,0 +1,28 @@
+flowchart TB
+  A([Inicio · Analista]) --> B[Seleccionar entrega elegible]
+  B --> C[Registrar muestra]
+  C --> D[Analizar leche]
+  D --> E{¿Origen de valores?}
+  E -->|Manual| F[Ingresar mediciones]
+  E -->|Ticket| G[OCR propone valores]
+  F --> H[Revisión humana]
+  G --> H
+  H --> I[BORRADOR]
+  I --> J{¿Valores y reglas disponibles?}
+  J -->|No| K[Informar lo que falta]
+  K --> H
+  J -->|Sí| L{¿Incumplimiento de rechazo?}
+  L -->|Sí| R[RECHAZADA]
+  L -->|No| M{¿Incumplimiento de observación?}
+  M -->|Sí| O[OBSERVADA]
+  M -->|No| N[ACEPTADA]
+  R --> S[CONFIRMADO · Inmutable]
+  O --> S
+  N --> S
+  S --> T[Notificar y recalcular pago pendiente]
+  T --> Z([Fin · Muestra analizada])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class E,J,L,M decision;
+  class A,Z terminal;

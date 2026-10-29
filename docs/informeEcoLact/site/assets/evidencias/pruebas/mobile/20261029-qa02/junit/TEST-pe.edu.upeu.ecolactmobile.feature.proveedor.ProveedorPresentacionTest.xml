@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:55.957Z" hostname="LAPTOP-CUGSMQ13" time="0.062">
+  <properties/>
+  <testcase name="filtrarEntregas_por_semana_y_estado" classname="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" time="0.006"/>
+  <testcase name="semanaLabel_usa_inicio_del_periodo_o_fecha_de_calculo" classname="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" time="0.004"/>
+  <testcase name="estadoEntrega_combina_estado_y_resultado" classname="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" time="0.0"/>
+  <testcase name="detalleLiquidacion_decodifica_entregas_del_backend" classname="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" time="0.049"/>
+  <testcase name="estados_de_pago_usan_los_valores_reales_del_backend" classname="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" time="0.0"/>
+  <testcase name="resumenSemana_excluye_anuladas_y_litros_rechazados" classname="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" time="0.002"/>
+  <testcase name="descuentos_separan_compras_de_ajustes_de_calidad" classname="pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,26 @@
+{
+  "plan": "explorar_personal.json",
+  "fecha": "2026-10-28T10:30:02",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_nuevo_trabajador",
+      "archivo": "evidencias/exploracion/x_nuevo_trabajador.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:30:06"
+    },
+    {
+      "nombre": "x_acopiadores",
+      "archivo": "evidencias/exploracion/x_acopiadores.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:30:10"
+    }
+  ],
+  "dialogos": []
+}

@@ -9,6 +9,7 @@ namespace App\Application\Dashboard;
  * "asistenciaHoy", que siempre mide el día actual.
  *
  * Los importes se suman como DECIMAL en SQL y se redondean una sola vez.
+ * Devengos, saldos y pagos programados salen de ObtenerResumenFinanciero.
  */
 final readonly class DashboardAdministradorData
 {
@@ -16,7 +17,6 @@ final readonly class DashboardAdministradorData
      * @param  array{litros: float, entregas: int, proveedores: int}  $acopio
      * @param  array{total: int, porEstado: array<string, int>}  $produccion
      * @param  array{importe: float, ventas: int, contado: float, descuentoPlanilla: float}  $ventas
-     * @param  array{total: float, obligaciones: int, proveedores: array{importe: float, obligaciones: int, semana: ?string}, trabajadores: array{importe: float, obligaciones: int, mes: ?string}, sinFecha: array{importe: float, obligaciones: int}, atrasados: array{importe: float, obligaciones: int}}  $pagos
      * @param  list<array{clave: string, etiqueta: string, titulo: string, futuro: bool, litros: float|null, entregas: int|null}>  $acopioPorIntervalo
      * @param  list<array{nombre: string, litros: float, otras: bool}>  $acopioPorZona
      * @param  array{analisisPorConfirmar: int, insumosBajoMinimo: int, insumosSinStock: int, lotesEnProceso: int}  $porAtender
@@ -31,7 +31,7 @@ final readonly class DashboardAdministradorData
         public array $acopio,
         public array $produccion,
         public array $ventas,
-        public array $pagos,
+        public ResumenFinanciero $finanzas,
         public array $acopioPorIntervalo,
         public array $acopioPorZona,
         public array $porAtender,

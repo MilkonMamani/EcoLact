@@ -1,0 +1,306 @@
+{
+ "descripcion": "Personal 4.5: alta FICTICIA de analista de calidad, encargado de planta y personal de ventas (DNI sintéticos 99000002-4, contraseñas aleatorias no guardadas). BD de prueba autorizada.",
+ "salida": "evidencias/originales/personal",
+ "difuminar": [
+  "input[name=password]"
+ ],
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/trabajadores/nuevo",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "label:has(input[name=tipo_trabajador][value=analista])"
+  },
+  {
+   "accion": "esperar",
+   "ms": 500
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=nombres]",
+   "texto": "Analista"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=apellidos]",
+   "texto": "Prueba Manual"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=dni]",
+   "texto": "99000002"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=username]",
+   "texto": "analista.prueba.manual"
+  },
+  {
+   "accion": "escribir_secreto",
+   "selector": "[data-nuevo-trabajador-form] [name=password]"
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ana_1_formulario",
+   "pagina_completa": true,
+   "medir": {
+    "tipo": "label:has(input[name=tipo_trabajador][value=analista])",
+    "seccion_personal": "[data-nuevo-trabajador-form] .nt-seccion >> nth=0",
+    "registrar": "[data-nuevo-trabajador-form] button[type=submit]"
+   },
+   "leer": [
+    "[data-nuevo-trabajador-form] .nt-seccion >> nth=0"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-nuevo-trabajador-form] button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Analista de calidad registrado')"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1000
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ana_2_registrado",
+   "medir": {
+    "mensaje": "[role=alert]:has-text('Analista de calidad registrado')"
+   },
+   "leer": [
+    "[role=alert]:has-text('Analista de calidad registrado')"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/analistas-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Prueba Manual') a.fichas-nombre"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1800
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ana_3_listado",
+   "medir": {
+    "fila": "[data-fichas-fila]:has-text('Prueba Manual')",
+    "switch": "[data-fichas-fila]:has-text('Prueba Manual') [role=switch]",
+    "panel": "[data-fichas-panel]",
+    "menu": "#ecolact-sidebar a[href$='/admin/analistas-calidad']"
+   },
+   "leer": [
+    "main h1",
+    "[data-fichas-panel] .fichas-tabs"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/trabajadores/nuevo",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "label:has(input[name=tipo_trabajador][value=encargado-planta])"
+  },
+  {
+   "accion": "esperar",
+   "ms": 500
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=nombres]",
+   "texto": "Encargado"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=apellidos]",
+   "texto": "Prueba Manual"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=dni]",
+   "texto": "99000003"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=username]",
+   "texto": "encargado.prueba.manual"
+  },
+  {
+   "accion": "escribir_secreto",
+   "selector": "[data-nuevo-trabajador-form] [name=password]"
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3enc_1_formulario",
+   "pagina_completa": true,
+   "medir": {
+    "tipo": "label:has(input[name=tipo_trabajador][value=encargado-planta])",
+    "seccion_personal": "[data-nuevo-trabajador-form] .nt-seccion >> nth=0",
+    "registrar": "[data-nuevo-trabajador-form] button[type=submit]"
+   },
+   "leer": [
+    "[data-nuevo-trabajador-form] .nt-seccion >> nth=0"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-nuevo-trabajador-form] button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Encargado de planta registrado')"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1000
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3enc_2_registrado",
+   "medir": {
+    "mensaje": "[role=alert]:has-text('Encargado de planta registrado')"
+   },
+   "leer": [
+    "[role=alert]:has-text('Encargado de planta registrado')"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/encargados-planta",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Prueba Manual') a.fichas-nombre"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1800
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3enc_3_listado",
+   "medir": {
+    "fila": "[data-fichas-fila]:has-text('Prueba Manual')",
+    "switch": "[data-fichas-fila]:has-text('Prueba Manual') [role=switch]",
+    "panel": "[data-fichas-panel]",
+    "menu": "#ecolact-sidebar a[href$='/admin/encargados-planta']"
+   },
+   "leer": [
+    "main h1",
+    "[data-fichas-panel] .fichas-tabs"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/trabajadores/nuevo",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "label:has(input[name=tipo_trabajador][value=ventas])"
+  },
+  {
+   "accion": "esperar",
+   "ms": 500
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=nombres]",
+   "texto": "Vendedor"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=apellidos]",
+   "texto": "Prueba Manual"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=dni]",
+   "texto": "99000004"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-nuevo-trabajador-form] [name=username]",
+   "texto": "ventas.prueba.manual"
+  },
+  {
+   "accion": "escribir_secreto",
+   "selector": "[data-nuevo-trabajador-form] [name=password]"
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ven_1_formulario",
+   "pagina_completa": true,
+   "medir": {
+    "tipo": "label:has(input[name=tipo_trabajador][value=ventas])",
+    "seccion_personal": "[data-nuevo-trabajador-form] .nt-seccion >> nth=0",
+    "registrar": "[data-nuevo-trabajador-form] button[type=submit]"
+   },
+   "leer": [
+    "[data-nuevo-trabajador-form] .nt-seccion >> nth=0"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-nuevo-trabajador-form] button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Personal de ventas registrado')"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1000
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ven_2_registrado",
+   "medir": {
+    "mensaje": "[role=alert]:has-text('Personal de ventas registrado')"
+   },
+   "leer": [
+    "[role=alert]:has-text('Personal de ventas registrado')"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/personal-ventas",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Prueba Manual') a.fichas-nombre"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1800
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ven_3_listado",
+   "medir": {
+    "fila": "[data-fichas-fila]:has-text('Prueba Manual')",
+    "switch": "[data-fichas-fila]:has-text('Prueba Manual') [role=switch]",
+    "panel": "[data-fichas-panel]",
+    "menu": "#ecolact-sidebar a[href$='/admin/personal-ventas']"
+   },
+   "leer": [
+    "main h1",
+    "[data-fichas-panel] .fichas-tabs"
+   ]
+  }
+ ]
+}

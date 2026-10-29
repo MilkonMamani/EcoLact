@@ -1,0 +1,205 @@
+{
+  "plan": "proveedores_3_estado.json",
+  "fecha": "2026-10-28T10:58:08",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "pro_20_tab_entregas",
+      "archivo": "evidencias/originales/proveedores/pro_20_tab_entregas.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "tab": [
+          1067,
+          163,
+          1147,
+          204
+        ],
+        "contenido": [
+          981,
+          222,
+          1387,
+          293
+        ]
+      },
+      "textos_visibles": [
+        "Este proveedor todavía no tiene entregas registradas."
+      ],
+      "hora": "2026-10-28T10:58:16"
+    },
+    {
+      "nombre": "pro_21_tab_calidad",
+      "archivo": "evidencias/originales/proveedores/pro_21_tab_calidad.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "tab": [
+          1150,
+          163,
+          1222,
+          204
+        ],
+        "contenido": [
+          981,
+          222,
+          1387,
+          293
+        ]
+      },
+      "textos_visibles": [
+        "Todavía no hay controles de calidad de sus entregas."
+      ],
+      "hora": "2026-10-28T10:58:18"
+    },
+    {
+      "nombre": "pro_22_tab_compras",
+      "archivo": "evidencias/originales/proveedores/pro_22_tab_compras.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "tab": [
+          1225,
+          163,
+          1306,
+          204
+        ],
+        "ver_pagos": [
+          1263,
+          336,
+          1372,
+          368
+        ]
+      },
+      "textos_visibles": [
+        "No tiene compras de productos descontadas de su pago.\n\nTOTAL DESCONTADO\n\nS/ 0.00\n\n0 compras a cuenta de su pago semanal\n\nVer pagos"
+      ],
+      "hora": "2026-10-28T10:58:20"
+    },
+    {
+      "nombre": "pro_23_pagos",
+      "archivo": "evidencias/originales/proveedores/pro_23_pagos.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "modal": [
+          272,
+          192,
+          1168,
+          684
+        ]
+      },
+      "textos_visibles": [
+        "Pagos de Proveedor Prueba Manual\n\nHistorial de pagos realizados al proveedor. Consulta los comprobantes por semana.\n\nSemana\nTodos\nEstado\nTodos\nPendiente\nPagado\nFiltrar\n\nAún no hay pagos registrados\n\nEste proveedor todavía no tiene pagos o liquidaciones disponibles.\n\nCerrar"
+      ],
+      "hora": "2026-10-28T10:58:24"
+    },
+    {
+      "nombre": "pro_30_antes_desactivar",
+      "archivo": "evidencias/originales/proveedores/pro_30_antes_desactivar.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "switch": [
+          1025,
+          413,
+          1070,
+          439
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:58:25"
+    },
+    {
+      "nombre": "pro_31_modal_desactivar",
+      "archivo": "evidencias/originales/proveedores/pro_31_modal_desactivar.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "confirmar": [
+          802,
+          482,
+          920,
+          518
+        ]
+      },
+      "textos_visibles": [
+        "Desactivar proveedor\n\n¿Deseas desactivar a Proveedor Prueba Manual?\n\nNo podrá registrar nuevas entregas. Se conservan sus entregas, compras, controles de calidad, pagos y su historial.\n\nCancelar\nSí, desactivar"
+      ],
+      "hora": "2026-10-28T10:58:27"
+    },
+    {
+      "nombre": "pro_32_desactivado",
+      "archivo": "evidencias/originales/proveedores/pro_32_desactivado.png",
+      "url": "/admin/proveedores?q=Prueba+Manual&proveedor=509",
+      "descripcion": "",
+      "objetivos": {
+        "switch": [
+          871,
+          413,
+          916,
+          439
+        ],
+        "cabecera": [
+          961,
+          49,
+          1407,
+          163
+        ]
+      },
+      "textos_visibles": [
+        "Proveedor Prueba Manual\t99000005\t900000005\tFaon\tSin entregas\t0.00",
+        "Saltar al contenido\nEcoLact\nGestión integral\n\nDASHBOARD\n\nInicio\nAsistencia\n\nOPERACIÓN\n\nAcopio\nProveedores\nZonas\n\nPERSONAL\n\nTrabajadores\n\nCALIDAD\n\nCalidad\n\nCONFIGURACIÓN\n\nParámetros de calidad\nConfiguración de pagos\n\nFINANZAS\n\nCaja\nPagos\n\nPRODUCCIÓN\n\nRecetas\nProducción\n\nINVENTARIO\n\nInsumos\nProductos\n\nVENTAS\n\nVentas\nCompradores\n\nCOMUNICACIÓN\n\nComunicados\n\nADMINISTRACIÓN\n\nAuditoría\nA\nadmin\nAdministrador\nOperación\n›\nProveedores\nProveedores\n\nProductores que entregan leche al sistema.\n\nNuevo proveedor\nBuscar por nombre, DNI, código o teléfono\nEstado\nTodos\nActivo\nInactivo\nZona\nTodas\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nSeguimiento\nTodos\nRequiere seguimiento\nSin seguimiento\nFiltrar\nLimpiar\nNOMBRE\tDNI\tTELÉFONO\tZONA\tÚLTIMA ENTREGA\tTOTAL (L)\tESTADO\nProveedor Prueba Manual\t99000005\t900000005\tFaon\tSin entregas\t0.00\t\n\nMostrando 1 a 1 de 1 proveedores\n\n«\n‹\n1\n›\n»\nPP\nInactivo\nProveedor Prueba Manual\n\nDNI 99000005\n\nResumen\nEntregas\nCalidad\nCompras\n\nNo tiene compras de productos descontadas de su pago.\n\nTOTAL DESCONTADO\n\nS/ 0.00\n\n0 compras a cuenta de su pago semanal\n\nVer pagos\nEcoLact · 2026 · Del campo a tu mesa\nProveedor desactivado correctamente."
+      ],
+      "hora": "2026-10-28T10:58:30"
+    },
+    {
+      "nombre": "pro_33_modal_reactivar",
+      "archivo": "evidencias/originales/proveedores/pro_33_modal_reactivar.png",
+      "url": "/admin/proveedores?q=Prueba+Manual&proveedor=509",
+      "descripcion": "",
+      "objetivos": {
+        "zona": [
+          520,
+          426,
+          920,
+          468
+        ],
+        "ruta": [
+          520,
+          506,
+          920,
+          548
+        ],
+        "confirmar": [
+          827,
+          560,
+          920,
+          596
+        ]
+      },
+      "textos_visibles": [
+        "Reactivar proveedor\n\nSelecciona la zona a la que se reincorpora Proveedor Prueba Manual.\n\nZona *\nSelecciona una opción\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nRuta de acopio *\nSelecciona una opción\nRuta principal\nRuta Prueba Manual\nCancelar\nReactivar"
+      ],
+      "hora": "2026-10-28T10:58:33"
+    },
+    {
+      "nombre": "pro_34_reactivado",
+      "archivo": "evidencias/originales/proveedores/pro_34_reactivado.png",
+      "url": "/admin/proveedores?q=Prueba+Manual&proveedor=509",
+      "descripcion": "",
+      "objetivos": {
+        "switch": [
+          871,
+          413,
+          916,
+          439
+        ]
+      },
+      "textos_visibles": [
+        "Proveedor Prueba Manual\t99000005\t900000005\tFaon\tSin entregas\t0.00"
+      ],
+      "hora": "2026-10-28T10:58:36"
+    }
+  ],
+  "dialogos": []
+}

@@ -17,7 +17,7 @@ use DomainException;
  * Corrección administrativa de una jornada ya existente (FALTA<->PRESENTE),
  * con motivo obligatorio. Deja rastro en `auditorias` (nunca se pierde la
  * trazabilidad de un cambio manual). Solo se corrige la jornada de hoy
- * antes del cierre de las 07:00 (VentanaAsistencia): un día cerrado es solo
+ * antes del cierre de las 23:59 (VentanaAsistencia): un día cerrado es solo
  * consulta. Tampoco permite corregir una jornada cuya obligación del mes ya
  * está PAGADA: el histórico pagado es inmutable.
  */

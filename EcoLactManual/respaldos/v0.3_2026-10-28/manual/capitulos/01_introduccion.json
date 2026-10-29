@@ -1,0 +1,68 @@
+{
+  "id": "INT",
+  "tipo": "general",
+  "titulo": "Introducción",
+  "bloques": [
+    {"tipo": "h2", "texto": "Propósito del manual"},
+    {"tipo": "p", "texto": "Este manual explica, paso a paso, cómo operar EcoLactWeb con el rol **Administrador**: desde la preparación del sistema (zonas, rutas, personal y proveedores) hasta el control de calidad, los pagos y la consulta de caja. Cada procedimiento muestra la pantalla real del sistema con el control que debe usar señalado."},
+    {"tipo": "h2", "texto": "Alcance"},
+    {"tipo": "tabla", "encabezados": ["Incluye", "No incluye"], "anchos": [8.0, 8.0], "filas": [
+      ["Todas las pantallas del menú del Administrador en la aplicación web.", "La aplicación móvil EcoLact."],
+      ["El registro y la administración de proveedores, acopiadores y demás personal desde el panel del Administrador.", "Las pantallas propias de los roles Proveedor, Acopiador, Calidad, Planta y Ventas."],
+      ["Validaciones, mensajes y reglas observadas en el sistema.", "Instalación, servidores, base de datos y configuración técnica."]
+    ]},
+    {"tipo": "h2", "texto": "Destinatarios y requisitos generales"},
+    {"tipo": "lista", "items": [
+      "Personas con una cuenta de rol **Administrador** activa en EcoLactWeb.",
+      "Navegador web actualizado (Chrome, Edge o Firefox) con acceso a la dirección de EcoLactWeb de su organización.",
+      "Conexión a internet para ver los mapas (Zonas y Rutas utilizan Google Maps)."
+    ]},
+    {"tipo": "h2", "texto": "Convenciones del manual"},
+    {"tipo": "tabla", "encabezados": ["Elemento", "Significado"], "anchos": [4.6, 11.4], "filas": [
+      ["Círculo rojo con número", "Número del paso del procedimiento. Coincide con el «PASO» del texto."],
+      ["Recuadro rojo", "Control exacto que debe usar en ese paso (botón, campo, menú o pestaña)."],
+      ["Zona oscurecida", "Resto de la pantalla, atenuado para destacar la acción."],
+      ["«Texto entre comillas»", "Texto literal de un botón, campo, pestaña o mensaje del sistema."],
+      ["Código ADM-XXX-000", "Identificador único del procedimiento (rol Administrador – módulo – número)."],
+      ["Datos difuminados", "Información personal ocultada en las capturas (nombres, DNI, usuarios)."]
+    ]},
+    {"tipo": "h2", "texto": "Estado de verificación de cada procedimiento"},
+    {"tipo": "p", "texto": "Cada procedimiento indica su estado junto al código, para separar lo comprobado de lo pendiente:"},
+    {"tipo": "tabla", "encabezados": ["Estado", "Qué significa"], "anchos": [5.0, 11.0], "filas": [
+      ["**Verificado en interfaz**", "Se ejecutó en un entorno de prueba con datos ficticios y se capturó el resultado real."],
+      ["**Verificado parcialmente**", "Se capturaron las pantallas y controles; parte del resultado no pudo comprobarse."],
+      ["**Pendiente de comprobar**", "Existe en el código del sistema, pero aún no se ha comprobado en la interfaz."]
+    ]},
+    {"tipo": "nota", "etiqueta": "DATOS DE EJEMPLO", "texto": "Los registros que aparecen en las capturas (por ejemplo «Zona Prueba Manual») son ficticios y se crearon en un entorno de prueba. Sustitúyalos por los datos reales de su organización."},
+    {"tipo": "h2", "texto": "Mapa funcional del Administrador"},
+    {"tipo": "p", "texto": "El menú lateral del Administrador agrupa los módulos de la siguiente manera (según la plantilla del panel del sistema):"},
+    {"tipo": "tabla", "encabezados": ["Grupo del menú", "Opciones", "Para qué sirve"], "anchos": [3.2, 5.6, 7.2], "filas": [
+      ["Dashboard", "Inicio · Asistencia", "Resumen de la operación y registro de asistencia del personal."],
+      ["Operación", "Acopio · Proveedores · Zonas", "Entregas de leche, padrón de proveedores, zonas, rutas y ubicación en el mapa."],
+      ["Personal", "Trabajadores: Nuevo trabajador · Acopiadores · Analistas de calidad · Encargados de planta · Personal de ventas", "Alta y administración de las cuentas del personal."],
+      ["Calidad", "Calidad", "Análisis de calidad de las entregas muestreadas."],
+      ["Configuración", "Parámetros de calidad · Configuración de pagos", "Parámetros y reglas de calidad; precio por litro, descuentos y sueldos."],
+      ["Finanzas", "Caja · Pagos: Pagar a proveedores · Pagar a trabajadores", "Consulta de caja y registro de pagos."],
+      ["Producción", "Recetas · Producción", "Fórmulas de productos y lotes de producción."],
+      ["Inventario", "Insumos · Productos", "Insumos, compras, stock y precios de productos."],
+      ["Ventas", "Ventas · Compradores", "Punto de venta y clientes."],
+      ["Comunicación", "Comunicados", "Avisos para el personal y los proveedores."],
+      ["Administración", "Auditoría (deshabilitada)", "Opción visible pero aún no disponible en el sistema."]
+    ]},
+    {"tipo": "h2", "texto": "Secuencia de trabajo recomendada"},
+    {"tipo": "p", "texto": "Los módulos dependen unos de otros. Siga este orden al poner en marcha el sistema; cada capítulo indica sus requisitos previos."},
+    {"tipo": "tabla", "encabezados": ["Orden", "Etapa", "Depende de", "Habilita"], "anchos": [1.5, 4.6, 4.6, 5.3], "filas": [
+      ["1", "Zonas y rutas", "—", "Alta de acopiadores (requieren zona) y asignación de proveedores."],
+      ["2", "Personal (acopiadores y demás)", "Zonas activas", "Apertura de recorridos, asistencia y sueldos."],
+      ["3", "Proveedores", "Zonas y rutas", "Entregas de leche."],
+      ["4", "Parámetros de calidad y configuración de pagos", "—", "Evaluación de calidad y cálculo de pagos."],
+      ["5", "Acopio (entregas)", "Proveedores activos", "Análisis de calidad y pagos a proveedores."],
+      ["6", "Calidad", "Entregas muestreadas, parámetros", "Resultado de calidad que interviene en el pago semanal."],
+      ["7", "Pagar a proveedores", "Entregas, calidad y precio vigente", "Egresos en Caja y comprobantes."],
+      ["8", "Asistencia y Pagar a trabajadores", "Personal y sueldos configurados", "Egresos en Caja y comprobantes."],
+      ["9", "Insumos, recetas, producción, productos y ventas", "Leche acopiada e insumos", "Stock de productos e ingresos en Caja."],
+      ["10", "Caja y comunicados", "Pagos, compras y ventas", "Consulta financiera y avisos."]
+    ]},
+    {"tipo": "nota", "etiqueta": "EN VERIFICACIÓN", "texto": "Esta secuencia se obtuvo del código del sistema. Las dependencias de las etapas 4 a 10 se confirmarán en la interfaz al elaborar sus capítulos; el Anexo de verificación muestra el avance."}
+  ]
+}

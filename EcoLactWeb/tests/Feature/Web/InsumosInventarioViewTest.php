@@ -1,6 +1,7 @@
 <?php
 
 use App\Application\Acopio\RegistrarEntrega;
+use App\Application\Produccion\GuardarPresentacionInsumo;
 use App\Infrastructure\Persistence\Models\EntregaModel;
 use App\Infrastructure\Persistence\Models\InsumoModel;
 use App\Infrastructure\Persistence\Models\InsumoMovimientoModel;
@@ -23,7 +24,7 @@ it('la pantalla de insumos muestra insumo, tipo, unidad, stock actual y estado, 
     $response->assertSeeInOrder(['Leche', 'Del sistema', 'Materia prima', 'L', '1,350 L']);
     $response->assertSee('850 ml');
     $response->assertSee('Activo');
-    $response->assertSeeInOrder(['Insumo', 'Tipo', 'Unidad base', 'Stock actual', 'Stock mínimo', 'Estado', 'Última compra', 'Acciones']);
+    $response->assertSeeInOrder(['Insumo', 'Categoría', 'Unidad', 'Stock disponible', 'Stock mínimo', 'Estado', 'Acciones']);
     $response->assertSee('Por Acopio');
 
     // Panel de la leche: se gestiona sola; sin desactivar, sin compra y sin presentaciones.
@@ -152,23 +153,29 @@ it('la leche no se suma a mano con un ajuste: solo entra por Acopio, aunque sí 
     expect((float) $leche->fresh()->stock_actual)->toBe(95.0);
 });
 
-it('el panel de la leche muestra el ingreso por acopio con su entrega de origen', function () {
+it('Insumos no repite los ingresos de leche por Acopio, pero siguen guardados y el stock no cambia', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $zona = fixture_zona();
     $proveedor = fixture_proveedor($zona);
     $acopiador = fixture_acopiador($zona);
     $entrega = app(RegistrarEntrega::class)->execute('DNI', $proveedor->dni, $acopiador->user_id, 20.0);
+    $cuajo = fixture_insumo('Cuajo', 'ml', 500.0, 0.0, $admin->id);
+    $leche = fixture_leche();
+    $movimientosAntes = InsumoMovimientoModel::orderBy('id')->get()->toArray();
 
-    $response = $this->actingAs($admin)->get(route('admin.insumos.panel', fixture_leche()->id));
+    // Panel, ficha e historial de Insumos: sin el «Ingreso por acopio».
+    $panel = $this->actingAs($admin)->get(route('admin.insumos.panel', $leche->id))->assertOk();
+    $panel->assertDontSee('Ingreso por acopio')->assertDontSee('Entrega #'.$entrega->id())->assertSee(route('admin.entregas.index'));
+    $this->actingAs($admin)->get(route('admin.insumos.show', $leche->id))->assertOk()->assertDontSee('Entrega #'.$entrega->id());
+    $this->actingAs($admin)->get(route('admin.insumos.movimientos'))->assertOk()->assertDontSee('Ingreso por acopio');
+    $this->actingAs($admin)->get(route('admin.insumos.movimientos', ['insumo_id' => $leche->id]))->assertOk()->assertDontSee('Ingreso por acopio');
 
-    $response->assertOk();
-    $response->assertSee('Ingreso por acopio');
-    $response->assertSee('Entrega #'.$entrega->id());
-    $response->assertSee('+20 L');
-
-    $ficha = $this->actingAs($admin)->get(route('admin.insumos.show', fixture_leche()->id));
-    $ficha->assertOk();
-    $ficha->assertSee('Entrega #'.$entrega->id());
+    // Los registros y el stock siguen intactos: solo cambia lo que se muestra.
+    $this->assertDatabaseHas('insumo_movimientos', ['insumo_id' => $leche->id, 'motivo' => 'INGRESO_ACOPIO', 'origen_tipo' => 'ENTREGA', 'origen_id' => $entrega->id()]);
+    expect(InsumoMovimientoModel::orderBy('id')->get()->toArray())->toBe($movimientosAntes)
+        ->and((float) $leche->fresh()->stock_actual)->toBe(20.0)
+        ->and((float) InsumoModel::findOrFail($cuajo->id())->stock_actual)->toBe(500.0)
+        ->and(EntregaModel::count())->toBe(1);
 });
 
 it('una entrega registrada desde el panel del administrador aumenta el stock de leche y se puede anular', function () {
@@ -197,4 +204,49 @@ it('un encargado de planta no puede anular entregas', function () {
     $entrega = fixture_entrega(fixture_proveedor($zona), fixture_acopiador($zona), 10.0);
 
     $this->actingAs($encargado)->patch(route('admin.entregas.anular', $entrega->id), ['motivo' => 'x'])->assertForbidden();
+});
+
+it('el administrador corrige por HTTP la unidad de un insumo sin historial, pero no la de uno con presentaciones', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $sal = fixture_insumo('Sal', 'ml', 0.0, 10.0, $admin->id);
+    $cuajo = fixture_insumo('Cuajo', 'ml', 0.0, 10.0, $admin->id);
+    app(GuardarPresentacionInsumo::class)->execute($cuajo->id(), 'Balde', 20, 'L');
+
+    $this->actingAs($admin)->patch(route('admin.insumos.update', $sal->id()), [
+        'nombre' => 'Sal', 'stock_minimo' => 10, 'estado' => 'ACTIVO', 'unidad_base' => 'kg',
+    ])->assertSessionHas('success');
+    expect(InsumoModel::find($sal->id())->unidad_base)->toBe('kg');
+
+    $this->actingAs($admin)->patch(route('admin.insumos.update', $cuajo->id()), [
+        'nombre' => 'Cuajo', 'stock_minimo' => 10, 'estado' => 'ACTIVO', 'unidad_base' => 'g',
+    ])->assertSessionHas('error', 'No se puede cambiar la unidad base de Cuajo porque presentaciones de compra. Sus cantidades guardadas están en ml.');
+    expect(InsumoModel::find($cuajo->id())->unidad_base)->toBe('ml');
+
+    $this->actingAs($admin)->patch(route('admin.insumos.update', $sal->id()), [
+        'nombre' => 'Sal', 'stock_minimo' => 10, 'estado' => 'ACTIVO', 'unidad_base' => 'libras',
+    ])->assertSessionHasErrors('unidad_base');
+});
+
+it('la tabla y el panel muestran unidad, estado de existencias, presentaciones y su conversión en lenguaje claro', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $sal = fixture_insumo('Sal', 'kg', 0.0, 10.0, $admin->id);
+    fixture_insumo('Cuajo', 'ml', 5.0, 10.0, $admin->id);
+    fixture_insumo('Azúcar', 'kg', 30.0, 10.0, $admin->id);
+
+    $this->actingAs($admin)->get(route('admin.insumos.index'))->assertOk()
+        ->assertSeeInOrder(['Azúcar', '30 kg', 'Disponible', 'Cuajo', '5 ml', 'Stock bajo', 'Sal', '0 kg', 'Sin stock']);
+
+    $this->actingAs($admin)->get(route('admin.insumos.panel', $sal->id()))->assertOk()
+        ->assertSeeInOrder(['Sal', 'Insumo · Controlado por peso', 'Stock disponible', '0', 'kg', 'Stock mínimo:', '10 kg'])
+        ->assertSee('Este insumo todavía no tiene presentaciones de compra.')
+        ->assertSee('Agrega cómo lo compras habitualmente, por ejemplo, saco de 25 kg.')
+        ->assertSee('Agregar presentación')
+        ->assertSee('&quot;unidad_editable&quot;:true', false);
+
+    app(GuardarPresentacionInsumo::class)->execute($sal->id(), 'Saco', 25, 'kg');
+
+    $this->actingAs($admin)->get(route('admin.insumos.panel', $sal->id()))->assertOk()
+        ->assertSee('Saco 25 kg')
+        ->assertSee('1 saco = 25 kg de Sal')
+        ->assertSee('&quot;unidad_editable&quot;:false', false);
 });

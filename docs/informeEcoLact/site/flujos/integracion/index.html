@@ -6,14 +6,16 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Una operación local no es aún una confirmación en EcoLact: actores, decisiones y resultados verificados en el repositorio.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/flujos/integracion/">
       
-        <link rel="prev" href="../finanzas/">
+      
+        <link rel="prev" href="../personal-asistencia/">
       
       
         <link rel="next" href="../../arquitectura/">
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#integracion" class="md-skip">
+        <a href="#integracion-movil-y-web" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -641,6 +637,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -761,6 +761,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../produccion/" class="md-nav__link">
         
   
@@ -824,35 +880,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -880,7 +908,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -910,6 +966,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integración móvil y web
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -926,6 +1000,108 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pending-syncing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PENDING → SYNCING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SYNCED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#needs_review" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NEEDS_REVIEW
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-real-del-trabajo-sin-conexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance real del trabajo sin conexión
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reintentos-e-idempotencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reintentos e idempotencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -950,6 +1126,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1034,7 +1214,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1062,7 +1242,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1118,7 +1354,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1410,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1438,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1580,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1608,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1927,97 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pending-syncing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PENDING → SYNCING
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synced" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SYNCED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#needs_review" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NEEDS_REVIEW
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alcance-real-del-trabajo-sin-conexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Alcance real del trabajo sin conexión
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reintentos-e-idempotencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reintentos e idempotencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2032,190 @@
                   
 
 
+
+<div class="ec-flujos">
+<div class="ec-flow-banner">11 · Integración móvil y web</div>
+<div class="ec-flow-content">
+<div class="ec-flow-hero">
+<div>
+<p><span class="ec-flow-kicker">EcoLact / Flujos de negocio</span></p>
+<h1 id="integracion-movil-y-web">Integración móvil y web</h1>
+<p class="ec-flow-subtitle">Una operación local no es aún una confirmación</p>
+<p>La app combina consultas almacenadas y operaciones pendientes con solicitudes al backend Laravel. Los permisos, el stock y las reglas definitivas se comprueban en el servidor.</p>
+</div>
+<figure>
+<p><img alt="Una operación local no es aún una confirmación: Integración móvil y web" height="800" src="../../assets/images/flujos/integracion.webp" width="1200" /></p>
+<figcaption>Recurso visual del proyecto. Ilustración del proceso.</figcaption>
+</figure>
+</div>
+<div class="ec-flow-actors">
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4"/></svg></span></p>
+<p><strong>Usuario</strong></p>
+<p>Ejecuta la operación y atiende errores.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 19H7V5h10m0-4H7c-1.11 0-2 .89-2 2v18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2"/></svg></span></p>
+<p><strong>App móvil</strong></p>
+<p>Consulta conectividad, guarda datos y sincroniza.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 1h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1m0 8h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1m0 8h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1M9 5h1V3H9zm0 8h1v-2H9zm0 8h1v-2H9zM5 3v2h2V3zm0 8v2h2v-2zm0 8v2h2v-2z"/></svg></span></p>
+<p><strong>Backend Laravel</strong></p>
+<p>Autoriza, valida, registra y devuelve resultados.</p>
+</div>
+</div>
+<h2 id="asi-funciona-el-proceso">Así funciona el proceso</h2>
+<div class="ec-flow-diagram">
+<p><img alt="Diagrama de Integración móvil y web: decisiones, actividades y resultados" src="../../assets/diagrams/flujos/integracion.svg" /></p>
+<p><a href="../../assets/diagrams/flujos/integracion.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/flujos/integracion.mmd">Descargar fuente Mermaid</a></p>
+<details>
+<summary>Ver la fuente editable del diagrama</summary>
+<div class="highlight"><pre><span></span><code>sequenceDiagram
+  actor U as Usuario
+  participant A as App móvil
+  participant Q as Cola local
+  participant B as Laravel
+  U-&gt;&gt;A: Ejecutar operación
+  A-&gt;&gt;A: Comprobar conectividad y soporte local
+  alt Operación requiere conexión y no hay red
+    A--&gt;&gt;U: Solicitar conexión
+  else Operación admite cola local
+    A-&gt;&gt;Q: Guardar datos, hora y clave local
+    A--&gt;&gt;U: Mostrar pendiente
+    Note over A,Q: Sincronizar al recuperar red o solicitarlo
+    Q-&gt;&gt;B: Enviar operación pendiente
+    B-&gt;&gt;B: Validar sesión, permisos y reglas
+    alt Operación aceptada
+      B-&gt;&gt;B: Registrar datos y efectos relacionados
+      B--&gt;&gt;A: Resultado e identificador
+      A-&gt;&gt;Q: Marcar SYNCED
+      A--&gt;&gt;U: Actualizar consultas
+    else Rechazo que requiere revisión
+      B--&gt;&gt;A: Error de permisos o validación
+      A-&gt;&gt;Q: Marcar NEEDS_REVIEW
+      A--&gt;&gt;U: Mostrar motivo
+    else Fallo transitorio
+      A-&gt;&gt;Q: PENDING o revisión al agotar intentos
+    end
+  else Operación en línea
+    A-&gt;&gt;B: Solicitud autenticada
+    B-&gt;&gt;B: Autorizar, validar y registrar
+    B--&gt;&gt;A: Resultado o error
+    A--&gt;&gt;U: Mostrar resultado
+  end
+</code></pre></div>
+</details>
+</div>
+<h2 id="paso-a-paso">Paso a paso</h2>
+<div class="ec-flow-steps">
+<ol>
+<li>El usuario inicia una consulta u operación. La app comprueba conectividad y los datos locales necesarios para esa funcionalidad.</li>
+<li>Las operaciones que admiten cola guardan datos, hora del evento e identificador local. Otras exigen conexión y muestran el motivo.</li>
+<li>Al sincronizar, el motor recorre pendientes en orden de creación y despacha cada tipo a su manejador. Un bloqueo evita barridos concurrentes.</li>
+<li>Laravel valida sesión, rol, asistencia cuando corresponde y reglas de negocio. Los registros locales todavía pueden ser rechazados por stock, precio o permisos.</li>
+<li>Una respuesta válida marca SYNCED y conserva el identificador del servidor. Los rechazos pasan a NEEDS_REVIEW; los fallos transitorios vuelven a PENDING hasta el límite.</li>
+<li>La app actualiza los datos disponibles y presenta el resultado. Los portales web consultan los registros ya aceptados por el backend.</li>
+</ol>
+</div>
+<div class="ec-flow-grid">
+<div class="ec-flow-card orange">
+<h3 id="pending-syncing">PENDING → SYNCING</h3>
+<p>Operación guardada que aún debe enviarse. No equivale a un registro confirmado en el servidor.</p>
+</div>
+<div class="ec-flow-card green">
+<h3 id="synced">SYNCED</h3>
+<p>El servidor respondió correctamente y se conserva su identificador.</p>
+</div>
+<div class="ec-flow-card red">
+<h3 id="needs_review">NEEDS_REVIEW</h3>
+<p>Error de validación, permisos o agotamiento de los cinco intentos transitorios. Requiere atención.</p>
+</div>
+</div>
+<h2 id="alcance-real-del-trabajo-sin-conexion">Alcance real del trabajo sin conexión</h2>
+<div class="ec-flow-table">
+<table>
+<thead>
+<tr>
+<th>Funcionalidad</th>
+<th>Comportamiento comprobado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Acopio</td>
+<td>Entregas, inicio y «No entregó» cuentan con operaciones de cola; la identificación puede usar datos locales disponibles</td>
+</tr>
+<tr>
+<td>Finalizar recorrido</td>
+<td>Requiere conexión en <code>AcopiadorRepository</code></td>
+</tr>
+<tr>
+<td>Calidad</td>
+<td>Selección manual, captura de ticket y análisis tienen almacenamiento o cola; el OCR del servidor se procesa al enviar</td>
+</tr>
+<tr>
+<td>Sorteo de muestra</td>
+<td>Requiere conexión y firma del servidor</td>
+</tr>
+<tr>
+<td>Planta</td>
+<td>Inicio y cierre de producción y compra revisada tienen manejadores de sincronización; el servidor vuelve a validar</td>
+</tr>
+<tr>
+<td>Ventas</td>
+<td>Contado con precio y stock conocidos puede quedar pendiente; descuento de planilla requiere conexión</td>
+</tr>
+<tr>
+<td>Boleta PDF y comprador nuevo</td>
+<td>Requieren conexión en la app de ventas</td>
+</tr>
+<tr>
+<td>Proveedor</td>
+<td>Consultas con datos almacenados y actualización al conectar; no se promete información reciente sin sincronizar</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="reintentos-e-idempotencia">Reintentos e idempotencia</h2>
+<p><code>SyncManager</code> limita a <strong>cinco intentos transitorios</strong> antes de exigir revisión. Un rechazo de validación o permiso no se reintenta indefinidamente. Una operación sin manejador disponible permanece pendiente.</p>
+<p>Las entregas reutilizan su token de idempotencia. Las rutas de inicio/cierre de producción, confirmación de compra y venta usan el middleware <code>idempotente</code>; sus clientes envían la clave correspondiente. No se extiende esa garantía a todas las rutas: el manejador de análisis de calidad no usa esa cabecera para guardar y finalizar. La selección de muestra tiene además su propia protección de reenvío en el dominio.</p>
+<div class="ec-flow-info warning">
+<p><strong>Dato local y dato confirmado son distintos.</strong> Recuperar conectividad no implica aceptación automática: el usuario debe revisar las operaciones rechazadas. Tampoco se promete sincronización en segundo plano cuando la aplicación está cerrada.</p>
+</div>
+<div class="ec-flow-result">
+<p><strong>Resultado del proceso</strong></p>
+<p>Operaciones aceptadas reflejadas en consultas web y móviles; pendientes y errores identificables sin presentar una garantía universal de funcionamiento offline.</p>
+</div>
+<details class="ec-flow-evidence">
+<summary>Trazabilidad con el código revisado</summary>
+<p>Revisión documental: 28 de octubre de 2026. Las rutas siguientes identifican las fuentes locales; no implican haber ejecutado el sistema de negocio.</p>
+<ul>
+<li><code>EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php</code></li>
+<li><code>EcoLactWeb/app/Application/Calidad/SeleccionarMuestraCalidad.php</code></li>
+<li><code>EcoLactWeb/routes/web.php</code> y <code>EcoLactWeb/routes/api.php</code></li>
+<li><code>EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/</code> (rutas, repositorios y pantallas del rol correspondiente).</li>
+<li><code>core/sync/SyncManager.kt</code>, <code>SyncQueueRepository.kt</code> y manejadores de sincronización de cada funcionalidad.</li>
+</ul>
+</details>
+<div class="ec-flow-links">
+<p><a href="../">← Todos los flujos</a></p>
+<p><a href="../acopio/">Flujo de acopio de leche →</a></p>
+<p><a href="../consulta-proveedor/">Consulta del proveedor →</a></p>
+<p><a href="../ventas-caja/">Flujo de ventas y compradores →</a></p>
+<p><a href="../personal-asistencia/">Asistencia y personal →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="integracion">integracion</h1>
-
-
-
-
-
-
 
 
 

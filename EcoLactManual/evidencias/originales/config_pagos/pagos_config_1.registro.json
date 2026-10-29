@@ -1,0 +1,206 @@
+{
+  "plan": "pagos_config_1.json",
+  "fecha": "2026-10-28T11:04:56",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "cfg_01_trabajadores",
+      "archivo": "evidencias/originales/config_pagos/cfg_01_trabajadores.png",
+      "url": "/admin/configuracion-pagos?tab=trabajadores",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          641,
+          239,
+          681
+        ],
+        "pestanas": [
+          284,
+          154,
+          1408,
+          200
+        ],
+        "tab_trabajadores": [
+          284,
+          154,
+          401,
+          198
+        ],
+        "tab_proveedores": [
+          405,
+          154,
+          518,
+          198
+        ],
+        "fila": [
+          285,
+          344,
+          1046,
+          424
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:05:01"
+    },
+    {
+      "nombre": "cfg_02_panel",
+      "archivo": "evidencias/originales/config_pagos/cfg_02_panel.png",
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          344,
+          1046,
+          424
+        ],
+        "configurar": [
+          1107,
+          426,
+          1261,
+          458
+        ]
+      },
+      "textos_visibles": [
+        "Acopiador Prueba Manual\nPendiente\n\nAcopiador · DNI 99000001\n\nSueldo\n\nSin configurar\n\nEste trabajador todavía no tiene un sueldo definido.\n\nConfigurar sueldo"
+      ],
+      "hora": "2026-10-28T11:05:04"
+    },
+    {
+      "nombre": "cfg_03_modal_sueldo",
+      "archivo": "evidencias/originales/config_pagos/cfg_03_modal_sueldo.png",
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "descripcion": "",
+      "objetivos": {
+        "sueldo": [
+          1005,
+          228,
+          1174,
+          270
+        ],
+        "inicio": [
+          1005,
+          346,
+          1363,
+          388
+        ],
+        "guardar": [
+          1232,
+          535,
+          1363,
+          571
+        ]
+      },
+      "textos_visibles": [
+        "Configurar sueldo\n\nAcopiador Prueba Manual · Acopiador\n\nSueldo mensual (S/) *\n\nValor por día\n\nS/ 40.00\n\nSe calcula solo: sueldo mensual ÷ 30.\n\nVigente desde *\nObservación\nCancelar\nGuardar sueldo"
+      ],
+      "hora": "2026-10-28T11:05:07"
+    },
+    {
+      "nombre": "cfg_04_sueldo_guardado",
+      "archivo": "evidencias/originales/config_pagos/cfg_04_sueldo_guardado.png",
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "fila": [
+          285,
+          390,
+          1046,
+          470
+        ],
+        "sueldo": [
+          981,
+          355,
+          1387,
+          533
+        ]
+      },
+      "textos_visibles": [
+        "Sueldo configurado correctamente.",
+        "Acopiador Prueba Manual\tAcopiador\tS/ 1,200.00\tS/ 40.00\t28/10/2026\tActivo",
+        "Acopiador Prueba Manual\nActivo\n\nAcopiador · DNI 99000001\n\nSueldo\nSueldo mensual\nS/ 1,200.00\nValor diario\nS/ 40.00\nVigente desde\n28/10/2026\nEstado\nActivo\nEditar configuración"
+      ],
+      "hora": "2026-10-28T11:05:10"
+    },
+    {
+      "nombre": "cfg_05_proveedores",
+      "archivo": "evidencias/originales/config_pagos/cfg_05_proveedores.png",
+      "url": "/admin/configuracion-pagos?tab=proveedores&trabajador=513",
+      "descripcion": "",
+      "objetivos": {
+        "tab": [
+          403,
+          200,
+          518,
+          244
+        ],
+        "seccion": [
+          284,
+          266,
+          1408,
+          511
+        ],
+        "editar": [
+          536,
+          433,
+          768,
+          465
+        ]
+      },
+      "textos_visibles": [
+        "Pago a proveedores\n\nUna sola configuración para todos los proveedores de leche.\n\nSin configurar\n\nDefine el precio por litro para que EcoLact calcule el pago semanal de los proveedores.\n\nConfigurar pago a proveedores"
+      ],
+      "hora": "2026-10-28T11:05:12"
+    },
+    {
+      "nombre": "cfg_06_modal_proveedores",
+      "archivo": "evidencias/originales/config_pagos/cfg_06_modal_proveedores.png",
+      "url": "/admin/configuracion-pagos?tab=proveedores&trabajador=513",
+      "descripcion": "",
+      "objetivos": {
+        "precio": [
+          380,
+          332,
+          710,
+          374
+        ],
+        "inicio": [
+          730,
+          332,
+          1060,
+          374
+        ],
+        "descuento": [
+          380,
+          416,
+          1060,
+          458
+        ],
+        "guardar": [
+          882,
+          626,
+          1060,
+          662
+        ],
+        "cancelar": [
+          784,
+          626,
+          874,
+          662
+        ]
+      },
+      "textos_visibles": [
+        "Configurar pago a proveedores\n\nPrecio por litro y descuento por calidad observada.\n\nPrecio base por litro (S/) *\nVigente desde *\nDescuento por litro si la semana es OBSERVADA (S/)\n\nPrecio resultante: S/ 1.70 por litro, para todos los litros de esa semana. Si la semana es RECHAZADA no se paga.\n\nObservación\nCancelar\nGuardar configuración"
+      ],
+      "hora": "2026-10-28T11:05:15"
+    }
+  ],
+  "dialogos": []
+}

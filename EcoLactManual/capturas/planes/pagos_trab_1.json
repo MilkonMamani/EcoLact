@@ -1,0 +1,10 @@
+{"descripcion": "Pagar a trabajadores: consulta (solo lectura) del periodo actual; panel de un trabajador ficticio.", "salida": "evidencias/originales/pagos_trabajadores", "conservar_texto": "Prueba Manual", "difuminar_textos": ["admin"],
+ "pasos": [
+  {"accion": "ir", "url": "/admin/pagos/trabajadores", "ms": 3000},
+  {"accion": "captura", "nombre": "ptr_01_pantalla", "difuminar": ["main aside, [data-panel]"], "medir": {"filtros": "main form:has(input[name=q]), main form", "fila": "tbody tr:has-text('Vendedor Prueba Manual')"}, "leer": ["main"]},
+  {"accion": "clic", "selector": "tbody tr:has-text('Vendedor Prueba Manual') td:nth-child(1)"},
+  {"accion": "esperar", "ms": 2500},
+  {"accion": "captura", "nombre": "ptr_02_panel_sin_sueldo", "medir": {"fila": "tbody tr:has-text('Vendedor Prueba Manual')"}, "leer": ["main"]},
+  {"accion": "ir", "url": "/admin/pagos/trabajadores?q=Acopiador+Prueba", "ms": 3000},
+  {"accion": "captura", "nombre": "ptr_03_busqueda_acopiador", "leer": ["main"]}
+ ]}

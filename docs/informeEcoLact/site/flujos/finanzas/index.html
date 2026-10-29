@@ -6,17 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Cada movimiento tiene una operación de origen en EcoLact: actores, decisiones y resultados verificados en el repositorio.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/flujos/finanzas/">
       
-        <link rel="prev" href="../liquidacion-pagos/">
+      
+        <link rel="prev" href="../ventas-caja/">
       
       
-        <link rel="next" href="../integracion/">
+        <link rel="next" href="../personal-asistencia/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Flujo financiero - Informe EcoLact</title>
+        <title>Flujo de caja y finanzas - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#finanzas" class="md-skip">
+        <a href="#flujo-de-caja-y-finanzas" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Flujo financiero
+              Flujo de caja y finanzas
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -641,6 +637,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -761,6 +761,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../produccion/" class="md-nav__link">
         
   
@@ -824,35 +880,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -882,6 +910,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -889,7 +935,7 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
   
 
     
@@ -899,6 +945,136 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#salidas-de-compras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salidas de compras
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#salidas-de-pagos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salidas de pagos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-leer-un-movimiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo leer un movimiento
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evitar-duplicar-el-dinero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evitar duplicar el dinero
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -950,6 +1126,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1034,7 +1214,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1062,7 +1242,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1118,7 +1354,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1410,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1438,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1580,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1608,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1927,97 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#salidas-de-compras" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salidas de compras
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#salidas-de-pagos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Salidas de pagos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-leer-un-movimiento" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo leer un movimiento
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evitar-duplicar-el-dinero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evitar duplicar el dinero
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2032,170 @@
                   
 
 
+
+<div class="ec-flujos">
+<div class="ec-flow-banner">09 · Flujo de caja y finanzas</div>
+<div class="ec-flow-content">
+<div class="ec-flow-hero">
+<div>
+<p><span class="ec-flow-kicker">EcoLact / Flujos de negocio</span></p>
+<h1 id="flujo-de-caja-y-finanzas">Flujo de caja y finanzas</h1>
+<p class="ec-flow-subtitle">Cada movimiento tiene una operación de origen</p>
+<p>Caja reúne las entradas y salidas registradas por las operaciones del negocio. El administrador consulta el saldo y puede seguir cada movimiento hasta la venta, compra o pago que lo originó.</p>
+</div>
+<figure>
+<p><img alt="Cada movimiento tiene una operación de origen: Flujo de caja y finanzas" height="800" src="../../assets/images/flujos/finanzas.webp" width="1200" /></p>
+<figcaption>Recurso visual del proyecto. Ilustración del proceso.</figcaption>
+</figure>
+</div>
+<div class="ec-flow-actors">
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 4a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m7 8a.26.26 0 0 0-.26.21l-.19 1.32c-.3.13-.59.29-.85.47l-1.24-.5c-.11 0-.24 0-.31.13l-1 1.73c-.06.11-.04.24.06.32l1.06.82a4.2 4.2 0 0 0 0 1l-1.06.82a.26.26 0 0 0-.06.32l1 1.73c.06.13.19.13.31.13l1.24-.5c.26.18.54.35.85.47l.19 1.32c.02.12.12.21.26.21h2c.11 0 .22-.09.24-.21l.19-1.32c.3-.13.57-.29.84-.47l1.23.5c.13 0 .26 0 .33-.13l1-1.73a.26.26 0 0 0-.06-.32l-1.07-.82c.02-.17.04-.33.04-.5s-.01-.33-.04-.5l1.06-.82a.26.26 0 0 0 .06-.32l-1-1.73c-.06-.13-.19-.13-.32-.13l-1.23.5c-.27-.18-.54-.35-.85-.47l-.19-1.32A.236.236 0 0 0 19 12zm-7 2c-4.42 0-8 1.79-8 4v2h9.68a7 7 0 0 1-.68-3 7 7 0 0 1 .64-2.91c-.53-.06-1.08-.09-1.64-.09m8 1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5c-.84 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5"/></svg></span></p>
+<p><strong>Administrador</strong></p>
+<p>Consulta saldo, historial y detalle de los movimientos.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 17h20v4H2zM6.25 7H9V6H6V3h8v3h-3v1h6.8c1 0 2 1 2.2 2l.5 7h-17l.55-7c0-1 1-2 2.2-2M13 9v2h5V9zM6 9v1h2V9zm3 0v1h2V9zm-3 2v1h2v-1zm3 0v1h2v-1zm-3 2v1h2v-1zm3 0v1h2v-1zM7 4v1h6V4z"/></svg></span></p>
+<p><strong>Ventas</strong></p>
+<p>Origina entradas al registrar ventas al contado.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 18v2h4v-2zm0-4v2h10v-2zm6 4v2h4v-2zm6-4v2h4v-2zm0 4v2h4v-2zM2 22V8l5 4V8l5 4V8l5 4 1-10h3l1 10v10z"/></svg></span></p>
+<p><strong>Planta y pagos</strong></p>
+<p>Originan salidas por compras y pagos registrados.</p>
+</div>
+</div>
+<h2 id="asi-funciona-el-proceso">Así funciona el proceso</h2>
+<div class="ec-flow-diagram">
+<p><img alt="Diagrama de Flujo de caja y finanzas: decisiones, actividades y resultados" src="../../assets/diagrams/flujos/finanzas.svg" /></p>
+<p><a href="../../assets/diagrams/flujos/finanzas.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/flujos/finanzas.mmd">Descargar fuente Mermaid</a></p>
+<details>
+<summary>Ver la fuente editable del diagrama</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  A([Inicio · Confirmar operación]) --&gt; B{¿Qué operación mueve dinero?}
+  B --&gt; C[Venta al contado]
+  B --&gt; D[Compra de insumos con total positivo]
+  B --&gt; E[Pago al proveedor]
+  B --&gt; F[Pago al trabajador]
+  C --&gt;|ENTRADA · VENTA| G[Caja EcoLact]
+  D --&gt;|SALIDA · INSUMOS| G
+  E --&gt;|SALIDA · PROVEEDOR| G
+  F --&gt;|SALIDA · TRABAJADOR| G
+  G --&gt; H[Concepto, fecha, importe y referencia]
+  H --&gt; I[Administrador · Historial y detalle]
+  I --&gt; J[Saldo: entradas menos salidas]
+  J --&gt; Z([Fin · Seguimiento financiero])
+  X[Venta de planilla] -. Sin entrada inmediata .-&gt; Y[Descuento del pago semanal]
+  W[Compra sin total conocido] -. Sin salida inventada .-&gt; V[Solo inventario]
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class B decision;
+  class A,Z terminal;
+</code></pre></div>
+</details>
+</div>
+<h2 id="paso-a-paso">Paso a paso</h2>
+<div class="ec-flow-steps">
+<ol>
+<li>Confirmar la operación que mueve dinero: una venta al contado, una compra con total positivo o un pago realizado.</li>
+<li>Registrar el movimiento de caja dentro de la misma transacción. Si falla el registro de caja, la operación tampoco queda confirmada.</li>
+<li>Guardar categoría, concepto, descripción, importe, fecha, referencia de origen y usuario que registró la operación.</li>
+<li>Consultar el historial y abrir el detalle para reconocer comprador, proveedor o trabajador y su operación asociada.</li>
+<li>Seguir el saldo acumulado y los indicadores de ingresos, salidas y número de movimientos de hoy.</li>
+</ol>
+</div>
+<div class="ec-flow-grid">
+<div class="ec-flow-card green">
+<h3 id="entradas">Entradas</h3>
+<p><strong>VENTA:</strong> importe de las ventas registradas al contado.</p>
+</div>
+<div class="ec-flow-card red">
+<h3 id="salidas-de-compras">Salidas de compras</h3>
+<p><strong>INSUMOS:</strong> compra con total conocido mayor que cero.</p>
+</div>
+<div class="ec-flow-card orange">
+<h3 id="salidas-de-pagos">Salidas de pagos</h3>
+<p><strong>PROVEEDOR</strong> y <strong>TRABAJADOR:</strong> importe neto del pago realizado.</p>
+</div>
+</div>
+<h2 id="como-leer-un-movimiento">Cómo leer un movimiento</h2>
+<div class="ec-flow-table">
+<table>
+<thead>
+<tr>
+<th>Dato</th>
+<th>Para qué sirve</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Origen y categoría</td>
+<td>Distinguir una venta, compra o pago</td>
+</tr>
+<tr>
+<td>Concepto y descripción</td>
+<td>Saber qué se registró y a quién corresponde</td>
+</tr>
+<tr>
+<td>Importe y dirección</td>
+<td>Reconocer cuánto entró o salió</td>
+</tr>
+<tr>
+<td>Fecha</td>
+<td>Ubicar cuándo se registró el movimiento</td>
+</tr>
+<tr>
+<td>Referencia y detalle</td>
+<td>Relacionar el movimiento con la operación concreta</td>
+</tr>
+<tr>
+<td>Usuario de registro</td>
+<td>Identificar quién confirmó la operación</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Las ventas conservan la fecha de su operación. Las compras usan la hora de registro en caja y conservan la fecha de compra en el detalle. Los pagos usan el momento efectivo de registro (<code>pagadoAt</code>) cuando está disponible.</p>
+<div class="ec-flow-result">
+<p><strong>Saldo = suma de entradas − suma de salidas.</strong> Es el saldo de los movimientos registrados. Una compra sin total no genera salida y, por tanto, su desembolso desconocido no aparece en ese saldo.</p>
+</div>
+<h2 id="evitar-duplicar-el-dinero">Evitar duplicar el dinero</h2>
+<p>Los movimientos se guardan una sola vez por tipo e identificador de referencia. Una venta a cuenta del pago no entra a caja: reduce el neto que luego sale al pagar al proveedor. Tampoco se registra dinero al guardar un borrador OCR, planificar producción o calcular un pendiente.</p>
+<p>Las rutas de Caja revisadas ofrecen consulta y panel de detalle al administrador. No se documenta un formulario de movimientos manuales: no aparece en ese flujo implementado.</p>
+<div class="ec-flow-result">
+<p><strong>Resultado del proceso</strong></p>
+<p>Historial financiero relacionado con operaciones reales. El administrador puede explicar cada entrada, cada salida y el saldo registrado.</p>
+</div>
+<details class="ec-flow-evidence">
+<summary>Trazabilidad con el código revisado</summary>
+<p>Revisión documental: 28 de octubre de 2026. Las rutas siguientes identifican las fuentes locales; no implican haber ejecutado el sistema de negocio.</p>
+<ul>
+<li><code>EcoLactWeb/app/Application/Caja/RegistrarMovimientoCaja.php</code></li>
+<li><code>EcoLactWeb/app/Application/Caja/CajaResumen.php</code></li>
+<li><code>EcoLactWeb/app/Application/Caja/Contracts/CajaQuery.php</code></li>
+<li><code>EcoLactWeb/app/Application/Pago/RegistrarPagoObligacion.php</code></li>
+<li><code>EcoLactWeb/routes/web.php</code> y <code>EcoLactWeb/routes/api.php</code></li>
+</ul>
+</details>
+<div class="ec-flow-links">
+<p><a href="../">← Todos los flujos</a></p>
+<p><a href="../ventas-caja/">Flujo de ventas y compradores →</a></p>
+<p><a href="../insumos/">Flujo de insumos y compras →</a></p>
+<p><a href="../liquidacion-pagos/">Valorización, liquidación y pagos →</a></p>
+<p><a href="../personal-asistencia/">Asistencia y personal →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="finanzas">finanzas</h1>
-
-
-
-
-
-
 
 
 

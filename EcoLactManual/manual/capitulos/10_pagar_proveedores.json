@@ -1,0 +1,204 @@
+{
+  "id": "PPV",
+  "tipo": "modulo",
+  "titulo": "Pagar a proveedores",
+  "registro": "evidencias/originales/pagos_proveedores/pagos_prov_1.registro.json",
+  "introduccion": "EcoLact calcula automáticamente la liquidación semanal de cada proveedor (jueves a miércoles) con los litros entregados, el precio vigente y el resultado de calidad de la semana. El Administrador revisa las liquidaciones, imprime los comprobantes, entrega el efectivo y confirma el pago.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Finanzas › Pagos › Pagar a proveedores"
+    ],
+    [
+      "Depende de",
+      "Entregas (capítulo 8), precio vigente (capítulo 7) y, si existe, análisis confirmado (capítulo 9)."
+    ],
+    [
+      "Habilita",
+      "Egreso en Caja (capítulo de Caja) y comprobante del proveedor."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Las liquidaciones se generan solas al abrir la pantalla: no hay un botón «Generar».",
+        "Cada liquidación se paga completa en efectivo; no hay pagos parciales.",
+        "El pago se confirma después de imprimir y entregar el efectivo, y no se puede deshacer.",
+        "Una semana «Rechazada» no es pagable."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "ppv_01_pantalla",
+    "pie": "«Pago semanal a proveedores» (otros proveedores difuminados).",
+    "elementos": [
+      [
+        "Resumen",
+        "«Pendientes», «Litros pagables» y «Total pendiente»."
+      ],
+      [
+        "Filtros",
+        "Buscador, «Semana», «Zona» y «Estado» (Pendientes / Pagados)."
+      ],
+      [
+        "Liquidaciones semanales",
+        "Proveedor y semana, zona, litros, precio por litro, calidad semanal, compras, total y estado; casilla de selección."
+      ],
+      [
+        "Comprobante de pago",
+        "Vista previa del comprobante de la fila elegida."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-PPV-001",
+      "titulo": "Consultar las liquidaciones semanales",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar cuánto se debe pagar a cada proveedor y por qué.",
+      "acceso": "Finanzas › Pagos › Pagar a proveedores",
+      "requisitos": [
+        "Entregas registradas y precio de la leche configurado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Filtrar",
+          "instruccion": "Elige la «Semana», la «Zona» o el «Estado» y haz clic en «Filtrar».",
+          "captura": "ppv_01_pantalla",
+          "objetivo": "semana",
+          "pie": "Filtro «Semana»."
+        },
+        {
+          "titulo": "Revisar el resumen",
+          "instruccion": "Consulta «Pendientes», «Litros pagables» y «Total pendiente».",
+          "captura": "ppv_01_pantalla",
+          "objetivo": "total",
+          "pie": "Resumen de lo pendiente de pago."
+        },
+        {
+          "titulo": "Ver el comprobante de un proveedor",
+          "instruccion": "Haz clic en la fila del proveedor.",
+          "captura": "ppv_02_comprobante",
+          "objetivo": "fila",
+          "pie": "Fila seleccionada; a la derecha, el comprobante de la semana 44: 48 L × S/ 1.20 = S/ 57.60.",
+          "resultado": "El panel muestra el detalle: litros de la semana, precio base, resultado semanal, ajuste de calidad, precio aplicado, compras descontadas y total a pagar."
+        }
+      ],
+      "resultado": "Conoces el monto de cada proveedor sin modificar datos."
+    },
+    {
+      "codigo": "ADM-PPV-002",
+      "titulo": "Imprimir comprobantes y registrar el pago en efectivo",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Pagar la liquidación semanal y dejarla registrada.",
+      "acceso": "Finanzas › Pagos › Pagar a proveedores",
+      "requisitos": [
+        "Liquidación en estado «Pendiente».",
+        "Efectivo disponible para entregar al proveedor."
+      ],
+      "pasos": [
+        {
+          "titulo": "Seleccionar proveedores",
+          "instruccion": "Marca la casilla de cada proveedor que vas a pagar. El menú «…» permite «Seleccionar pendientes visibles».",
+          "captura": "ppv_03_seleccion",
+          "objetivo": "check",
+          "pie": "Casilla de selección de la liquidación."
+        },
+        {
+          "titulo": "Revisar los seleccionados",
+          "instruccion": "Haz clic en «Revisar seleccionados (n)».",
+          "captura": "ppv_03_seleccion",
+          "objetivo": "revisar",
+          "pie": "Botón «Revisar seleccionados»."
+        },
+        {
+          "titulo": "Imprimir",
+          "instruccion": "Revisa la «Vista previa de impresión» (una hoja por proveedor) y haz clic en «Imprimir».",
+          "captura": "ppv_04_vista_previa",
+          "objetivo": "imprimir",
+          "pie": "Vista previa del comprobante y botón «Imprimir».",
+          "resultado": "Se abre la impresión del navegador y luego la pregunta de confirmación."
+        },
+        {
+          "titulo": "Confirmar el pago",
+          "instruccion": "Entrega el efectivo y el comprobante, y haz clic en «Confirmar pago en efectivo». Usa «Todavía no» si aún no pagaste.",
+          "captura": "ppv_05_confirmar",
+          "objetivo": "confirmar",
+          "pie": "«¿Se imprimieron los comprobantes y se entregó el efectivo? … Esta acción no se puede deshacer.»"
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el estado «Pagado».",
+          "captura": "ppv_06_pagado",
+          "objetivo": "fila",
+          "pie": "Liquidación en estado «Pagado».",
+          "resultado": "Aparece «Se marcaron como pagados en efectivo 1 proveedor por S/ 57.60 (lote PP-…).»"
+        }
+      ],
+      "resultado": "La liquidación queda «Pagado», con lote y fecha, y el pago se registra como egreso en Caja.",
+      "errores": [
+        [
+          "La casilla no se puede marcar",
+          "La liquidación no es pagable (ya pagada, semana rechazada o aún no disponible)."
+        ],
+        [
+          "Se cerró la impresión sin pagar",
+          "Elige «Todavía no»: la liquidación sigue «Pendiente»."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PPV-003",
+      "titulo": "Reimprimir el comprobante y consultar el historial",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Volver a imprimir un comprobante y revisar los pagos de un proveedor.",
+      "acceso": "Pagar a proveedores (estado «Pagados») · Proveedores › «Ver pagos»",
+      "requisitos": [
+        "Pago registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Filtrar los pagados",
+          "instruccion": "En «Estado», elige «Pagados» y haz clic en «Filtrar».",
+          "registro": "evidencias/originales/pagos_proveedores/pagos_prov_3_historial.registro.json",
+          "captura": "ppv_08_filtro_pagados",
+          "objetivo": "estado",
+          "pie": "Filtro «Estado»: Pagados."
+        },
+        {
+          "titulo": "Abrir el comprobante",
+          "instruccion": "Abre el comprobante de la fila y haz clic en «Imprimir».",
+          "registro": "evidencias/originales/pagos_proveedores/pagos_prov_2_comprobante.registro.json",
+          "captura": "ppv_07_comprobante_impreso",
+          "objetivo": "imprimir",
+          "pie": "Comprobante en estado «Pagado» con fecha de pago (usuario difuminado)."
+        },
+        {
+          "titulo": "Consultar el historial del proveedor",
+          "instruccion": "En Proveedores, abre el proveedor › pestaña «Compras» › «Ver pagos».",
+          "registro": "evidencias/originales/pagos_proveedores/pagos_prov_3_historial.registro.json",
+          "captura": "ppv_09_historial",
+          "objetivo": "modal",
+          "pie": "«Pagos de …»: tipo, base de cálculo, periodo, monto y estado, con «Ver detalle»."
+        }
+      ],
+      "resultado": "Puedes reimprimir comprobantes y ver todos los pagos semanales del proveedor."
+    },
+    {
+      "codigo": "ADM-PPV-004",
+      "titulo": "Liquidaciones, pagos parciales y confirmación separada",
+      "estado": "No disponible en la interfaz",
+      "objetivo": "Aclarar operaciones que no existen como pantalla.",
+      "acceso": "—",
+      "requisitos": [
+        "—"
+      ],
+      "pasos": [
+        {
+          "titulo": "Situación observada",
+          "instruccion": "No hay pantalla para generar, listar o confirmar liquidaciones por separado: la liquidación semanal es la fila de «Pago semanal a proveedores» y su comprobante. Tampoco existen pagos parciales. El sistema tiene una hoja «Liquidación #…» imprimible, pero ninguna pantalla del Administrador enlaza a ella."
+        }
+      ],
+      "resultado": "Use ADM-PPV-001 a ADM-PPV-003 para todo el ciclo de pago a proveedores."
+    }
+  ]
+}

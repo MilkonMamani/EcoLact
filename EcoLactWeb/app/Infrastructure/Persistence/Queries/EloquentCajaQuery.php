@@ -14,6 +14,7 @@ use Carbon\CarbonImmutable;
 use DateTimeImmutable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 final class EloquentCajaQuery implements CajaQuery
 {
@@ -85,14 +86,20 @@ final class EloquentCajaQuery implements CajaQuery
 
     public function buscar(int $id): ?MovimientoCajaFila
     {
+        // La compra de origen: directa en las salidas históricas (COMPRA_INSUMOS #compra)
+        // o a través de su pago (PAGO_COMPRA #pago -> pagos_compra.compra_insumo_id).
         $fila = $this->base()
-            ->leftJoin('compras_insumo as ci', function ($join): void {
-                $join->on('ci.id', '=', 'm.referencia_id')
-                    ->where('m.referencia_tipo', '=', MovimientoCaja::REFERENCIA_COMPRA_INSUMOS);
+            ->leftJoin('pagos_compra as pc', function ($join): void {
+                $join->on('pc.id', '=', 'm.referencia_id')
+                    ->where('m.referencia_tipo', '=', MovimientoCaja::REFERENCIA_PAGO_COMPRA);
             })
-            ->addSelect('ci.imagen_boleta')
+            ->selectRaw('CASE WHEN m.referencia_tipo = ? THEN m.referencia_id ELSE pc.compra_insumo_id END as compra_id', [MovimientoCaja::REFERENCIA_COMPRA_INSUMOS])
             ->where('m.id', $id)
             ->first();
+
+        if ($fila !== null && $fila->compra_id !== null) {
+            $fila->comprobante_id = DB::table('comprobantes_compra')->where('compra_insumo_id', $fila->compra_id)->orderBy('id')->value('id');
+        }
 
         return $fila !== null ? $this->fila($fila) : null;
     }
@@ -123,7 +130,8 @@ final class EloquentCajaQuery implements CajaQuery
             referenciaId: (int) $fila->referencia_id,
             registradoPor: $rol !== null ? $rol.' · '.$fila->username : (string) $fila->username,
             fecha: CarbonImmutable::parse($fila->fecha, config('app.timezone')),
-            imagenBoleta: $fila->imagen_boleta ?? null,
+            compraId: isset($fila->compra_id) ? (int) $fila->compra_id : null,
+            comprobanteId: isset($fila->comprobante_id) ? (int) $fila->comprobante_id : null,
         );
     }
 }

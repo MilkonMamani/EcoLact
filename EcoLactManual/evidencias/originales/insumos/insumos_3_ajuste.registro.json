@@ -1,0 +1,89 @@
+{
+  "plan": "insumos_3_ajuste.json",
+  "fecha": "2026-10-28T11:55:16",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ins_12_compra_registrada",
+      "archivo": "evidencias/originales/insumos/ins_12_compra_registrada.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          621,
+          992,
+          675
+        ],
+        "movimientos": [
+          981,
+          657,
+          1387,
+          764
+        ]
+      },
+      "textos_visibles": [
+        "Insumo Prueba Manual\n\nInsumo · ml\n\n\t2,000 ml\t500 ml\t\nActivo\n\t28/10/2026",
+        "Últimos movimientos\nVer historial\n\nCOMPRA\nCompra\n\nBoleta B000-0001 · 28/10/2026 16:54\n\n+2,000 ml"
+      ],
+      "hora": "2026-10-28T11:55:22"
+    },
+    {
+      "nombre": "ins_13_ajuste",
+      "archivo": "evidencias/originales/insumos/ins_13_ajuste.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "motivo": [
+          520,
+          332,
+          920,
+          374
+        ],
+        "cantidad": [
+          520,
+          416,
+          864,
+          458
+        ],
+        "registrar": [
+          787,
+          670,
+          920,
+          706
+        ]
+      },
+      "textos_visibles": [
+        "Ajustar stock de Insumo Prueba Manual\n\nCorrige el stock por merma, pérdida, error o conteo físico. Las compras se registran aparte.\n\nStock actual: 2,000 ml\n\nMotivo *\nMerma\nPérdida\nCorrección\nInventario físico\nCantidad a restar *\nml\n\nEn la unidad base del insumo.\n\nStock resultante: 1,900 ml\n\nObservación (opcional)\nCancelar\nRegistrar ajuste"
+      ],
+      "hora": "2026-10-28T11:55:24"
+    },
+    {
+      "nombre": "ins_14_ajustado",
+      "archivo": "evidencias/originales/insumos/ins_14_ajustado.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "movimientos": [
+          981,
+          703,
+          1387,
+          865
+        ]
+      },
+      "textos_visibles": [
+        "Ajuste de stock registrado.",
+        "Últimos movimientos\nVer historial\n\nAJUSTE\nAjuste (salida)\n\nMerma — Merma ficticia del manual. · 28/10/2026 16:55\n\n−100 ml\n\nCOMPRA\nCompra\n\nBoleta B000-0001 · 28/10/2026 16:54\n\n+2,000 ml",
+        "Insumo Prueba Manual\n\nInsumo · ml\n\n\t1,900 ml\t500 ml\t\nActivo\n\t28/10/2026"
+      ],
+      "hora": "2026-10-28T11:55:29"
+    }
+  ],
+  "dialogos": []
+}

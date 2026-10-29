@@ -1,0 +1,13 @@
+{"descripcion": "Historial de pagos del proveedor ficticio (consulta) y filtro de pagados.", "salida": "evidencias/originales/pagos_proveedores", "conservar_texto": "Prueba Manual", "difuminar_textos": ["admin"],
+ "pasos": [
+  {"accion": "ir", "url": "/admin/pagos/proveedores?estado=PAGADO", "ms": 3000},
+  {"accion": "captura", "nombre": "ppv_08_filtro_pagados", "medir": {"estado": "#filtro-estado", "fila": "tr[data-fila]:has-text('Prueba Manual')"}, "leer": ["#filtro-estado", "tr[data-fila]:has-text('Prueba Manual')"]},
+  {"accion": "ir", "url": "/admin/proveedores?q=Prueba+Manual", "ms": 2500},
+  {"accion": "clic", "selector": "[data-fichas-fila]:has-text('Proveedor Prueba Manual') a.fichas-nombre"},
+  {"accion": "esperar", "ms": 2000},
+  {"accion": "clic", "selector": "[data-fichas-panel] [data-fichas-tab='compras']"},
+  {"accion": "esperar", "ms": 600},
+  {"accion": "clic", "selector": "[data-fichas-panel] [data-pagos-abrir]"},
+  {"accion": "esperar", "ms": 2500},
+  {"accion": "captura", "nombre": "ppv_09_historial", "medir": {"modal": "[data-modal].is-open [data-modal-panel]"}, "leer": ["[data-modal].is-open [data-modal-panel]"]}
+ ]}

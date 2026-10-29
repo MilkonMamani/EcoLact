@@ -7,31 +7,35 @@
     aquí son solo una vista previa: el servidor los recalcula al guardar.
     Variables: $motivosAjuste, $insumosAjuste.
 --}}
-<x-ui.modal id="modal-presentacion" title="Presentación de compra" subtitle="Cómo se compra este insumo y cuánto contiene cada unidad comprada.">
+<x-ui.modal id="modal-presentacion" title="Agregar presentación de compra" subtitle="Cómo compras este insumo y cuánto contiene cada presentación.">
     <form method="POST" action="#" class="space-y-4" data-presentacion-form>
         @csrf
         <input type="hidden" name="_method" value="POST" data-presentacion-metodo>
 
-        <x-forms.input name="nombre" id="presentacion-nombre" label="Nombre de la presentación" required maxlength="60" placeholder="Ej. Saco, Balde, Bolsa" :sticky="false" />
+        <x-forms.input name="nombre" id="presentacion-nombre" label="Nombre de presentación" required maxlength="60" placeholder="Ej. Saco, Balde, Bolsa, Frasco" :sticky="false" />
 
-        <div>
-            <x-forms.label for="presentacion-cantidad" :required="true">Cantidad que contiene</x-forms.label>
-            <div class="grid grid-cols-2 gap-3">
-                <input id="presentacion-cantidad" name="cantidad" type="number" step="any" min="0" required placeholder="Ej. 25" class="w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
-                <select name="unidad" id="presentacion-unidad" aria-label="Unidad equivalente" class="w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" data-presentacion-unidades></select>
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <x-forms.label for="presentacion-cantidad" :required="true">Contenido por presentación</x-forms.label>
+                <input id="presentacion-cantidad" name="cantidad" type="number" step="any" min="0.0001" required placeholder="Ej. 25" class="w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+            </div>
+            <div>
+                <x-forms.label for="presentacion-unidad" :required="true">Unidad de medida</x-forms.label>
+                <select name="unidad" id="presentacion-unidad" class="w-full rounded-lg border border-text-muted/25 bg-surface px-3 py-2 text-sm text-text shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" data-presentacion-unidades></select>
             </div>
         </div>
 
-        <div class="rounded-lg bg-primary-soft/40 px-3 py-2.5 text-sm" aria-live="polite">
-            <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">Equivalencia en unidad base</p>
-            <p class="mt-0.5 font-semibold text-primary-dark" data-presentacion-equivalencia>—</p>
+        <div class="insumos-equivalencia" aria-live="polite">
+            <p class="text-xs font-semibold uppercase tracking-wide text-text-muted">Vista previa</p>
+            <p class="mt-0.5 text-base font-semibold text-primary-dark" data-presentacion-equivalencia>—</p>
+            <p class="mt-0.5 text-xs text-text-muted" data-presentacion-ejemplo></p>
         </div>
 
         <div data-presentacion-estado-campo hidden>
             <x-forms.select name="estado" id="presentacion-estado" label="Estado" :options="['ACTIVA' => 'Activa', 'INACTIVA' => 'Inactiva (no se ofrece al comprar)']" :placeholder="false" :sticky="false" />
         </div>
 
-        <p class="text-xs text-text-muted">Registrar una presentación no suma stock: solo define la conversión que se usará al registrar compras.</p>
+        <p class="text-xs text-text-muted">Agregar una presentación no suma stock: solo indica cómo se convertirá cada compra. La equivalencia la calcula EcoLact.</p>
 
         <div class="flex justify-end gap-2 border-t border-text-muted/10 pt-4">
             <x-ui.button type="button" data-modal-close variant="ghost">Cancelar</x-ui.button>

@@ -1,0 +1,149 @@
+[
+  {
+    "slug": "index",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/portada-flujos.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/index.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "acopio",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/acopio.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/acopio.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "calidad",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/calidad.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/calidad.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "liquidacion-pagos",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/pagos.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/liquidacion-pagos.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "consulta-proveedor",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/proveedor.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/consulta-proveedor.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "produccion",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/produccion.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/produccion.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "insumos",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/insumos.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/insumos.svg",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/boleta.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "ventas-caja",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/ventas.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/ventas-caja.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "finanzas",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/finanzas.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/finanzas.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "personal-asistencia",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/asistencia.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/personal-asistencia.svg",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "slug": "integracion",
+    "images": [
+      {
+        "src": "http://127.0.0.1:8767/assets/images/flujos/integracion.webp",
+        "ok": true
+      },
+      {
+        "src": "http://127.0.0.1:8767/assets/diagrams/flujos/integracion.svg",
+        "ok": true
+      }
+    ]
+  }
+]

@@ -30,7 +30,7 @@ final readonly class EstadoAsistencia
             'puede_operar' => $this->puedeOperar(),
             'estado' => $this->condicion->value,
             'hora_marcacion' => $this->horaMarcacion?->format(DATE_ATOM),
-            'hora_cierre' => VentanaAsistencia::HORA_CIERRE,
+            'hora_cierre' => VentanaAsistencia::horaCierre(),
             'trabajador_id' => $this->trabajadorId,
         ];
     }

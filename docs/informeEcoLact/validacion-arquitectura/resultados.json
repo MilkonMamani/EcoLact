@@ -1,0 +1,1411 @@
+[
+  {
+    "page": "index",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../assets/diagrams/arquitectura/contenedores.svg",
+        "ok": true
+      },
+      {
+        "src": "../assets/images/arquitectura/codigo/kmp-configuracion.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura de EcoLact",
+    "icons": 7,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/contenedores.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/contenedores.mmd",
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/",
+      "http://127.0.0.1:8766/site/arquitectura/api/",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/",
+      "http://127.0.0.1:8766/site/arquitectura/integracion/",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/kmp-configuracion.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/kmp-configuracion.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts#L12-L44",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Providers/AppServiceProvider.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/web.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt",
+      "http://127.0.0.1:8766/site/arquitectura/backend/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "backend",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/backend-ejecucion.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/backend-dependencias.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/backend-caso-uso.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/backend-repositorio.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Clean Architecture en Laravel",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-ejecucion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-ejecucion.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-dependencias.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-dependencias.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-caso-uso.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-caso-uso.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php#L55-L63",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-repositorio.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-repositorio.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentEntregaRepository.php#L11-L20",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/EntregaRepository.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Providers/AppServiceProvider.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Shared/TransactionManager.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Persistence/LaravelTransactionManager.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaRequest.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Pago/RegistrarAsistenciaQr.php",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "mobile",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/mobile-mvvm.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/mvvm-vista.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura móvil: KMP y MVVM",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/mobile-mvvm.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/mobile-mvvm.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarViewModel.kt#L133-L156",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-vista.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-vista.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt#L70-L87",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/ScreenModel.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "offline-first",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/offline-senal.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/offline-local-first.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/offline-repository.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura offline-first",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/offline-senal.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/offline-senal.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-local-first.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-local-first.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/LocalFirstViewModel.kt#L39-L50",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-repository.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-repository.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt#L251-L274",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/cache/CacheRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/ventas/VentasRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.android.kt",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "sincronizacion",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/sync-secuencia.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/sync-estados.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/sync-manager.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/sync-queue.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Sincronización de datos",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-secuencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-secuencia.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-estados.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-estados.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-manager.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-manager.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt#L66-L91",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-queue.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-queue.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncQueueRepository.kt#L27-L48",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSync.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSyncHandler.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadSyncHandler.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/IdempotenciaApi.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations/2026_09_19_090008_alter_entregas_add_recorrido_y_token.php",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "dominio",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/dominio-acopio.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/dominio-produccion.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/dominio-entrega.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Entidades y reglas de negocio",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-acopio.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-acopio.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-produccion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-produccion.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/dominio-entrega.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/dominio-entrega.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php#L14-L37",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Calidad/AnalisisCalidad.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/ValorizacionEntrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/LiquidacionDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/PagoProveedor.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/Receta.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/RecetaDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/ProduccionDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/LoteProduccionInsumo.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations/2026_09_21_100009_drop_lote_produccion_entregas_table.php",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "base-datos",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/persistencia.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/bd-sqldelight.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Persistencia y bases de datos",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/persistencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/persistencia.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/bd-sqldelight.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/bd-sqldelight.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq#L1-L21",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/CacheEntry.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Entrega.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.ios.kt",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/api/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "api",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/api-recorrido.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/api-ktor.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/api-rutas.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Comunicación mediante API REST",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/api-recorrido.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/api-recorrido.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-ktor.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-ktor.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt#L15-L35",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-rutas.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-rutas.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php#L144-L162",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/bootstrap/app.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaMovilRequest.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/Concerns/SerializaEntregasAcopiador.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorApi.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiResponseHandling.kt",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "seguridad",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/seguridad-login.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/seguridad-sanctum.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/seguridad-roles.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Autenticación y seguridad",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/seguridad-login.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/seguridad-login.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-sanctum.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-sanctum.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/AuthController.php#L33-L52",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-roles.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-roles.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RoleMiddleware.php#L17-L29",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/EnsureUserIsActive.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Support/SesionWeb.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Policies/EntregaPolicy.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RequiereAsistencia.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt",
+      "http://127.0.0.1:8766/site/arquitectura/api/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "integracion",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/integracion-completa.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/integracion-controller.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Integración Web, Móvil y Backend",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/integracion-completa.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/integracion-completa.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/integracion-controller.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/integracion-controller.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php#L94-L111",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Web/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/",
+      "http://127.0.0.1:8766/site/arquitectura/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "index",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../assets/diagrams/arquitectura/contenedores.svg",
+        "ok": true
+      },
+      {
+        "src": "../assets/images/arquitectura/codigo/kmp-configuracion.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura de EcoLact",
+    "icons": 7,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/contenedores.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/contenedores.mmd",
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/",
+      "http://127.0.0.1:8766/site/arquitectura/api/",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/",
+      "http://127.0.0.1:8766/site/arquitectura/integracion/",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/kmp-configuracion.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/kmp-configuracion.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts#L12-L44",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Providers/AppServiceProvider.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/web.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt",
+      "http://127.0.0.1:8766/site/arquitectura/backend/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "backend",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/backend-ejecucion.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/backend-dependencias.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/backend-caso-uso.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/backend-repositorio.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Clean Architecture en Laravel",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-ejecucion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-ejecucion.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-dependencias.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-dependencias.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-caso-uso.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-caso-uso.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php#L55-L63",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-repositorio.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-repositorio.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentEntregaRepository.php#L11-L20",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/EntregaRepository.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Providers/AppServiceProvider.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Shared/TransactionManager.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Persistence/LaravelTransactionManager.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaRequest.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Pago/RegistrarAsistenciaQr.php",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "mobile",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/mobile-mvvm.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/mvvm-vista.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura móvil: KMP y MVVM",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/mobile-mvvm.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/mobile-mvvm.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarViewModel.kt#L133-L156",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-vista.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-vista.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt#L70-L87",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/ScreenModel.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "offline-first",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/offline-senal.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/offline-local-first.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/offline-repository.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura offline-first",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/offline-senal.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/offline-senal.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-local-first.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-local-first.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/LocalFirstViewModel.kt#L39-L50",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-repository.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-repository.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt#L251-L274",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/cache/CacheRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/ventas/VentasRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.android.kt",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "sincronizacion",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/sync-secuencia.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/sync-estados.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/sync-manager.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/sync-queue.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Sincronización de datos",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-secuencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-secuencia.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-estados.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-estados.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-manager.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-manager.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt#L66-L91",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-queue.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-queue.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncQueueRepository.kt#L27-L48",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSync.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSyncHandler.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadSyncHandler.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/IdempotenciaApi.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations/2026_09_19_090008_alter_entregas_add_recorrido_y_token.php",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "dominio",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/dominio-acopio.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/dominio-produccion.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/dominio-entrega.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Entidades y reglas de negocio",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-acopio.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-acopio.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-produccion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-produccion.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/dominio-entrega.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/dominio-entrega.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php#L14-L37",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Calidad/AnalisisCalidad.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/ValorizacionEntrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/LiquidacionDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/PagoProveedor.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/Receta.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/RecetaDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/ProduccionDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/LoteProduccionInsumo.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations/2026_09_21_100009_drop_lote_produccion_entregas_table.php",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "base-datos",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/persistencia.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/bd-sqldelight.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Persistencia y bases de datos",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/persistencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/persistencia.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/bd-sqldelight.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/bd-sqldelight.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq#L1-L21",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/CacheEntry.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Entrega.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.ios.kt",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/api/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "api",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/api-recorrido.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/api-ktor.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/api-rutas.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Comunicación mediante API REST",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/api-recorrido.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/api-recorrido.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-ktor.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-ktor.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt#L15-L35",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-rutas.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-rutas.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php#L144-L162",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/bootstrap/app.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaMovilRequest.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/Concerns/SerializaEntregasAcopiador.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorApi.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiResponseHandling.kt",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "seguridad",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/seguridad-login.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/seguridad-sanctum.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/seguridad-roles.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Autenticación y seguridad",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/seguridad-login.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/seguridad-login.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-sanctum.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-sanctum.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/AuthController.php#L33-L52",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-roles.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-roles.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RoleMiddleware.php#L17-L29",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/EnsureUserIsActive.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Support/SesionWeb.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Policies/EntregaPolicy.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RequiereAsistencia.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt",
+      "http://127.0.0.1:8766/site/arquitectura/api/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "integracion",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/integracion-completa.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/integracion-controller.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Integración Web, Móvil y Backend",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/integracion-completa.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/integracion-completa.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/integracion-controller.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/integracion-controller.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php#L94-L111",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Web/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/",
+      "http://127.0.0.1:8766/site/arquitectura/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "index",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../assets/diagrams/arquitectura/contenedores.svg",
+        "ok": true
+      },
+      {
+        "src": "../assets/images/arquitectura/codigo/kmp-configuracion.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura de EcoLact",
+    "icons": 7,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/contenedores.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/contenedores.mmd",
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/",
+      "http://127.0.0.1:8766/site/arquitectura/api/",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/",
+      "http://127.0.0.1:8766/site/arquitectura/integracion/",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/kmp-configuracion.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/kmp-configuracion.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts#L12-L44",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Providers/AppServiceProvider.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/web.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt",
+      "http://127.0.0.1:8766/site/arquitectura/backend/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "backend",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/backend-ejecucion.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/backend-dependencias.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/backend-caso-uso.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/backend-repositorio.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Clean Architecture en Laravel",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-ejecucion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-ejecucion.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-dependencias.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/backend-dependencias.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-caso-uso.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-caso-uso.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php#L55-L63",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-repositorio.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/backend-repositorio.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentEntregaRepository.php#L11-L20",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/EntregaRepository.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Providers/AppServiceProvider.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Shared/TransactionManager.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Persistence/LaravelTransactionManager.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaRequest.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Pago/RegistrarAsistenciaQr.php",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "mobile",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/mobile-mvvm.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/mvvm-vista.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura móvil: KMP y MVVM",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/mobile-mvvm.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/mobile-mvvm.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-viewmodel.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarViewModel.kt#L133-L156",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-vista.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/mvvm-vista.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt#L70-L87",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/ScreenModel.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+      "http://127.0.0.1:8766/site/arquitectura/backend/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "offline-first",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/offline-senal.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/offline-local-first.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/offline-repository.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Arquitectura offline-first",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/offline-senal.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/offline-senal.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-local-first.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-local-first.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/LocalFirstViewModel.kt#L39-L50",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-repository.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/offline-repository.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt#L251-L274",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/cache/CacheRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/ventas/VentasRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.android.kt",
+      "http://127.0.0.1:8766/site/arquitectura/mobile/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "sincronizacion",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/sync-secuencia.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/sync-estados.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/sync-manager.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/sync-queue.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Sincronización de datos",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-secuencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-secuencia.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-estados.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/sync-estados.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-manager.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-manager.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt#L66-L91",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-queue.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/sync-queue.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncQueueRepository.kt#L27-L48",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSync.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSyncHandler.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadSyncHandler.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/IdempotenciaApi.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations/2026_09_19_090008_alter_entregas_add_recorrido_y_token.php",
+      "http://127.0.0.1:8766/site/arquitectura/offline-first/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "dominio",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/dominio-acopio.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/arquitectura/dominio-produccion.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/dominio-entrega.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Entidades y reglas de negocio",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-acopio.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-acopio.mmd",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-produccion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/dominio-produccion.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/dominio-entrega.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/dominio-entrega.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php#L14-L37",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Calidad/AnalisisCalidad.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/ValorizacionEntrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/LiquidacionDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/PagoProveedor.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/Receta.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/RecetaDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/ProduccionDetalle.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/LoteProduccionInsumo.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations/2026_09_21_100009_drop_lote_produccion_entregas_table.php",
+      "http://127.0.0.1:8766/site/arquitectura/sincronizacion/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "base-datos",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/persistencia.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/bd-sqldelight.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Persistencia y bases de datos",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/persistencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/persistencia.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/bd-sqldelight.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/bd-sqldelight.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq#L1-L21",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/CacheEntry.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Entrega.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.ios.kt",
+      "http://127.0.0.1:8766/site/arquitectura/dominio/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/api/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "api",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/api-recorrido.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/api-ktor.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/api-rutas.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Comunicación mediante API REST",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/api-recorrido.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/api-recorrido.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-ktor.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-ktor.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt#L15-L35",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-rutas.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/api-rutas.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php#L144-L162",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/bootstrap/app.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaMovilRequest.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/Concerns/SerializaEntregasAcopiador.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorApi.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiResponseHandling.kt",
+      "http://127.0.0.1:8766/site/arquitectura/base-datos/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "seguridad",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/seguridad-login.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/seguridad-sanctum.png",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/seguridad-roles.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Autenticación y seguridad",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/seguridad-login.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/seguridad-login.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-sanctum.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-sanctum.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/AuthController.php#L33-L52",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-roles.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/seguridad-roles.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RoleMiddleware.php#L17-L29",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/EnsureUserIsActive.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Support/SesionWeb.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Policies/EntregaPolicy.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RequiereAsistencia.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt",
+      "http://127.0.0.1:8766/site/arquitectura/api/",
+      "http://127.0.0.1:8766/site/arquitectura/",
+      "http://127.0.0.1:8766/site/arquitectura/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "integracion",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/diagrams/arquitectura/integracion-completa.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/arquitectura/codigo/integracion-controller.png",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Integración Web, Móvil y Backend",
+    "icons": 5,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/integracion-completa.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/arquitectura/integracion-completa.mmd",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/integracion-controller.png",
+      "http://127.0.0.1:8766/site/assets/images/arquitectura/codigo/integracion-controller.png",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php#L94-L111",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Web/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+      "http://127.0.0.1:8766/site/arquitectura/seguridad/",
+      "http://127.0.0.1:8766/site/arquitectura/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "regression": "Inicio",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/problema-solucion/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/actores-roles/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/modulos/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/reglas-negocio/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/alcance/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "flujos/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "desarrollo/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "pruebas/",
+    "status": 200,
+    "brokenImages": []
+  }
+]

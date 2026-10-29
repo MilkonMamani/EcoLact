@@ -1,0 +1,11 @@
+{"descripcion": "Recaptura sin envío: formulario completo con datos ficticios para mostrar el botón «Registrar trabajador» (fuera del área visible a 1440x900).",
+ "salida": "evidencias/originales/personal", "difuminar": ["input[name=password]"], "pasos": [
+  {"accion": "ir", "url": "/admin/trabajadores/nuevo?tipo=acopiador", "ms": 1500},
+  {"accion": "escribir", "selector": "[data-nuevo-trabajador-form] [name=nombres]", "texto": "Acopiador"},
+  {"accion": "escribir", "selector": "[data-nuevo-trabajador-form] [name=apellidos]", "texto": "Prueba Manual"},
+  {"accion": "escribir", "selector": "[data-nuevo-trabajador-form] [name=dni]", "texto": "99000001"},
+  {"accion": "seleccionar", "selector": "[data-nuevo-trabajador-form] select[name=zona_id]", "etiqueta": "Zona Prueba Manual"},
+  {"accion": "escribir", "selector": "[data-nuevo-trabajador-form] [name=username]", "texto": "acopiador.prueba.manual"},
+  {"accion": "escribir_secreto", "selector": "[data-nuevo-trabajador-form] [name=password]"},
+  {"accion": "captura", "nombre": "per_05b_formulario_completo", "pagina_completa": true, "medir": {"usuario": "[data-nuevo-trabajador-form] [name=username]", "registrar": "[data-nuevo-trabajador-form] button[type=submit]"}}
+ ]}

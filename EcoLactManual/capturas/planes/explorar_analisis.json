@@ -1,0 +1,3 @@
+{"salida": "evidencias/exploracion", "difuminar_textos": ["admin"], "pasos": [
+ {"accion": "ir", "url": "/admin/entregas/1/analisis-calidad", "ms": 2500},
+ {"accion": "captura", "nombre": "x_analisis_estado", "pagina_completa": true, "leer": ["main"]}]}

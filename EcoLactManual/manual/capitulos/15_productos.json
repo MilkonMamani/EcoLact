@@ -1,0 +1,158 @@
+{
+  "id": "PRO",
+  "tipo": "modulo",
+  "titulo": "Productos: existencias y precios",
+  "registro": "evidencias/originales/productos/productos_1.registro.json",
+  "introduccion": "Productos muestra los productos terminados, su stock y sus precios de venta. Los productos no se crean aquí: nacen al guardar una receta (capítulo 13), y su stock sube al finalizar una producción (capítulo 14). El Administrador es quien configura los precios por tipo de cliente.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Inventario › Productos"
+    ],
+    [
+      "Depende de",
+      "Recetas y producción."
+    ],
+    [
+      "Habilita",
+      "Ventas (un producto sin precios no se puede vender)."
+    ],
+    [
+      "Estados",
+      "«Disponible» (con stock) y «Sin stock»; el estado cambia solo según las existencias."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Precios por tipo de cliente: proveedor, público y mayorista.",
+        "El precio mayorista se aplica al público que compra la cantidad mínima indicada o más.",
+        "Para registrar o modificar los datos del producto (nombre, categoría, presentación) se usa Recetas."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "prd_01_listado",
+    "pie": "Pantalla Productos (filtrada por el producto ficticio).",
+    "elementos": [
+      [
+        "Buscador y «Estado»",
+        "Busca por nombre o categoría y filtra Disponible / Sin stock."
+      ],
+      [
+        "Tabla",
+        "Producto, categoría, presentación, stock actual, estado y acción «Ver»."
+      ],
+      [
+        "Detalle desplegable",
+        "Categoría, presentación, stock, estado de la receta y «Gestión de precios»."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-PRO-001",
+      "titulo": "Consultar productos y existencias",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Ver el stock y la información de cada producto.",
+      "acceso": "Inventario › Productos",
+      "requisitos": [
+        "Recetas registradas."
+      ],
+      "pasos": [
+        {
+          "titulo": "Buscar el producto",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Productos» y usa el buscador o el filtro «Estado».",
+          "captura": "prd_01_listado",
+          "objetivo": "fila",
+          "pie": "Producto con 2 unidades en stock, «Disponible»."
+        },
+        {
+          "titulo": "Ver el detalle",
+          "instruccion": "Haz clic en «Ver» (flecha) de la fila.",
+          "captura": "prd_02_detalle",
+          "objetivo": "detalle",
+          "pie": "Detalle: stock actual, receta activa y precios.",
+          "resultado": "Si no tiene precios, se indica «Mientras no tenga precios, este producto no se puede vender.»"
+        }
+      ],
+      "resultado": "Conoces el stock y el estado de cada producto."
+    },
+    {
+      "codigo": "ADM-PRO-002",
+      "titulo": "Configurar los precios de un producto",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Definir los precios de venta por tipo de cliente.",
+      "acceso": "Inventario › Productos › detalle › «Configurar precios» / «Editar precios»",
+      "requisitos": [
+        "Producto registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir la gestión de precios",
+          "instruccion": "En el detalle del producto, haz clic en «Configurar precios» (o «Editar precios»).",
+          "captura": "prd_02_detalle",
+          "objetivo": "configurar",
+          "pie": "Botón «Configurar precios»."
+        },
+        {
+          "titulo": "Escribir los precios",
+          "instruccion": "Completa «Precio para proveedor», «Precio para público», «Precio para mayorista» y «Mayorista desde (unidades)». Deja un precio vacío para quitarlo.",
+          "captura": "prd_03_precios",
+          "objetivo": "formulario",
+          "pie": "Precios de ejemplo."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar precios».",
+          "captura": "prd_03_precios",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar precios»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y los precios.",
+          "captura": "prd_04_guardados",
+          "objetivo": "precios",
+          "pie": "Precios guardados: proveedor S/ 7.00, público S/ 8.00, mayorista S/ 7.50 desde 10 unidades.",
+          "resultado": "Aparece «Precios guardados correctamente.»"
+        }
+      ],
+      "resultado": "El producto queda disponible para la venta con sus precios.",
+      "validaciones": [
+        [
+          "Precios",
+          "Al menos un precio; mayores que 0.",
+          "«Configura al menos un precio.»"
+        ],
+        [
+          "Mayorista desde",
+          "Requiere precio mayorista.",
+          "«Indica el precio mayorista para usar una cantidad mínima.»"
+        ]
+      ],
+      "errores": [
+        [
+          "Se necesita retirar los precios",
+          "«Eliminar precio» pide confirmación: «¿Eliminar los precios de …? No se podrá vender hasta configurarlos de nuevo.» No se ejecutó en la verificación."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PRO-003",
+      "titulo": "Registrar o modificar los datos de un producto",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Aclarar dónde se crean y modifican los productos.",
+      "acceso": "Producción › Recetas",
+      "requisitos": [
+        "—"
+      ],
+      "pasos": [
+        {
+          "titulo": "Usar Recetas",
+          "instruccion": "Para crear un producto, registra su receta (ADM-REC-001); para cambiar su fórmula, edita la receta (ADM-REC-003). La pantalla Productos no tiene botón de alta."
+        }
+      ],
+      "resultado": "Los productos se mantienen desde Recetas; sus existencias, desde Producción."
+    }
+  ]
+}

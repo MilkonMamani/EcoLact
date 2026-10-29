@@ -6,14 +6,16 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="El lenguaje del centro de acopio en el código. Arquitectura verificada en las fuentes de EcoLact.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/arquitectura/dominio/">
       
-        <link rel="prev" href="../mobile/">
+      
+        <link rel="prev" href="../sincronizacion/">
       
       
         <link rel="next" href="../base-datos/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Modelo de dominio - Informe EcoLact</title>
+        <title>Entidades y reglas de negocio - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dominio" class="md-skip">
+        <a href="#entidades-y-reglas-de-negocio" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Modelo de dominio
+              Entidades y reglas de negocio
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -937,6 +993,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1024,7 +1084,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1052,7 +1112,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1082,6 +1198,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelo de dominio
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1098,6 +1232,97 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#relaciones-de-acopio-calidad-y-pago" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relaciones de acopio, calidad y pago
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relaciones-de-produccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relaciones de producción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidades-de-las-entidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidades de las entidades
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#una-regla-que-no-depende-de-la-pantalla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Una regla que no depende de la pantalla
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-entidad-protege-sus-invariantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La entidad protege sus invariantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1118,7 +1343,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1399,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1427,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1569,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1597,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1916,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#relaciones-de-acopio-calidad-y-pago" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relaciones de acopio, calidad y pago
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relaciones-de-produccion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relaciones de producción
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#responsabilidades-de-las-entidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsabilidades de las entidades
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#una-regla-que-no-depende-de-la-pantalla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Una regla que no depende de la pantalla
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#la-entidad-protege-sus-invariantes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La entidad protege sus invariantes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2010,156 @@
                   
 
 
+
+<div class="ec-arquitectura">
+<div class="ec-arch-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A.99.99 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88zM12 4.15 6.04 7.5 12 10.85l5.96-3.35zM5 15.91l6 3.38v-6.71L5 9.21zm14 0v-6.7l-6 3.37v6.71z"/></svg></span> 06 · Entidades y reglas de negocio</p>
+</div>
+<div class="ec-arch-content">
+<p><span class="ec-arch-kicker">EcoLact / Arquitectura de software</span></p>
+<h1 id="entidades-y-reglas-de-negocio">Entidades y reglas de negocio</h1>
+<p class="ec-arch-subtitle">El lenguaje del centro de acopio en el código</p>
+<p>El dominio representa las personas, operaciones y restricciones del negocio lácteo. Una entidad tiene significado propio: una entrega no es solamente una fila de base de datos, y un pago no es solamente un importe mostrado en una pantalla.</p>
+<div class="ec-arch-tech"><span>Entidades</span><span>Invariantes</span><span>Contratos</span><span>Estados</span></div>
+<h2 id="relaciones-de-acopio-calidad-y-pago">Relaciones de acopio, calidad y pago</h2>
+<p>Las relaciones se sustentan en los identificadores de las entidades y en las restricciones de persistencia. Se incluyen Valorización y Detalle para no inventar una relación directa que omita cómo se enlazan entrega y liquidación. Una entrega puede existir sin análisis; <code>acopiadorId</code> es nullable.</p>
+<div class="ec-arch-diagram">
+<p><img alt="Relaciones de acopio, calidad y pago" src="../../assets/diagrams/arquitectura/dominio-acopio.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/dominio-acopio.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/dominio-acopio.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  P[Proveedor] --&gt;|realiza| E[Entrega]
+  A[Acopiador] --&gt;|registra cuando corresponde| E
+  E --&gt;|puede tener un análisis| C[Análisis de calidad]
+  E --&gt;|referenciada por| V[Valorización de entrega]
+  C -. referencia opcional .-&gt; V
+  P --&gt;|titular de| L[Liquidación]
+  L --&gt;|contiene| D[Detalle de liquidación]
+  D --&gt;|referencia| V
+  L --&gt;|referenciada por| PA[Pago de proveedor]
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+</code></pre></div>
+</details>
+</div>
+<h2 id="relaciones-de-produccion">Relaciones de producción</h2>
+<p>La receta describe requerimientos; el lote conserva consumos y cantidades realmente obtenidas. La leche es un insumo que entra por acopio. No se dibuja una asignación directa de entregas concretas a lotes: la migración correspondiente elimina ese enlace antiguo si está vacío.</p>
+<div class="ec-arch-diagram">
+<p><img alt="Relaciones de producción" src="../../assets/diagrams/arquitectura/dominio-produccion.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/dominio-produccion.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/dominio-produccion.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  P[Producto] --&gt;|tiene versiones de| R[Receta]
+  R --&gt;|define ingredientes mediante| RD[Detalle de receta]
+  RD --&gt;|referencia| I[Insumo]
+  L[Lote de producción] --&gt;|guarda consumos en| LI[LoteProduccionInsumo]
+  LI --&gt;|referencia| I
+  L --&gt;|planifica y obtiene mediante| PD[ProduccionDetalle]
+  PD --&gt;|referencia| P
+  PD -. conserva receta y versión utilizadas .-&gt; R
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+</code></pre></div>
+</details>
+</div>
+<h2 id="responsabilidades-de-las-entidades">Responsabilidades de las entidades</h2>
+<div class="ec-arch-table">
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Significado y regla relevante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proveedor y Acopiador</td>
+<td>Identidad, estado y contexto de participación en acopio</td>
+</tr>
+<tr>
+<td>Entrega</td>
+<td>Litros, fecha, actor, proveedor y estado; cantidad positiva</td>
+</tr>
+<tr>
+<td>Análisis de calidad</td>
+<td>Mediciones y resultado; al confirmar queda inmutable</td>
+</tr>
+<tr>
+<td>Liquidación y Pago</td>
+<td>Cálculo del periodo y registro del desembolso son conceptos distintos</td>
+</tr>
+<tr>
+<td>Insumo y Receta</td>
+<td>Existencias y requerimientos por producto y versión</td>
+</tr>
+<tr>
+<td>Lote y Producto</td>
+<td>Ejecución productiva y resultado disponible para ventas</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="una-regla-que-no-depende-de-la-pantalla">Una regla que no depende de la pantalla</h2>
+<p>El constructor de <code>Entrega</code> rechaza litros menores o iguales a cero y un método de identificación vacío. Esa restricción se ejecuta al crear la entidad, aunque la petición provenga de web, app o una prueba. La entidad también expresa la ventana de edición de litros mediante <code>permiteEditarLitros()</code> y la constante de diez minutos.</p>
+<p>La entidad no decide todo por sí sola. Comprobar que un proveedor está activo o que el acopiador puede operar en su zona exige consultar otros registros; <code>RegistrarEntrega</code> coordina esas reglas. Los Form Requests validan formato, las Policies autorizan acciones y los casos de uso orquestan la operación. Esta distribución evita atribuir toda la lógica a una sola clase.</p>
+<p>El modelo de dominio tampoco es un esquema físico completo. Se omiten tablas auxiliares, consultas y detalles administrativos para mostrar únicamente relaciones relevantes y confirmadas. Los repositorios del dominio definen contratos; las entidades del ejemplo no heredan de Eloquent.</p>
+<h2 id="evidencias-de-implementacion">Evidencias de implementación</h2>
+<p>Las referencias identifican código revisado. El área de imagen está preparada para la captura manual del archivo indicado; el marcador visual no constituye una captura de la implementación.</p>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="la-entidad-protege-sus-invariantes">La entidad protege sus invariantes</h3>
+<p>Entrega expresa litros, actor, proveedor, fecha y estado como conceptos del negocio.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/dominio-entrega.png"><img alt="Captura de código: La entidad protege sus invariantes" src="../../assets/images/arquitectura/codigo/dominio-entrega.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> Su constructor impide litros no positivos y un método de identificación vacío, sin depender de HTTP o Eloquent.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>dominio-entrega.png</code> · <a href="../../assets/images/arquitectura/codigo/dominio-entrega.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php#L14-L37">EcoLactWeb/app/Domain/Entrega/Entrega.php</a></p>
+<p>Fragmento sugerido para la captura: líneas 14–37 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<details class="ec-arch-sources">
+<summary>Fuentes adicionales y alcance de la revisión</summary>
+<p>Revisión estática del repositorio local: 28 de octubre de 2026. Enlaces a la revisión <code>75901337489d</code>; la existencia de cada archivo y los fragmentos sugeridos se comprobaron localmente. No se ejecutaron servicios de negocio ni se verificó un despliegue.</p>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/Entrega.php">EcoLactWeb/app/Domain/Entrega/Entrega.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Calidad/AnalisisCalidad.php">EcoLactWeb/app/Domain/Calidad/AnalisisCalidad.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/ValorizacionEntrega.php">EcoLactWeb/app/Domain/Pago/ValorizacionEntrega.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/LiquidacionDetalle.php">EcoLactWeb/app/Domain/Pago/LiquidacionDetalle.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Pago/PagoProveedor.php">EcoLactWeb/app/Domain/Pago/PagoProveedor.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/Receta.php">EcoLactWeb/app/Domain/Produccion/Receta.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/RecetaDetalle.php">EcoLactWeb/app/Domain/Produccion/RecetaDetalle.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/ProduccionDetalle.php">EcoLactWeb/app/Domain/Produccion/ProduccionDetalle.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Produccion/LoteProduccionInsumo.php">EcoLactWeb/app/Domain/Produccion/LoteProduccionInsumo.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations/2026_09_21_100009_drop_lote_produccion_entregas_table.php">EcoLactWeb/database/migrations/2026_09_21_100009_drop_lote_produccion_entregas_table.php</a></li>
+</ul>
+</details>
+<div class="ec-arch-links">
+<p><a href="../sincronizacion/">← Sincronización de datos</a></p>
+<p><a href="../">Vista general</a></p>
+<p><a href="../base-datos/">Persistencia y bases de datos →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="dominio">dominio</h1>
-
-
-
-
-
-
 
 
 

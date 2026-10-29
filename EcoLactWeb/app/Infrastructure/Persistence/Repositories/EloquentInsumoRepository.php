@@ -6,6 +6,7 @@ use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\InsumoRepository;
 use App\Domain\Shared\Enums\TipoInsumo;
 use App\Infrastructure\Persistence\Models\InsumoModel;
+use Illuminate\Support\Facades\DB;
 
 class EloquentInsumoRepository implements InsumoRepository
 {
@@ -112,6 +113,19 @@ class EloquentInsumoRepository implements InsumoRepository
     /**
      * @return array<string, mixed>
      */
+    public function contarDependenciasDeUnidad(int $id): array
+    {
+        $contar = static fn (string $tabla): int => DB::table($tabla)->where('insumo_id', $id)->count();
+
+        return [
+            'movimientos' => $contar('insumo_movimientos'),
+            'presentaciones' => $contar('presentaciones_insumo'),
+            'compras' => $contar('compra_insumo_detalles'),
+            'recetas' => $contar('receta_detalles'),
+            'consumos' => $contar('lote_produccion_insumos'),
+        ];
+    }
+
     private function toModelData(Insumo $insumo): array
     {
         return [

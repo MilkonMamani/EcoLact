@@ -110,7 +110,7 @@ it('entrega el dashboard por API solo al administrador y con el mismo período',
         ->assertOk()
         ->assertJsonPath('data.periodo.nombre', 'semana')
         ->assertJsonPath('data.periodo.etiqueta', '07/09/2026 — 13/09/2026')
-        ->assertJsonStructure(['data' => ['acopio', 'produccion', 'ventas', 'pagos_pendientes', 'acopio_por_intervalo', 'acopio_por_zona', 'por_atender', 'existencias_actuales', 'lotes_recientes', 'asistencia', 'comunicados']])
+        ->assertJsonStructure(['data' => ['acopio', 'produccion', 'ventas', 'finanzas' => ['corte', 'proveedores', 'trabajadores', 'totales'], 'acopio_por_intervalo', 'acopio_por_zona', 'por_atender', 'existencias_actuales', 'lotes_recientes', 'asistencia', 'comunicados']])
         ->assertJsonMissingPath('data.distribucion_calidad');
 });
 

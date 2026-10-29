@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.planta.PlantaOfflineTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:55.825Z" hostname="LAPTOP-CUGSMQ13" time="0.127">
+  <properties/>
+  <testcase name="compra_confirmada_sin_conexion_queda_pendiente_de_envio_una_sola_vez" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaOfflineTest" time="0.026"/>
+  <testcase name="boleta_offline_pendiente_ocr_luego_revision_y_solo_la_persona_confirma" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaOfflineTest" time="0.065"/>
+  <testcase name="mi_qr_sigue_disponible_sin_conexion" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaOfflineTest" time="0.014"/>
+  <testcase name="produccion_offline_que_el_servidor_rechaza_queda_como_conflicto_sin_crear_lote" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaOfflineTest" time="0.021"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

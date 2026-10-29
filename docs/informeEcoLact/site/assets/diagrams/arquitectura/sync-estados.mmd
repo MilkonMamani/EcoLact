@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> PENDING: Encolar
+  PENDING --> SYNCING: Manejador disponible y canPush
+  SYNCING --> SYNCED: Success y server_id
+  SYNCING --> PENDING: Fallo transitorio antes del límite
+  SYNCING --> NEEDS_REVIEW: Rechazo o límite alcanzado
+  NEEDS_REVIEW --> PENDING: Corrección y retryFromReview
+  SYNCING --> PENDING: Recuperación específica del rol al reiniciar
+  SYNCED --> [*]: No entra en selectPending

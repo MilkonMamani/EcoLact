@@ -1,0 +1,24 @@
+flowchart TB
+  A([Inicio · Trabajador presenta QR]) --> B[Administrador identifica trabajador]
+  B --> C{¿Activo y vigente hoy?}
+  C -->|No| X[Rechazar marcación]
+  C -->|Sí| D{¿Hoy antes de las 07:00?}
+  D -->|No| E[Solo consulta del día cerrado]
+  D -->|Sí| F{¿Ya existe jornada?}
+  F -->|No| G[Registrar PRESENTE]
+  F -->|Presente| H[Confirmar registro existente]
+  F -->|Falta| I[Corrección administrativa con motivo]
+  I --> G
+  G --> J[Recalcular acumulado EN_CURSO]
+  H --> J
+  E --> K[Control de faltas de días cerrados]
+  K --> J
+  J --> L[Cerrar mes · PENDIENTE]
+  L --> M[Administrador registra pago exacto]
+  M --> N[PAGADO y salida de caja]
+  N --> Z([Fin · Comprobante e historial])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class C,D,F decision;
+  class A,Z terminal;

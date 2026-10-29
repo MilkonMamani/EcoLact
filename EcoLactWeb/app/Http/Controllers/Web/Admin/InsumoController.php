@@ -10,6 +10,7 @@ use App\Application\Produccion\ObtenerInsumos;
 use App\Application\Produccion\ObtenerInventarioInsumos;
 use App\Application\Produccion\ObtenerPanelInsumo;
 use App\Application\Produccion\RegistrarInsumo;
+use App\Domain\Produccion\InsumoMovimiento;
 use App\Domain\Produccion\UnidadMedida;
 use App\Domain\Shared\Enums\MotivoAjusteInsumo;
 use App\Domain\Shared\Enums\TipoInsumo;
@@ -18,6 +19,7 @@ use App\Http\Requests\Produccion\AjustarStockInsumoRequest;
 use App\Http\Requests\Produccion\StoreInsumoRequest;
 use App\Http\Requests\Produccion\UpdateInsumoRequest;
 use App\Infrastructure\Persistence\Models\InsumoModel;
+use App\Infrastructure\Persistence\Models\InsumoMovimientoModel;
 use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,7 +37,8 @@ use Illuminate\View\View;
  *   registrarAjuste  corrige el stock (merma, pérdida, corrección, inventario).
  *
  * Las presentaciones viven en PresentacionInsumoController y las compras
- * (las únicas que suben stock) en CompraInsumoController.
+ * (las únicas que suben stock) en Compras y gastos (CompraController):
+ * Insumos no registra compras, solo enlaza allí con el insumo elegido.
  */
 final class InsumoController extends Controller
 {
@@ -66,10 +69,53 @@ final class InsumoController extends Controller
         return view('admin.insumos.index', $inventario + [
             'tipos' => TipoInsumo::opciones(),
             'unidades' => UnidadMedida::opciones(),
+            'familiasUnidad' => UnidadMedida::familias(),
             'panel' => $seleccionado > 0 && InsumoModel::whereKey($seleccionado)->exists() ? $this->obtenerPanel->execute($seleccionado) : null,
             'catalogoCompra' => $this->obtenerCatalogoCompra->execute(),
             'motivosAjuste' => MotivoAjusteInsumo::opciones(),
             'insumosAjuste' => $this->insumosParaAjuste(),
+        ]);
+    }
+
+    /**
+     * Historial de movimientos de insumos, paginado en SQL, con su origen
+     * (compra, producción, ajuste). Cada ingreso por compra enlaza con la
+     * compra que lo generó (origen COMPRA_INSUMO #id). Excluye los movimientos
+     * de leche por Acopio (se consultan en Acopio); no los borra.
+     */
+    public function movimientos(Request $request): View
+    {
+        Gate::authorize('viewAny', InsumoModel::class);
+
+        $fecha = fn (string $campo): ?string => preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $request->query($campo)) === 1 ? (string) $request->query($campo) : null;
+        $filtros = [
+            'insumo_id' => $request->integer('insumo_id') ?: null,
+            'tipo' => in_array($request->query('tipo'), ['ENTRADA', 'SALIDA'], true) ? $request->query('tipo') : null,
+            'desde' => $fecha('desde'),
+            'hasta' => $fecha('hasta'),
+        ];
+
+        $movimientos = InsumoMovimientoModel::query()
+            ->with(['insumo:id,nombre,unidad_base', 'registradoPor:id,username'])
+            ->leftJoin('compras_insumo as c', function ($join): void {
+                $join->on('c.id', '=', 'insumo_movimientos.origen_id')
+                    ->where('insumo_movimientos.origen_tipo', '=', InsumoMovimiento::ORIGEN_COMPRA_INSUMO);
+            })
+            ->select('insumo_movimientos.*', 'c.codigo as compra_codigo')
+            ->sinMovimientosDeAcopio()
+            ->when($filtros['insumo_id'], fn ($q, $id) => $q->where('insumo_movimientos.insumo_id', $id))
+            ->when($filtros['tipo'], fn ($q, $tipo) => $q->where('insumo_movimientos.tipo', $tipo))
+            ->when($filtros['desde'], fn ($q, $desde) => $q->where('insumo_movimientos.fecha', '>=', $desde.' 00:00:00'))
+            ->when($filtros['hasta'], fn ($q, $hasta) => $q->where('insumo_movimientos.fecha', '<=', $hasta.' 23:59:59'))
+            ->orderByDesc('insumo_movimientos.fecha')
+            ->orderByDesc('insumo_movimientos.id')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('admin.insumos.movimientos', [
+            'movimientos' => $movimientos,
+            'filtros' => $filtros,
+            'insumos' => InsumoModel::orderBy('nombre')->pluck('nombre', 'id')->all(),
         ]);
     }
 
@@ -89,7 +135,7 @@ final class InsumoController extends Controller
 
         return view('admin.insumos.show', [
             'insumo' => $this->obtenerInsumo->execute($insumo->id),
-            'movimientos' => $insumo->movimientos()->orderByDesc('fecha')->orderByDesc('id')->limit(25)->get(),
+            'movimientos' => $insumo->movimientos()->sinMovimientosDeAcopio()->orderByDesc('fecha')->orderByDesc('id')->limit(25)->get(),
         ]);
     }
 
@@ -134,6 +180,8 @@ final class InsumoController extends Controller
                 stockMinimo: (float) $datos['stock_minimo'],
                 estado: $datos['estado'],
                 tipo: isset($datos['tipo']) ? TipoInsumo::from($datos['tipo']) : null,
+                unidadBase: $datos['unidad_base'] ?? null,
+                userId: $request->user()->id,
             );
         } catch (DomainException $e) {
             return redirect()->back()->withInput()->with('error', $e->getMessage());
@@ -175,7 +223,7 @@ final class InsumoController extends Controller
         return array_map(fn ($insumo): array => [
             'id' => (int) $insumo->id(),
             'nombre' => $insumo->nombre(),
-            'unidad' => $insumo->unidadBase(),
+            'unidad' => UnidadMedida::simbolo($insumo->unidadBase()),
             'stock' => $insumo->stockActual(),
             'action' => route('admin.insumos.ajuste', $insumo->id()),
             'solo_resta' => $insumo->esLeche(),

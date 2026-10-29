@@ -1,0 +1,17 @@
+{
+  "plan": "sesion.json",
+  "fecha": "2026-10-28T10:51:28",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_sesion",
+      "archivo": "evidencias/exploracion/x_sesion.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:51:34"
+    }
+  ],
+  "dialogos": []
+}

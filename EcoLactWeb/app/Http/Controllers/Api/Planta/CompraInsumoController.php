@@ -8,9 +8,9 @@ use App\Application\Produccion\ObtenerCatalogoCompraInsumos;
 use App\Application\Produccion\ProcesarBoletaCompra;
 use App\Application\Produccion\RegistrarCompraInsumos;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Web\Admin\CompraInsumoController as AdminCompraInsumoController;
 use App\Http\Requests\Produccion\CompraInsumosRequest;
 use App\Http\Requests\Produccion\ProcesarBoletaCompraRequest;
+use App\Http\Support\ComprobantesCompra;
 use App\Http\Support\FechaEventoMovil;
 use App\Infrastructure\Persistence\Models\CompraInsumoDetalleModel;
 use App\Infrastructure\Persistence\Models\CompraInsumoModel;
@@ -31,7 +31,7 @@ use Illuminate\Support\Str;
  *   boleta         guarda la foto y devuelve lo que el OCR PROPONE (no registra nada),
  *   previsualizar  total en unidad base y stock resultante (no mueve inventario),
  *   store          confirma: crea la compra y sus entradas de stock (idempotente),
- *   index          últimas compras registradas.
+ *   index          últimas compras de insumos registradas (sin los gastos).
  *
  * El OCR nunca confirma: la persona revisa y confirma con `store`.
  */
@@ -54,7 +54,9 @@ final class CompraInsumoController extends Controller
     {
         Gate::authorize('viewAny', InsumoModel::class);
 
-        $compras = CompraInsumoModel::with('detalles.insumo')
+        // Solo lo que entra al almacén: los gastos del administrador (luz, limpieza...) no son de planta.
+        $compras = CompraInsumoModel::with(['detalles' => fn ($query) => $query->where('tratamiento', 'INVENTARIO'), 'detalles.insumo'])
+            ->whereHas('detalles', fn ($query) => $query->where('tratamiento', 'INVENTARIO'))
             ->orderByDesc('fecha')
             ->orderByDesc('id')
             ->limit(self::MAX_RECIENTES)
@@ -96,7 +98,7 @@ final class CompraInsumoController extends Controller
         Gate::authorize('create', InsumoModel::class);
 
         $imagen = $request->file('imagen');
-        $ruta = $imagen->storeAs(AdminCompraInsumoController::CARPETA_BOLETAS, 'boleta-'.Str::lower(Str::random(24)).'.'.$imagen->extension(), self::DISCO);
+        $ruta = $imagen->storeAs(ComprobantesCompra::CARPETA_BOLETAS_APP, 'boleta-'.Str::lower(Str::random(24)).'.'.$imagen->extension(), self::DISCO);
         $foto = ['imagen_boleta' => $ruta, 'imagen_url' => Storage::disk(self::DISCO)->url($ruta)];
 
         try {

@@ -1,0 +1,231 @@
+{
+  "plan": "proveedores_1_alta.json",
+  "fecha": "2026-10-28T10:54:43",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "pro_01_listado",
+      "archivo": "evidencias/originales/proveedores/pro_01_listado.png",
+      "url": "/admin/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          299,
+          239,
+          339
+        ],
+        "nuevo": [
+          767,
+          48,
+          936,
+          88
+        ],
+        "buscar": [
+          331,
+          160,
+          920,
+          204
+        ],
+        "filtros": [
+          284,
+          158,
+          936,
+          339
+        ],
+        "tabla": [
+          284,
+          359,
+          936,
+          1025
+        ]
+      },
+      "textos_visibles": [
+        "Proveedores",
+        "NOMBRE\tDNI\tTELÉFONO\tZONA\tÚLTIMA ENTREGA\tTOTAL (L)\tESTADO"
+      ],
+      "hora": "2026-10-28T10:54:49"
+    },
+    {
+      "nombre": "pro_02_modal",
+      "archivo": "evidencias/originales/proveedores/pro_02_modal.png",
+      "url": "/admin/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "modal": [
+          496,
+          222,
+          944,
+          654
+        ],
+        "dni": [
+          520,
+          312,
+          712,
+          354
+        ],
+        "usuario": [
+          520,
+          480,
+          712,
+          522
+        ],
+        "guardar": [
+          765,
+          594,
+          920,
+          630
+        ]
+      },
+      "textos_visibles": [
+        "Nuevo proveedor\nDNI *\nNombres *\nApellidos *\nTeléfono\nUsuario *\nContraseña *\n\nEl proveedor se crea sin zona ni ruta: asígnalo a una ruta desde el módulo Zonas cuando corresponda.\n\nCancelar\nGuardar proveedor"
+      ],
+      "hora": "2026-10-28T10:54:50"
+    },
+    {
+      "nombre": "pro_03_registrado",
+      "archivo": "evidencias/originales/proveedores/pro_03_registrado.png",
+      "url": "/admin/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Proveedor registrado correctamente."
+      ],
+      "hora": "2026-10-28T10:54:53"
+    },
+    {
+      "nombre": "pro_04_duplicado",
+      "archivo": "evidencias/originales/proveedores/pro_04_duplicado.png",
+      "url": "/admin/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "campo_dni": [
+          520,
+          293,
+          712,
+          335
+        ]
+      },
+      "textos_visibles": [
+        "Nuevo proveedor\nDNI *\n\nYa existe un proveedor registrado con ese DNI.\n\nNombres *\nApellidos *\nTeléfono\nUsuario *\nContraseña *\n\nEl proveedor se crea sin zona ni ruta: asígnalo a una ruta desde el módulo Zonas cuando corresponda.\n\nCancelar\nGuardar proveedor"
+      ],
+      "hora": "2026-10-28T10:54:58"
+    },
+    {
+      "nombre": "pro_05_panel",
+      "archivo": "evidencias/originales/proveedores/pro_05_panel.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "buscar": [
+          331,
+          160,
+          920,
+          204
+        ],
+        "fila": [
+          285,
+          400,
+          1107,
+          452
+        ],
+        "switch": [
+          1044,
+          413,
+          1089,
+          439
+        ],
+        "pestanas": [
+          961,
+          163,
+          1407,
+          204
+        ],
+        "editar": [
+          1313,
+          446,
+          1387,
+          474
+        ]
+      },
+      "textos_visibles": [
+        "PP\nActivo\nProveedor Prueba Manual\n\nDNI 99000005\n\nResumen\nEntregas\nCalidad\nCompras\n\nCódigo QR\n\nInformación personal\nEditar\nNombres\nProveedor\nApellidos\nPrueba Manual\nDocumento (DNI)\n99000005\nTeléfono\nNo registrado\nEstado\nActivo\nFecha de registro\n28/10/2026\nUbicación y zona\nEditar\nZona asignada\nSin asignar\nRuta de acopio\nSin asignar\nReferencia\nNo registrada\n\nTodavía no está asignado a una zona y ruta de acopio.\n\nUbicar en mapa"
+      ],
+      "hora": "2026-10-28T10:55:04"
+    },
+    {
+      "nombre": "pro_06_ubicacion",
+      "archivo": "evidencias/originales/proveedores/pro_06_ubicacion.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "editar_ubicacion": [
+          1313,
+          573,
+          1387,
+          601
+        ],
+        "ubicar": [
+          981,
+          757,
+          1096,
+          776
+        ]
+      },
+      "textos_visibles": [
+        "Ubicación y zona\nEditar\nZona asignada\nSin asignar\nRuta de acopio\nSin asignar\nReferencia\nNo registrada\n\nTodavía no está asignado a una zona y ruta de acopio.\n\nUbicar en mapa"
+      ],
+      "hora": "2026-10-28T10:55:05"
+    },
+    {
+      "nombre": "pro_07_editar",
+      "archivo": "evidencias/originales/proveedores/pro_07_editar.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "telefono": [
+          728,
+          470,
+          920,
+          512
+        ],
+        "guardar": [
+          777,
+          544,
+          920,
+          580
+        ]
+      },
+      "textos_visibles": [
+        "Editar información personal\nNombres *\nApellidos *\nDNI *\nTeléfono\nCancelar\nGuardar cambios"
+      ],
+      "hora": "2026-10-28T10:55:07"
+    },
+    {
+      "nombre": "pro_08_actualizado",
+      "archivo": "evidencias/originales/proveedores/pro_08_actualizado.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Proveedor actualizado correctamente."
+      ],
+      "hora": "2026-10-28T10:55:10"
+    }
+  ],
+  "dialogos": []
+}

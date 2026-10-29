@@ -1,0 +1,8 @@
+{"salida": "evidencias/exploracion", "conservar_texto": "Prueba Manual", "pasos": [
+  {"accion": "ir", "url": "/admin/proveedores?q=Prueba+Manual", "ms": 2500},
+  {"accion": "clic", "selector": "[data-fichas-fila]:has-text('Proveedor Prueba Manual') a.fichas-nombre"},
+  {"accion": "esperar", "ms": 2000},
+  {"accion": "clic", "selector": "[data-fichas-panel] a.fichas-mapa[href*='asignar=']"},
+  {"accion": "esperar", "ms": 8000},
+  {"accion": "captura", "nombre": "x_asignacion", "medir": {"mapa": "#modal-asignacion [data-asignacion-mapa]", "zona": "#asignacion-zona", "ruta": "#asignacion-ruta"}, "leer": ["#modal-asignacion [data-modal-panel]"]}
+]}

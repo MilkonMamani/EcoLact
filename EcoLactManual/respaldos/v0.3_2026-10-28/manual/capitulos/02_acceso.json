@@ -1,0 +1,185 @@
+{
+  "id": "ACC",
+  "tipo": "modulo",
+  "titulo": "Acceso al sistema y navegación",
+  "registro": "evidencias/originales/acceso/acceso_navegacion.registro.json",
+  "introduccion": "Este capítulo explica cómo ingresar a EcoLactWeb con la cuenta de Administrador, cómo moverse por el menú lateral y cómo salir del sistema de forma segura.",
+  "ficha": [
+    [
+      "Pantalla de ingreso",
+      "«Iniciar sesión» (dirección /login de su servidor EcoLactWeb)."
+    ],
+    [
+      "Pantalla inicial",
+      "Panel de inicio del Administrador, titulado «Analitics Dashboard»."
+    ],
+    [
+      "Rol requerido",
+      "Administrador con cuenta activa."
+    ]
+  ],
+  "pantalla": {
+    "captura": "acc_10_dashboard",
+    "pie": "Panel de inicio del Administrador.",
+    "elementos": [
+      [
+        "Menú lateral (izquierda)",
+        "Acceso a todos los módulos, agrupados por área: Dashboard, Operación, Personal, Calidad, Configuración, Finanzas, Producción, Inventario, Ventas, Comunicación y Administración."
+      ],
+      [
+        "Título y ruta de navegación",
+        "Indican la pantalla actual (por ejemplo «Administración › Resumen»)."
+      ],
+      [
+        "Selector de período",
+        "Botones «Hoy», «7 días» y «Mes» que cambian el período de los indicadores."
+      ],
+      [
+        "Tarjetas de indicadores",
+        "«Leche acopiada hoy», «Producción de hoy», «Ventas del día» y «Pagos pendientes de hoy»."
+      ],
+      [
+        "Paneles inferiores",
+        "«Acopio por hora», «Por atender», «Pagos pendientes», «Acopio por zona», «Producción reciente» e «Inventario actual»."
+      ],
+      [
+        "Cuenta (pie del menú)",
+        "Muestra el usuario conectado y abre las opciones «Mi perfil» y «Cerrar sesión»."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-ACC-001",
+      "titulo": "Iniciar sesión",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Ingresar a EcoLactWeb con la cuenta de Administrador.",
+      "acceso": "Dirección web de EcoLactWeb › pantalla «Iniciar sesión».",
+      "requisitos": [
+        "Usuario y contraseña de una cuenta Administrador activa.",
+        "Navegador con acceso al servidor de EcoLactWeb."
+      ],
+      "pasos": [
+        {
+          "titulo": "Escribir el usuario",
+          "instruccion": "Escribe tu nombre de usuario en el campo «Usuario».",
+          "registro": "evidencias/originales/acceso/acceso.registro.json",
+          "captura": "acc_login",
+          "objetivo": "usuario",
+          "pie": "Campo «Usuario» de la pantalla de ingreso."
+        },
+        {
+          "titulo": "Escribir la contraseña",
+          "instruccion": "Escribe tu contraseña en el campo «Contraseña». Usa el ícono del ojo solo si necesitas comprobar lo escrito.",
+          "registro": "evidencias/originales/acceso/acceso.registro.json",
+          "captura": "acc_login",
+          "objetivo": "clave",
+          "pie": "Campo «Contraseña»."
+        },
+        {
+          "titulo": "Ingresar",
+          "instruccion": "Haz clic en «Iniciar sesión». Marca «Recordarme» solo en un equipo personal.",
+          "registro": "evidencias/originales/acceso/acceso.registro.json",
+          "captura": "acc_login",
+          "objetivo": "ingresar",
+          "pie": "Botón «Iniciar sesión».",
+          "resultado": "Se abre el panel de inicio del Administrador (dirección /admin/dashboard)."
+        }
+      ],
+      "resultado": "La sesión queda abierta y se muestra el panel «Analitics Dashboard» con el menú lateral del Administrador.",
+      "validaciones": [
+        [
+          "Usuario / contraseña",
+          "Deben corresponder a una cuenta existente.",
+          "«Usuario o contraseña incorrectos.»"
+        ],
+        [
+          "Intentos fallidos",
+          "Máximo 5 intentos seguidos por usuario y equipo.",
+          "«Demasiados intentos. Inténtalo nuevamente en N segundos.»"
+        ]
+      ],
+      "errores": [
+        [
+          "Aparece «Usuario o contraseña incorrectos.»",
+          "Revisa mayúsculas, minúsculas y espacios; vuelve a escribir la contraseña."
+        ],
+        [
+          "Aparece «Demasiados intentos…»",
+          "Espera los segundos indicados antes de reintentar."
+        ]
+      ],
+      "figuras_validacion": [
+        {
+          "registro": "evidencias/originales/acceso/acceso.registro.json",
+          "captura": "acc_02_credenciales_incorrectas",
+          "objetivo": "error",
+          "pie": "Mensaje mostrado con un usuario inexistente (dato ficticio; la contraseña se borró antes de capturar)."
+        }
+      ]
+    },
+    {
+      "codigo": "ADM-ACC-002",
+      "titulo": "Navegar por el menú lateral",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Abrir cualquier módulo del Administrador desde el menú lateral.",
+      "acceso": "Menú lateral, visible en todas las pantallas del Administrador.",
+      "requisitos": [
+        "Sesión iniciada como Administrador."
+      ],
+      "pasos": [
+        {
+          "titulo": "Desplegar un grupo",
+          "instruccion": "Haz clic en un grupo con flecha, por ejemplo «Trabajadores», para ver sus opciones.",
+          "captura": "acc_11_grupo_trabajadores",
+          "objetivo": "grupo",
+          "pie": "Grupo «Trabajadores» desplegado.",
+          "resultado": "Se muestran «Nuevo trabajador», «Acopiadores», «Analistas de calidad», «Encargados de planta» y «Personal de ventas»."
+        },
+        {
+          "titulo": "Abrir un módulo",
+          "instruccion": "Haz clic en la opción que necesitas, por ejemplo «Zonas».",
+          "registro": "evidencias/originales/zonas/zonas_1_consulta_crear.registro.json",
+          "captura": "zon_00_dashboard_menu",
+          "objetivo": "menu_zonas",
+          "pie": "Opción «Zonas» del grupo Operación.",
+          "resultado": "Se abre la pantalla del módulo y su opción queda resaltada en el menú."
+        }
+      ],
+      "resultado": "La pantalla del módulo elegido se muestra a la derecha del menú, que permanece visible."
+    },
+    {
+      "codigo": "ADM-ACC-003",
+      "titulo": "Cerrar sesión",
+      "estado": "Verificado parcialmente",
+      "objetivo": "Salir de EcoLactWeb para que nadie más use tu cuenta.",
+      "acceso": "Pie del menú lateral › cuenta del usuario.",
+      "requisitos": [
+        "Sesión iniciada."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el menú de la cuenta",
+          "instruccion": "Haz clic en tu nombre de usuario, en la parte inferior del menú lateral.",
+          "captura": "acc_10_dashboard",
+          "objetivo": "cuenta",
+          "pie": "Cuenta del usuario conectado (datos difuminados)."
+        },
+        {
+          "titulo": "Cerrar la sesión",
+          "instruccion": "Haz clic en «Cerrar sesión».",
+          "captura": "acc_12_menu_cuenta",
+          "objetivo": "cerrar_sesion",
+          "pie": "Opción «Cerrar sesión» del menú de la cuenta."
+        }
+      ],
+      "resultado": "Según el sistema, se vuelve a la pantalla «Iniciar sesión» con el mensaje «Sesión cerrada correctamente.» (no se ejecutó durante la captura para conservar la sesión de prueba: pendiente de comprobar).",
+      "errores": [
+        [
+          "Equipo compartido",
+          "Cierra siempre la sesión al terminar y no marques «Recordarme»."
+        ]
+      ]
+    }
+  ]
+}

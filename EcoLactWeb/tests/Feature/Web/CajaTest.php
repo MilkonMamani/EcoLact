@@ -14,6 +14,7 @@ use App\Domain\Shared\Enums\MetodoPago;
 use App\Domain\Ventas\VentaProducto;
 use App\Infrastructure\Persistence\Models\MovimientoCajaModel;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
+use App\Infrastructure\Persistence\Models\PagoCompraModel;
 use App\Infrastructure\Persistence\Models\PagoModel;
 use App\Infrastructure\Persistence\Models\ProductoModel;
 use App\Models\User;
@@ -110,14 +111,15 @@ it('cada módulo alimenta la caja sola y el saldo es entradas menos salidas (S/ 
         ->and($movimientos->map(fn ($m): array => [$m->tipo, $m->categoria, (float) $m->monto, $m->referencia_tipo])->all())->toBe([
             ['ENTRADA', 'VENTA', 10000.0, 'VENTA'],
             ['SALIDA', 'PROVEEDOR', 320.0, 'PAGO_PROVEEDOR'],
-            ['SALIDA', 'INSUMOS', 450.0, 'COMPRA_INSUMOS'],
+            // Cada pago de una compra es su propio movimiento (PAGO_COMPRA #pago).
+            ['SALIDA', 'INSUMOS', 450.0, 'PAGO_COMPRA'],
             ['SALIDA', 'TRABAJADOR', 1500.0, 'PAGO_TRABAJADOR'],
         ])
         ->and($movimientos[0]->referencia_id)->toBe($ventaId)
         ->and($movimientos[0]->registrado_por_user_id)->toBe($vendedor->id)
         ->and($movimientos[1]->referencia_id)->toBe(PagoModel::orderBy('id')->first()->id)
         ->and($movimientos[1]->registrado_por_user_id)->toBe($admin->id)
-        ->and($movimientos[2]->referencia_id)->toBe($compraId)
+        ->and($movimientos[2]->referencia_id)->toBe(PagoCompraModel::where('compra_insumo_id', $compraId)->sole()->id)
         ->and($movimientos[2]->descripcion)->toBe('Boleta B001-058');
 
     $this->actingAs($admin)->get(route('admin.caja.index'))

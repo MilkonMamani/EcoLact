@@ -1,0 +1,201 @@
+{
+  "plan": "insumos_1.json",
+  "fecha": "2026-10-28T11:53:21",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ins_01_listado",
+      "archivo": "evidencias/originales/insumos/ins_01_listado.png",
+      "url": "/admin/insumos",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          984,
+          239,
+          1024
+        ],
+        "nuevo": [
+          284,
+          150,
+          434,
+          190
+        ],
+        "compra_manual": [
+          442,
+          150,
+          613,
+          190
+        ],
+        "compra_boleta": [
+          621,
+          150,
+          783,
+          190
+        ],
+        "ajuste": [
+          791,
+          150,
+          933,
+          190
+        ],
+        "filtros": [
+          284,
+          351,
+          936,
+          477
+        ]
+      },
+      "textos_visibles": [
+        "Inventario\n›\nInsumos\nInsumos\n\nMaterias primas, insumos y envases necesarios para producción.\n\nNuevo insumo\nRegistrar compra\nEscanear boleta\nAjustar stock\n1\n\nCrear insumo\n\nLa ficha: nombre, tipo y unidad base. Stock 0.\n\n2\n\nPresentaciones\n\nCómo se compra: Saco = 25 kg. No suma stock.\n\n3\n\nRegistrar compra\n\nConvierte a la unidad base y suma stock.\n\n4\n\nAjustar stock\n\nMerma, pérdida, corrección o inventario.\n\nBuscar insumo\nTipo\nTodos\nMateria prima\nInsumo\nEnvase\nOtro\nNivel de stock\nTodos\nNormal\nBajo el mínimo\nSin stock\nFiltrar\n\n1\ninsumos\n1\ncon stock\n0\ncon stock bajo\n0\nsin stock\n\nINSUMO\tSTOCK ACTUAL\tSTOCK MÍNIMO\tESTADO\tÚLTIMA COMPRA\tACCIONES\nLeche Del sistema\n\nMateria prima · L\n\n\t48 L\t0 L\t\nActivo\n\tPor Acopio\t\n\nSelecciona un insumo\n\nHaz clic en una fila para ver su stock, sus presentaciones de compra y sus últimos movimientos."
+      ],
+      "hora": "2026-10-28T11:53:33"
+    },
+    {
+      "nombre": "ins_02_nuevo",
+      "archivo": "evidencias/originales/insumos/ins_02_nuevo.png",
+      "url": "/admin/insumos",
+      "descripcion": "",
+      "objetivos": {
+        "nombre": [
+          408,
+          272,
+          1032,
+          314
+        ],
+        "tipo": [
+          408,
+          356,
+          712,
+          398
+        ],
+        "unidad": [
+          728,
+          356,
+          1032,
+          398
+        ],
+        "minimo": [
+          408,
+          440,
+          672,
+          482
+        ],
+        "crear": [
+          912,
+          714,
+          1032,
+          750
+        ]
+      },
+      "textos_visibles": [
+        "Nuevo insumo\n\nCrea la ficha del insumo. Todavía no registra ninguna compra.\n\nFICHA DEL INSUMO\nNombre del insumo *\nTipo *\nMateria prima\nInsumo\nEnvase\nOtro\nUnidad base *\nLitros (L)\nMililitros (ml)\nKilogramos (kg)\nGramos (g)\nUnidades\nStock mínimo *\nml\nEstado *\nActivo\nInactivo\nDescripción (opcional)\n\nEl stock empieza en 0. Crear el insumo no significa que haya entrado mercancía: el stock sube cuando se registra una compra. Todo se controla en la unidad base y se mostrará “Stock bajo” cuando el stock llegue al mínimo.\n\nCancelar\nCrear insumo"
+      ],
+      "hora": "2026-10-28T11:53:35"
+    },
+    {
+      "nombre": "ins_03_creado",
+      "archivo": "evidencias/originales/insumos/ins_03_creado.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "agregar_presentacion": [
+          1095,
+          671,
+          1273,
+          703
+        ]
+      },
+      "textos_visibles": [
+        "Insumo Insumo Prueba Manual creado con stock 0. Ahora agrega cómo se compra (presentación) para poder registrar sus compras.",
+        "Insumo Prueba Manual\n\nInsumo · unidad base ml\n\nInformación general\n\nStock actual\n\n0 ml\n\nSin stock\nTipo\nInsumo\nUnidad base\nMililitros (ml)\nStock mínimo\n500 ml\nEstado\nActivo\nDescripción\nInsumo ficticio del manual.\nPresentaciones de compra\n\nCómo se compra en tienda y cuánto trae cada una. Definirlas no suma stock.\n\nAún no tiene presentaciones\n\nAgrega cómo se compra (por ejemplo, Saco de 25 kg) para poder registrar sus compras.\n\nAgregar presentación\nÚltimos movimientos\nVer historial\n\nTodavía no tiene movimientos.\n\nAcciones\nEditar insumo\nRegistrar compra\nAjustar stock\nDesactivar\n\nPara registrar compras de Insumo Prueba Manual, primero agrega una presentación de compra."
+      ],
+      "hora": "2026-10-28T11:53:41"
+    },
+    {
+      "nombre": "ins_04_presentacion",
+      "archivo": "evidencias/originales/insumos/ins_04_presentacion.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "nombre": [
+          520,
+          324,
+          920,
+          366
+        ],
+        "cantidad": [
+          520,
+          408,
+          714,
+          450
+        ],
+        "unidad": [
+          726,
+          408,
+          920,
+          450
+        ],
+        "equivalencia": [
+          532,
+          494,
+          908,
+          514
+        ],
+        "guardar": [
+          746,
+          606,
+          920,
+          642
+        ]
+      },
+      "textos_visibles": [
+        "Nueva presentación\n\nInsumo Prueba Manual · unidad base ml\n\nNombre de la presentación *\nCantidad que contiene *\nLitros (L)\nMililitros (ml)\n\nEQUIVALENCIA EN UNIDAD BASE\n\n1 botella = 1 L = 1,000 ml\n\nRegistrar una presentación no suma stock: solo define la conversión que se usará al registrar compras.\n\nCancelar\nGuardar presentación"
+      ],
+      "hora": "2026-10-28T11:53:43"
+    },
+    {
+      "nombre": "ins_05_presentacion_guardada",
+      "archivo": "evidencias/originales/insumos/ins_05_presentacion_guardada.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "seccion": [
+          981,
+          488,
+          1387,
+          683
+        ]
+      },
+      "textos_visibles": [
+        "Presentación agregada. Botella 1 L = 1,000 ml.",
+        "Presentaciones de compra\nEditar presentaciones\nAgregar presentación\n\nCómo se compra en tienda y cuánto trae cada una. Definirlas no suma stock.\n\nBotella 1 L\n\n1 botella = 1,000 ml"
+      ],
+      "hora": "2026-10-28T11:53:47"
+    },
+    {
+      "nombre": "ins_06_compra_abierta",
+      "archivo": "evidencias/originales/insumos/ins_06_compra_abierta.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Registrar compra\nINSUMOS COMPRADOS\nAgregar otro insumo\nINSUMO\nSeleccionar insumo\nInsumo Prueba Manual\nPRESENTACIÓN\nSeleccionar presentación\nBotella 1 L\nCANTIDAD\nPRECIO UNIT. S/\nCompleta insumo, cantidad y presentación de cada línea, o quita las que no correspondan.\nDATOS DE LA COMPRA\nProveedor o tienda\nN.º de boleta / comprobante\nFecha\nPrecio total (S/)\n\nOpcional si indicas el precio unitario de cada línea.\n\nRUC (opcional)\nObservación (opcional)\nImagen de la boleta (opcional)\n\nEl stock de cada insumo aumenta recién al confirmar.\n\nCancelar\nConfirmar compra"
+      ],
+      "hora": "2026-10-28T11:53:50"
+    }
+  ],
+  "dialogos": []
+}

@@ -35,11 +35,11 @@
         </header>
 
         <div class="fichas-panel-cuerpo">
-            {{-- Sin sueldo vigente propio: no hay obligación ni comprobante. Solo texto informativo, sin acciones. --}}
+            {{-- Su rol no tiene sueldo vigente: no hay obligación ni comprobante. Solo texto informativo, sin acciones. --}}
             <div class="pt-no-disponible" data-sin-sueldo>
                 <x-ui.icon name="minus-circle" class="h-6 w-6" />
                 <p class="pt-no-disponible-titulo">Pago no disponible</p>
-                <p>No existe una configuración salarial vigente para este trabajador en {{ $seleccion->periodoEtiqueta }}.</p>
+                <p>No existe un sueldo vigente para el rol de este trabajador en {{ $seleccion->periodoEtiqueta }}.</p>
                 <p class="pt-no-disponible-ruta">Configúrala desde: Configuración &gt; Configuración de pagos.</p>
             </div>
         </div>

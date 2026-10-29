@@ -6,14 +6,14 @@
 {{--
     CAJA: billetera de EcoLact. Solo lectura: saldo arriba, movimientos abajo, detalle en un panel
     lateral. Todo sale de movimientos_caja (EloquentCajaQuery); los movimientos nacen en Ventas,
-    Pagos e Insumos, por eso aquí no hay "+ Nuevo movimiento" ni edición de montos.
+    Pagos y Compras y gastos (solo lo realmente pagado), por eso aquí no hay "+ Nuevo movimiento" ni edición de montos.
     - Las tarjetas (saldo y "hoy") no dependen de los filtros del historial.
     - Los filtros se aplican solos al cambiar (admin-caja.js); sin JS, el botón Filtrar.
     - Clic en ">" o en la fila = panel de detalle por fetch; sin JS, ?movimiento=ID.
 --}}
 @php
     $soles = fn (float $valor): string => 'S/ '.number_format($valor, 2);
-    $iconos = ['VENTA' => 'shopping-cart', 'PROVEEDOR' => 'milk-jar', 'TRABAJADOR' => 'user', 'INSUMOS' => 'package'];
+    $iconos = ['VENTA' => 'shopping-cart', 'PROVEEDOR' => 'milk-jar', 'TRABAJADOR' => 'user', 'INSUMOS' => 'package', 'GASTOS' => 'file-text', 'SALDO_INICIAL' => 'wallet'];
     $filtrosActivos = request()->anyFilled(['q', 'tipo', 'categoria', 'desde', 'hasta']);
     $meses = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'set.', 'oct.', 'nov.', 'dic.'];
     $fechaCorta = fn (\DateTimeInterface $fecha): string => $fecha->format('j').' '.$meses[(int) $fecha->format('n') - 1].' '.$fecha->format('Y');
@@ -151,7 +151,7 @@
                             @if ($filtrosActivos)
                                 <strong>No hay movimientos para estos filtros</strong> Prueba con otras fechas, tipo o categoría.
                             @else
-                                <strong>Aún no hay movimientos en este periodo</strong> Las ventas al contado, los pagos y las compras de insumos aparecerán aquí automáticamente.
+                                <strong>Aún no hay movimientos en este periodo</strong> Las ventas al contado, los pagos y lo que se paga en Compras y gastos aparecerán aquí automáticamente.
                             @endif
                         </li>
                     @endforelse

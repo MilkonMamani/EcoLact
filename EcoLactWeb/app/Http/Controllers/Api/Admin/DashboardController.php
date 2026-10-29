@@ -40,7 +40,7 @@ final class DashboardController extends Controller
             'acopio' => $dashboard->acopio,
             'produccion' => $dashboard->produccion,
             'ventas' => $dashboard->ventas,
-            'pagos_pendientes' => $dashboard->pagos,
+            'finanzas' => $dashboard->finanzas->toArray(),
             'acopio_por_intervalo' => $dashboard->acopioPorIntervalo,
             'acopio_por_zona' => $dashboard->acopioPorZona,
             'por_atender' => $dashboard->porAtender,

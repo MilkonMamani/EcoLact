@@ -1,23 +1,23 @@
 /*
- * Modal "Nueva producción": la persona elige producto + cantidad y, en cuanto ambos tienen valor,
- * el servidor calcula los insumos (receta x cantidad, con la leche primero), si alcanza el stock
- * y la frase que resume el resultado. Este archivo SOLO pinta lo que el servidor responde: no
- * contiene reglas de negocio ni cálculo de recetas. Previsualizar NUNCA descuenta inventario; el
- * descuento ocurre únicamente al enviar el formulario, y el servidor vuelve a validar todo.
+ * Modal "Nueva producción" (planificación): la persona agrega uno o varios productos con su cantidad
+ * y, cada vez que cambia algo, el servidor calcula los insumos TOTALES (receta x cantidad de cada
+ * producto, convertidos a la unidad base y sumados), si alcanza el stock y la frase que resume el
+ * resultado. Este archivo SOLO pinta lo que el servidor responde: no contiene reglas de negocio ni
+ * cálculo de recetas. Previsualizar NUNCA descuenta inventario; el descuento ocurre únicamente al
+ * enviar el formulario (un lote por producto), y el servidor vuelve a validar todo.
  */
 const raiz = document.querySelector('[data-produccion-nueva]');
 const formulario = raiz?.querySelector('[data-produccion-form]');
 
 if (raiz && formulario) {
     const modal = raiz.closest('[data-modal]');
-    const selectorProducto = formulario.querySelector('[data-producto]');
-    const campoCantidad = formulario.querySelector('[data-cantidad]');
+    const listaFilas = formulario.querySelector('[data-filas]');
+    const plantillaFila = formulario.querySelector('template[data-fila-plantilla]');
+    const botonAgregar = formulario.querySelector('[data-agregar-fila]');
+    const resumenPlanificacion = raiz.querySelector('[data-resumen-planificacion]');
     const sinCalculo = raiz.querySelector('[data-sin-calculo]');
     const calculando = raiz.querySelector('[data-calculando]');
     const panelRecursos = raiz.querySelector('[data-recursos]');
-    const resumenProducto = raiz.querySelector('[data-resumen-producto]');
-    const resumenCantidad = raiz.querySelector('[data-resumen-cantidad]');
-    const resumenImagen = raiz.querySelector('[data-resumen-imagen]');
     const cuerpoRecursos = raiz.querySelector('[data-recursos-cuerpo]');
     const veredicto = raiz.querySelector('[data-veredicto]');
     const botonIniciar = raiz.querySelector('[data-iniciar]');
@@ -38,6 +38,7 @@ if (raiz && formulario) {
     let secuencia = 0;
     let temporizador = null;
     let enviando = false;
+    let siguienteIndice = listaFilas.querySelectorAll('[data-fila]').length;
 
     const crear = (tag, clases, texto) => {
         const el = document.createElement(tag);
@@ -46,7 +47,106 @@ if (raiz && formulario) {
         return el;
     };
 
-    const completo = () => Number(selectorProducto.value) > 0 && Number(campoCantidad.value) > 0;
+    const filas = () => [...listaFilas.querySelectorAll('[data-fila]')];
+    const lineaDe = (fila) => ({
+        producto_id: Number(fila.querySelector('[data-producto]').value),
+        cantidad: Number(fila.querySelector('[data-cantidad]').value),
+    });
+
+    /* Líneas que se mandan a calcular: solo las filas con producto elegido. */
+    const lineasElegidas = () => filas().map(lineaDe).filter((linea) => linea.producto_id > 0);
+
+    /* Completo = al menos una línea y TODAS las filas con producto tienen cantidad válida (> 0). */
+    const completo = () => {
+        const lineas = lineasElegidas();
+        return lineas.length > 0 && lineas.every((linea) => Number.isFinite(linea.cantidad) && linea.cantidad > 0);
+    };
+
+    /* ---------- Filas de productos ---------- */
+
+    function pintarFila(fila) {
+        const opcion = fila.querySelector('[data-producto]').selectedOptions[0];
+        const unidad = opcion?.dataset.unidad ?? '';
+        const imagen = opcion?.dataset.imagen ?? '';
+        const celdaUnidad = fila.querySelector('[data-fila-unidad]');
+        const miniatura = fila.querySelector('[data-fila-imagen]');
+
+        celdaUnidad.textContent = unidad === '' ? '—' : unidad === 'unidad' ? 'unidades' : unidad;
+        miniatura.hidden = imagen === '';
+        if (imagen !== '') {
+            miniatura.src = imagen;
+        }
+
+        // Cantidad cero, negativa o vacía con producto elegido: se marca la fila.
+        const cantidad = fila.querySelector('[data-cantidad]');
+        const invalida = Number(opcion?.value) > 0 && cantidad.value !== '' && !(Number(cantidad.value) > 0);
+        cantidad.classList.toggle('border-danger', invalida);
+        cantidad.setAttribute('aria-invalid', invalida ? 'true' : 'false');
+    }
+
+    /*
+     * Un producto ya elegido en otra fila no se puede volver a elegir: cada producto es un lote, y
+     * para fabricar más basta con subir su cantidad. (El servidor igual sumaría las repetidas.)
+     */
+    function sincronizarFilas() {
+        const todas = filas();
+        const elegidos = todas.map((fila) => fila.querySelector('[data-producto]').value).filter(Boolean);
+
+        todas.forEach((fila) => {
+            const selector = fila.querySelector('[data-producto]');
+            [...selector.options].forEach((opcion) => {
+                opcion.disabled = opcion.value !== '' && opcion.value !== selector.value && elegidos.includes(opcion.value);
+            });
+            fila.querySelector('[data-quitar-fila]').disabled = todas.length === 1;
+            pintarFila(fila);
+        });
+
+        const totalProductos = plantillaFila.content.querySelectorAll('[data-producto] option[value]:not([value=""])').length;
+        botonAgregar.disabled = todas.length >= totalProductos;
+    }
+
+    function agregarFila() {
+        const indice = siguienteIndice++;
+        const html = plantillaFila.innerHTML.replaceAll('__i__', String(indice));
+        const contenedor = document.createElement('template');
+        contenedor.innerHTML = html.trim();
+        const fila = contenedor.content.firstElementChild;
+        listaFilas.append(fila);
+        sincronizarFilas();
+        fila.querySelector('[data-producto]').focus();
+    }
+
+    function quitarFila(fila) {
+        if (filas().length === 1) {
+            return;
+        }
+        fila.remove();
+        sincronizarFilas();
+        programarCalculo();
+    }
+
+    /* ---------- Resultado del servidor ---------- */
+
+    /*
+     * "3 productos · 23 unidades planificadas". Solo se suman cantidades de la MISMA unidad; si hay
+     * unidades distintas se listan por separado ("18 unidades y 2,5 kg") en vez de mezclarlas.
+     */
+    function pintarResumen(lineas) {
+        if (lineas.length === 0) {
+            resumenPlanificacion.textContent = '';
+            return;
+        }
+
+        const porUnidad = new Map();
+        lineas.forEach((linea) => porUnidad.set(linea.unidad, (porUnidad.get(linea.unidad) ?? 0) + Number(linea.cantidad)));
+        const partes = [...porUnidad].map(([unidad, total]) => conUnidad(total, unidad));
+        const ultima = partes.pop();
+        const cantidades = partes.length > 0 ? `${partes.join(', ')} y ${ultima}` : ultima;
+        const productos = `${lineas.length} ${lineas.length === 1 ? 'producto' : 'productos'}`;
+        const sufijo = porUnidad.size === 1 && porUnidad.has('unidad') ? 'planificadas' : 'planificados';
+
+        resumenPlanificacion.textContent = `${productos} · ${cantidades} ${sufijo}`;
+    }
 
     function estado(insumo) {
         const caja = crear('div', 'flex flex-col items-start gap-0.5 sm:items-end');
@@ -64,7 +164,21 @@ if (raiz && formulario) {
         return caja;
     }
 
-    function filaInsumo(insumo) {
+    /* Con varios productos, bajo cada insumo se ve cuánto aporta cada uno al total. */
+    function desglose(insumo, lineas) {
+        if (lineas.length < 2) {
+            return null;
+        }
+
+        const partes = lineas
+            .map((linea) => ({ linea, porcion: (linea.insumos ?? []).find((i) => i.insumoId === insumo.insumo_id) }))
+            .filter(({ porcion }) => porcion)
+            .map(({ linea, porcion }) => `${linea.producto} ${numero(porcion.necesario)} ${insumo.unidad}`);
+
+        return partes.length > 0 ? crear('p', 'col-span-2 text-xs text-text-muted sm:col-span-12', partes.join(' · ')) : null;
+    }
+
+    function filaInsumo(insumo, lineas) {
         const fila = crear('li', 'grid grid-cols-2 gap-x-3 gap-y-1.5 px-4 py-3 text-sm sm:grid-cols-12 sm:items-center');
 
         const nombre = crear('div', 'col-span-2 flex min-w-0 items-center gap-2 sm:col-span-4');
@@ -95,6 +209,11 @@ if (raiz && formulario) {
             estadoCelda,
         );
 
+        const detalle = desglose(insumo, lineas);
+        if (detalle) {
+            fila.append(detalle);
+        }
+
         return fila;
     }
 
@@ -113,29 +232,18 @@ if (raiz && formulario) {
     }
 
     function pintarResultado(datos) {
-        const linea = datos.lineas[0];
-        resumenProducto.textContent = linea ? linea.etiqueta ?? linea.producto : '';
-        resumenCantidad.textContent = linea ? `${conUnidad(linea.cantidad, linea.unidad)} planificadas` : '';
-
-        // La imagen es la misma que se subió en la receta (viene en la opción elegida).
-        const imagen = selectorProducto.selectedOptions[0]?.dataset.imagen ?? '';
-        resumenImagen.hidden = imagen === '';
-        if (imagen !== '') {
-            resumenImagen.src = imagen;
-        }
-
-        cuerpoRecursos.replaceChildren(...datos.insumos.map(filaInsumo));
+        pintarResumen(datos.lineas);
+        cuerpoRecursos.replaceChildren(...datos.insumos.map((insumo) => filaInsumo(insumo, datos.lineas)));
 
         if (datos.insumos.length === 0) {
-            cuerpoRecursos.append(crear('li', 'px-4 py-3 text-sm text-text-muted', 'La receta no tiene insumos registrados.'));
+            cuerpoRecursos.append(crear('li', 'px-4 py-3 text-sm text-text-muted', 'Las recetas no tienen insumos registrados.'));
         }
 
         panelRecursos.hidden = datos.lineas.length === 0;
         sinCalculo.hidden = true;
 
-        // Sin receta no hay tabla útil: el detalle del motivo lo redacta el servidor.
-        const detalles = datos.productos_sin_receta.length > 0 ? datos.mensajes : [];
-        pintarVeredicto(datos.puede_iniciar, datos.resumen, detalles);
+        // El servidor redacta cada motivo: qué producto no tiene receta y qué insumo falta y cuánto.
+        pintarVeredicto(datos.puede_iniciar, datos.resumen, datos.puede_iniciar ? [] : datos.mensajes);
 
         botonIniciar.disabled = !datos.puede_iniciar || enviando;
     }
@@ -145,6 +253,7 @@ if (raiz && formulario) {
         sinCalculo.hidden = Boolean(mensaje);
         veredicto.hidden = true;
         botonIniciar.disabled = true;
+        resumenPlanificacion.textContent = '';
 
         if (mensaje) {
             pintarVeredicto(false, mensaje);
@@ -163,7 +272,8 @@ if (raiz && formulario) {
 
         if (!completo()) {
             calculando.hidden = true;
-            limpiarResultado();
+            const conProducto = lineasElegidas().length > 0;
+            limpiarResultado(conProducto ? 'Indica una cantidad mayor que cero para cada producto.' : undefined);
             return;
         }
 
@@ -178,7 +288,7 @@ if (raiz && formulario) {
                     'X-CSRF-TOKEN': token,
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({ productos: [{ producto_id: Number(selectorProducto.value), cantidad: Number(campoCantidad.value) }] }),
+                body: JSON.stringify({ productos: lineasElegidas() }),
             });
 
             if (solicitud !== secuencia) {
@@ -204,11 +314,34 @@ if (raiz && formulario) {
         }
     }
 
-    selectorProducto.addEventListener('change', programarCalculo);
-    campoCantidad.addEventListener('input', programarCalculo);
-    campoCantidad.addEventListener('keydown', (evento) => {
-        if (evento.key === 'Enter') {
+    /* ---------- Eventos ---------- */
+
+    botonAgregar.addEventListener('click', agregarFila);
+
+    listaFilas.addEventListener('change', (evento) => {
+        if (evento.target.matches('[data-producto]')) {
+            sincronizarFilas();
+            programarCalculo();
+        }
+    });
+
+    listaFilas.addEventListener('input', (evento) => {
+        if (evento.target.matches('[data-cantidad]')) {
+            pintarFila(evento.target.closest('[data-fila]'));
+            programarCalculo();
+        }
+    });
+
+    listaFilas.addEventListener('keydown', (evento) => {
+        if (evento.key === 'Enter' && evento.target.matches('[data-cantidad]')) {
             evento.preventDefault();
+        }
+    });
+
+    listaFilas.addEventListener('click', (evento) => {
+        const quitar = evento.target.closest('[data-quitar-fila]');
+        if (quitar) {
+            quitarFila(quitar.closest('[data-fila]'));
         }
     });
 
@@ -218,12 +351,22 @@ if (raiz && formulario) {
             return;
         }
 
+        // Las filas vacías (sin producto) no se envían.
+        filas().forEach((fila) => {
+            if (!(lineaDe(fila).producto_id > 0)) {
+                fila.querySelectorAll('select, input').forEach((campo) => {
+                    campo.disabled = true;
+                });
+            }
+        });
+
         // Evita dobles clics: el servidor igualmente valida todo de nuevo.
         enviando = true;
         botonIniciar.disabled = true;
         botonIniciar.textContent = 'Iniciando...';
     });
 
+    sincronizarFilas();
     actualizar();
 
     // Se vuelve a abrir si el servidor rechazó el envío o se pidió abrirlo desde el enlace interno.

@@ -6,17 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Muestreo, revisión y confirmación en EcoLact: actores, decisiones y resultados verificados en el repositorio.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/flujos/calidad/">
+      
       
         <link rel="prev" href="../acopio/">
       
       
-        <link rel="next" href="../produccion/">
+        <link rel="next" href="../liquidacion-pagos/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Control de calidad - Informe EcoLact</title>
+        <title>Flujo de control de calidad - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#calidad" class="md-skip">
+        <a href="#flujo-de-control-de-calidad" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Control de calidad
+              Flujo de control de calidad
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -641,6 +637,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -742,6 +742,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control de calidad
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -759,6 +777,153 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aceptada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ACEPTADA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OBSERVADA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rechazada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RECHAZADA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros-y-datos-incompletos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parámetros y datos incompletos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -834,35 +999,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -890,7 +1027,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -950,6 +1115,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1034,7 +1203,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1062,7 +1231,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1118,7 +1343,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1399,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1427,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1569,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1597,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1916,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aceptada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ACEPTADA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OBSERVADA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rechazada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RECHAZADA
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parametros-y-datos-incompletos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parámetros y datos incompletos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2010,146 @@
                   
 
 
+
+<div class="ec-flujos">
+<div class="ec-flow-banner">03 · Flujo de control de calidad</div>
+<div class="ec-flow-content">
+<div class="ec-flow-hero">
+<div>
+<p><span class="ec-flow-kicker">EcoLact / Flujos de negocio</span></p>
+<h1 id="flujo-de-control-de-calidad">Flujo de control de calidad</h1>
+<p class="ec-flow-subtitle">Muestreo, revisión y confirmación</p>
+<p>El analista trabaja con muestras seleccionadas. La lectura del ticket propone valores; la decisión definitiva se obtiene al confirmar el análisis contra las reglas vigentes.</p>
+</div>
+<figure>
+<p><img alt="Muestreo, revisión y confirmación: Flujo de control de calidad" height="800" src="../../assets/images/flujos/calidad.webp" width="1200" /></p>
+<figcaption>Recurso visual del proyecto. Ilustración del proceso.</figcaption>
+</figure>
+</div>
+<div class="ec-flow-actors">
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 22a3 3 0 0 1-3-3c0-.6.18-1.16.5-1.63L9 7.81V6a1 1 0 0 1-1-1V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v1.81l5.5 9.56c.32.47.5 1.03.5 1.63a3 3 0 0 1-3 3zm-1-3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1c0-.21-.07-.41-.18-.57l-2.29-3.96L14 17l-5.07-5.07-3.75 6.5c-.11.16-.18.36-.18.57m8-9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span></p>
+<p><strong>Analista de calidad</strong></p>
+<p>Selecciona muestras, revisa valores y confirma.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 4a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m7 8a.26.26 0 0 0-.26.21l-.19 1.32c-.3.13-.59.29-.85.47l-1.24-.5c-.11 0-.24 0-.31.13l-1 1.73c-.06.11-.04.24.06.32l1.06.82a4.2 4.2 0 0 0 0 1l-1.06.82a.26.26 0 0 0-.06.32l1 1.73c.06.13.19.13.31.13l1.24-.5c.26.18.54.35.85.47l.19 1.32c.02.12.12.21.26.21h2c.11 0 .22-.09.24-.21l.19-1.32c.3-.13.57-.29.84-.47l1.23.5c.13 0 .26 0 .33-.13l1-1.73a.26.26 0 0 0-.06-.32l-1.07-.82c.02-.17.04-.33.04-.5s-.01-.33-.04-.5l1.06-.82a.26.26 0 0 0 .06-.32l-1-1.73c-.06-.13-.19-.13-.32-.13l-1.23.5c-.27-.18-.54-.35-.85-.47l-.19-1.32A.236.236 0 0 0 19 12zm-7 2c-4.42 0-8 1.79-8 4v2h9.68a7 7 0 0 1-.68-3 7 7 0 0 1 .64-2.91c-.53-.06-1.08-.09-1.64-.09m8 1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5c-.84 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5"/></svg></span></p>
+<p><strong>Administrador</strong></p>
+<p>Configura parámetros y reglas de calidad.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 4a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4"/></svg></span></p>
+<p><strong>Proveedor</strong></p>
+<p>Recibe el resultado y las advertencias que correspondan.</p>
+</div>
+</div>
+<h2 id="asi-funciona-el-proceso">Así funciona el proceso</h2>
+<div class="ec-flow-diagram">
+<p><img alt="Diagrama de Flujo de control de calidad: decisiones, actividades y resultados" src="../../assets/diagrams/flujos/calidad.svg" /></p>
+<p><a href="../../assets/diagrams/flujos/calidad.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/flujos/calidad.mmd">Descargar fuente Mermaid</a></p>
+<details>
+<summary>Ver la fuente editable del diagrama</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  A([Inicio · Analista]) --&gt; B[Seleccionar entrega elegible]
+  B --&gt; C[Registrar muestra]
+  C --&gt; D[Analizar leche]
+  D --&gt; E{¿Origen de valores?}
+  E --&gt;|Manual| F[Ingresar mediciones]
+  E --&gt;|Ticket| G[OCR propone valores]
+  F --&gt; H[Revisión humana]
+  G --&gt; H
+  H --&gt; I[BORRADOR]
+  I --&gt; J{¿Valores y reglas disponibles?}
+  J --&gt;|No| K[Informar lo que falta]
+  K --&gt; H
+  J --&gt;|Sí| L{¿Incumplimiento de rechazo?}
+  L --&gt;|Sí| R[RECHAZADA]
+  L --&gt;|No| M{¿Incumplimiento de observación?}
+  M --&gt;|Sí| O[OBSERVADA]
+  M --&gt;|No| N[ACEPTADA]
+  R --&gt; S[CONFIRMADO · Inmutable]
+  O --&gt; S
+  N --&gt; S
+  S --&gt; T[Notificar y recalcular pago pendiente]
+  T --&gt; Z([Fin · Muestra analizada])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class E,J,L,M decision;
+  class A,Z terminal;
+</code></pre></div>
+</details>
+</div>
+<h2 id="paso-a-paso">Paso a paso</h2>
+<div class="ec-flow-steps">
+<ol>
+<li>Seleccionar una entrega existente, no anulada ni analizada, de proveedor activo. La selección aleatoria requiere un sorteo firmado por el servidor; la selección manual también está implementada.</li>
+<li>Registrar la muestra y realizar el análisis. El sistema evita seleccionar la misma entrega por distintos analistas; el reenvío equivalente del mismo analista devuelve la selección existente.</li>
+<li>Ingresar valores manualmente o escanear el ticket. Revisar las propuestas OCR y guardar el BORRADOR. La muestra pasa a EN_ANALISIS.</li>
+<li>Solicitar confirmación. EcoLact evalúa cada valor registrado con la regla vigente a la fecha del análisis y determina el peor incumplimiento.</li>
+<li>Guardar el análisis CONFIRMADO, marcar la entrega ANALIZADA, actualizar la muestra, notificar al proveedor y recalcular su pago pendiente. OBSERVADA y RECHAZADA generan advertencia.</li>
+</ol>
+</div>
+<div class="ec-flow-grid">
+<div class="ec-flow-card green">
+<h3 id="aceptada">ACEPTADA</h3>
+<p>Ningún valor registrado incumple una regla que determine observación o rechazo.</p>
+</div>
+<div class="ec-flow-card orange">
+<h3 id="observada">OBSERVADA</h3>
+<p>Hay incumplimiento de observación y no hay uno de rechazo.</p>
+</div>
+<div class="ec-flow-card red">
+<h3 id="rechazada">RECHAZADA</h3>
+<p>Existe incumplimiento de rechazo. <strong>Prevalece sobre OBSERVADA</strong>, aunque otros parámetros sean conformes.</p>
+</div>
+</div>
+<h2 id="parametros-y-datos-incompletos">Parámetros y datos incompletos</h2>
+<p>El catálogo es configurable. El lector de tickets reconoce grasa, SNG, densidad, proteína, lactosa, sales, sólidos totales, agua añadida, punto de congelación, temperatura y pH. Reconocer una etiqueta no sustituye tener el parámetro y su regla configurados.</p>
+<ul>
+<li>Un valor en blanco se omite; no se convierte en cero.</li>
+<li>Un código de parámetro inexistente produce error al guardar.</li>
+<li>Sin valores registrados, no se puede calcular el resultado.</li>
+<li>Si un valor registrado carece de regla vigente, la confirmación falla e indica el parámetro pendiente de configurar.</li>
+<li>No se exige completar automáticamente todo el catálogo: se evalúan los valores registrados.</li>
+<li>Un análisis confirmado no se edita ni se confirma por segunda vez.</li>
+</ul>
+<div class="ec-flow-info warning">
+<p><strong>La muestra no representa una etapa obligatoria de cada entrega.</strong> No se inventan límites de grasa, densidad ni otros parámetros: el resultado depende de las reglas configuradas. La confirmación no vuelve a ingresar la leche al inventario.</p>
+</div>
+<div class="ec-flow-result">
+<p><strong>Resultado del proceso</strong></p>
+<p>Resultado trazable e inmutable, consulta del proveedor y actualización del pendiente. La falta de configuración de pagos no bloquea la confirmación de calidad.</p>
+</div>
+<details class="ec-flow-evidence">
+<summary>Trazabilidad con el código revisado</summary>
+<p>Revisión documental: 28 de octubre de 2026. Las rutas siguientes identifican las fuentes locales; no implican haber ejecutado el sistema de negocio.</p>
+<ul>
+<li><code>EcoLactWeb/app/Application/Calidad/SeleccionarMuestraCalidad.php</code></li>
+<li><code>EcoLactWeb/app/Application/Calidad/RegistrarAnalisisCalidad.php</code></li>
+<li><code>EcoLactWeb/app/Application/Calidad/CalcularResultadoCalidad.php</code></li>
+<li><code>EcoLactWeb/app/Application/Calidad/FinalizarAnalisisCalidad.php</code></li>
+<li><code>EcoLactWeb/app/Application/Calidad/TicketAnalizadorParser.php</code></li>
+<li><code>EcoLactWeb/routes/web.php</code> y <code>EcoLactWeb/routes/api.php</code></li>
+</ul>
+</details>
+<div class="ec-flow-links">
+<p><a href="../">← Todos los flujos</a></p>
+<p><a href="../acopio/">Flujo de acopio de leche →</a></p>
+<p><a href="../liquidacion-pagos/">Valorización, liquidación y pagos →</a></p>
+<p><a href="../consulta-proveedor/">Consulta del proveedor →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="calidad">calidad</h1>
-
-
-
-
-
-
 
 
 

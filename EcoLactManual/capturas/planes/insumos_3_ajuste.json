@@ -1,0 +1,87 @@
+{
+ "descripcion": "Insumos (cont.): estado tras la compra ficticia y ajuste por merma de 100 ml.",
+ "salida": "evidencias/originales/insumos",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/insumos",
+   "ms": 2500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Insumo Prueba Manual') a, [data-fichas-fila]:has-text('Insumo Prueba Manual') td >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "captura",
+   "nombre": "ins_12_compra_registrada",
+   "medir": {
+    "fila": "[data-fichas-fila]:has-text('Insumo Prueba Manual')",
+    "movimientos": "[data-fichas-panel] .fichas-seccion:has(h3:has-text('movimientos'))"
+   },
+   "leer": [
+    "[data-fichas-fila]:has-text('Insumo Prueba Manual')",
+    "[data-fichas-panel] .fichas-seccion:has(h3:has-text('movimientos'))"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Insumo Prueba Manual') button[data-ajuste-abrir]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1000
+  },
+  {
+   "accion": "escribir",
+   "selector": "#ajuste-cantidad",
+   "texto": "100"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#ajuste-observacion",
+   "texto": "Merma ficticia del manual."
+  },
+  {
+   "accion": "esperar",
+   "ms": 600
+  },
+  {
+   "accion": "captura",
+   "nombre": "ins_13_ajuste",
+   "medir": {
+    "motivo": "#ajuste-motivo",
+    "cantidad": "#ajuste-cantidad",
+    "registrar": "#modal-ajuste-insumo [data-ajuste-enviar]"
+   },
+   "leer": [
+    "#modal-ajuste-insumo [data-modal-panel]"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "#modal-ajuste-insumo [data-ajuste-enviar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 3000
+  },
+  {
+   "accion": "captura",
+   "nombre": "ins_14_ajustado",
+   "medir": {
+    "mensaje": "[role=alert]",
+    "movimientos": "[data-fichas-panel] .fichas-seccion:has(h3:has-text('movimientos'))"
+   },
+   "leer": [
+    "[role=alert]",
+    "[data-fichas-panel] .fichas-seccion:has(h3:has-text('movimientos'))",
+    "[data-fichas-fila]:has-text('Insumo Prueba Manual')"
+   ]
+  }
+ ]
+}

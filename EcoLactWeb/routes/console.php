@@ -18,14 +18,14 @@ Schedule::command('ecolact:generar-pagos')
     ->onOneServer();
 
 // Cierre de asistencia (regla única, App\Application\Pago\VentanaAsistencia):
-// la asistencia del día se registra o corrige solo antes de las 07:00 hora de
-// Perú; a las 07:00 el día queda cerrado y a quien debía asistir y no registró
+// la asistencia del día se registra o corrige solo antes de las 23:59 hora de
+// Perú; a las 23:59 el día queda cerrado y a quien debía asistir y no registró
 // nada se le marca FALTA automática. Idempotente: si corre más de una vez (o si
 // una pantalla ya cerró el día al abrirse) nunca duplica.
 // ->timezone() corre este horario en la zona del negocio sin cambiar el
 // timezone global de la app (config('app.timezone') se queda en UTC).
 Schedule::command('ecolact:marcar-faltas')
-    ->dailyAt(VentanaAsistencia::HORA_CIERRE)
+    ->dailyAt(VentanaAsistencia::horaCierre())
     ->timezone(config('app.zona_horaria_negocio'))
     ->withoutOverlapping()
     ->onOneServer();

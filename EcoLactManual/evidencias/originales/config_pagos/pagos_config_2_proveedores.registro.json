@@ -1,0 +1,63 @@
+{
+  "plan": "pagos_config_2_proveedores.json",
+  "fecha": "2026-10-28T11:06:37",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "cfg_07_precio",
+      "archivo": "evidencias/originales/config_pagos/cfg_07_precio.png",
+      "url": "/admin/configuracion-pagos?tab=proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "precio": [
+          380,
+          332,
+          710,
+          374
+        ],
+        "descuento": [
+          380,
+          416,
+          1060,
+          458
+        ],
+        "guardar": [
+          882,
+          626,
+          1060,
+          662
+        ]
+      },
+      "textos_visibles": [
+        "Configurar pago a proveedores\n\nPrecio por litro y descuento por calidad observada.\n\nPrecio base por litro (S/) *\nVigente desde *\nDescuento por litro si la semana es OBSERVADA (S/)\n\nPrecio resultante: S/ 1.10 por litro, para todos los litros de esa semana. Si la semana es RECHAZADA no se paga.\n\nObservación\nCancelar\nGuardar configuración"
+      ],
+      "hora": "2026-10-28T11:06:43"
+    },
+    {
+      "nombre": "cfg_08_precio_guardado",
+      "archivo": "evidencias/originales/config_pagos/cfg_08_precio_guardado.png",
+      "url": "/admin/configuracion-pagos?tab=proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "seccion": [
+          284,
+          266,
+          1408,
+          943
+        ]
+      },
+      "textos_visibles": [
+        "Configuración de proveedores guardada correctamente.",
+        "Pago a proveedores\n\nUna sola configuración para todos los proveedores de leche.\n\nActivo\nPrecio base\nS/ 1.20 / L\nPeriodicidad\nSemanal (jueves a miércoles)\nDía de pago\nMiércoles\nVigente desde\n28/10/2026\nObservación\nPrecio de prueba para el manual.\nAJUSTE POR CALIDAD\n\nCada semana se paga según el peor resultado de calidad de sus entregas.\n\nAceptada\nPrecio normal\nS/ 1.20 / L\nObservada\n- S/ 0.10 / L\nAplica a todos los litros de la semana\nS/ 1.10 / L\nRechazada\nNo pagable\nLa semana completa no se paga\nS/ 0.00\nEditar configuración\nPRECIOS ANTERIORES\nS/ 1.70 / L\n01/01/2020 – 27/10/2026"
+      ],
+      "hora": "2026-10-28T11:06:46"
+    }
+  ],
+  "dialogos": []
+}

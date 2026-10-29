@@ -6,17 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Vender con stock y tarifa vigentes en EcoLact: actores, decisiones y resultados verificados en el repositorio.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/flujos/ventas-caja/">
+      
       
         <link rel="prev" href="../insumos/">
       
       
-        <link rel="next" href="../liquidacion-pagos/">
+        <link rel="next" href="../finanzas/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Ventas y caja - Informe EcoLact</title>
+        <title>Flujo de ventas y compradores - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ventas-caja" class="md-skip">
+        <a href="#flujo-de-ventas-y-compradores" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Ventas y caja
+              Flujo de ventas y compradores
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -641,6 +637,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -761,6 +761,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../produccion/" class="md-nav__link">
         
   
@@ -826,6 +882,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ventas y compradores
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -833,7 +907,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
+    Ventas y compradores
   
 
     
@@ -843,34 +917,97 @@
 
       </a>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../liquidacion-pagos/" class="md-nav__link">
         
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
   
   
-  <span class="md-ellipsis">
+  
     
   
-    Liquidación y pagos
   
-
-    
-  </span>
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
   
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
   
-
-      </a>
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONTADO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descuento_planilla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DESCUENTO_PLANILLA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tarifa-del-servidor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tarifa del servidor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cuando-se-trabaja-desde-el-telefono" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuando se trabaja desde el teléfono
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -890,7 +1027,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -950,6 +1115,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1034,7 +1203,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1062,7 +1231,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1118,7 +1343,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1399,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1427,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1569,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1597,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1916,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CONTADO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descuento_planilla" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DESCUENTO_PLANILLA
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tarifa-del-servidor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tarifa del servidor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cuando-se-trabaja-desde-el-telefono" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuando se trabaja desde el teléfono
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2010,132 @@
                   
 
 
+
+<div class="ec-flujos">
+<div class="ec-flow-banner">08 · Flujo de ventas y compradores</div>
+<div class="ec-flow-content">
+<div class="ec-flow-hero">
+<div>
+<p><span class="ec-flow-kicker">EcoLact / Flujos de negocio</span></p>
+<h1 id="flujo-de-ventas-y-compradores">Flujo de ventas y compradores</h1>
+<p class="ec-flow-subtitle">Vender con stock y tarifa vigentes</p>
+<p>Ventas identifica al cliente, consulta el producto y registra la operación con su tarifa aplicable. El servidor determina el precio y comprueba las existencias al confirmar.</p>
+</div>
+<figure>
+<p><img alt="Vender con stock y tarifa vigentes: Flujo de ventas y compradores" height="800" src="../../assets/images/flujos/ventas.webp" width="1200" /></p>
+<figcaption>Recurso visual del proyecto. Ilustración del proceso.</figcaption>
+</figure>
+</div>
+<div class="ec-flow-actors">
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 17h20v4H2zM6.25 7H9V6H6V3h8v3h-3v1h6.8c1 0 2 1 2.2 2l.5 7h-17l.55-7c0-1 1-2 2.2-2M13 9v2h5V9zM6 9v1h2V9zm3 0v1h2V9zm-3 2v1h2v-1zm3 0v1h2v-1zm-3 2v1h2v-1zm3 0v1h2v-1zM7 4v1h6V4z"/></svg></span></p>
+<p><strong>Personal de ventas</strong></p>
+<p>Selecciona cliente, producto, cantidad y forma de pago.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5.5A3.5 3.5 0 0 1 15.5 9a3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 8.5 9 3.5 3.5 0 0 1 12 5.5M5 8c.56 0 1.08.15 1.53.42-.15 1.43.27 2.85 1.13 3.96C7.16 13.34 6.16 14 5 14a3 3 0 0 1-3-3 3 3 0 0 1 3-3m14 0a3 3 0 0 1 3 3 3 3 0 0 1-3 3c-1.16 0-2.16-.66-2.66-1.62a5.54 5.54 0 0 0 1.13-3.96c.45-.27.97-.42 1.53-.42M5.5 18.25c0-2.07 2.91-3.75 6.5-3.75s6.5 1.68 6.5 3.75V20h-13zM0 20v-1.5c0-1.39 1.89-2.56 4.45-2.9-.59.68-.95 1.62-.95 2.65V20zm24 0h-3.5v-1.75c0-1.03-.36-1.97-.95-2.65 2.56.34 4.45 1.51 4.45 2.9z"/></svg></span></p>
+<p><strong>Comprador</strong></p>
+<p>Público general, comprador registrado o proveedor.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 4a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m7 8a.26.26 0 0 0-.26.21l-.19 1.32c-.3.13-.59.29-.85.47l-1.24-.5c-.11 0-.24 0-.31.13l-1 1.73c-.06.11-.04.24.06.32l1.06.82a4.2 4.2 0 0 0 0 1l-1.06.82a.26.26 0 0 0-.06.32l1 1.73c.06.13.19.13.31.13l1.24-.5c.26.18.54.35.85.47l.19 1.32c.02.12.12.21.26.21h2c.11 0 .22-.09.24-.21l.19-1.32c.3-.13.57-.29.84-.47l1.23.5c.13 0 .26 0 .33-.13l1-1.73a.26.26 0 0 0-.06-.32l-1.07-.82c.02-.17.04-.33.04-.5s-.01-.33-.04-.5l1.06-.82a.26.26 0 0 0 .06-.32l-1-1.73c-.06-.13-.19-.13-.32-.13l-1.23.5c-.27-.18-.54-.35-.85-.47l-.19-1.32A.236.236 0 0 0 19 12zm-7 2c-4.42 0-8 1.79-8 4v2h9.68a7 7 0 0 1-.68-3 7 7 0 0 1 .64-2.91c-.53-.06-1.08-.09-1.64-.09m8 1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5c-.84 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5"/></svg></span></p>
+<p><strong>Administrador</strong></p>
+<p>Configura las tarifas de los productos.</p>
+</div>
+</div>
+<h2 id="asi-funciona-el-proceso">Así funciona el proceso</h2>
+<div class="ec-flow-diagram">
+<p><img alt="Diagrama de Flujo de ventas y compradores: decisiones, actividades y resultados" src="../../assets/diagrams/flujos/ventas-caja.svg" /></p>
+<p><a href="../../assets/diagrams/flujos/ventas-caja.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/flujos/ventas-caja.mmd">Descargar fuente Mermaid</a></p>
+<details>
+<summary>Ver la fuente editable del diagrama</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  A([Inicio · Ventas]) --&gt; B[Identificar comprador]
+  B --&gt; C[Seleccionar producto y cantidad]
+  C --&gt; D{¿Stock suficiente y producto activo?}
+  D --&gt;|No| E[Mostrar error y revisar]
+  E --&gt; C
+  D --&gt;|Sí| F[Determinar tarifa aplicable]
+  F --&gt; G{¿Forma de pago?}
+  G --&gt;|Contado| H[Registrar venta]
+  G --&gt;|Descuento de planilla| I{¿Proveedor con saldo suficiente?}
+  I --&gt;|No| E
+  I --&gt;|Sí| H
+  H --&gt; J[Descontar stock y habilitar comprobante]
+  J --&gt; K{¿Contado?}
+  K --&gt;|Sí| L[Entrada de caja · VENTA]
+  K --&gt;|No| M[Descuento en pago semanal]
+  L --&gt; Z([Fin · Venta REGISTRADA])
+  M --&gt; Z
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class D,G,I,K decision;
+  class A,Z terminal;
+</code></pre></div>
+</details>
+</div>
+<h2 id="paso-a-paso">Paso a paso</h2>
+<div class="ec-flow-steps">
+<ol>
+<li>Identificar al cliente: público general, comprador registrado o proveedor activo. Una venta no puede asociarse a proveedor y comprador registrado simultáneamente.</li>
+<li>Seleccionar un producto activo y una cantidad válida. Comprobar stock; el servidor vuelve a validarlo con el producto bloqueado dentro de la transacción.</li>
+<li>Determinar la tarifa: PROVEEDOR para proveedor registrado, MAYORISTA si alcanza el mínimo configurado, o PUBLICO en los demás casos. Debe existir un precio aplicable.</li>
+<li>Seleccionar CONTADO o DESCUENTO_PLANILLA. La segunda opción requiere proveedor y no puede superar su pago semanal estimado disponible.</li>
+<li>Registrar la venta y descontar stock. Se guarda el precio aplicado para que futuros cambios de tarifa no alteren la operación pasada.</li>
+<li>Consultar o generar la boleta disponible. La venta al contado registra entrada de caja; la de planilla se cobra descontando del pago al proveedor.</li>
+</ol>
+</div>
+<div class="ec-flow-grid">
+<div class="ec-flow-card green">
+<h3 id="contado">CONTADO</h3>
+<p>Genera ingreso real de caja por el importe total de la venta.</p>
+</div>
+<div class="ec-flow-card orange">
+<h3 id="descuento_planilla">DESCUENTO_PLANILLA</h3>
+<p>Solo para proveedor con saldo suficiente. <strong>No genera entrada inmediata de efectivo.</strong></p>
+</div>
+<div class="ec-flow-card purple">
+<h3 id="tarifa-del-servidor">Tarifa del servidor</h3>
+<p>No la decide el navegador. Si el precio esperado enviado por el cliente cambió, se solicita revisar la venta.</p>
+</div>
+</div>
+<h2 id="cuando-se-trabaja-desde-el-telefono">Cuando se trabaja desde el teléfono</h2>
+<p>La app implementa ventas pendientes al contado con catálogo, precio y stock conocidos. El servidor puede rechazarlas al sincronizar si cambiaron las existencias o la tarifa. El descuento de planilla necesita conexión para validar saldo. El PDF de boleta requiere una venta sincronizada y conexión; registrar un comprador nuevo también necesita conexión.</p>
+<div class="ec-flow-result">
+<p><strong>Resultado del proceso</strong></p>
+<p>Venta REGISTRADA, salida de producto y comprobante consultable. La forma de pago decide si el dinero entra hoy a caja o se descuenta después de la liquidación.</p>
+</div>
+<details class="ec-flow-evidence">
+<summary>Trazabilidad con el código revisado</summary>
+<p>Revisión documental: 28 de octubre de 2026. Las rutas siguientes identifican las fuentes locales; no implican haber ejecutado el sistema de negocio.</p>
+<ul>
+<li><code>EcoLactWeb/app/Application/Ventas/RegistrarVentaProducto.php</code></li>
+<li><code>EcoLactWeb/app/Application/Ventas/ObtenerTarifasProducto.php</code></li>
+<li><code>EcoLactWeb/app/Application/Ventas/EstimarSaldoDisponibleProveedor.php</code></li>
+<li><code>EcoLactWeb/app/Application/Caja/RegistrarMovimientoCaja.php</code></li>
+<li><code>EcoLactWeb/routes/web.php</code> y <code>EcoLactWeb/routes/api.php</code></li>
+<li><code>EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/</code> (rutas, repositorios y pantallas del rol correspondiente).</li>
+</ul>
+</details>
+<div class="ec-flow-links">
+<p><a href="../">← Todos los flujos</a></p>
+<p><a href="../produccion/">Flujo de producción →</a></p>
+<p><a href="../liquidacion-pagos/">Valorización, liquidación y pagos →</a></p>
+<p><a href="../finanzas/">Flujo de caja y finanzas →</a></p>
+<p><a href="../integracion/">Integración móvil y web →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="ventas-caja">ventas-caja</h1>
-
-
-
-
-
-
 
 
 

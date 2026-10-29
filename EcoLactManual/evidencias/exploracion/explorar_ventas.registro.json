@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_ventas.json",
+  "fecha": "2026-10-28T12:06:09",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_ventas_hist",
+      "archivo": "evidencias/exploracion/x_ventas_hist.png",
+      "url": "/admin/ventas?tab=historial",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Historial de ventas\nBuscar cliente, producto o venta\nPeriodo\nHoy\nEsta semana\nEste mes\nPersonalizado\nPago\nTodos los pagos\nContado\nDescuento semanal\nEstado\nTodos los estados\nRegistrada\nAnulada\nVENTA\tFECHA\tCLIENTE\tPRODUCTO\tTOTAL\tPAGO\tESTADO\tACCIÓN\nV-00001\t28 oct. · 17:05\tComprador Prueba Manual\tProducto Prueba Manual 1 L\tS/ 8.00\tContado\tRegistrada\tVer\n\n1 venta · S/ 8.00"
+      ],
+      "hora": "2026-10-28T12:06:13"
+    }
+  ],
+  "dialogos": []
+}

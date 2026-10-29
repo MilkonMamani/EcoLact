@@ -1,0 +1,24 @@
+{
+  "source_files_verified": 1456,
+  "source_files_changed": [
+    "EcoLactWeb/tests/Feature/Web/ProduccionModalYInsumosTest.php",
+    "EcoLactWeb/app/Providers/AppServiceProvider.php",
+    "EcoLactWeb/app/Infrastructure/Mantenimiento/LimpiadorDatosProduccion.php",
+    "EcoLactWeb/app/Infrastructure/Persistence/Models/LoteProduccionModel.php",
+    "EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentLoteProduccionRepository.php",
+    "EcoLactWeb/app/Http/Controllers/Web/Planta/ProduccionController.php",
+    "EcoLactWeb/app/Http/Controllers/Web/Produccion/ProduccionController.php",
+    "EcoLactWeb/app/Domain/Produccion/LoteProduccion.php",
+    "EcoLactWeb/app/Domain/Produccion/LoteProduccionRepository.php",
+    "EcoLactWeb/app/Application/Produccion/CalcularRequerimientosProduccion.php",
+    "EcoLactWeb/app/Application/Produccion/FinalizarProduccion.php",
+    "EcoLactWeb/app/Application/Produccion/IniciarProduccion.php",
+    "EcoLactWeb/app/Application/Produccion/LoteProduccionDetalleData.php",
+    "EcoLactWeb/app/Application/Produccion/ObtenerDetalleLoteProduccion.php",
+    "EcoLactWeb/app/Application/Produccion/RequerimientosProduccion.php"
+  ],
+  "views_verified": 15,
+  "secrets_detected": 0,
+  "log_hashes_verified": true,
+  "runner_and_junit_counts_match": true
+}

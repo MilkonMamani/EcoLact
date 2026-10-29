@@ -44,7 +44,7 @@
                     <x-ui.icon name="qr-code" class="h-4 w-4" /> Escanear QR
                 </button>
             @elseif ($esHoy)
-                <span class="asistencia-cerrada" data-asistencia-cerrada><x-ui.icon name="clock" class="h-4 w-4" /> Cerrada a las {{ $horaCierre }} a. m.</span>
+                <span class="asistencia-cerrada" data-asistencia-cerrada><x-ui.icon name="clock" class="h-4 w-4" /> Cerrada a las {{ $horaCierre }}</span>
             @else
                 <a href="{{ route('admin.asistencia.index', array_filter(['q' => request('q'), 'rol' => request('rol')])) }}" class="fichas-btn is-outline" data-asistencia-volver-hoy>Volver a hoy</a>
             @endif
@@ -132,6 +132,9 @@
                                     @endif
                                 </td>
                                 <td class="is-accion">
+                                    @if ($asistenciaAbierta && $fila->estado === null)
+                                        <button type="button" class="fichas-btn is-primary is-sm" data-asistencia-registrar>Registrar</button>
+                                    @endif
                                     <details class="asistencia-acciones">
                                         <summary aria-label="Acciones para {{ $fila->nombre }}" title="Acciones">
                                             <x-ui.icon name="ellipsis" class="h-4 w-4 rotate-90" />
@@ -212,7 +215,7 @@
         </form>
     </x-ui.modal>
 
-    {{-- Detalle de solo lectura (día ya cerrado a las 07:00); lo rellena admin-asistencia.js con los data-* de la fila. --}}
+    {{-- Detalle de solo lectura (día ya cerrado a las 23:59); lo rellena admin-asistencia.js con los data-* de la fila. --}}
     <x-ui.modal id="modal-detalle-asistencia" title="Detalle de asistencia">
         <div class="space-y-3">
             <x-ui.data-field label="Trabajador"><span data-detalle-nombre></span></x-ui.data-field>
@@ -222,7 +225,7 @@
                 <x-ui.data-field label="Hora"><span data-detalle-hora></span></x-ui.data-field>
                 <x-ui.data-field label="Origen"><span data-detalle-origen></span></x-ui.data-field>
             </div>
-            <p class="text-xs text-text-muted">La asistencia se registra o corrige solo antes de las {{ $horaCierre }} a. m.; este día ya está cerrado.</p>
+            <p class="text-xs text-text-muted">La asistencia se registra o corrige solo antes de las {{ $horaCierre }}; este día ya está cerrado.</p>
             <div class="flex justify-end pt-1">
                 <x-ui.button type="button" data-modal-close variant="ghost">Cerrar</x-ui.button>
             </div>

@@ -12,6 +12,8 @@
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/pruebas/mobile/">
+      
       
         <link rel="prev" href="../backend/">
       
@@ -27,7 +29,7 @@
     
     
       
-        <title>App móvil - Informe EcoLact</title>
+        <title>Validación de Kotlin Multiplatform y offline-first - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mobile" class="md-skip">
+        <a href="#validacion-de-kotlin-multiplatform-y-offline-first" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              App móvil
+              Validación de Kotlin Multiplatform y offline-first
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -935,6 +991,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1019,7 +1079,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1047,7 +1107,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1103,7 +1219,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1159,7 +1275,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1187,7 +1303,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1329,7 +1445,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1357,7 +1473,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1586,6 +1702,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    App móvil
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1602,6 +1736,108 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#preparacion-y-comando-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preparación y comando real
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#casos-y-alcance-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Casos y alcance real
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-first-e-integracion-simulada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offline-first e integración simulada
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencia-de-android-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencia de Android Host
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencia de Android Host">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pruebas-android-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas Android Host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compatibilidad-ios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compatibilidad iOS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1691,6 +1927,97 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#preparacion-y-comando-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preparación y comando real
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#casos-y-alcance-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Casos y alcance real
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#offline-first-e-integracion-simulada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Offline-first e integración simulada
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencia-de-android-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencia de Android Host
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencia de Android Host">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pruebas-android-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas Android Host
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compatibilidad-ios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compatibilidad iOS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2032,192 @@
                   
 
 
+
+<div class="ec-pruebas">
+<div class="ec-test-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2zm4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4z"/></svg></span> 3. Pruebas de aplicación móvil</p>
+</div>
+<div class="ec-test-content">
+<p><span class="ec-test-kicker">EcoLact / 6. Pruebas / Ejecución verificable</span></p>
+<h1 id="validacion-de-kotlin-multiplatform-y-offline-first">Validación de Kotlin Multiplatform y offline-first</h1>
+<p>Se inspeccionaron <code>shared/src/commonTest</code>, <code>shared/src/androidHostTest</code>, <code>shared/src/iosTest</code> y <code>shared/build.gradle.kts</code>. La tarea host ejecuta pruebas comunes y Android JVM; no requiere arrancar un emulador.</p>
+<div class="ec-test-summary">
+<div class="ec-test-card ec-test-"><strong>93</strong>Ejecutadas</div>
+<div class="ec-test-card ec-test-passed"><strong>93</strong>Aprobadas</div>
+<div class="ec-test-card ec-test-failed"><strong>0</strong>Fallidas / errores</div>
+<div class="ec-test-card ec-test-skipped"><strong>0</strong>Omitidas</div>
+<div class="ec-test-card ec-test-"><strong>2.174 s</strong>Tiempo de casos</div>
+</div>
+<h2 id="preparacion-y-comando-real">Preparación y comando real</h2>
+<div class="highlight"><pre><span></span><code><span class="n">java</span> <span class="n">-version</span>
+<span class="p">.\</span><span class="n">gradlew</span><span class="p">.</span><span class="n">bat</span> <span class="p">-</span><span class="n">-version</span>
+<span class="p">.\</span><span class="n">gradlew</span><span class="p">.</span><span class="n">bat</span> <span class="p">:</span><span class="n">shared</span><span class="p">:</span><span class="n">testAndroidHostTest</span> <span class="p">-</span><span class="n">-console</span><span class="p">=</span><span class="n">plain</span> <span class="p">-</span><span class="n">-rerun-tasks</span>
+</code></pre></div>
+<p>Se usó <code>--rerun-tasks</code> para forzar la ejecución actual y evitar presentar un resultado <code>UP-TO-DATE</code> como prueba nueva. Gradle informó <strong>33 tareas ejecutadas</strong> y salida <strong>0</strong>. Java del lanzador es Temurin <strong>17.0.17</strong>; el archivo <code>gradle-daemon-jvm.properties</code> solicita un daemon <strong>Java 21 Azul</strong>. No se deben confundir ambos entornos. Se conservaron advertencias de Kotlin sobre clases <code>expect/actual</code> en beta.</p>
+<h2 id="casos-y-alcance-real">Casos y alcance real</h2>
+<div class="ec-test-table">
+<table>
+<thead>
+<tr>
+<th>Archivo real</th>
+<th>Objetivo y condición comprobada</th>
+<th>Casos JUnit</th>
+<th>Resultado</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shared/src/commonTest/kotlin/pe/edu/upeu/ecolactmobile/SharedCommonTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>1</td>
+<td>1 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.SharedCommonTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/SharedLogicAndroidHostTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>1</td>
+<td>1 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.SharedLogicAndroidHostTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/LocalFirstViewModelTest.kt</code></td>
+<td>Conservar datos locales ante fallos de red y mostrar estados offline sin ocultar la copia existente.</td>
+<td>4</td>
+<td>4 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModelTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/commonTest/kotlin/pe/edu/upeu/ecolactmobile/core/util/FormatTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>8</td>
+<td>8 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.core.util.FormatTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorOfflineTest.kt</code></td>
+<td>QR/DNI cacheado, entrega pendiente persistente, reconciliación sin duplicados, hora original, error de zona y recorrido offline.</td>
+<td>13</td>
+<td>13 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/commonTest/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadModelsTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>2</td>
+<td>2 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.calidad.CalidadModelsTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadMuestreoSyncTest.kt</code></td>
+<td>Selección aleatoria autorizada por servidor simulado, reconexión ordenada y conflictos; OCR queda pendiente de revisión humana.</td>
+<td>4</td>
+<td>4 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.calidad.CalidadMuestreoSyncTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/commonTest/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadMuestreoTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>10</td>
+<td>10 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.calidad.CalidadMuestreoTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadOfflineTest.kt</code></td>
+<td>Selección, foto, análisis, conflicto y migración local. Usa HttpClient sin MockEngine, pero el repositorio se fuerza offline; las respuestas posteriores se aplican localmente.</td>
+<td>6</td>
+<td>6 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/commonTest/kotlin/pe/edu/upeu/ecolactmobile/feature/planta/PlantaModelsTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>10</td>
+<td>10 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/feature/planta/PlantaOfflineTest.kt</code></td>
+<td>QR local, producción rechazada como conflicto, comprobante pendiente de OCR y compra encolada una sola vez.</td>
+<td>4</td>
+<td>4 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.planta.PlantaOfflineTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/commonTest/kotlin/pe/edu/upeu/ecolactmobile/feature/proveedor/ProveedorPresentacionTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>7</td>
+<td>7 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.proveedor.ProveedorPresentacionTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/feature/trabajador/AsistenciaGateTest.kt</code></td>
+<td>Solo asistencia confirmada para hoy permite operar offline; la asistencia anterior no autoriza y el servidor simulado revalida.</td>
+<td>6</td>
+<td>6 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/feature/trabajador/MiQrTrabajadorTest.kt</code></td>
+<td>Disponibilidad local del QR propio y tratamiento de respuesta remota controlada.</td>
+<td>2</td>
+<td>2 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.trabajador.MiQrTrabajadorTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/commonTest/kotlin/pe/edu/upeu/ecolactmobile/feature/ventas/VentasModelsTest.kt</code></td>
+<td>Aserciones de lógica compartida, modelos, formato o presentación; consultar nombres de casos en JUnit.</td>
+<td>7</td>
+<td>7 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.ventas.VentasModelsTest.xml">JUnit</a></td>
+</tr>
+<tr>
+<td><code>shared/src/androidHostTest/kotlin/pe/edu/upeu/ecolactmobile/feature/ventas/VentasSyncTest.kt</code></td>
+<td>Venta en efectivo, boleta tras sincronizar, stock reservado, usuario distinto, rechazos y reintento con misma clave y fecha.</td>
+<td>8</td>
+<td>8 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/junit/TEST-pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest.xml">JUnit</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Procedimiento común:</strong> crear el esquema SQLDelight sobre <code>JdbcSqliteDriver.IN_MEMORY</code>, sembrar datos de prueba, ejecutar el repositorio o handler y verificar filas, estados o respuestas. Los tests de modelos y ViewModel pueden prescindir de la base de datos. Los detalles por función y sus tiempos están en <a href="../../assets/evidencias/pruebas/resumen/20261029-qa02/casos.csv">el inventario por caso</a>.</p>
+<h2 id="offline-first-e-integracion-simulada">Offline-first e integración simulada</h2>
+<p>SQLite JDBC y las consultas SQLDelight son componentes reales ejecutados en memoria. <code>CacheRepository</code>, <code>SyncQueueRepository</code>, repositorios y handlers trabajan sobre esos datos. En los tests de sincronización, <strong>Ktor MockEngine reemplaza al servidor HTTP</strong>. El caso <code>CalidadOfflineTest</code> configura <code>isOnline = { false }</code> y cambia estados de forma local; tampoco constituye una conexión con Laravel.</p>
+<p>Se comprueban persistencia de pendientes, claves idempotentes, conflictos visibles, reintentos y restricciones de asistencia. La reapertura que simulan los tests no acredita recuperación ante apagado físico, batería agotada, cambio real de red ni restricciones del sistema Android.</p>
+<h2 id="evidencia-de-android-host">Evidencia de Android Host</h2>
+<div class="ec-test-evidence">
+<h3 id="pruebas-android-host">Pruebas Android Host</h3>
+<p><strong>2026-10-29T01:16:26.155711-05:00 · salida 0 · 90.679 s de proceso.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">cmd</span> <span class="p">/</span><span class="n">c</span> <span class="n">gradlew</span><span class="p">.</span><span class="n">bat</span> <span class="p">:</span><span class="n">shared</span><span class="p">:</span><span class="n">testAndroidHostTest</span> <span class="p">-</span><span class="n">-console</span><span class="p">=</span><span class="n">plain</span> <span class="p">-</span><span class="n">-rerun-tasks</span>
+</code></pre></div>
+<p>93 aprobadas · 0 fallidas · 0 errores · 0 omitidas.</p>
+<p><img alt="Reporte visual de Pruebas Android Host" src="../../assets/images/pruebas/mobile/20261029-qa02-mobile-android-host.png" /></p>
+<p><em>Reporte visual generado a partir de una ejecución real. Es una captura del reporte HTML; no es una captura directa de la terminal. La imagen resume; el log conserva toda la salida.</em></p>
+<p><a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/mobile-android-host.log">Log completo</a> · <a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/mobile-android-host.json">Comando, fecha, duración y salida</a> · <a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/mobile-android-host.html">Reporte HTML completo</a></p>
+</div>
+<p>También está disponible el <a href="../../assets/evidencias/pruebas/mobile/20261029-qa02/gradle-report/">reporte HTML original de Gradle</a> con clases, métodos y tiempos.</p>
+<h2 id="compatibilidad-ios">Compatibilidad iOS</h2>
+<div class="ec-test-not-run ec-test-card">
+<p><strong>NO EJECUTADA:</strong> <code>shared/src/iosTest/kotlin/pe/edu/upeu/ecolactmobile/SharedLogicIOSTest.kt</code> contiene una prueba <code>example</code>. Windows no dispone de Xcode ni de un destino Apple para ejecutar <code>iosArm64</code> o <code>iosSimulatorArm64</code>. Los casos commonTest aprobados en JVM no certifican su ejecución en iOS.</p>
+</div>
+<h2 id="conclusion">Conclusión</h2>
+<p>Los 93 casos host aprobaron y respaldan los escenarios controlados descritos. Quedan pendientes la ejecución nativa iOS, pruebas instrumentadas en dispositivos y un flujo completo con API real y MySQL aislado. No se midió cobertura de líneas ni rendimiento de producción.</p>
+<div class="ec-test-conclusion">
+<p>Consulta la <a href="../">estrategia</a>, el <a href="../backend/">backend</a>, la <a href="./">app móvil</a>, la <a href="../integracion/">integración</a> y el <a href="../evidencias/">archivo de evidencias</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="mobile">mobile</h1>
-
-
-
-
-
-
 
 
 

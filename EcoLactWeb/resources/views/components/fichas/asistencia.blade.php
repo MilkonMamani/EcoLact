@@ -10,7 +10,7 @@
     $diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     $offsetInicial = $cp ? (int) \DateTimeImmutable::createFromFormat('Y-m-d', $cp->periodoInicioIso)->format('w') : 0;
     $noCorrespondia = $cp ? collect($cp->dias)->where('estado', 'NO_APLICABLE')->count() : 0;
-    $titulos = ['PRESENTE' => 'Asistió', 'FALTA' => 'Falta', 'SIN_REGISTRO' => 'Pendiente (hasta las 07:00)', 'NO_APLICABLE' => 'No correspondía', 'FUTURO' => 'Todavía no llega esta fecha'];
+    $titulos = ['PRESENTE' => 'Asistió', 'FALTA' => 'Falta', 'SIN_REGISTRO' => 'Pendiente (hasta las '.\App\Application\Pago\VentanaAsistencia::horaCierre().')', 'NO_APLICABLE' => 'No correspondía', 'FUTURO' => 'Todavía no llega esta fecha'];
 @endphp
 
 <div class="fichas-asistencia" data-asistencia-mensual {{ $attributes }}>

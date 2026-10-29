@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_pago_trab.json",
+  "fecha": "2026-10-28T11:34:01",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_pago_trab",
+      "archivo": "evidencias/exploracion/x_pago_trab.png",
+      "url": "/admin/pagos/trabajadores",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Finanzas\n›\nPagos\n›\nTrabajadores\nPagos a trabajadores\n\nRevisa los pagos mensuales del personal y registra la entrega correspondiente.\n\nBuscar trabajador por nombre o DNI\nMes\nRol\nTodos los roles\nAcopiador\nAdministrador\nAnalista de calidad\nEncargado de planta\nPersonal de ventas\nEstado\nTodos los estados\nEn curso\nPendiente\nPagado\nSin configurar\nFiltrar\nLimpiar\nPeriodo\nOctubre 2026\nTrabajadores\n7\nPendientes\n0\nPagados\n0\nTotal pendiente\nS/ 0.00\n\nNo hay sueldos configurados para este periodo. Los trabajadores sin sueldo configurado se muestran sin monto.\n\nTRABAJADOR\tROL\tASISTENCIAS\tFALTAS\tSUELDO MENSUAL\tVALOR/DÍA\tACUMULADO\tTOTAL\tESTADO\n\nAQ\nAbel Quispe\nDNI 77766657\n\tEncargado de planta\t0\t1\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nA\nadmin\nSin DNI\n\tAdministrador\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nAP\nAnalista Prueba Manual\nDNI 99000002\n\tAnalista de calidad\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nEP\nEncargado Prueba Manual\nDNI 99000003\n\tEncargado de planta\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nMT\nMaria Ttito\nDNI 97865415\n\tAnalista de calidad\t0\t2\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nOT\nOscar Tello\nDNI 77777721\n\tPersonal de ventas\t0\t1\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nVP\nVendedor Prueba Manual\nDNI 99000004\n\tPersonal de ventas\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\nMostrando 1 a 7 de 7 trabajadores\n\n«\n‹\n1\n›\n»\nAbel Quispe\n\nEncargado de planta\n\nPago no disponible\n\nNo existe una configuración salarial vigente para este trabajador en Octubre 2026.\n\nConfigúrala desde: Configuración > Configuración de pagos."
+      ],
+      "hora": "2026-10-28T11:34:08"
+    }
+  ],
+  "dialogos": []
+}

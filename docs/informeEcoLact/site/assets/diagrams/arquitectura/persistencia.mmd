@@ -1,0 +1,14 @@
+flowchart TB
+  UI[Compose: consultas y eventos] --> R[Repositorios móviles]
+  R --> CACHE[(SQLite: copias y caché)]
+  R --> QUEUE[(SQLite: sync_queue)]
+  SES[SessionManager] --> SESSION[(SQLite: session)]
+  QUEUE --> S[SyncManager y Ktor]
+  S --> API[API Laravel: validación]
+  API --> U[Casos de uso y repositorios Eloquent]
+  U --> CENTRAL[(Base central: MySQL previsto)]
+  CENTRAL --> JSON[Respuesta JSON de consultas]
+  JSON --> CACHE
+  CACHE -. Flow observable .-> UI
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

@@ -1,0 +1,114 @@
+{
+  "id": "VER",
+  "titulo": "Estado de verificación y observaciones",
+  "introduccion": "Este anexo resume qué procedimientos se comprobaron en la interfaz real (entorno de prueba, datos ficticios) y registra las observaciones encontradas durante la documentación. Se actualiza con cada capítulo nuevo.",
+  "secciones": [
+    {
+      "titulo": "Observaciones de la interfaz detectadas",
+      "tabla": {
+        "encabezados": [
+          "ID",
+          "Módulo",
+          "Observación",
+          "Efecto en el uso"
+        ],
+        "anchos": [
+          1.6,
+          2.2,
+          7.0,
+          5.2
+        ],
+        "filas": [
+          [
+            "OBS-01",
+            "Zonas",
+            "El editor de delimitación no funciona en una zona sin delimitación previa: al pulsar «Dibujar delimitación» no entra en modo dibujo y el navegador registra «Cannot read properties of undefined (reading 'addListener')». Reproducido en Chromium y Google Chrome.",
+            "No se puede dibujar el contorno de una zona nueva desde la interfaz (ADM-ZON-004)."
+          ],
+          [
+            "OBS-02",
+            "Zonas",
+            "La leyenda del mapa principal se dibuja por encima de la ventana «Editar zona» y tapa parte de la barra del editor de delimitación.",
+            "El botón «Dibujar delimitación» queda parcialmente cubierto."
+          ],
+          [
+            "OBS-03",
+            "Inicio",
+            "El título del panel de inicio se muestra como «Analitics Dashboard».",
+            "Errata de texto; sin efecto funcional. El manual cita el texto tal como aparece."
+          ],
+          [
+            "OBS-04",
+            "Parámetros de calidad",
+            "El sistema permite crear una regla activa para un parámetro inactivo, pero después rechaza cualquier edición de ese parámetro con «No se puede desactivar el parámetro: tiene reglas de calidad activas asociadas…», aunque no se cambie su estado.",
+            "Para editarlo hay que desactivar primero la regla (ADM-PAR-003)."
+          ],
+          [
+            "OBS-05",
+            "Acopio",
+            "La anulación de entregas está implementada en el sistema (ruta y mensajes), pero no hay botón en las pantallas del Administrador.",
+            "No se puede anular una entrega desde la interfaz (ADM-ACO-005)."
+          ],
+          [
+            "OBS-06",
+            "Configuración de pagos",
+            "La pestaña «Proveedores» mostraba «Sin configurar» aunque existía una configuración de S/ 1.70 por litro (vigencia desde 01/01/2020); al guardar la configuración de prueba, esa vigencia se cerró al 27/10/2026.",
+            "El estado mostrado no reflejaba la configuración existente."
+          ],
+          [
+            "OBS-07",
+            "Calidad",
+            "Al pulsar «Confirmar análisis» cuando un parámetro activo no tiene regla vigente, el servidor responde «Internal Server Error» (500). El registro del sistema indica «No existe una regla de calidad vigente configurada para el parámetro con id 1» (CalcularResultadoCalidad.php). La excepción no se muestra como mensaje al usuario.",
+            "No se puede confirmar análisis hasta configurar reglas para todos los parámetros activos; el usuario no recibe una explicación."
+          ],
+          [
+            "OBS-08",
+            "Pagar a trabajadores",
+            "«Acopiador Prueba Manual», con sueldo configurado (S/ 1 200 desde 28/10/2026), no aparece en «Pagos a trabajadores» de octubre 2026, ni al buscarlo por nombre; los trabajadores sin sueldo sí aparecen como «Sin configurar».",
+            "No se pudo verificar el pago de sueldos. Requiere revisión del equipo de desarrollo."
+          ],
+          [
+            "OBS-09",
+            "Productos / Stock",
+            "La pantalla de stock consolidado y ajustes de inventario (/admin/stock) existe, pero ninguna opción del menú ni otra pantalla enlaza a ella.",
+            "El Administrador solo puede abrirla escribiendo la dirección; no se documenta como procedimiento."
+          ]
+        ]
+      }
+    },
+    {
+      "titulo": "Datos ficticios creados durante la verificación",
+      "items": [
+        "«Zona Prueba Manual» (activa) con la ruta «Ruta Prueba Manual».",
+        "«Zona Prueba Eliminar»: creada y eliminada para comprobar la eliminación.",
+        "Intento de ingreso con el usuario inexistente «usuario.ficticio.manual».",
+        "«Acopiador Prueba Manual» (DNI sintético 99000001, usuario «acopiador.prueba.manual», contraseña aleatoria no registrada) en «Zona Prueba Manual».",
+        "«Analista Prueba Manual» (99000002), «Encargado Prueba Manual» (99000003) y «Vendedor Prueba Manual» (99000004), con contraseñas aleatorias no registradas.",
+        "«Proveedor Prueba Manual» (99000005) asignado a la zona Faon, «Ruta principal».",
+        "Parámetro de calidad «Prueba Manual» (PRUEBA_MANUAL), inactivo, con regla 1–5 % inactiva.",
+        "Sueldo de prueba S/ 1 200 para «Acopiador Prueba Manual».",
+        "Precio de prueba de la leche S/ 1.20 por litro y descuento OBSERVADA S/ 0.10 (desde 28/10/2026); el precio anterior era S/ 1.70.",
+        "Entrega #1 de «Proveedor Prueba Manual» (48 L tras las correcciones).",
+        "Pago ficticio en efectivo de S/ 57.60 al «Proveedor Prueba Manual» (semana 44), con su egreso en Caja.",
+        "«Insumo Prueba Manual» (ml) con presentación «Botella 1 L», compra B000-0001 de 2 botellas (S/ 9.00, egreso en Caja) y ajuste por merma de 100 ml.",
+        "Receta y producto «Producto Prueba Manual» (Yogures, 1 L): 1 L de leche y 60 ml de «Insumo Prueba Manual» por unidad.",
+        "Lote LOT-00001: 2 unidades de «Producto Prueba Manual» (consumió 2 L de leche y 120 ml del insumo ficticio).",
+        "Precios de «Producto Prueba Manual»: proveedor S/ 7.00, público S/ 8.00, mayorista S/ 7.50 desde 10 unidades.",
+        "«Comprador Prueba Manual» (documento 99000006).",
+        "Ventas V-00001 y V-00002 de 1 unidad cada una a «Comprador Prueba Manual» (S/ 8.00 c/u, ingresos en Caja).",
+        "Análisis de calidad confirmado de la entrega #1 (resultado «Aceptada»).",
+        "Reglas de evaluación de referencia (autorizadas el 28/10/2026) para los 7 parámetros activos: Agua añadida ≤ 0 % (Rechazada); Densidad 1.028–1.034 g/mL, Grasa ≥ 3 %, Lactosa 4.2–5 %, Proteína ≥ 2.9 %, Temperatura ≤ 10 °C (Observada); pH 6.5–6.8 (Rechazada). Ajústelas a los valores oficiales de la organización."
+      ]
+    },
+    {
+      "titulo": "Pendientes de comprobar y exclusiones",
+      "items": [
+        "Delimitación de zonas nuevas (OBS-01).",
+        "Registro de asistencia por QR, corrección manual de asistencia y pago de sueldos (OBS-08).",
+        "Lectura de ticket del analizador y de boletas por OCR (requieren imágenes reales).",
+        "Cerrar sesión: no se ejecutó para conservar la sesión de prueba.",
+        "Excluidos por indicación del usuario: gestión de rutas (proveedores de una ruta, orden de visita y recorridos), Comunicados y Notificaciones."
+      ]
+    }
+  ]
+}

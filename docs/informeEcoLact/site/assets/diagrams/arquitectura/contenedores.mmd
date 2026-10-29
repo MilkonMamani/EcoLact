@@ -1,0 +1,19 @@
+C4Container
+title EcoLact: contenedores y comunicación
+Person(admin, "Usuario web", "Administración y operación")
+Person(campo, "Usuario móvil", "Acopio y otros roles implementados")
+System_Boundary(ecolact, "Sistema EcoLact") {
+  Container(laravel, "Aplicación web y backend", "Laravel / PHP / Blade", "Web y API REST con Sanctum; Application, Domain e Infrastructure")
+  ContainerDb(central, "Persistencia central", "MySQL previsto", "Registros confirmados; conexión configurable")
+  Container(movil, "Aplicación móvil", "KMP / Compose", "MVVM, repositorios, Ktor y sincronización")
+  ContainerDb(local, "Persistencia del teléfono", "SQLite / SQLDelight", "Caché, sesión y cola local")
+}
+Rel(admin, laravel, "Usa vistas Blade", "HTTP / HTML")
+Rel(campo, movil, "Consulta y registra")
+Rel(movil, laravel, "Envía solicitudes por Ktor", "HTTP / JSON · /api/v1 · Bearer")
+Rel(laravel, central, "Lee y escribe", "Eloquent / SQL")
+Rel(movil, local, "Lee, guarda y observa", "SQLDelight")
+UpdateRelStyle(laravel, central, $offsetY="-30")
+UpdateRelStyle(movil, local, $offsetY="-30")
+UpdateRelStyle(campo, movil, $offsetX="85", $offsetY="-10")
+UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")

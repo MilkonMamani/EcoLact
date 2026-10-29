@@ -808,7 +808,7 @@ it('el panel de un trabajador sin sueldo dice "Pago no disponible" e indica dón
 
     $this->actingAs($admin)->get(route('admin.pagos.trabajadores.sin-sueldo', ['trabajador' => $trabajador->id, 'periodo' => '2026-09']))
         ->assertOk()
-        ->assertSeeInOrder(['Abel Quispe', 'Encargado de planta', 'Pago no disponible', 'No existe una configuración salarial vigente para este trabajador', 'Configúrala desde: Configuración &gt; Configuración de pagos.'], false)
+        ->assertSeeInOrder(['Abel Quispe', 'Encargado de planta', 'Pago no disponible', 'No existe un sueldo vigente para el rol de este trabajador', 'Configúrala desde: Configuración &gt; Configuración de pagos.'], false)
         ->assertDontSee(route('admin.configuracion-pagos.index'), false)
         ->assertDontSee('Configurar sueldo')
         ->assertDontSee('<a ', false)
@@ -822,16 +822,16 @@ it('el panel de un trabajador sin sueldo dice "Pago no disponible" e indica dón
 
 // ------------------------------------------- rediseño: comprobante a la derecha
 
-it('el sueldo es por trabajador: un compañero del mismo rol con sueldo no oculta a quien todavía no lo tiene', function () {
+it('el sueldo es por rol: el personal de un rol sin sueldo se ve como Sin configurar, aunque otro rol tenga sueldo', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    pagos_personal('CALIDAD', 'David Lopez');
+    pagos_personal('VENTAS', 'David Lopez');
     $ana = pagos_personal('CALIDAD', 'Ana Rojas');
-    pagos_configurar_trabajador($ana->id, 1800, '2026-09-01', $admin);
+    pagos_configurar('CALIDAD', 1800, '2026-09-01', $admin);
 
     visitar_pagar_a_trabajadores($admin)
         ->assertOk()
         ->assertSeeInOrder(['Ana Rojas', 'Analista de calidad', 'S/ 1,800.00', 'S/ 60.00'])
-        ->assertSeeInOrder(['David Lopez', 'Analista de calidad', 'Sin configurar']);
+        ->assertSeeInOrder(['David Lopez', 'Personal de ventas', 'Sin configurar']);
 
     expect(ObligacionPagoModel::where('user_id', $ana->id)->count())->toBe(1)
         ->and(ObligacionPagoModel::count())->toBe(1);

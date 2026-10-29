@@ -6,11 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Revisar antes de ingresar al almacén en EcoLact: actores, decisiones y resultados verificados en el repositorio.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
+      
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/flujos/insumos/">
       
       
         <link rel="prev" href="../produccion/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Insumos y compras - Informe EcoLact</title>
+        <title>Flujo de insumos y compras - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#insumos" class="md-skip">
+        <a href="#flujo-de-insumos-y-compras" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Insumos y compras
+              Flujo de insumos y compras
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -641,6 +637,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -761,6 +761,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../produccion/" class="md-nav__link">
         
   
@@ -798,6 +854,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Insumos y compras
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -814,6 +888,97 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Presentación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#revision-obligatoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisión obligatoria
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importe-de-compra" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Importe de compra
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#excepciones-que-debe-resolver-la-persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Excepciones que debe resolver la persona
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -834,35 +999,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -890,7 +1027,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -950,6 +1115,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1034,7 +1203,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1062,7 +1231,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1118,7 +1343,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1399,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1427,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1569,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1597,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1916,86 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Presentación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#revision-obligatoria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Revisión obligatoria
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#importe-de-compra" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Importe de compra
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#excepciones-que-debe-resolver-la-persona" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Excepciones que debe resolver la persona
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2010,134 @@
                   
 
 
+
+<div class="ec-flujos">
+<div class="ec-flow-banner">07 · Flujo de insumos y compras</div>
+<div class="ec-flow-content">
+<div class="ec-flow-hero">
+<div>
+<p><span class="ec-flow-kicker">EcoLact / Flujos de negocio</span></p>
+<h1 id="flujo-de-insumos-y-compras">Flujo de insumos y compras</h1>
+<p class="ec-flow-subtitle">Revisar antes de ingresar al almacén</p>
+<p>Una compra física se convierte en inventario cuando una persona revisa y confirma sus datos. El OCR ayuda a leer la boleta, pero no identifica por sí solo equivalencias ni confirma la compra.</p>
+</div>
+<figure>
+<p><img alt="Revisar antes de ingresar al almacén: Flujo de insumos y compras" height="800" src="../../assets/images/flujos/insumos.webp" width="1200" /></p>
+<figcaption>Recurso visual del proyecto. Ilustración del proceso.</figcaption>
+</figure>
+</div>
+<div class="ec-flow-actors">
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 18v2h4v-2zm0-4v2h10v-2zm6 4v2h4v-2zm6-4v2h4v-2zm0 4v2h4v-2zM2 22V8l5 4V8l5 4V8l5 4 1-10h3l1 10v10z"/></svg></span></p>
+<p><strong>Encargado de planta</strong></p>
+<p>Revisa la boleta y confirma la compra.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 4a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m7 8a.26.26 0 0 0-.26.21l-.19 1.32c-.3.13-.59.29-.85.47l-1.24-.5c-.11 0-.24 0-.31.13l-1 1.73c-.06.11-.04.24.06.32l1.06.82a4.2 4.2 0 0 0 0 1l-1.06.82a.26.26 0 0 0-.06.32l1 1.73c.06.13.19.13.31.13l1.24-.5c.26.18.54.35.85.47l.19 1.32c.02.12.12.21.26.21h2c.11 0 .22-.09.24-.21l.19-1.32c.3-.13.57-.29.84-.47l1.23.5c.13 0 .26 0 .33-.13l1-1.73a.26.26 0 0 0-.06-.32l-1.07-.82c.02-.17.04-.33.04-.5s-.01-.33-.04-.5l1.06-.82a.26.26 0 0 0 .06-.32l-1-1.73c-.06-.13-.19-.13-.32-.13l-1.23.5c-.27-.18-.54-.35-.85-.47l-.19-1.32A.236.236 0 0 0 19 12zm-7 2c-4.42 0-8 1.79-8 4v2h9.68a7 7 0 0 1-.68-3 7 7 0 0 1 .64-2.91c-.53-.06-1.08-.09-1.64-.09m8 1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5c-.84 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5"/></svg></span></p>
+<p><strong>Administrador</strong></p>
+<p>Mantiene el catálogo y las presentaciones.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18H6v-4h6m9 0v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6m0-10H4v2h16z"/></svg></span></p>
+<p><strong>Proveedor comercial</strong></p>
+<p>Entrega insumos y comprobante físico.</p>
+</div>
+</div>
+<h2 id="asi-funciona-el-proceso">Así funciona el proceso</h2>
+<div class="ec-flow-diagram">
+<p><img alt="Diagrama de Flujo de insumos y compras: decisiones, actividades y resultados" src="../../assets/diagrams/flujos/insumos.svg" /></p>
+<p><a href="../../assets/diagrams/flujos/insumos.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/flujos/insumos.mmd">Descargar fuente Mermaid</a></p>
+<details>
+<summary>Ver la fuente editable del diagrama</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  A([Inicio · Compra física]) --&gt; B[Recibir boleta e insumos]
+  B --&gt; C{¿Cómo registrar?}
+  C --&gt;|Boleta| D[Escanear y extraer con OCR]
+  C --&gt;|Manual| E[Ingresar datos]
+  D --&gt; F[Planta · Revisar datos]
+  E --&gt; F
+  F --&gt; G[Seleccionar insumos y presentaciones]
+  G --&gt; H[Convertir a unidad base configurada]
+  H --&gt; I[Previsualizar movimiento]
+  I --&gt; J{¿Datos correctos?}
+  J --&gt;|No| F
+  J --&gt;|Sí| K[Persona confirma compra]
+  K --&gt; L[Servidor recalcula e incrementa stock]
+  L --&gt; M{¿Total conocido y positivo?}
+  M --&gt;|Sí| N[Salida de caja · INSUMOS]
+  M --&gt;|No| O[Sin movimiento de caja]
+  N --&gt; Z([Fin · Compra y detalle guardados])
+  O --&gt; Z
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class C,J,M decision;
+  class A,Z terminal;
+</code></pre></div>
+</details>
+</div>
+<h2 id="paso-a-paso">Paso a paso</h2>
+<div class="ec-flow-steps">
+<ol>
+<li>Comprar físicamente los insumos y recibir la boleta; estas son actividades externas previas al registro.</li>
+<li>Escanear la boleta para obtener propuestas OCR o ingresar los datos manualmente.</li>
+<li>Revisar los datos, asociar cada línea al insumo correcto y elegir su presentación comercial activa.</li>
+<li>Convertir las presentaciones a la unidad base mediante la equivalencia configurada y previsualizar el stock resultante.</li>
+<li>Confirmar expresamente. El servidor recalcula, guarda la compra, sus detalles y los movimientos INGRESO_COMPRA.</li>
+<li>Si el total es conocido y positivo, registrar la salida de caja. Sin importe conocido, la compra sí puede ingresar al inventario, pero no se inventa una salida de dinero.</li>
+</ol>
+</div>
+<figure class="ec-flow-inline-image">
+<p><img alt="Ilustración de una boleta: dos presentaciones de sal y revisión humana" height="400" src="../../assets/images/flujos/boleta.svg" width="480" /></p>
+<figcaption>Boleta ilustrativa: los datos se revisan antes de confirmar.</figcaption>
+</figure>
+<div class="ec-flow-grid">
+<div class="ec-flow-card ">
+<h3 id="presentacion">Presentación</h3>
+<p><strong>2 sacos × 25 kg = 50 kg.</strong> Si la unidad base del catálogo es gramo, el ingreso equivale a 50 000 g. Es un ejemplo, no una equivalencia inferida del texto OCR.</p>
+</div>
+<div class="ec-flow-card orange">
+<h3 id="revision-obligatoria">Revisión obligatoria</h3>
+<p>La presentación debe pertenecer al insumo y estar activa. La cantidad debe ser positiva y el precio, si se indica, no negativo.</p>
+</div>
+<div class="ec-flow-card green">
+<h3 id="importe-de-compra">Importe de compra</h3>
+<p>Se usa el total indicado; si falta y todas las líneas tienen precio, se calcula cantidad × precio. Si falta un precio de línea, el total calculado queda desconocido.</p>
+</div>
+</div>
+<h2 id="excepciones-que-debe-resolver-la-persona">Excepciones que debe resolver la persona</h2>
+<p>No se admiten líneas vacías, insumos inactivos ni presentaciones inválidas. La leche se rechaza en este formulario: su stock aumenta mediante Acopio. Corregir una propuesta OCR o una vista previa no mueve existencias; solo la confirmación registra la compra.</p>
+<div class="ec-flow-result">
+<p><strong>Resultado del proceso</strong></p>
+<p>Compra, presentación utilizada y movimiento de inventario quedan vinculados. La salida de caja se registra únicamente si existe un total positivo conocido.</p>
+</div>
+<details class="ec-flow-evidence">
+<summary>Trazabilidad con el código revisado</summary>
+<p>Revisión documental: 28 de octubre de 2026. Las rutas siguientes identifican las fuentes locales; no implican haber ejecutado el sistema de negocio.</p>
+<ul>
+<li><code>EcoLactWeb/app/Application/Produccion/ProcesarBoletaCompra.php</code></li>
+<li><code>EcoLactWeb/app/Application/Produccion/CalcularCompraInsumos.php</code></li>
+<li><code>EcoLactWeb/app/Application/Produccion/RegistrarCompraInsumos.php</code></li>
+<li><code>EcoLactWeb/app/Application/Caja/RegistrarMovimientoCaja.php</code></li>
+<li><code>EcoLactWeb/routes/web.php</code> y <code>EcoLactWeb/routes/api.php</code></li>
+</ul>
+</details>
+<div class="ec-flow-links">
+<p><a href="../">← Todos los flujos</a></p>
+<p><a href="../produccion/">Flujo de producción →</a></p>
+<p><a href="../finanzas/">Flujo de caja y finanzas →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="insumos">insumos</h1>
-
-
-
-
-
-
 
 
 

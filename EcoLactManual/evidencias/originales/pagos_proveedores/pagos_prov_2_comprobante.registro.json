@@ -1,0 +1,30 @@
+{
+  "plan": "pagos_prov_2_comprobante.json",
+  "fecha": "2026-10-28T11:29:44",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ppv_07_comprobante_impreso",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_07_comprobante_impreso.png",
+      "url": "/admin/pagos/proveedores/comprobante/1",
+      "descripcion": "",
+      "objetivos": {
+        "imprimir": [
+          1312,
+          12,
+          1424,
+          48
+        ],
+        "volver": [
+          16,
+          20,
+          216,
+          40
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:29:51"
+    }
+  ],
+  "dialogos": []
+}

@@ -1,0 +1,206 @@
+/*
+ * Inventario > Compras y gastos (admin/compras): historial, ficha de la compra y formulario de
+ * registro en 3 etapas. El historial tiene su propio lenguaje, más simple que Caja: dos
+ * indicadores compactos, tres filtros a la vista y una tabla de compras. La ficha reutiliza las
+ * tarjetas de Caja (admin-caja.css) y todo usa la tabla de fichas (admin-fichas.css).
+ *
+ * Móvil: la tabla del historial pasa a tarjetas (data-etiqueta) y la ficha apila sus columnas.
+ */
+body.compras-page { background: #fff; }
+.compras {
+    --compras-pendiente: #b54708;
+    --compras-pendiente-soft: #fef6ee;
+    --compras-parcial: #175cd3;
+    --compras-parcial-soft: #eff8ff;
+}
+
+/* ------------------------------------------------------------ cabecera */
+.compras-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+.compras-header .fichas-title { margin-top: .4rem; font-size: 1.6rem; }
+
+/* ------------------------------------------------------------ indicadores (listado) */
+.compras-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1.25rem; }
+@media (min-width: 768px) { .compras-kpis { grid-template-columns: repeat(2, minmax(0, 16rem)); } }
+.compras-kpi { display: flex; align-items: center; gap: .75rem; padding: .8rem 1rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #f9fafb; }
+.compras-kpi-icono { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 2.1rem; height: 2.1rem; border-radius: .6rem; background: var(--fichas-green-soft); color: var(--fichas-green); }
+.compras-kpi-etiqueta { color: var(--fichas-muted); font-size: .75rem; font-weight: 500; }
+.compras-kpi-valor { color: var(--fichas-ink); font-size: 1.2rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.3; }
+
+/* ------------------------------------------------------------ tarjetas */
+.compras-tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 640px) { .compras-tarjetas.is-tres { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.caja-punto.is-pendiente { background: var(--compras-pendiente-soft); color: var(--compras-pendiente); }
+.caja-tarjeta-valor.is-pendiente { color: var(--compras-pendiente); }
+
+/* ------------------------------------------------------------ filtros */
+.compras-historial { margin-top: 1.5rem; }
+.compras-filtros { display: flex; flex-wrap: wrap; align-items: flex-start; gap: .5rem; }
+.compras-filtros > * { flex: 1 1 100%; }
+@media (min-width: 768px) {
+    .compras-filtros > * { flex: 0 0 auto; }
+    .compras-filtros .compras-buscador { flex: 1 1 18rem; }
+    .compras-filtros > label { width: 13rem; }
+}
+.compras-buscador { height: 2.5rem; border-color: #d0d5dd; border-radius: .5rem; }
+.compras-buscador input { font-size: .85rem; }
+.compras-rango { display: flex; align-items: center; gap: .4rem; height: 2.5rem; padding-inline: .7rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff; color: var(--fichas-muted); font-size: .85rem; }
+.compras-rango:focus-within { border-color: var(--fichas-green); box-shadow: 0 0 0 1px var(--fichas-green); }
+.compras-rango label { flex: 1; min-width: 0; }
+.compras-rango input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--fichas-ink); font-size: .82rem; outline: none; }
+
+.compras-mas-filtros { position: relative; }
+.compras-mas-filtros summary { display: inline-flex; align-items: center; gap: .4rem; height: 2.5rem; padding-inline: .85rem; border: 1px solid #d0d5dd; border-radius: .5rem; background: #fff; color: var(--fichas-ink); font-size: .85rem; font-weight: 500; list-style: none; cursor: pointer; }
+.compras-mas-filtros summary::-webkit-details-marker { display: none; }
+.compras-mas-filtros[open] summary { border-color: var(--fichas-green); color: var(--fichas-green); }
+.compras-mas-filtros[open] .compras-mas-filtros-flecha { transform: rotate(180deg); }
+.compras-mas-filtros-n { display: inline-flex; min-width: 1.2rem; justify-content: center; border-radius: 9999px; background: var(--fichas-green); color: #fff; font-size: .7rem; }
+.compras-mas-filtros-cuerpo { display: grid; gap: .6rem; margin-top: .5rem; padding: .85rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; box-shadow: 0 8px 24px rgb(16 24 40 / .08); }
+@media (min-width: 768px) {
+    .compras-mas-filtros-cuerpo { position: absolute; right: 0; z-index: 20; width: 17rem; }
+}
+.compras-filtro-etiqueta { display: block; margin-bottom: .25rem; color: var(--fichas-muted); font-size: .72rem; font-weight: 600; }
+.compras-limpiar { display: inline-flex; align-items: center; height: 2.5rem; color: var(--fichas-muted); font-size: .85rem; font-weight: 500; }
+.compras-limpiar:hover { color: var(--fichas-green); }
+
+/* ------------------------------------------------------------ historial */
+.compras-tabla { margin-top: .75rem; }
+.compras-tabla th, .compras-tabla td { padding-inline: .75rem; }
+.compras-tabla .is-centro { text-align: center; }
+.compras-tabla tbody tr[data-compra-fila] { cursor: pointer; transition: background-color .15s; }
+.compras-tabla tbody tr[data-compra-fila]:hover td { background: #fafbfc; }
+.compras-tabla tbody tr[data-compra-fila]:focus-visible { outline: 2px solid var(--fichas-green-strong); outline-offset: -2px; }
+.compras-tabla tfoot td { padding: .6rem .75rem; border-top: 1px solid var(--fichas-border); background: var(--fichas-head); }
+.compras-tabla .compras-col-fecha { width: 6.5rem; }
+.compras-tabla .compras-col-accion { width: 3rem; text-align: center; }
+.compras-celda-concepto { min-width: 16rem; max-width: 28rem; white-space: normal !important; }
+.compras-celda-total { color: var(--fichas-ink); font-weight: 600; }
+.compras-concepto { display: block; overflow: hidden; color: var(--fichas-ink); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+a.compras-concepto:hover { color: var(--fichas-green); }
+.compras-celda-proveedor { min-width: 10rem; max-width: 16rem; white-space: normal !important; overflow-wrap: anywhere; }
+.compras-sub { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-top: .2rem; color: var(--fichas-soft-text); font-size: .75rem; }
+
+.compras-destino { display: inline-flex; padding: .1rem .5rem; border-radius: 9999px; background: #f2f4f7; color: var(--fichas-muted); font-size: .68rem; font-weight: 600; }
+.compras-destino.is-inventario { background: var(--fichas-green-soft); color: var(--fichas-green); }
+.compras-destino.is-mixto { background: var(--compras-parcial-soft); color: var(--compras-parcial); }
+
+.compras-estado { display: inline-flex; align-items: center; margin: .1rem .15rem .1rem 0; padding: .15rem .55rem; border-radius: 9999px; font-size: .72rem; font-weight: 600; white-space: nowrap; }
+.compras-estado.is-pagada { background: #ecf7f1; color: #0f7a4d; }
+.compras-estado.is-parcial { background: var(--compras-parcial-soft); color: var(--compras-parcial); }
+.compras-estado.is-pendiente { background: var(--compras-pendiente-soft); color: var(--compras-pendiente); }
+.compras-estado.is-sin-importe { background: #f2f4f7; color: var(--fichas-muted); }
+.compras-estado.is-por-recibir { background: #fff; color: var(--compras-pendiente); box-shadow: inset 0 0 0 1px #f9dbaf; }
+
+@media (max-width: 767px) {
+    .compras-tabla { overflow: visible; border: 0; background: transparent; box-shadow: none; }
+    .compras-tabla table, .compras-tabla tbody, .compras-tabla tfoot { display: block; width: 100%; min-width: 0; }
+    .compras-tabla thead { display: none; }
+    .compras-tabla tbody tr, .compras-tabla tfoot tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .4rem .75rem; margin-bottom: .6rem; padding: .85rem .95rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; }
+    .compras-tabla td { display: block; height: auto; padding: 0; border: 0; text-align: left !important; white-space: normal; }
+    .compras-tabla td[data-etiqueta]::before { content: attr(data-etiqueta); display: block; color: var(--fichas-soft-text); font-size: .68rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .compras-tabla td:empty { display: none; }
+    .compras-celda-concepto { grid-column: 1 / -1; max-width: none; }
+    .compras-tabla td.compras-col-accion { display: none; }
+}
+
+/* ------------------------------------------------------------ formulario (modal) */
+.compra-pasos { display: flex; gap: .35rem; margin: 0; padding: 0; overflow-x: auto; list-style: none; }
+.compra-pasos li { display: flex; flex: 1; align-items: center; gap: .4rem; min-width: max-content; padding: .45rem .6rem; border-radius: .5rem; background: #f7f9fa; color: var(--fichas-soft-text, #98a2b3); font-size: .78rem; font-weight: 600; }
+.compra-pasos-num { display: inline-flex; align-items: center; justify-content: center; width: 1.35rem; height: 1.35rem; border-radius: 9999px; background: #fff; box-shadow: inset 0 0 0 1px #d0d5dd; font-size: .7rem; }
+.compra-pasos li.is-actual { background: #eef7f2; color: #006146; }
+.compra-pasos li.is-actual .compra-pasos-num { background: #006146; color: #fff; box-shadow: none; }
+.compra-pasos li.is-hecho { color: #006146; }
+.compra-pasos li.is-hecho .compra-pasos-num { background: #eef7f2; box-shadow: inset 0 0 0 1px #9ed9bd; }
+@media (max-width: 639px) { .compra-pasos li:not(.is-actual) .compra-pasos-nombre { display: none; } }
+
+.compra-opcion { display: flex; align-items: flex-start; gap: .6rem; padding: .75rem .85rem; border: 1px solid #d0d5dd; border-radius: .65rem; background: #fff; cursor: pointer; transition: border-color .15s, background-color .15s; }
+.compra-opcion:has(input:checked) { border-color: #006146; background: #eef7f2; }
+.compra-opcion input { margin-top: .2rem; accent-color: #006146; }
+.compra-opcion strong { display: block; color: #1d2939; font-size: .875rem; }
+.compra-opcion small { display: block; color: #667085; font-size: .75rem; }
+[data-campos-pago].is-credito select, [data-campos-pago].is-credito input { opacity: .5; }
+
+.compra-ocr { display: grid; gap: .35rem; margin: 0; font-size: .85rem; }
+.compra-ocr div { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: .35rem; border-bottom: 1px dashed #e7ebee; }
+.compra-ocr dt { color: #667085; }
+.compra-ocr dd { margin: 0; color: #1d2939; font-weight: 600; text-align: right; }
+.compra-ocr dd.is-vacio { color: #98a2b3; font-weight: 400; }
+
+.compra-resumen { display: grid; gap: 1rem; }
+.compra-resumen-lineas { margin: 0; padding: 0; list-style: none; border: 1px solid #e7ebee; border-radius: .75rem; }
+.compra-resumen-lineas li { display: flex; justify-content: space-between; gap: 1rem; padding: .6rem .85rem; font-size: .875rem; }
+.compra-resumen-lineas li + li { border-top: 1px solid #f0f2f4; }
+.compra-resumen-lineas li.is-total { background: #f7f9fa; font-size: .95rem; }
+
+/* Etapa «Datos»: boleta opcional y datos poco usados plegados. */
+.compra-escaneo { padding: .85rem 1rem; border: 1px dashed #9ed9bd; border-radius: .85rem; background: #f6fbf8; }
+.compra-escaneo-cabeza { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; font-size: .875rem; }
+.compra-escaneo-icono { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border-radius: .6rem; background: #fff; color: #006146; box-shadow: inset 0 0 0 1px #c9eadb; }
+.compra-escaneo-resultado { display: flex; gap: .9rem; margin-top: .85rem; padding-top: .85rem; border-top: 1px solid #dcefe5; }
+.compra-escaneo-img { width: 5.5rem; height: 7rem; flex-shrink: 0; border: 1px solid #e7ebee; border-radius: .5rem; background: #fff; object-fit: cover; }
+.compra-mas-datos { border-top: 1px solid #f0f2f4; padding-top: .75rem; }
+.compra-mas-datos summary { display: inline-flex; align-items: center; gap: .35rem; color: #006146; font-size: .85rem; font-weight: 600; list-style: none; cursor: pointer; }
+.compra-mas-datos summary::-webkit-details-marker { display: none; }
+.compra-mas-datos summary span { color: #98a2b3; font-weight: 400; }
+.compra-mas-datos[open] .compra-mas-datos-flecha { transform: rotate(180deg); }
+
+/* Etapa «Artículos». */
+.compra-linea { display: grid; gap: .75rem; padding: 1rem; border: 1px solid #e7ebee; border-radius: .85rem; background: #fff; }
+.compra-totales { display: grid; gap: .75rem; padding: 1rem; border-radius: .85rem; background: #f7f9fa; }
+@media (min-width: 640px) { .compra-totales { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; } }
+
+/* Etapa «Revisar y confirmar»: saldo según la condición de pago elegida. */
+.compra-saldo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem 1rem; margin: 0; padding: .85rem 1rem; border-radius: .75rem; background: #f7f9fa; }
+.compra-saldo dt { color: #667085; font-size: .72rem; }
+.compra-saldo dd { margin: .1rem 0 0; color: #1d2939; font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.compra-saldo .is-pendiente dd { color: var(--compras-pendiente, #b54708); }
+.compra-saldo-nota { grid-column: 1 / -1; color: #667085; font-size: .8rem; }
+.compra-resumen-datos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem 1.25rem; margin: 0; }
+@media (min-width: 640px) { .compra-resumen-datos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.compra-resumen-datos dt { color: #98a2b3; font-size: .72rem; }
+.compra-resumen-datos dd { margin: .1rem 0 0; color: #1d2939; font-size: .9rem; font-weight: 600; }
+.compra-resumen-efectos { display: grid; gap: .4rem; margin: 0; padding: .85rem; border-radius: .75rem; background: #f7f9fa; list-style: none; font-size: .875rem; }
+.compra-resumen-efectos li { display: flex; align-items: flex-start; gap: .5rem; }
+.compra-resumen-efectos li.is-ok { color: #0f7a4d; }
+.compra-resumen-efectos li.is-aviso { color: #b54708; }
+
+/* ------------------------------------------------------------ ficha de la compra */
+.compra-volver { display: inline-flex; align-items: center; gap: .35rem; color: var(--fichas-muted); font-size: .85rem; font-weight: 500; }
+.compra-volver:hover { color: var(--fichas-green); }
+.compra-cabecera { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-top: .75rem; }
+.compra-cabecera .fichas-title { font-size: 1.6rem; }
+.compra-cabecera-total { display: flex; flex-direction: column; align-items: flex-end; }
+.compra-cabecera-total span { color: var(--fichas-muted); font-size: .8rem; }
+.compra-cabecera-total strong { color: var(--fichas-ink); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+@media (max-width: 639px) { .compra-cabecera-total { align-items: flex-start; } }
+
+.compra-tabs { display: flex; gap: .25rem; margin-top: 1.5rem; overflow-x: auto; border-bottom: 1px solid var(--fichas-border); }
+.compra-tabs a { display: inline-flex; align-items: center; gap: .4rem; margin-bottom: -1px; padding: .65rem .9rem; border-bottom: 2px solid transparent; color: var(--fichas-muted); font-size: .875rem; font-weight: 600; white-space: nowrap; }
+.compra-tabs a:hover { color: var(--fichas-ink); }
+.compra-tabs a.is-activa { border-color: var(--fichas-green); color: var(--fichas-green); }
+.compra-tabs a:focus-visible { outline: 2px solid var(--fichas-green-strong); outline-offset: -2px; }
+.compra-tabs-n { display: inline-flex; min-width: 1.3rem; justify-content: center; padding: 0 .35rem; border-radius: 9999px; background: #f2f4f7; color: var(--fichas-muted); font-size: .7rem; }
+.compra-tabs a.is-activa .compra-tabs-n { background: var(--fichas-green-soft); color: var(--fichas-green); }
+
+.compra-panel { margin-top: 1rem; }
+.compra-tarjeta { padding: 1.1rem 1.2rem; border: 1px solid var(--fichas-border); border-radius: .85rem; background: #fff; }
+.compra-tarjeta-titulo { margin-bottom: .85rem; color: var(--fichas-ink); font-size: .95rem; font-weight: 600; }
+
+/* Resumen a todo el ancho: los datos en 2, 3 o 4 columnas según el espacio. */
+@media (min-width: 768px) { .fichas-datos.compra-datos { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .fichas-datos.compra-datos { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.compra-cabecera-lado { display: flex; flex-direction: column; align-items: flex-end; gap: .6rem; }
+.compra-cabecera-lado .compra-enlaces { justify-content: flex-end; margin: 0; padding: 0; border: 0; }
+@media (max-width: 639px) { .compra-cabecera-lado, .compra-cabecera-lado .compra-enlaces { align-items: flex-start; justify-content: flex-start; } }
+.compra-enlaces { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f2f4; }
+
+.compra-aviso { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-bottom: .75rem; padding: .85rem 1rem; border: 1px solid #f9dbaf; border-radius: .75rem; background: var(--compras-pendiente-soft); color: var(--compras-pendiente); font-size: .875rem; }
+
+.compra-documentos { display: grid; gap: .75rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 768px) { .compra-documentos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.compra-documentos li { display: flex; gap: .9rem; padding: .85rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; }
+.compra-documento-vista { display: flex; flex-shrink: 0; align-items: center; justify-content: center; width: 5.5rem; height: 5.5rem; overflow: hidden; border: 1px solid var(--fichas-border); border-radius: .6rem; background: var(--fichas-head); }
+.compra-documento-vista img { width: 100%; height: 100%; object-fit: cover; }
+.compra-documento-icono { display: flex; flex-direction: column; align-items: center; color: var(--fichas-muted); font-size: .7rem; font-weight: 700; }
+
+/* Caja: salidas de Compras y gastos que no son insumos. */
+.caja-categoria-icono.is-gastos { background: #f4f3ff; color: #5925dc; }

@@ -24,6 +24,7 @@ final class LoteProduccion
         private readonly int $registradoPorUserId,
         private readonly ?string $observacion = null,
         private readonly ?string $observacionCierre = null,
+        private readonly ?int $planificacionProduccionId = null,
     ) {
         if (trim($codigo) === '') {
             throw new InvalidArgumentException('El código del lote de producción es obligatorio.');
@@ -68,6 +69,14 @@ final class LoteProduccion
     public function observacion(): ?string
     {
         return $this->observacion;
+    }
+
+    /**
+     * Planificación con la que se inició junto a otros lotes (null en lotes anteriores o de la API).
+     */
+    public function planificacionProduccionId(): ?int
+    {
+        return $this->planificacionProduccionId;
     }
 
     /**

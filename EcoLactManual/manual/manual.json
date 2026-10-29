@@ -1,0 +1,55 @@
+{
+  "titulo": "EcoLact — Manual de usuario del Administrador",
+  "subtitulo": "Manual de usuario del Administrador",
+  "descripcion": "Aplicación web de gestión de acopio lácteo, calidad, producción, ventas y pagos",
+  "sistema": "EcoLactWeb (aplicación web Laravel)",
+  "version": "1.0 — manual completo del Administrador (con pendientes señalados)",
+  "fecha": "28 de octubre de 2026",
+  "estado": "Verificado en interfaz salvo los procedimientos marcados como pendientes — ver Anexo A",
+  "historial": [
+    {
+      "version": "0.1",
+      "fecha": "28/10/2026",
+      "cambio": "Prototipo de demostración de Zonas (Antigravity), sin captura del resultado final."
+    },
+    {
+      "version": "0.2",
+      "fecha": "28/10/2026",
+      "cambio": "Estructura del manual completo. Capítulos: Introducción, Acceso y navegación, Zonas y rutas (verificados en interfaz)."
+    },
+    {
+      "version": "0.3",
+      "fecha": "28/10/2026",
+      "cambio": "Capítulo 4: Personal (alta, edición, cambio de zona y estado de acopiadores)."
+    },
+    {
+      "version": "1.0",
+      "fecha": "28/10/2026",
+      "cambio": "Capítulos 4.5 a 19: personal restante, proveedores, parámetros de calidad, configuración de pagos, acopio, calidad, pago a proveedores, asistencia y pagos a trabajadores, insumos, recetas, producción, productos, ventas, compradores, caja y mi perfil. Confirmación de análisis de calidad verificada tras configurar reglas de referencia."
+    }
+  ],
+  "capitulos": [
+    "capitulos/01_introduccion.json",
+    "capitulos/02_acceso.json",
+    "capitulos/03_zonas.json",
+    "capitulos/04_personal.json",
+    "capitulos/05_proveedores.json",
+    "capitulos/06_parametros_calidad.json",
+    "capitulos/07_configuracion_pagos.json",
+    "capitulos/08_acopio.json",
+    "capitulos/09_calidad.json",
+    "capitulos/10_pagar_proveedores.json",
+    "capitulos/11_asistencia_pagos_trabajadores.json",
+    "capitulos/12_insumos.json",
+    "capitulos/13_recetas.json",
+    "capitulos/14_produccion.json",
+    "capitulos/15_productos.json",
+    "capitulos/16_ventas.json",
+    "capitulos/17_compradores.json",
+    "capitulos/18_caja.json",
+    "capitulos/19_mi_perfil.json"
+  ],
+  "anexos": [
+    "capitulos/A_verificacion.json"
+  ]
+}

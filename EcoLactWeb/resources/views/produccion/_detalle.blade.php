@@ -59,6 +59,29 @@
         @if ($lote->observacion())
             <p class="mt-4 text-sm text-text-muted"><span class="font-medium text-text">Observación al iniciar:</span> {{ $lote->observacion() }}</p>
         @endif
+
+        {{-- Lotes iniciados en la misma planificación: cada uno se finaliza por separado. --}}
+        @if ($detalle->planificacion)
+            <div class="mt-5 rounded-xl border border-text-muted/10 bg-primary-soft/20 px-4 py-3">
+                <p class="{{ $rotulo }}">Planificación {{ $detalle->planificacion['codigo'] }} · {{ count($detalle->planificacion['lotes']) }} lotes</p>
+                <ul class="mt-2 flex flex-wrap gap-2">
+                    @foreach ($detalle->planificacion['lotes'] as $hermano)
+                        <li>
+                            @if ($hermano['actual'])
+                                <span class="inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-surface px-3 py-1.5 text-xs font-semibold text-text" aria-current="page">
+                                    <span class="font-mono">{{ $hermano['codigo'] }}</span> {{ $hermano['producto'] }}
+                                </span>
+                            @else
+                                <a href="{{ route($prefijo.'.produccion.show', $hermano['id']) }}" class="inline-flex items-center gap-2 rounded-lg border border-text-muted/15 bg-surface px-3 py-1.5 text-xs text-text hover:border-primary/40">
+                                    <span class="font-mono text-text-muted">{{ $hermano['codigo'] }}</span> {{ $hermano['producto'] }}
+                                    <span class="{{ $hermano['estado'] === 'FINALIZADO' ? 'text-success' : 'text-warning' }}">{{ $hermano['estado'] === 'FINALIZADO' ? 'Finalizado' : 'En proceso' }}</span>
+                                </a>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </header>
 
     <div class="grid border-t border-text-muted/10 lg:grid-cols-5">

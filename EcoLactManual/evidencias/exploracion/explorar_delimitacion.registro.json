@@ -1,0 +1,30 @@
+{
+  "plan": "explorar_delimitacion.json",
+  "fecha": "2026-10-28T10:15:36",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_editor",
+      "archivo": "evidencias/exploracion/x_editor.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "mapa": [
+          487,
+          429,
+          1433,
+          973
+        ],
+        "dibujar": [
+          487,
+          378,
+          654,
+          410
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:15:52"
+    }
+  ],
+  "dialogos": []
+}

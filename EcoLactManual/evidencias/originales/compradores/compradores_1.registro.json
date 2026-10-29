@@ -1,0 +1,85 @@
+{
+  "plan": "compradores_1.json",
+  "fecha": "2026-10-28T12:04:33",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "com_01_listado",
+      "archivo": "evidencias/originales/compradores/com_01_listado.png",
+      "url": "/admin/compradores",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          1153,
+          239,
+          1193
+        ],
+        "nuevo": [
+          1254,
+          65,
+          1387,
+          93
+        ]
+      },
+      "textos_visibles": [
+        "Saltar al contenido\nEcoLact\nGestión integral\n\nDASHBOARD\n\nInicio\nAsistencia\n\nOPERACIÓN\n\nAcopio\nProveedores\nZonas\n\nPERSONAL\n\nTrabajadores\n\nCALIDAD\n\nCalidad\n\nCONFIGURACIÓN\n\nParámetros de calidad\nConfiguración de pagos\n\nFINANZAS\n\nCaja\nPagos\n\nPRODUCCIÓN\n\nRecetas\nProducción\n\nINVENTARIO\n\nInsumos\nProductos\n\nVENTAS\n\nVentas\nCompradores\n\nCOMUNICACIÓN\n\nComunicados\n\nADMINISTRACIÓN\n\nAuditoría\nA\nadmin\nAdministrador\nCompradores\n\nAgenda de clientes registrados que compran productos terminados.\n\n+ Nuevo comprador\nNOMBRE / RAZÓN SOCIAL\tDOCUMENTO / RUC\tTELÉFONO\tESTADO\nPepito\t74125896\t963258741\t\nActivo\nEcoLact · 2026 · Del campo a tu mesa"
+      ],
+      "hora": "2026-10-28T12:04:37"
+    },
+    {
+      "nombre": "com_02_modal",
+      "archivo": "evidencias/originales/compradores/com_02_modal.png",
+      "url": "/admin/compradores",
+      "descripcion": "",
+      "objetivos": {
+        "nombre": [
+          520,
+          348,
+          920,
+          390
+        ],
+        "documento": [
+          520,
+          432,
+          920,
+          474
+        ],
+        "guardar": [
+          760,
+          582,
+          920,
+          618
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T12:04:39"
+    },
+    {
+      "nombre": "com_03_registrado",
+      "archivo": "evidencias/originales/compradores/com_03_registrado.png",
+      "url": "/admin/compradores",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "fila": [
+          305,
+          226,
+          1387,
+          282
+        ]
+      },
+      "textos_visibles": [
+        "Comprador registrado correctamente.",
+        "Comprador Prueba Manual\t99000006\t900000006\t\nActivo"
+      ],
+      "hora": "2026-10-28T12:04:42"
+    }
+  ],
+  "dialogos": []
+}

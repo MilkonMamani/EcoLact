@@ -1,0 +1,110 @@
+{
+ "descripcion": "Ventas: segunda venta FICTICIA (1 unidad) para evidenciar el aviso, historial y detalle.",
+ "salida": "evidencias/originales/ventas",
+ "conservar_texto": "Prueba Manual",
+ "difuminar_textos": [
+  "admin"
+ ],
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/ventas",
+   "ms": 2500
+  },
+  {
+   "accion": "clic",
+   "selector": "label.vpos-opcion:has(input[value=COMPRADOR])"
+  },
+  {
+   "accion": "esperar",
+   "ms": 500
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-vpos-buscador='comprador'] [data-vpos-buscador-texto]",
+   "texto": "Prueba Manual"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-vpos-buscador='comprador'] [data-vpos-buscador-lista] >> text=Comprador Prueba Manual"
+  },
+  {
+   "accion": "esperar",
+   "ms": 600
+  },
+  {
+   "accion": "js",
+   "codigo": "const el=document.querySelector('#vpos-producto'); const o=[...el.options].find(o=>o.text.includes('Producto Prueba Manual')); el.value=o.value; el.dispatchEvent(new Event('change',{bubbles:true}));"
+  },
+  {
+   "accion": "esperar",
+   "ms": 600
+  },
+  {
+   "accion": "escribir",
+   "selector": "#vpos-cantidad",
+   "texto": "1"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1200
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-vpos-confirmar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 3500
+  },
+  {
+   "accion": "captura",
+   "nombre": "ven_04_registrada",
+   "medir": {
+    "aviso": "[data-vpos-ok]"
+   },
+   "leer": [
+    "[data-vpos-ok]"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/ventas?tab=historial",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "ven_06_historial",
+   "medir": {
+    "tab": "#vpos-tab-historial",
+    "fila": "#vpos-panel-historial tbody tr:has-text('V-00001')",
+    "ver": "#vpos-panel-historial tbody tr:has-text('V-00001') :text-is('Ver')"
+   },
+   "leer": [
+    "#vpos-panel-historial"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "#vpos-panel-historial tbody tr:has-text('V-00001') :text-is('Ver')"
+  },
+  {
+   "accion": "esperar",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "ven_07_detalle",
+   "medir": {
+    "modal": "[data-modal].is-open"
+   },
+   "leer": [
+    "[data-modal].is-open"
+   ]
+  }
+ ]
+}

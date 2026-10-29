@@ -1,0 +1,24 @@
+flowchart TB
+  A([Inicio · Compra física]) --> B[Recibir boleta e insumos]
+  B --> C{¿Cómo registrar?}
+  C -->|Boleta| D[Escanear y extraer con OCR]
+  C -->|Manual| E[Ingresar datos]
+  D --> F[Planta · Revisar datos]
+  E --> F
+  F --> G[Seleccionar insumos y presentaciones]
+  G --> H[Convertir a unidad base configurada]
+  H --> I[Previsualizar movimiento]
+  I --> J{¿Datos correctos?}
+  J -->|No| F
+  J -->|Sí| K[Persona confirma compra]
+  K --> L[Servidor recalcula e incrementa stock]
+  L --> M{¿Total conocido y positivo?}
+  M -->|Sí| N[Salida de caja · INSUMOS]
+  M -->|No| O[Sin movimiento de caja]
+  N --> Z([Fin · Compra y detalle guardados])
+  O --> Z
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class C,J,M decision;
+  class A,Z terminal;

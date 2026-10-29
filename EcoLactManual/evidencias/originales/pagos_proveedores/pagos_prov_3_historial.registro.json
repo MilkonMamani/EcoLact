@@ -1,0 +1,51 @@
+{
+  "plan": "pagos_prov_3_historial.json",
+  "fecha": "2026-10-28T11:30:06",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ppv_08_filtro_pagados",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_08_filtro_pagados.png",
+      "url": "/admin/pagos/proveedores?estado=PAGADO",
+      "descripcion": "",
+      "objetivos": {
+        "estado": [
+          666,
+          261,
+          849,
+          301
+        ],
+        "fila": [
+          285,
+          412,
+          1011,
+          488
+        ]
+      },
+      "textos_visibles": [
+        "Todos los estados\nPendientes\nPagados",
+        "Proveedor Prueba Manual\nSemana 44\n\tFaon\t48 L\t\nS/ 1.20\n\tSin análisis\t—\tS/ 57.60\t\nPagado"
+      ],
+      "hora": "2026-10-28T11:30:11"
+    },
+    {
+      "nombre": "ppv_09_historial",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_09_historial.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "modal": [
+          272,
+          219,
+          1168,
+          657
+        ]
+      },
+      "textos_visibles": [
+        "Pagos de Proveedor Prueba Manual\n\nHistorial de pagos realizados al proveedor. Consulta los comprobantes por semana.\n\nSemana\nTodos\nSemana 44\nEstado\nTodos\nPendiente\nPagado\nFiltrar\n#\tTIPO\tBASE DE CÁLCULO\tPERIODO\tMONTO\tESTADO\tACCIÓN\n1\tProveedor\t48.00 L × S/ 1.20\tSemana 44\n22/10/2026 - 28/10/2026\n\tS/ 57.60\t\nPagado\n\t\nVer detalle\n\nMostrando 1 de 1 registro\n\nCerrar"
+      ],
+      "hora": "2026-10-28T11:30:20"
+    }
+  ],
+  "dialogos": []
+}

@@ -1,0 +1,76 @@
+{
+  "titulo": "EcoLact - Manual visual de usuario",
+  "subtitulo": "Demostración verificable: Administrador / Zonas / Crear zona",
+  "version": "Prototipo 1.0 - 28/10/2026",
+  "proceso": "Crear nueva zona de acopio",
+  "rol": "Administrador",
+  "prerrequisitos": ["Acceso autorizado a EcoLact como administrador.", "Módulo Zonas disponible en el menú Operación."],
+  "pasos": [
+    {
+      "numero": 1,
+      "titulo": "Ingresar al módulo Zonas",
+      "instruccion": "En el menú lateral, selecciona «Zonas».",
+      "resultado": "Se muestra la pantalla de administración de zonas.",
+      "estado": "Visible en la captura proporcionada",
+      "imagen_original": "capturas-originales/zonas_listado.png",
+      "imagen_anotada": "capturas-anotadas/paso_01_zonas.png",
+      "rectangulo": [14, 476, 290, 529],
+      "recorte": [0, 95, 1170, 765],
+      "etiqueta_xy": [356, 480],
+      "texto_etiqueta": "1  ABRIR ZONAS"
+    },
+    {
+      "numero": 2,
+      "titulo": "Seleccionar Nueva zona",
+      "instruccion": "Haz clic en el botón «+ Nueva zona».",
+      "resultado": "Se abre la ventana «Nueva zona».",
+      "estado": "Pantallas anterior y posterior aportadas",
+      "imagen_original": "capturas-originales/zonas_listado.png",
+      "imagen_anotada": "capturas-anotadas/paso_02_nueva_zona.png",
+      "rectangulo": [350, 222, 526, 281],
+      "recorte": [250, 95, 1340, 760],
+      "etiqueta_xy": [595, 210],
+      "texto_etiqueta": "2  NUEVA ZONA"
+    },
+    {
+      "numero": 3,
+      "titulo": "Escribir el nombre",
+      "instruccion": "Ingresa un nombre identificable en el campo «Nombre», que es obligatorio.",
+      "resultado": "El formulario contiene el nombre de la nueva zona.",
+      "estado": "Campo visible; dato ingresado no demostrado",
+      "imagen_original": "capturas-originales/zonas_formulario.png",
+      "imagen_anotada": "capturas-anotadas/paso_03_nombre.png",
+      "rectangulo": [708, 374, 1213, 430],
+      "recorte": [470, 170, 1460, 820],
+      "etiqueta_xy": [1250, 343],
+      "texto_etiqueta": "3  NOMBRE *"
+    },
+    {
+      "numero": 4,
+      "titulo": "Completar la descripción",
+      "instruccion": "Si corresponde, añade una breve descripción de la zona.",
+      "resultado": "Se incorpora información complementaria al registro.",
+      "estado": "Campo visible; descripción ingresada no demostrada",
+      "imagen_original": "capturas-originales/zonas_formulario.png",
+      "imagen_anotada": "capturas-anotadas/paso_04_descripcion.png",
+      "rectangulo": [708, 481, 1215, 578],
+      "recorte": [470, 170, 1460, 820],
+      "etiqueta_xy": [1240, 483],
+      "texto_etiqueta": "4  DESCRIPCION"
+    },
+    {
+      "numero": 5,
+      "titulo": "Crear la zona",
+      "instruccion": "Revisa los datos y haz clic en «Crear zona».",
+      "resultado": "Por verificar: el sistema debe confirmar el registro o mostrar validaciones.",
+      "estado": "FALTA captura después de guardar; no afirmar registro exitoso",
+      "imagen_original": "capturas-originales/zonas_formulario.png",
+      "imagen_anotada": "capturas-anotadas/paso_05_crear.png",
+      "rectangulo": [1080, 614, 1215, 662],
+      "recorte": [470, 170, 1460, 820],
+      "etiqueta_xy": [1230, 607],
+      "texto_etiqueta": "5  CREAR ZONA"
+    }
+  ],
+  "pendientes": ["Capturar validación del campo Nombre vacío.", "Capturar resultado después de hacer clic en Crear zona con datos de prueba.", "Confirmar si el sistema permite nombres duplicados y documentar mensajes reales."]
+}

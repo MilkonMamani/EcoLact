@@ -85,6 +85,8 @@
                                 'estado' => $insumo->estado(),
                                 'del_sistema' => $insumo->esDelSistema(),
                                 'unidad_etiqueta' => \App\Domain\Produccion\UnidadMedida::etiqueta($insumo->unidadBase()),
+                                'unidad_base' => $insumo->unidadBase(),
+                                'unidad_simbolo' => \App\Domain\Produccion\UnidadMedida::simbolo($insumo->unidadBase()),
                             ];
                         @endphp
                         <tr class="border-b border-text-muted/5 {{ $insumo->esLeche() ? 'bg-info/10' : '' }}">

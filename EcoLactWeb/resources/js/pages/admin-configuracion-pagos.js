@@ -1,5 +1,5 @@
 /**
- * Configuración de pagos. La tabla + panel de Trabajadores la maneja admin-fichas.js;
+ * Configuración de pagos. La tabla + panel de sueldos por rol la maneja admin-fichas.js;
  * aquí solo:
  *
  * - Pestañas Trabajadores / Proveedores sin recargar (?tab= en la URL para volver a la misma).
@@ -58,3 +58,50 @@ document.addEventListener('input', (evento) => {
 });
 
 document.querySelectorAll('[data-config-sueldo], [data-config-proveedor]').forEach(actualizarCalculos);
+
+// ------------------------------------------------ sueldo por rol: paso de confirmación
+
+/**
+ * El primer "Guardar configuración" no envía: el navegador valida el formulario y se muestra el
+ * resumen (rol, sueldo actual y nuevo, vigencia, a quién afecta). Solo "Confirmar y guardar"
+ * envía. "Volver a editar" o cerrar el modal regresan al paso de edición.
+ */
+function pasoConfirmacion(formulario, confirmar) {
+    formulario.querySelector('[data-paso-edicion]').hidden = confirmar;
+    formulario.querySelector('[data-paso-confirmacion]').hidden = !confirmar;
+    formulario.querySelector('[data-boton-revisar]').hidden = !confirmar;
+    formulario.querySelector('[data-boton-cancelar]').hidden = confirmar;
+    formulario.querySelector('[data-boton-guardar]').textContent = confirmar ? 'Confirmar y guardar' : 'Guardar configuración';
+    formulario.dataset.confirmando = confirmar ? '1' : '';
+}
+
+document.addEventListener('submit', (evento) => {
+    const formulario = evento.target.closest('[data-config-sueldo-rol]');
+
+    if (!formulario || formulario.dataset.confirmando === '1') {
+        return;
+    }
+
+    evento.preventDefault();
+
+    const sueldo = parseFloat(formulario.querySelector('[data-sueldo]').value);
+    const [anio, mes, dia] = formulario.querySelector('[data-fecha-inicio]').value.split('-');
+
+    formulario.querySelector('[data-resumen-sueldo]').textContent = soles(sueldo);
+    formulario.querySelector('[data-resumen-fecha]').textContent = `${dia}/${mes}/${anio}`;
+    pasoConfirmacion(formulario, true);
+    formulario.querySelector('[data-boton-guardar]').focus();
+});
+
+document.addEventListener('click', (evento) => {
+    const revisar = evento.target.closest('[data-boton-revisar]');
+    const cerrar = evento.target.closest('[data-modal-close]');
+    const abrir = evento.target.closest('[data-modal-open]');
+    const formulario = (revisar ?? cerrar)?.closest('[data-config-sueldo-rol]')
+        ?? cerrar?.closest('[data-modal]')?.querySelector('[data-config-sueldo-rol]')
+        ?? (abrir ? document.getElementById(abrir.dataset.modalOpen)?.querySelector('[data-config-sueldo-rol]') : null);
+
+    if (formulario) {
+        pasoConfirmacion(formulario, false);
+    }
+});

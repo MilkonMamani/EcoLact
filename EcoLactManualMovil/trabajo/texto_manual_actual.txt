@@ -1,0 +1,1522 @@
+
+===== PAGINA 1 =====
+ECOLÁCTEOS HUATA
+DOCUMENTACIÓN DEL SISTEMA  /  2026
+GUÍA INSTITUCIONAL DE USO
+MANUAL
+DE USUARIO
+Aplicación móvil EcoLact
+Guías operativas organizadas por rol
+MANUALES INCLUIDOS
+01
+Encargado de planta
+02
+Personal de ventas
+03
+Analista de calidad
+04
+Proveedor
+05
+Acopiador
+MANUAL GENERAL  ·  EDICIÓN OCTUBRE 2026
+FORMATO A4  /  01
+
+===== PAGINA 2 =====
+ECOLÁCTEOS HUATA
+MANUAL GENERAL
+Índice general
+Selecciona el manual correspondiente a tu función.
+CONTENIDO
+PÁGINAS
+01
+Encargado de planta
+Manual por rol  ·  Págs. 03–18
+03
+02
+Personal de ventas
+Manual por rol  ·  Págs. 19–29
+19
+03
+Analista de calidad
+Manual por rol  ·  Págs. 30–39
+30
+04
+Proveedor
+Manual por rol  ·  Págs. 40–50
+40
+05
+Acopiador
+Manual por rol  ·  Págs. 51–60
+51
+CÓMO UTILIZAR ESTE ÍNDICE
+Los números indican la página de inicio dentro del PDF completo.
+ECOLÁCTEOS HUATA  /  EDICIÓN OCTUBRE 2026
+02 / 02
+
+===== PAGINA 3 =====
+ECOLÁCTEOS HUATA
+MANUAL DE
+USUARIO
+ROL: ENCARGADO DE PLANTA
+Guía visual para usar la aplicación
+paso a paso, con capturas reales.
+Incluye el flujo completo de la planta.
+EN ESTE MANUAL
+01
+Iniciar sesión
+02
+Pantalla Inicio
+03
+Menú y navegación
+04
+Asistencia (QR)
+05
+Revisar insumos
+06
+Compra de insumos
+07
+Compra manual
+08
+Nueva producción
+09
+Finalizar producción
+10
+Consultar lotes
+11
+Productos terminados
+12
+Recetas
+13
+Perfil y ayuda rápida
+Vista de inicio
+EDICIÓN 2026  |  FORMATO A4
+
+===== PAGINA 4 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+Tu jornada de un vistazo
+El recorrido completo de la planta: desde que llegas hasta que el producto queda en inventario.
+FLUJO GENERAL
+02 / 16
+1
+Inicia sesión
+Entra con tu usuario y contraseña.
+Sección 01
+2
+Muestra tu QR
+El administrador registra tu asistencia y se habilitan las operaciones del día.
+Sección 04
+3
+Revisa tus insumos
+Mira cuánta leche, cuajo, sal y saborizante tienes en Inventario.
+Sección 05
+4
+Compra lo que falte
+Escanea la boleta o registra la compra manual: el stock sube solo.
+Secciones 06-07
+5
+Inicia una producción
+Elige la receta y la cantidad. El sistema descuenta los insumos.
+Sección 08
+6
+Finaliza el lote
+Indica cuántas unidades salieron realmente: el stock del producto aumenta.
+Sección 09
+7
+Consulta y controla
+Revisa lotes, productos terminados y recetas cuando lo necesites.
+Secciones 10-12
+CÓMO SE MUEVE EL STOCK
+Compra de insumos
+Sube el stock de
+los insumos
+Nueva producción
+Descuenta insumos
+según la receta
+Finalizar producción
+Suma unidades al
+stock del producto
+La leche no se compra aquí: su stock viene del acopio (se muestra como "Del sistema (acopio)").
+
+===== PAGINA 5 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+01  Iniciar sesión
+Entra a tu cuenta para empezar el día.
+ACCESO
+03 / 16
+Pantalla de acceso
+1
+Escribe tu usuario
+En el campo Usuario.
+2
+Ingresa tu contraseña
+En el campo Contraseña.
+3
+Pulsa Iniciar sesión
+Se abrirá la pantalla Inicio.
+AL ENTRAR
+Verás el resumen de la planta, las acciones rápidas y la producción activa. Si aparece un aviso de "Asistencia
+pendiente", sigue la sección 04.
+
+===== PAGINA 6 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+02  Conoce la pantalla Inicio
+Lo más importante de la planta, en una sola vista.
+NAVEGACIÓN
+04 / 16
+Inicio
+1
+Resumen
+Leche disponible, Lotes en proceso y Stock bajo.
+Revísalos al empezar el día.
+2
+Acciones rápidas
+Nueva producción, Escanear boleta y Mi QR a un toque.
+3
+Producción activa
+Lotes que están en proceso. Toca uno para ver su
+detalle y finalizarlo. Ver todas abre la lista completa.
+4
+Barra inferior
+Cambia entre Inicio, Producción e Inventario.
+5
+Conexión y notificaciones
+El punto verde indica que la aplicación está conectada.
+La campana abre tus notificaciones.
+STOCK BAJO
+Este contador indica cuántos insumos están por debajo de su stock mínimo. Si es mayor que 0, revísalos en
+Inventario > Insumos y repón con una compra (sección 06).
+
+===== PAGINA 7 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+03  Menú y navegación
+Todas las secciones de la aplicación y dónde encontrarlas.
+NAVEGACIÓN
+05 / 16
+Menú lateral
+1
+Operación
+Inicio y Producción.
+2
+Inventario
+Insumos, Productos y Recetas.
+3
+Gestión
+Compras de insumos: escanear boletas y registrar
+compras.
+4
+Sistema
+Mi QR (asistencia), Notificaciones y Mi perfil.
+5
+Cerrar sesión
+Sal de tu cuenta al terminar el turno.
+CÓMO ABRIR EL MENÚ
+Toca el icono de tres rayas, arriba a la izquierda de cualquier pantalla principal. Además, la barra inferior siempre
+te lleva a Inicio, Producción e Inventario.
+
+===== PAGINA 8 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+04  Registra tu asistencia
+Muestra tu código QR al administrador para habilitar las operaciones del día.
+ASISTENCIA
+06 / 16
+Aviso en Inicio
+Mi QR / Asistencia
+1
+Aviso
+Aparece en Inicio
+mientras tu asistencia
+del día está pendiente.
+2
+Ver mi QR
+Abre tu código. También
+está en Acciones
+rápidas y en el menú.
+3
+Muestra el código
+El administrador lo
+escanea para registrar
+tu asistencia diaria.
+4
+Es personal
+Muestra tu nombre, rol y
+DNI. Úsalo solo tú.
+HAZLO APENAS LLEGUES
+Mientras el aviso "Asistencia pendiente" esté visible, las operaciones del día no están habilitadas. Cuando el
+administrador registra tu asistencia, el aviso ya no aparece en Inicio.
+
+===== PAGINA 9 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+05  Revisa tus insumos
+Consulta cuánto tienes de cada insumo y cómo se ha movido.
+INVENTARIO
+07 / 16
+Lista de insumos
+Detalle de insumo
+1
+Insumos /
+Productos
+Cambia de lista. El
+número indica cuántos
+hay.
+2
+Leche
+Etiqueta "Del sistema
+(acopio)": su stock viene
+del acopio.
+3
+Otros insumos
+Muestran stock y estado
+(OK). Toca uno para ver
+el detalle.
+4
+Stock
+Stock actual, stock
+mínimo y unidad base
+(ml o g).
+5
+Presentaciones
+Equivalencias de
+compra. Ej.: Balde 25 L =
+25 000 ml.
+6
+Movimientos
+Últimos ingresos y
+salidas con fecha y hora.
+7
+Comprar
+Escanea una boleta o
+registra una compra
+manual.
+UNIDAD BASE
+Todo el stock se guarda en una unidad base (ml, g o L). Las presentaciones de compra, como baldes o sacos, se
+convierten solas a esa unidad.
+
+===== PAGINA 10 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+06  Compra de insumos
+Registra lo que compras para mantener el inventario al día.
+COMPRAS
+08 / 16
+Lista de compras
+Compra registrada
+1
+Escanear boleta
+Fotografía la boleta: la
+app lee los datos para
+que los revises.
+2
+Registrar compra
+manual
+Escribe tú los datos (ver
+sección 07).
+3
+En el teléfono
+Compras guardadas en
+tu celular con estado
+"Por revisar". Tócala para
+completarla.
+4
+Compras
+registradas
+Historial con número,
+fecha, insumos,
+proveedor y total.
+5
+Confirmación
+Muestra el número de
+boleta y avisa que el
+stock ya fue actualizado.
+6
+Continuar
+Vuelve a la lista de
+compras.
+OTRAS FORMAS DE EMPEZAR UNA COMPRA
+También puedes tocar Escanear boleta en Inicio, o entrar al detalle de un insumo y usar los botones de compra
+que aparecen al final de la pantalla.
+
+===== PAGINA 11 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+07  Registra una compra manual
+Completa el formulario y confirma: el stock se actualiza al instante.
+COMPRAS
+09 / 16
+Formulario de compra
+1
+Insumo, cantidad y presentación
+Elige el insumo, escribe la cantidad y selecciona la
+presentación (por ejemplo, Saco 10 kg).
+2
+Resultado
+La app convierte la compra a la unidad base: 1 saco de 10
+kg = 10 000 g.
+3
+Agregar insumo
+Suma otro insumo a la misma compra.
+4
+Comprobante
+Proveedor, N° de comprobante y fecha (AAAA-MM-DD)
+son opcionales.
+5
+Total de la compra
+Escribe el monto total en soles (S/).
+6
+Confirmar compra
+Guarda la compra y actualiza el stock de los insumos.
+7
+Descartar
+Cancela el registro sin guardar nada.
+REVISA ANTES DE CONFIRMAR
+Verifica insumo, cantidad y presentación. El Resultado debe coincidir con lo que realmente entró a planta.
+
+===== PAGINA 12 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+08  Inicia una nueva producción
+Elige la receta, indica cuántas unidades y verifica los insumos.
+PRODUCCIÓN
+10 / 16
+Nueva producción
+1
+Producto (receta)
+Elige qué vas a producir. Siempre se usa la receta
+activa.
+2
+Cantidad a producir
+Escribe cuántas unidades quieres producir.
+3
+Requerimientos de insumos
+La app calcula lo Necesario y lo compara con lo
+Disponible. Una marca verde significa que el insumo
+alcanza.
+4
+Iniciar producción
+Crea el lote (por ejemplo LOT-00004) y descuenta los
+insumos del inventario.
+EJEMPLO
+30 unidades de Yogurt lucumo 1 L necesitan 30 L de leche y 900 ml de saborizante (1 L de leche y 30 ml de
+saborizante por unidad). Si un insumo no alcanza, registra una compra (sección 07) y vuelve a esta pantalla.
+Llegas desde Inicio > Nueva producción o desde Producción.
+
+===== PAGINA 13 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+09  Finaliza la producción
+Cuando el lote termina, registra cuántas unidades salieron realmente.
+PRODUCCIÓN
+11 / 16
+Detalle de lote (En proceso)
+1
+Lote
+Producto, número de lote y estado En proceso.
+2
+Datos del lote
+Cantidad planificada, insumos utilizados (leche, sal, etc.)
+y fecha de inicio.
+3
+Cantidad obtenida realmente
+Aparece la cantidad planificada. Corrígela si salieron
+más o menos unidades.
+4
+Actualización de stock
+Vista previa: Stock anterior + Cantidad obtenida = Stock
+nuevo del producto.
+5
+Finalizar producción
+Cierra el lote y suma las unidades al inventario de
+productos.
+CÓMO LLEGAR AL LOTE
+Desde Inicio, toca un lote en "Producción activa"; o entra a Producción y abre la pestaña "En proceso". Ejemplo:
+Queso Paria tenía 3 unidades; al finalizar 19 más, el stock nuevo es 22.
+
+===== PAGINA 14 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+10  Consulta tus producciones
+Revisa los lotes en proceso y los ya finalizados.
+PRODUCCIÓN
+12 / 16
+Lista de producción
+Lote finalizado
+1
+Nueva producción
+Atajo para iniciar otro
+lote.
+2
+En proceso /
+Finalizados
+Cambia entre lotes
+activos y terminados.
+3
+Lista de lotes
+Producto, lote y
+unidades obtenidas.
+Toca uno para abrirlo.
+4
+Estado
+Finalizado: el lote ya
+sumó al inventario.
+5
+Detalle completo
+Cantidad planificada y
+obtenida, insumos
+usados, fecha de inicio y
+de fin.
+ORDEN DE LA LISTA
+Los lotes más recientes aparecen primero. Cada lote tiene un código único, como LOT-00005.
+
+===== PAGINA 15 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+11  Productos terminados
+Consulta el stock y los precios de lo que produces.
+INVENTARIO
+13 / 16
+Lista de productos
+Detalle de producto
+1
+Productos
+Segunda pestaña de
+Inventario, con las
+unidades en stock de
+cada producto.
+2
+Producto
+Toca uno para ver su
+detalle.
+3
+Datos del producto
+Presentación, stock
+actual, estado, última
+producción (lote) y si
+tiene receta.
+4
+Precios vigentes
+Público, Mayorista
+(desde cierta cantidad
+de unidades) y
+Proveedor.
+CUÁNDO SUBE EL STOCK
+El stock de un producto aumenta cada vez que finalizas un lote de ese producto (sección 09).
+
+===== PAGINA 16 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+12  Recetas
+Consulta qué insumos lleva cada producto.
+INVENTARIO
+14 / 16
+Lista de recetas
+Detalle de receta
+1
+Lista de recetas
+Producto, presentación
+e insumos por unidad.
+Toca una para abrirla.
+2
+Activa
+Es la receta que se usa
+en Nueva producción.
+3
+Por cada unidad
+Insumos y cantidades
+que se gastan por cada
+unidad producida.
+4
+Estado y versión
+Estado, versión y fecha
+de la última
+actualización.
+5
+Aviso
+Las recetas las
+configura el
+administrador; tú solo
+las consultas.
+EJEMPLO DE LECTURA
+Mantequilla cremosa 500 g: por cada unidad se usan 2 L de leche y 10 g de sal. Si produces 30 unidades, el
+sistema calcula 60 L de leche y 300 g de sal.
+
+===== PAGINA 17 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+13  Mi perfil y notificaciones
+Revisa tus datos y cierra sesión al terminar.
+CUENTA
+15 / 16
+Mi perfil
+1
+Tus datos
+Nombre, rol, usuario, DNI y teléfono.
+2
+Cerrar sesión
+Sal de tu cuenta al terminar el turno. También está
+al final del menú.
+3
+Notificaciones
+La campana abre tus avisos desde cualquier
+pantalla.
+DÓNDE ENCONTRARLO
+Menú > Sistema > Mi perfil. Si compartes el teléfono con otra persona, cierra sesión antes de dejarlo.
+
+===== PAGINA 18 =====
+ECOLACT / MANUAL DEL ENCARGADO DE PLANTA
+Resumen y ayuda rápida
+Tu lista del día, preguntas frecuentes y glosario.
+AYUDA
+16 / 16
+CHECKLIST DEL DÍA
+Iniciar sesión y mostrar mi QR al administrador.
+Revisar en Inicio: leche disponible, lotes en proceso y stock bajo.
+Registrar las compras de insumos que llegaron.
+Iniciar las producciones del día con la receta correcta.
+Finalizar cada lote con la cantidad realmente obtenida.
+Revisar el stock de productos y cerrar sesión.
+PREGUNTAS FRECUENTES
+No puedo iniciar operaciones.
+Revisa si tienes el aviso "Asistencia pendiente" y muestra tu QR al administrador (sección 04).
+¿Dónde veo cuánta leche hay?
+En Inicio, tarjeta "Leche disponible", o en Inventario > Insumos > Leche.
+Un insumo no alcanza para producir.
+Registra una compra (secciones 06 y 07) y vuelve a Nueva producción.
+¿Cómo veo lotes anteriores?
+Producción > pestaña Finalizados, y toca el lote.
+¿Dónde veo el stock de un producto?
+Inventario > pestaña Productos.
+Quiero cambiar una receta.
+Solo el administrador puede hacerlo; tú puedes consultarla en Inventario > Recetas.
+GLOSARIO
+Insumo
+Materia prima para producir: leche, cuajo, sal, saborizantes.
+Receta
+Cantidad de cada insumo que lleva una unidad de producto.
+Lote
+Una tanda de producción, identificada con un código (LOT-00001).
+Stock
+Cantidad disponible en inventario.
+Presentación
+Formato en que compras un insumo (balde 25 L, saco 10 kg).
+Unidad base
+Unidad en la que se guarda el stock (ml, g o L).
+
+===== PAGINA 19 =====
+ECOLACTEOS HUATA
+MANUAL DE
+USUARIO
+ROL: PERSONAL DE VENTAS
+Guia visual de la aplicacion movil
+con capturas reales y pasos numerados.
+EN ESTE MANUAL
+01
+Acceder y navegar
+02
+Consultar productos y clientes
+03
+Realizar y registrar ventas
+04
+Revisar el historial
+05
+Consultar perfil y codigo QR
+EDICION OCTUBRE 2026  |  FORMATO A4
+
+===== PAGINA 20 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+ACCESO
+Iniciar sesion
+Ingresa tus credenciales para acceder.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+02
+1
+2
+3
+1
+Usuario
+Escribe tu nombre de usuario.
+2
+Contrasena
+Ingresa tu contrasena.
+3
+Iniciar sesion
+Pulsa para abrir la aplicacion.
+
+===== PAGINA 21 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+NAVEGACION
+Pantalla principal
+Accede a las funciones del personal de ventas.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+03
+1
+2
+3
+1
+Vender
+Abre el modulo de ventas.
+2
+Historial
+Consulta las ventas realizadas.
+3
+Menu
+Abre las demas secciones.
+
+===== PAGINA 22 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+CONSULTA
+Revisar productos
+Consulta stock y precios antes de vender.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+04
+1
+2
+3
+1
+Buscar producto
+Escribe el nombre del producto.
+2
+Ver stock
+Revisa unidades disponibles.
+3
+Comparar precios
+Consulta precios por tipo
+de cliente y minimo mayorista.
+
+===== PAGINA 23 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+CLIENTES
+Consultar compradores
+Busca un comprador o registra uno nuevo.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+05
+1
+2
+3
+1
+Buscar comprador
+Introduce nombre, DNI o RUC.
+2
+Nuevo comprador
+Pulsa para abrir el registro.
+3
+Elegir registro
+Consulta el comprador listado.
+
+===== PAGINA 24 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+VENTA
+Seleccionar cliente
+Elige a quien se vendera el producto.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+06
+1
+2
+3
+1
+Publico general
+Venta sin cliente registrado.
+2
+Comprador registrado
+Busca por nombre o documento.
+3
+Proveedor
+Permite precio de proveedor y
+opciones de pago disponibles.
+
+===== PAGINA 25 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+VENTA
+Cantidad y pago
+Revisa el producto y completa los datos.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+07
+1
+2
+3
+1
+Cantidad
+Indica cuantas unidades venderas.
+2
+Forma de pago
+Elige efectivo o descuento
+del pago semanal si corresponde.
+3
+Calcular total
+Pulsa para mostrar el importe.
+
+===== PAGINA 26 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+VENTA
+Verificar y registrar
+Comprueba los importes antes de confirmar.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+08
+1
+2
+3
+1
+Importe calculado
+Revisa cantidad, precio y total.
+2
+Precio aplicado
+Verifica el tipo de tarifa.
+3
+Registrar venta
+Pulsa para guardar la operacion.
+Importante
+Confirma el total antes de registrar.
+
+===== PAGINA 27 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+SEGUIMIENTO
+Historial de ventas
+Busca operaciones y consulta sus detalles.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+09
+1
+2
+3
+1
+Buscar venta
+Introduce codigo o cliente.
+2
+Filtrar periodo
+Selecciona Todas, Hoy,
+Esta semana o Este mes.
+3
+Abrir venta
+Pulsa una fila para ver detalles.
+
+===== PAGINA 28 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+CUENTA
+Mi perfil
+Consulta tus datos y cierra sesion.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+10
+1
+2
+1
+Datos personales
+Verifica usuario, DNI y rol.
+2
+Cerrar sesion
+Pulsa para salir de la cuenta.
+
+===== PAGINA 29 =====
+ECOLACTEOS HUATA  /  MANUAL DE USUARIO
+ASISTENCIA
+Mi codigo QR
+Muestra tu codigo para registrar asistencia.
+PERSONAL DE VENTAS  |  OCTUBRE 2026
+11
+1
+2
+1
+Codigo personal
+Muestra el QR al administrador.
+2
+Uso del QR
+Se utiliza para registrar
+tu asistencia diaria.
+Recuerda
+No es un codigo para cobrar ventas.
+
+===== PAGINA 30 =====
+ECOLACTEOS HUATA
+MANUAL DE
+USUARIO
+ROL: ANALISTA DE CALIDAD
+Guia visual para usar la aplicacion
+paso a paso, con capturas reales.
+EN ESTE MANUAL
+01  Identificar proveedores
+02  Registrar muestras
+03  Confirmar y analizar
+04  Comunicados y perfil
+EDICION 2026  |  FORMATO A4
+Pantalla de inicio
+
+===== PAGINA 31 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+01  Identifica al proveedor
+Usa el QR o busca por DNI antes de registrar la muestra.
+IDENTIFICACION
+02 / 10
+1
+2
+3
+Pantalla inicial
+1
+Escanear QR
+Abre la camara para leer el codigo.
+2
+Ingresar DNI
+Escribe el documento del proveedor.
+3
+Buscar
+Consulta los datos del proveedor.
+RESULTADO
+Elige uno de los dos metodos de identificacion.
+
+===== PAGINA 32 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+02  Busca por DNI
+Comprueba que el proveedor encontrado sea el correcto.
+BUSQUEDA
+03 / 10
+1
+2
+3
+4
+Proveedor encontrado
+1
+Escribe el DNI
+Introduce los 8 digitos.
+2
+Pulsa Buscar
+Verifica el resultado mostrado.
+3
+Revisa el nombre
+Confirma la identidad del proveedor.
+4
+Continuar
+Avanza al registro de la muestra.
+RESULTADO
+No continues si los datos no corresponden al proveedor.
+
+===== PAGINA 33 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+03  Escanea el codigo QR
+Identifica al proveedor sin escribir su DNI.
+ESCANEO
+04 / 10
+1
+Camara de escaneo
+1
+Enfoca el QR
+Coloca el codigo dentro de la camara.
+2
+Espera la lectura
+La app identifica al proveedor.
+3
+Cancelar
+Regresa sin completar el escaneo.
+RESULTADO
+Si no puedes escanear, utiliza la busqueda por DNI.
+
+===== PAGINA 34 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+04  Registra la cantidad
+Anota los litros de la muestra y una observacion si corresponde.
+REGISTRO
+05 / 10
+1
+2
+3
+Cantidad de muestra
+1
+Litros
+Escribe la cantidad tomada.
+2
+Observacion
+Anade un comentario solo si es necesario.
+3
+Continuar
+Revisa los datos antes de guardar.
+RESULTADO
+Verifica los litros antes de confirmar.
+
+===== PAGINA 35 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+05  Confirma el muestreo
+Revisa el resumen antes de registrar la muestra.
+CONFIRMACION
+06 / 10
+1
+2
+3
+Resumen del muestreo
+1
+Revisar resumen
+Comprueba proveedor, cantidad y metodo.
+2
+Confirmar
+Registra la muestra seleccionada.
+3
+Corregir
+Vuelve para modificar los datos.
+RESULTADO
+Confirma solo cuando la informacion sea correcta.
+
+===== PAGINA 36 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+06  Muestra registrada
+La aplicacion confirma que la muestra se guardo.
+RESULTADO
+07 / 10
+1
+2
+Confirmacion de registro
+1
+Continuar a analisis
+Abre el siguiente paso del proceso.
+2
+Listo
+Finaliza esta operacion.
+3
+Muestras pendientes
+La muestra queda disponible en esa lista.
+RESULTADO
+El registro aparece como pendiente de analisis.
+
+===== PAGINA 37 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+07  Consulta el detalle
+Comprueba los datos de una entrega pendiente de analisis.
+DETALLE
+08 / 10
+1
+2
+3
+Detalle de entrega
+1
+Datos de entrega
+Consulta litros, zona, fecha y estado.
+2
+Escanear ticket
+Abre la camara para leer el ticket.
+3
+Ingresar manualmente
+Utiliza la alternativa sin escaneo.
+RESULTADO
+El estado mostrado es Pendiente de analisis.
+
+===== PAGINA 38 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+08  Publica un comunicado
+Crea un aviso y selecciona sus destinatarios.
+COMUNICADOS
+09 / 10
+1
+2
+3
+4
+5
+Nuevo comunicado
+1
+Titulo
+Escribe el asunto del aviso.
+2
+Contenido
+Redacta el mensaje.
+3
+Tipo
+Selecciona la categoria.
+4
+Destinatarios
+Elige General, Zona o Individual.
+5
+Publicar
+Envia el comunicado.
+RESULTADO
+La pantalla de notificaciones puede confirmar su creacion.
+
+===== PAGINA 39 =====
+ECOLACT / MANUAL DEL ANALISTA DE CALIDAD
+09  Notificaciones y perfil
+Consulta los avisos y la informacion de tu cuenta.
+CUENTA
+10 / 10
+1
+Notificaciones
+1
+Mi perfil
+1
+Notificaciones
+Lee los avisos recibidos.
+2
+Mi perfil
+Consulta usuario y estado.
+3
+Cerrar sesion
+Sale de la cuenta actual.
+RESULTADO
+La campana permite acceder a las notificaciones.
+
+===== PAGINA 40 =====
+ECOLACTEOS HUATA
+MANUAL DE
+USUARIO
+ROL: PROVEEDOR
+Guia visual para utilizar la aplicacion
+paso a paso, con capturas reales.
+Vista de inicio
+EN ESTE MANUAL
+01  Acceder y navegar
+02  Consultar entregas y calidad
+03  Revisar pagos y compras
+04  Leer avisos y notificaciones
+05  Consultar el perfil
+EDICION 2026  |  FORMATO A4
+
+===== PAGINA 41 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+01  Iniciar sesion
+Accede a tu cuenta de proveedor.
+ECOLACTEOS HUATA  |  PROVEEDOR
+02 / 11
+1
+2
+3
+Pantalla principal
+1
+Escribe tu usuario
+En el campo Usuario.
+2
+Ingresa tu clave
+En Contrasena.
+3
+Pulsa Iniciar sesion
+Se abrira Inicio.
+AL TERMINAR
+Veras tu codigo QR y el resumen de la semana.
+
+===== PAGINA 42 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+02  Navegar por la app
+Usa el menu lateral o la barra inferior.
+ECOLACTEOS HUATA  |  PROVEEDOR
+03 / 11
+1
+2
+3
+4
+Pantalla principal
+1
+Abre el menu
+Pulsa el icono de tres lineas.
+2
+Elige una seccion
+Entregas, calidad o pagos.
+3
+Accede a tus compras
+Pulsa Mis compras.
+4
+Revisa avisos
+Comunicados y notificaciones.
+AL TERMINAR
+La barra inferior permite ir a Inicio, Entregas y Pagos.
+
+===== PAGINA 43 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+03  Inicio y codigo QR
+Muestra tu identificacion al acopiador.
+ECOLACTEOS HUATA  |  PROVEEDOR
+04 / 11
+1
+2
+Pantalla principal
+1
+Muestra tu QR
+El acopiador lo escanea
+para registrar tu entrega.
+2
+Consulta tu semana
+Litros entregados, cantidad
+de entregas y pago pendiente.
+AL TERMINAR
+El QR ya esta visible en Inicio; no necesitas buscarlo.
+
+===== PAGINA 44 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+04  Mis entregas
+Consulta el historial y abre una entrega.
+ECOLACTEOS HUATA  |  PROVEEDOR
+05 / 11
+1
+2
+3
+Pantalla principal
+1
+Filtra por semana
+Pulsa Semana.
+2
+Filtra por estado
+Pulsa Estado.
+3
+Abre una entrega
+Pulsa la fila o su flecha
+para ver el detalle.
+AL TERMINAR
+Los estados indican si la entrega fue aceptada o rechazada.
+
+===== PAGINA 45 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+05  Detalle de entrega
+Revisa el registro y accede a su analisis.
+ECOLACTEOS HUATA  |  PROVEEDOR
+06 / 11
+1
+2
+Pantalla principal
+1
+Revisa los datos
+Fecha, litros, zona,
+acopiador y estado.
+2
+Pulsa Ver analisis
+Se abrira el resultado
+de calidad de esa entrega.
+AL TERMINAR
+El resultado de calidad aparece cuando esta disponible.
+
+===== PAGINA 46 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+06  Mi calidad
+Consulta los resultados de laboratorio.
+ECOLACTEOS HUATA  |  PROVEEDOR
+07 / 11
+1
+Pantalla principal
+1
+Selecciona un resultado
+Pulsa la entrega en la lista.
+2
+Revisa los parametros
+Veras grasa, proteina, lactosa,
+densidad, agua anadida y pH.
+AL TERMINAR
+La pantalla de analisis muestra el resultado y sus valores.
+
+===== PAGINA 47 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+07  Mis pagos
+Revisa el importe pendiente por cobrar.
+ECOLACTEOS HUATA  |  PROVEEDOR
+08 / 11
+1
+Pantalla principal
+1
+Consulta el saldo
+En la parte superior se
+muestra el importe por cobrar.
+2
+Revisa los registros
+Si no hay pagos, veras el
+mensaje correspondiente.
+AL TERMINAR
+Esta pantalla es de consulta; no registra pagos.
+
+===== PAGINA 48 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+08  Mis compras
+Consulta el historial de productos adquiridos.
+ECOLACTEOS HUATA  |  PROVEEDOR
+09 / 11
+1
+Pantalla principal
+Pantalla siguiente
+1
+Pulsa una compra
+Toca la fila del producto.
+2
+Consulta el detalle
+Veras cantidad, precio, total,
+forma de pago y fecha.
+AL TERMINAR
+La compra mostrada es un registro, no un boton para comprar.
+
+===== PAGINA 49 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+09  Comunicados
+Lee los avisos publicados para proveedores.
+ECOLACTEOS HUATA  |  PROVEEDOR
+10 / 11
+1
+Pantalla principal
+Pantalla siguiente
+1
+Abre un aviso
+Pulsa el comunicado o
+la flecha a la derecha.
+2
+Lee la informacion
+Consulta el texto y la
+fecha del evento.
+AL TERMINAR
+La etiqueta Nuevo identifica un comunicado sin leer.
+
+===== PAGINA 50 =====
+ECOLACT / MANUAL DEL PROVEEDOR
+10  Notificaciones y perfil
+Reconoce avisos y consulta tus datos.
+ECOLACTEOS HUATA  |  PROVEEDOR
+11 / 11
+1
+Pantalla principal
+Pantalla siguiente
+1
+Pulsa la notificacion
+El punto verde desaparece
+cuando queda leida.
+2
+Abre Mi perfil
+Desde el menu lateral
+consulta tus datos personales.
+AL TERMINAR
+No se abre otra pantalla al marcar una notificacion como leida.
+
+===== PAGINA 51 =====
+ECOLACTEOS HUATA
+MANUAL DE
+USUARIO
+ROL: ACOPIADOR
+Guia visual para usar la aplicacion
+paso a paso, con capturas reales.
+Vista de inicio
+EN ESTE MANUAL
+01  Acceder y navegar
+02  Registrar entregas
+03  Consultar registros
+04  Trabajar sin internet
+EDICION 2026  |  FORMATO A4
+
+===== PAGINA 52 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+01  Iniciar sesion
+Entra a tu cuenta y reconoce las opciones principales.
+ACCESO
+02 / 10
+1
+2
+3
+Pantalla de acceso
+1
+Escribe tu usuario
+En el campo Usuario.
+2
+Ingresa tu contrasena
+En el campo Contrasena.
+3
+Pulsa Iniciar sesion
+Se abrira la pantalla Inicio.
+AL ENTRAR
+Veras tu resumen diario y el boton Registrar entrega.
+
+===== PAGINA 53 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+02  Encuentra cada funcion
+Usa la barra inferior o el menu lateral.
+NAVEGACION
+03 / 10
+1
+2
+3
+Inicio
+4
+5
+Menu lateral
+1
+Registrar entrega
+Inicia una nueva recepcion.
+2
+Ver todas
+Abre el historial general.
+3
+Menu
+Abre las demas secciones.
+4
+Comunicados
+Consulta avisos.
+5
+Mi QR
+Muestra tu QR personal.
+ACCESOS RAPIDOS
+Abajo: Inicio, Entregas y Proveedores.
+
+===== PAGINA 54 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+03  Identifica al proveedor
+Puedes escanear su QR o buscarlo por DNI.
+REGISTRO
+04 / 10
+1
+2
+Escanear QR
+3
+4
+Ingresar DNI
+1
+Opcion QR
+Enfoca el codigo del
+proveedor en el recuadro.
+2
+Opcion DNI
+Toca Ingresar DNI.
+3
+Escribe el DNI
+Digita su numero.
+4
+Buscar proveedor
+Continua con su registro.
+SI EL QR NO SE ENCUENTRA
+Toca Escanear de nuevo o utiliza la opcion Ingresar DNI.
+
+===== PAGINA 55 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+04  Guarda la entrega
+Comprueba al proveedor, registra los litros y guarda.
+REGISTRO
+05 / 10
+1
+2
+3
+4
+Formulario
+5
+6
+Confirmacion
+1
+Cambiar
+Selecciona otro proveedor.
+2
+Cantidad
+Ingresa litros de leche.
+3
+Observacion
+Opcional.
+4
+Guardar entrega
+Confirma el registro.
+5
+Registrar otra
+Inicia otra entrega.
+6
+Ver historial
+Consulta las guardadas.
+
+===== PAGINA 56 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+05  Con internet o sin internet
+La aplicacion permite guardar entregas en ambos casos.
+SINCRONIZACION
+06 / 10
+1
+Con conexion
+2
+Sin conexion
+1
+Verde: sincronizada
+Se guardo en el servidor.
+2
+Naranja: pendiente
+Se guardo en el telefono.
+CUANDO REGRESA LA CONEXION
+La aplicacion sincroniza las entregas pendientes automaticamente.
+Comprueba que cambien a Sincronizada en el historial.
+
+===== PAGINA 57 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+06  Historial y detalle
+Encuentra una entrega y revisa su estado.
+CONSULTA
+07 / 10
+1
+2
+3
+Historial
+4
+5
+Detalle
+1
+Buscar
+Por proveedor o DNI.
+2
+Filtrar
+Hoy, semana o mes.
+3
+Abrir registro
+Toca una entrega.
+4
+Ver estado
+Pendiente o sincronizada.
+5
+Calidad
+Consulta la informacion
+disponible del control.
+OTRA FORMA DE LLEGAR
+Desde Inicio, toca Ver todas o una de las ultimas entregas.
+
+===== PAGINA 58 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+07  Mis proveedores
+Busca un proveedor y consulta sus entregas.
+PROVEEDORES
+08 / 10
+1
+2
+Lista
+3
+4
+Detalle
+1
+Buscar
+Escribe nombre o DNI.
+2
+Abrir perfil
+Toca el proveedor.
+3
+Registrar entrega
+Abre el formulario con
+ese proveedor.
+4
+Ver historial
+Consulta sus entregas.
+HISTORIAL DEL PROVEEDOR
+Puedes filtrar por fecha y tocar una entrega para ver el detalle.
+
+===== PAGINA 59 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+08  Calidad y comunicados
+Consulta el seguimiento y los avisos recibidos.
+CALIDAD Y AVISOS
+09 / 10
+1
+2
+Seguimiento de calidad
+3
+4
+Comunicados
+1
+Filtra resultados
+Todas, En control,
+Con resultado, etc.
+2
+Abre una entrega
+Revisa su detalle.
+3
+Filtra comunicados
+Todos, No leidos o
+Importantes.
+4
+Lee un aviso
+Toca el comunicado.
+PUNTO VERDE EN UN AVISO
+Indica que aun no fue leido; desaparece despues de abrirlo.
+
+===== PAGINA 60 =====
+ECOLACT  /  MANUAL DEL ACOPIADOR
+09  Notificaciones, QR y perfil
+Consulta avisos, muestra tu QR y revisa tus datos.
+CUENTA Y AVISOS
+10 / 10
+1
+Notificaciones
+2
+Mi QR
+3
+Mi perfil
+1
+Notificaciones
+Toca una notificacion para marcarla
+como leida; desaparece el punto verde.
+2
+Mi QR / Asistencia
+Muestra tu QR al administrador para
+registrar tu asistencia diaria.
+3
+Mi perfil
+Consulta tus datos o pulsa Cerrar sesion
+para salir de la cuenta.

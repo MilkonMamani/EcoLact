@@ -55,6 +55,7 @@
 
             <p class="ecolact-sidebar-heading">Inventario</p>
             <x-layout.sidebar-link icon="inventory" :href="route('admin.insumos.index')" :active="request()->routeIs('admin.insumos.*')">Insumos</x-layout.sidebar-link>
+            <x-layout.sidebar-link icon="receipt" :href="route('admin.compras.index')" :active="request()->routeIs('admin.compras.*') || request()->routeIs('admin.compras-insumo.*')">Compras y gastos</x-layout.sidebar-link>
             <x-layout.sidebar-link icon="package" :href="route('admin.productos.index')" :active="request()->routeIs('admin.productos.*') || request()->routeIs('admin.producto-precios.*') || request()->routeIs('admin.stock.*')">Productos</x-layout.sidebar-link>
 
             <p class="ecolact-sidebar-heading">Ventas</p>

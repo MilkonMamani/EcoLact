@@ -1,0 +1,11 @@
+flowchart TB
+  C[Controlador HTTP] -->|usa| U[Application: RegistrarEntrega]
+  U -->|depende del contrato| I[Domain: EntregaRepository]
+  U -->|crea y utiliza| D[Domain: Entrega]
+  E[Infrastructure: EloquentEntregaRepository] -->|implementa| I
+  E -->|adapta| D
+  E --> M[Modelo Eloquent]
+  P[AppServiceProvider] -. vincula contrato e implementación .-> I
+  P -. registra adaptador .-> E
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

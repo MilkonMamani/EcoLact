@@ -1,0 +1,118 @@
+{
+  "plan": "productos_1.json",
+  "fecha": "2026-10-28T12:01:51",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "prd_01_listado",
+      "archivo": "evidencias/originales/productos/prd_01_listado.png",
+      "url": "/admin/productos",
+      "descripcion": "",
+      "objetivos": {
+        "buscar": [
+          331,
+          184,
+          1102,
+          228
+        ],
+        "estado": [
+          1130,
+          183,
+          1322,
+          229
+        ],
+        "fila": [
+          285,
+          292,
+          1407,
+          352
+        ]
+      },
+      "textos_visibles": [
+        "PRODUCTO\tCATEGORÍA\tPRESENTACIÓN\tSTOCK ACTUAL\tESTADO\tACCIÓN",
+        "Producto Prueba Manual\n\n\tYogures\t1 L\t2 unidades\t\nDisponible"
+      ],
+      "hora": "2026-10-28T12:01:57"
+    },
+    {
+      "nombre": "prd_02_detalle",
+      "archivo": "evidencias/originales/productos/prd_02_detalle.png",
+      "url": "/admin/productos",
+      "descripcion": "",
+      "objetivos": {
+        "ver": [
+          1359,
+          306,
+          1391,
+          338
+        ],
+        "detalle": [
+          285,
+          353,
+          1407,
+          638
+        ],
+        "configurar": [
+          912,
+          480,
+          1072,
+          512
+        ]
+      },
+      "textos_visibles": [
+        "Producto Prueba Manual\n\nCategoría\nYogures\nPresentación\n1 L\nStock actual\n2 unidades\nReceta\nReceta activa\nGESTIÓN DE PRECIOS\n\nSin precios configurados\n\nMientras no tenga precios, este producto no se puede vender.\n\nConfigurar precios"
+      ],
+      "hora": "2026-10-28T12:01:59"
+    },
+    {
+      "nombre": "prd_03_precios",
+      "archivo": "evidencias/originales/productos/prd_03_precios.png",
+      "url": "/admin/productos",
+      "descripcion": "",
+      "objetivos": {
+        "formulario": [
+          862,
+          373,
+          1387,
+          641
+        ],
+        "guardar": [
+          895,
+          609,
+          1017,
+          641
+        ]
+      },
+      "textos_visibles": [
+        "GESTIÓN DE PRECIOS\nPrecio para proveedor (S/)\nPrecio para público (S/)\nPrecio para mayorista (S/)\nMayorista desde (unidades)\n\nAl público que compre esta cantidad o más se le cobra el precio mayorista. Deja un precio vacío para quitarlo.\n\nGuardar precios\nCancelar"
+      ],
+      "hora": "2026-10-28T12:02:00"
+    },
+    {
+      "nombre": "prd_04_guardados",
+      "archivo": "evidencias/originales/productos/prd_04_guardados.png",
+      "url": "/admin/productos#producto-1",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "precios": [
+          862,
+          419,
+          1387,
+          660
+        ]
+      },
+      "textos_visibles": [
+        "Precios guardados correctamente.",
+        "GESTIÓN DE PRECIOS\nPrecio para proveedor\nS/ 7.00\nPrecio para público\nS/ 8.00\nPrecio para mayorista\nS/ 7.50\ndesde 10 unidades\nEditar precios\nEliminar precio"
+      ],
+      "hora": "2026-10-28T12:02:05"
+    }
+  ],
+  "dialogos": []
+}

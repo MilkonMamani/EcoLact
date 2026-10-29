@@ -25,8 +25,68 @@ final class UnidadMedida
         'ml' => ['familia' => 'VOLUMEN', 'factor' => 0.001, 'etiqueta' => 'Mililitros (ml)'],
         'kg' => ['familia' => 'MASA', 'factor' => 1.0, 'etiqueta' => 'Kilogramos (kg)'],
         'g' => ['familia' => 'MASA', 'factor' => 0.001, 'etiqueta' => 'Gramos (g)'],
-        'unidad' => ['familia' => 'CONTEO', 'factor' => 1.0, 'etiqueta' => 'Unidades'],
+        'unidad' => ['familia' => 'CONTEO', 'factor' => 1.0, 'etiqueta' => 'Unidades (und)'],
     ];
+
+    /**
+     * Cómo se mide un insumo, en palabras de quien compra: por peso, por
+     * volumen o por unidades. El orden es el de la pantalla.
+     *
+     * @var array<string, array{titulo: string, adjetivo: string}>
+     */
+    private const FAMILIAS = [
+        'MASA' => ['titulo' => 'Por peso', 'adjetivo' => 'peso'],
+        'VOLUMEN' => ['titulo' => 'Por volumen', 'adjetivo' => 'volumen'],
+        'CONTEO' => ['titulo' => 'Por unidades', 'adjetivo' => 'unidades'],
+    ];
+
+    /**
+     * Familias con sus unidades, para elegir primero CÓMO se mide y después
+     * la unidad: ['MASA' => ['titulo' => 'Por peso', 'unidades' => ['kg' => 'Kilogramos (kg)', ...]], ...].
+     *
+     * @return array<string, array{titulo: string, adjetivo: string, unidades: array<string, string>}>
+     */
+    public static function familias(): array
+    {
+        $familias = [];
+
+        foreach (self::FAMILIAS as $familia => $datos) {
+            $familias[$familia] = $datos + ['unidades' => []];
+        }
+
+        foreach (self::UNIDADES as $codigo => $unidad) {
+            $familias[$unidad['familia']]['unidades'][$codigo] = $unidad['etiqueta'];
+        }
+
+        return $familias;
+    }
+
+    /**
+     * MASA, VOLUMEN o CONTEO.
+     */
+    public static function familia(string $codigo): string
+    {
+        self::exigirValida($codigo);
+
+        return self::UNIDADES[$codigo]['familia'];
+    }
+
+    /**
+     * "Controlado por peso / volumen / unidades".
+     */
+    public static function descripcionControl(string $codigo): string
+    {
+        return 'Controlado por '.(self::FAMILIAS[self::UNIDADES[$codigo]['familia'] ?? '']['adjetivo'] ?? $codigo);
+    }
+
+    /**
+     * Abreviatura para mostrar junto a una cantidad: kg, g, L, ml, und.
+     * El código interno de conteo sigue siendo `unidad`.
+     */
+    public static function simbolo(string $codigo): string
+    {
+        return $codigo === 'unidad' ? 'und' : $codigo;
+    }
 
     /**
      * @return list<string>

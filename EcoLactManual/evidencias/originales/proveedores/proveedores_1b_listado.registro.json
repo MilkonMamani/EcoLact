@@ -1,0 +1,51 @@
+{
+  "plan": "proveedores_1b_listado.json",
+  "fecha": "2026-10-28T10:55:24",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "pro_01_listado",
+      "archivo": "evidencias/originales/proveedores/pro_01_listado.png",
+      "url": "/admin/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          299,
+          239,
+          339
+        ],
+        "nuevo": [
+          767,
+          48,
+          936,
+          88
+        ],
+        "buscar": [
+          331,
+          160,
+          920,
+          204
+        ],
+        "filtros": [
+          284,
+          158,
+          936,
+          339
+        ],
+        "panel": [
+          960,
+          48,
+          1408,
+          900
+        ]
+      },
+      "textos_visibles": [
+        "Proveedores",
+        "NOMBRE\tDNI\tTELÉFONO\tZONA\tÚLTIMA ENTREGA\tTOTAL (L)\tESTADO"
+      ],
+      "hora": "2026-10-28T10:55:29"
+    }
+  ],
+  "dialogos": []
+}

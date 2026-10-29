@@ -1,0 +1,11 @@
+flowchart TB
+ A[App Android] --> K[Ktor · ApiConfig.baseUrl]
+ K --> E{Entorno de ejecución}
+ E -->|Emulador| M[10.0.2.2:8000/api/v1/]
+ E -->|Teléfono físico| F[IP real del equipo · misma red]
+ E -->|Remoto| R[Dominio HTTPS del servidor]
+ M --> L[Laravel · rutas /api/v1]
+ F --> L
+ R --> L
+
+classDef default fill:#eaf3ff,stroke:#7ca5df,color:#103b86;

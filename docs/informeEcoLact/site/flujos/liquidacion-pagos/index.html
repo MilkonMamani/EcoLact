@@ -6,17 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="De los litros al pago semanal en EcoLact: actores, decisiones y resultados verificados en el repositorio.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/flujos/liquidacion-pagos/">
       
-        <link rel="prev" href="../ventas-caja/">
+      
+        <link rel="prev" href="../calidad/">
       
       
-        <link rel="next" href="../finanzas/">
+        <link rel="next" href="../consulta-proveedor/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Liquidación y pagos - Informe EcoLact</title>
+        <title>Valorización, liquidación y pagos - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#liquidacion-pagos" class="md-skip">
+        <a href="#valorizacion-y-pagos" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Liquidación y pagos
+              Valorización, liquidación y pagos
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -641,6 +637,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -758,6 +758,192 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pendiente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PENDIENTE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pagado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PAGADO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no_pagable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NO_PAGABLE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#factores-del-importe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Factores del importe
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dos-calculos-que-no-deben-confundirse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dos cálculos que no deben confundirse
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
@@ -824,7 +1010,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
+    Ventas y compradores
   
 
     
@@ -833,44 +1019,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
     </li>
   
 
@@ -890,7 +1038,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -950,6 +1126,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1034,7 +1214,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1062,7 +1242,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1118,7 +1354,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1410,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1438,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1580,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1608,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1927,97 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso a paso">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pendiente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PENDIENTE
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pagado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PAGADO
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no_pagable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NO_PAGABLE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#factores-del-importe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Factores del importe
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dos-calculos-que-no-deben-confundirse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dos cálculos que no deben confundirse
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2032,191 @@
                   
 
 
+
+<div class="ec-flujos">
+<div class="ec-flow-banner">04 · Valorización y pagos</div>
+<div class="ec-flow-content">
+<div class="ec-flow-hero">
+<div>
+<p><span class="ec-flow-kicker">EcoLact / Flujos de negocio</span></p>
+<h1 id="valorizacion-y-pagos">Valorización y pagos</h1>
+<p class="ec-flow-subtitle">De los litros al pago semanal</p>
+<p>El flujo operativo agrupa las entregas por proveedor en semanas de jueves a miércoles. El importe pendiente combina precio vigente, resultado semanal de calidad y compras a cuenta del pago.</p>
+</div>
+<figure>
+<p><img alt="De los litros al pago semanal: Valorización, liquidación y pagos" height="800" src="../../assets/images/flujos/pagos.webp" width="1200" /></p>
+<figcaption>Fotografía ilustrativa generada para esta documentación.</figcaption>
+</figure>
+</div>
+<div class="ec-flow-actors">
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 4a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m7 8a.26.26 0 0 0-.26.21l-.19 1.32c-.3.13-.59.29-.85.47l-1.24-.5c-.11 0-.24 0-.31.13l-1 1.73c-.06.11-.04.24.06.32l1.06.82a4.2 4.2 0 0 0 0 1l-1.06.82a.26.26 0 0 0-.06.32l1 1.73c.06.13.19.13.31.13l1.24-.5c.26.18.54.35.85.47l.19 1.32c.02.12.12.21.26.21h2c.11 0 .22-.09.24-.21l.19-1.32c.3-.13.57-.29.84-.47l1.23.5c.13 0 .26 0 .33-.13l1-1.73a.26.26 0 0 0-.06-.32l-1.07-.82c.02-.17.04-.33.04-.5s-.01-.33-.04-.5l1.06-.82a.26.26 0 0 0 .06-.32l-1-1.73c-.06-.13-.19-.13-.32-.13l-1.23.5c-.27-.18-.54-.35-.85-.47l-.19-1.32A.236.236 0 0 0 19 12zm-7 2c-4.42 0-8 1.79-8 4v2h9.68a7 7 0 0 1-.68-3 7 7 0 0 1 .64-2.91c-.53-.06-1.08-.09-1.64-.09m8 1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5c-.84 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5"/></svg></span></p>
+<p><strong>Administrador</strong></p>
+<p>Configura, revisa y registra el pago.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 22a3 3 0 0 1-3-3c0-.6.18-1.16.5-1.63L9 7.81V6a1 1 0 0 1-1-1V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1v1.81l5.5 9.56c.32.47.5 1.03.5 1.63a3 3 0 0 1-3 3zm-1-3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1c0-.21-.07-.41-.18-.57l-2.29-3.96L14 17l-5.07-5.07-3.75 6.5c-.11.16-.18.36-.18.57m8-9a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span></p>
+<p><strong>Calidad</strong></p>
+<p>Aporta los resultados confirmados de la semana.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 8c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4m0 6.72V20H0v-2c0-2.21 3.13-4 7-4 1.5 0 2.87.27 4 .72M24 20H13V3h11zm-8-8.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1-5 0M22 7a2 2 0 0 1-2-2h-3c0 1.11-.89 2-2 2v9a2 2 0 0 1 2 2h3c0-1.1.9-2 2-2z"/></svg></span></p>
+<p><strong>Proveedor</strong></p>
+<p>Recibe el neto y consulta su comprobante.</p>
+</div>
+</div>
+<h2 id="asi-funciona-el-proceso">Así funciona el proceso</h2>
+<div class="ec-flow-diagram">
+<p><img alt="Diagrama de Valorización, liquidación y pagos: decisiones, actividades y resultados" src="../../assets/diagrams/flujos/liquidacion-pagos.svg" /></p>
+<p><a href="../../assets/diagrams/flujos/liquidacion-pagos.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/flujos/liquidacion-pagos.mmd">Descargar fuente Mermaid</a></p>
+<details>
+<summary>Ver la fuente editable del diagrama</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  A([Inicio · Entrega o análisis confirmado]) --&gt; B[Agrupar proveedor y semana]
+  B --&gt; C{¿Configuración y precio?}
+  C --&gt;|No| D[Omitir entregas sin configuración suficiente]
+  D --&gt; Z([Fin · Completar configuración])
+  C --&gt;|Sí| E[Obtener peor resultado confirmado]
+  E --&gt; F{¿RECHAZADA?}
+  F --&gt;|Sí| G[NO_PAGABLE · Importe cero]
+  G --&gt; H[Trasladar compras a siguiente semana pagable]
+  H --&gt; Y([Fin · Visible, no se paga])
+  F --&gt;|No| I[Precio por entrega y ajuste de calidad]
+  I --&gt; J[Restar compras de planilla]
+  J --&gt; K{¿Neto positivo?}
+  K --&gt;|No| L[No generar pendiente pagable]
+  K --&gt;|Sí| M[PENDIENTE · Revisión administrativa]
+  M --&gt; N{¿Fecha habilitada y monto exacto?}
+  N --&gt;|No| M
+  N --&gt;|Sí| O[Registrar pago y comprobante]
+  O --&gt; P[PAGADO y salida de caja]
+  P --&gt; Q([Fin · Pago preservado])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class C,F,K,N decision;
+  class A,Z,Y,Q terminal;
+</code></pre></div>
+</details>
+</div>
+<h2 id="paso-a-paso">Paso a paso</h2>
+<div class="ec-flow-steps">
+<ol>
+<li>Registrar entregas y agruparlas por proveedor y semana de jueves a miércoles.</li>
+<li>Obtener el precio vigente en la fecha de cada entrega y el peor resultado confirmado de la semana: RECHAZADA, luego OBSERVADA, luego ACEPTADA.</li>
+<li>Sin análisis confirmado se usa el resultado de las otras entregas de la semana; sin resultados se conserva el precio base. OBSERVADA aplica el ajuste configurado si el pago aplica calidad.</li>
+<li>Restar las compras con DESCUENTO_PLANILLA disponibles. Una semana RECHAZADA queda NO_PAGABLE, incluso si no se aplican ajustes de calidad; sus compras se trasladan a la siguiente semana pagable.</li>
+<li>Revisar el pendiente. Registrar el pago desde el miércoles de cierre, por el importe exacto. El registro conserva datos del comprobante y permite su consulta o emisión por el flujo de pagos.</li>
+<li>Marcar PAGADO y registrar la salida de caja en la misma transacción. Un pago efectuado queda fuera del recálculo automático.</li>
+</ol>
+</div>
+<div class="ec-flow-grid">
+<div class="ec-flow-card orange">
+<h3 id="pendiente">PENDIENTE</h3>
+<p>Importe calculado y revisable. Puede cambiar por nuevas entregas, calidad confirmada y descuentos.</p>
+</div>
+<div class="ec-flow-card green">
+<h3 id="pagado">PAGADO</h3>
+<p>Pago efectuado una sola vez. Las entregas posteriores de una semana ya pagada pasan a la siguiente semana disponible.</p>
+</div>
+<div class="ec-flow-card red">
+<h3 id="no_pagable">NO_PAGABLE</h3>
+<p>Semana rechazada con importe cero. Se conserva visible, pero no puede pagarse.</p>
+</div>
+</div>
+<h2 id="factores-del-importe">Factores del importe</h2>
+<p><strong>Bruto = suma de litros pagables × precio ajustado de cada entrega.</strong> El neto resta las compras de planilla disponibles. Los precios ajustados no bajan de cero. Si falta regla OBSERVADA en el sincronizador, su ajuste es cero; si no hay precio para una entrega, se omite. Si los descuentos igualan o superan el bruto, no se genera un pendiente pagable.</p>
+<h2 id="dos-calculos-que-no-deben-confundirse">Dos cálculos que no deben confundirse</h2>
+<div class="ec-flow-table">
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Sincronización operativa</th>
+<th>Generación de liquidación tradicional</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caso de uso</td>
+<td><code>SincronizarPagosProveedor</code></td>
+<td><code>GenerarLiquidacion</code> y <code>CalcularLiquidacion</code></td>
+</tr>
+<tr>
+<td>Base</td>
+<td>Entregas por asignar y pendientes</td>
+<td>Entregas con valorizaciones existentes</td>
+</tr>
+<tr>
+<td>Precio</td>
+<td>Vigente por fecha de entrega</td>
+<td>Un precio vigente al final del periodo</td>
+</tr>
+<tr>
+<td>Calidad</td>
+<td>Peor resultado confirmado semanal</td>
+<td>Incidencias OBSERVADA o RECHAZADA seleccionan regla OBSERVADA; usa litros pagables de las valorizaciones</td>
+</tr>
+<tr>
+<td>Semana rechazada</td>
+<td>Toda la semana NO_PAGABLE</td>
+<td>No implementa por sí mismo esa decisión semanal</td>
+</tr>
+<tr>
+<td>Configuración insuficiente</td>
+<td>Omite sin bloquear acopio o calidad</td>
+<td>Lanza error si faltan valorizaciones, precio o regla necesaria</td>
+</tr>
+<tr>
+<td>Ajustes</td>
+<td>Descuentos de planilla disponibles</td>
+<td>Compras del periodo y ajustes recibidos, incluidos manuales</td>
+</tr>
+<tr>
+<td>Repetición</td>
+<td>Recalcula pendientes; preserva pagados</td>
+<td>Rechaza una liquidación duplicada del mismo periodo</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>La generación tradicional recibe fechas explícitas; no impone por sí sola que el rango sea jueves a miércoles. Su comentario sobre leche rechazada que no ingresó a planta no describe el flujo actual de acopio: <code>RegistrarEntrega</code> sí ingresa la leche sin esperar calidad.</p>
+<div class="ec-flow-info warning">
+<p><strong>Pago exacto y sin duplicados.</strong> <code>RegistrarPagoObligacion</code> rechaza pagos parciales, fechas futuras o anteriores al periodo y métodos que requieran número de operación si este falta. No existe todavía un flujo de regularización automática de un pago ya efectuado.</p>
+</div>
+<div class="ec-flow-result">
+<p><strong>Resultado del proceso</strong></p>
+<p>Pago, liquidación asociada y caja quedan relacionados. El proveedor puede consultar el estado; la contabilidad del dinero usa el importe neto realmente registrado.</p>
+</div>
+<details class="ec-flow-evidence">
+<summary>Trazabilidad con el código revisado</summary>
+<p>Revisión documental: 28 de octubre de 2026. Las rutas siguientes identifican las fuentes locales; no implican haber ejecutado el sistema de negocio.</p>
+<ul>
+<li><code>EcoLactWeb/app/Application/Pago/SincronizarPagosProveedor.php</code></li>
+<li><code>EcoLactWeb/app/Application/Pago/RegistrarPagoObligacion.php</code></li>
+<li><code>EcoLactWeb/app/Application/Liquidacion/GenerarLiquidacion.php</code></li>
+<li><code>EcoLactWeb/app/Application/Liquidacion/CalcularLiquidacion.php</code></li>
+<li><code>EcoLactWeb/app/Application/Caja/RegistrarMovimientoCaja.php</code></li>
+<li><code>EcoLactWeb/routes/web.php</code> y <code>EcoLactWeb/routes/api.php</code></li>
+</ul>
+</details>
+<div class="ec-flow-links">
+<p><a href="../">← Todos los flujos</a></p>
+<p><a href="../calidad/">Flujo de control de calidad →</a></p>
+<p><a href="../ventas-caja/">Flujo de ventas y compradores →</a></p>
+<p><a href="../finanzas/">Flujo de caja y finanzas →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="liquidacion-pagos">liquidacion-pagos</h1>
-
-
-
-
-
-
 
 
 

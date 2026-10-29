@@ -1,0 +1,26 @@
+flowchart TB
+  A([Inicio · Administrador]) --> B[Proveedores, zonas y rutas]
+  B --> C[Acopiador · Recorrido y entrega]
+  C --> D[Ingreso de leche al inventario]
+  C --> E[Pago semanal pendiente]
+  C -. Muestreo opcional .-> F[Calidad · Análisis confirmado]
+  F --> E
+  D --> G[Planta · Producción con insumos]
+  H[Compra de insumos] --> G
+  G --> I[Ventas · Productos terminados]
+  I --> J{Forma de pago}
+  J -->|Contado| K[Caja · Entrada]
+  J -->|Planilla| E
+  E --> L[Administración · Pago al proveedor]
+  L --> M[Caja · Salida]
+  H -->|Con importe positivo| M
+  N[Pago a trabajadores] --> M
+  C --> O[Proveedor · Historial y consultas]
+  F --> O
+  L --> O
+  O --> P([Fin · Información disponible])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class J decision;
+  class A,P terminal;

@@ -1,0 +1,288 @@
+{
+  "descripcion": "Zonas (continuación): nueva ruta, desactivar/activar y eliminar sobre registros ficticios. La delimitación no se completa por defecto JS detectado en zonas sin polígono.",
+  "salida": "evidencias/originales/zonas",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "difuminar": [
+    ".fichas-mini-tabla tbody td:nth-child(1)",
+    ".fichas-mini-tabla tbody td:nth-child(2)",
+    ".fichas-mini-tabla tbody td:nth-child(3)"
+  ],
+  "pasos": [
+    {
+      "accion": "ir",
+      "url": "/admin/zonas",
+      "ms": 6000
+    },
+    {
+      "accion": "clic",
+      "selector": ".zonas-leyenda button:has-text('Zona Prueba Manual')"
+    },
+    {
+      "accion": "esperar",
+      "ms": 2500
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_40_antes_ruta",
+      "medir": {
+        "nueva_ruta": "[data-fichas-panel] button[data-modal-open^='modal-nueva-ruta']"
+      }
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] button[data-modal-open^='modal-nueva-ruta']"
+    },
+    {
+      "accion": "esperar",
+      "ms": 1000
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_41_modal_ruta",
+      "medir": {
+        "nombre": "[data-modal].is-open input[name=nombre]",
+        "descripcion": "[data-modal].is-open textarea[name=descripcion]"
+      }
+    },
+    {
+      "accion": "escribir",
+      "selector": "[data-modal].is-open input[name=nombre]",
+      "texto": "Ruta Prueba Manual"
+    },
+    {
+      "accion": "escribir",
+      "selector": "[data-modal].is-open textarea[name=descripcion]",
+      "texto": "Ruta ficticia para el manual."
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_42_ruta_datos",
+      "medir": {
+        "nombre": "[data-modal].is-open input[name=nombre]",
+        "crear": "[data-modal].is-open button[type=submit]:has-text('Crear ruta')"
+      }
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-modal].is-open button[type=submit]:has-text('Crear ruta')"
+    },
+    {
+      "accion": "esperar",
+      "selector": "[role=alert]:has-text('Ruta creada')"
+    },
+    {
+      "accion": "esperar",
+      "ms": 3000
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_43_ruta_creada",
+      "medir": {
+        "mensaje": "[role=alert]:has-text('Ruta creada')",
+        "rutas": "[data-fichas-panel] .zonas-rutas",
+        "gestionar": "[data-fichas-panel] .zonas-rutas a"
+      },
+      "leer": [
+        "[role=alert]:has-text('Ruta creada')",
+        "[data-fichas-panel] .zonas-rutas"
+      ]
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_50_menu_cerrado",
+      "medir": {
+        "menu": "[data-fichas-panel] details.asistencia-acciones summary"
+      }
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] details.asistencia-acciones summary"
+    },
+    {
+      "accion": "esperar",
+      "ms": 500
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_51_menu_desactivar",
+      "medir": {
+        "desactivar": "[data-fichas-panel] .asistencia-menu button:has-text('Desactivar')",
+        "eliminar": "[data-fichas-panel] .asistencia-menu button:has-text('Eliminar')"
+      }
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] .asistencia-menu button:has-text('Desactivar')"
+    },
+    {
+      "accion": "esperar",
+      "selector": "[role=alert]:has-text('Zona desactivada')"
+    },
+    {
+      "accion": "esperar",
+      "ms": 3000
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_52_desactivada",
+      "medir": {
+        "mensaje": "[role=alert]:has-text('Zona desactivada')",
+        "estado": "[data-fichas-panel] .fichas-panel-head"
+      },
+      "leer": [
+        "[role=alert]:has-text('Zona desactivada')",
+        "[data-fichas-panel] .fichas-panel-head"
+      ]
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] details.asistencia-acciones summary"
+    },
+    {
+      "accion": "esperar",
+      "ms": 500
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_53_menu_activar",
+      "medir": {
+        "activar": "[data-fichas-panel] .asistencia-menu button:has-text('Activar')"
+      }
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] .asistencia-menu button:has-text('Activar')"
+    },
+    {
+      "accion": "esperar",
+      "selector": "[role=alert]:has-text('Zona activada')"
+    },
+    {
+      "accion": "esperar",
+      "ms": 3000
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_54_activada",
+      "medir": {
+        "mensaje": "[role=alert]:has-text('Zona activada')",
+        "estado": "[data-fichas-panel] .fichas-panel-head"
+      },
+      "leer": [
+        "[role=alert]:has-text('Zona activada')"
+      ]
+    },
+    {
+      "accion": "dialogos",
+      "aceptar": true
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] details.asistencia-acciones summary"
+    },
+    {
+      "accion": "esperar",
+      "ms": 500
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_60_menu_eliminar",
+      "medir": {
+        "eliminar": "[data-fichas-panel] .asistencia-menu button:has-text('Eliminar')"
+      }
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] .asistencia-menu button:has-text('Eliminar')"
+    },
+    {
+      "accion": "esperar",
+      "selector": "[role=alert]:has-text('No se puede eliminar')"
+    },
+    {
+      "accion": "esperar",
+      "ms": 3000
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_61_eliminar_bloqueado",
+      "medir": {
+        "mensaje": "[role=alert]:has-text('No se puede eliminar')"
+      },
+      "leer": [
+        "[role=alert]:has-text('No se puede eliminar')"
+      ]
+    },
+    {
+      "accion": "clic",
+      "selector": "button[data-modal-open='modal-nueva-zona']"
+    },
+    {
+      "accion": "esperar",
+      "selector": "#modal-nueva-zona-nombre"
+    },
+    {
+      "accion": "escribir",
+      "selector": "#modal-nueva-zona-nombre",
+      "texto": "Zona Prueba Eliminar"
+    },
+    {
+      "accion": "clic",
+      "selector": "#modal-nueva-zona button[type=submit]"
+    },
+    {
+      "accion": "esperar",
+      "selector": "[role=alert]:has-text('Zona registrada')"
+    },
+    {
+      "accion": "esperar",
+      "ms": 3000
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] details.asistencia-acciones summary"
+    },
+    {
+      "accion": "esperar",
+      "ms": 500
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_62_eliminar_vacia",
+      "medir": {
+        "eliminar": "[data-fichas-panel] .asistencia-menu button:has-text('Eliminar')",
+        "nombre": "[data-fichas-panel] .fichas-panel-nombre"
+      },
+      "leer": [
+        "[data-fichas-panel] .fichas-panel-nombre"
+      ]
+    },
+    {
+      "accion": "clic",
+      "selector": "[data-fichas-panel] .asistencia-menu button:has-text('Eliminar')"
+    },
+    {
+      "accion": "esperar",
+      "selector": "[role=alert]:has-text('Zona eliminada')"
+    },
+    {
+      "accion": "esperar",
+      "ms": 4000
+    },
+    {
+      "accion": "captura",
+      "nombre": "zon_63_eliminada",
+      "medir": {
+        "mensaje": "[role=alert]:has-text('Zona eliminada')",
+        "leyenda": ".zonas-leyenda"
+      },
+      "leer": [
+        "[role=alert]:has-text('Zona eliminada')",
+        ".zonas-leyenda"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{"salida": "evidencias/exploracion", "pasos": [
+ {"accion": "ir", "url": "/admin/recetas", "ms": 2500},
+ {"accion": "clic", "selector": "main button[data-receta-accion='crear'] >> nth=0"},
+ {"accion": "esperar", "ms": 1200},
+ {"accion": "clic", "selector": "#modal-receta [data-agregar-ingrediente]"},
+ {"accion": "esperar", "ms": 800},
+ {"accion": "js", "codigo": "window.__h = document.querySelector('#modal-receta [data-ingredientes]').innerHTML"},
+ {"accion": "captura", "nombre": "x_receta", "pagina_completa": true, "leer": ["#modal-receta", "main"]}]}

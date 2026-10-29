@@ -23,4 +23,11 @@ interface InsumoMovimientoRepository
      * @return InsumoMovimiento[]
      */
     public function listar(): array;
+
+    /**
+     * Fecha del movimiento más reciente de cada insumo, en una consulta.
+     *
+     * @return array<int, \DateTimeImmutable> insumo_id => fecha
+     */
+    public function ultimoMovimientoPorInsumo(): array;
 }

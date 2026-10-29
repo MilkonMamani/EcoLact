@@ -1,0 +1,16 @@
+{
+  "descripcion": "Acceso y navegación: panel de inicio, menú lateral y menú de cuenta (solo lectura; no se cierra la sesión).",
+  "salida": "evidencias/originales/acceso",
+  "pasos": [
+    {"accion": "ir", "url": "/admin/dashboard", "ms": 3000},
+    {"accion": "captura", "nombre": "acc_10_dashboard",
+     "medir": {"menu": "#ecolact-sidebar nav", "titulo": "main h1", "periodo": "main :text-is('7 días')", "cuenta": ".ecolact-sidebar-account summary"},
+     "leer": ["main h1"]},
+    {"accion": "clic", "selector": "#ecolact-sidebar :text-is('Trabajadores')"},
+    {"accion": "esperar", "ms": 600},
+    {"accion": "captura", "nombre": "acc_11_grupo_trabajadores", "medir": {"grupo": "#ecolact-sidebar :text-is('Trabajadores')", "nuevo_trabajador": "#ecolact-sidebar a[href$='/admin/trabajadores/nuevo']"}},
+    {"accion": "clic", "selector": ".ecolact-sidebar-account summary"},
+    {"accion": "esperar", "ms": 600},
+    {"accion": "captura", "nombre": "acc_12_menu_cuenta", "medir": {"cuenta": ".ecolact-sidebar-account summary", "mi_perfil": ".ecolact-sidebar-menu a", "cerrar_sesion": ".ecolact-sidebar-menu button[type=submit]"}, "leer": [".ecolact-sidebar-menu"]}
+  ]
+}

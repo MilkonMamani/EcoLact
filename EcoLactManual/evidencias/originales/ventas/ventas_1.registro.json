@@ -1,0 +1,95 @@
+{
+  "plan": "ventas_1.json",
+  "fecha": "2026-10-28T12:05:14",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ven_01_pos",
+      "archivo": "evidencias/originales/ventas/ven_01_pos.png",
+      "url": "/admin/ventas",
+      "descripcion": "",
+      "objetivos": {
+        "tabs": [
+          284,
+          127,
+          1408,
+          172
+        ],
+        "clientes": [
+          284,
+          196,
+          924,
+          290
+        ]
+      },
+      "textos_visibles": [
+        "¿Quién compra?\nPúblico general\nComprador registrado\nProveedor\nProducto\nSelecciona un producto\nProducto Prueba Manual · 1 L\nCantidad\nForma de pago\n\nContado\n\nRESUMEN DE VENTA\n\nSelecciona un producto y una cantidad para calcular la venta.\n\nConfirmar venta"
+      ],
+      "hora": "2026-10-28T12:05:20"
+    },
+    {
+      "nombre": "ven_02_comprador",
+      "archivo": "evidencias/originales/ventas/ven_02_comprador.png",
+      "url": "/admin/ventas",
+      "descripcion": "",
+      "objetivos": {
+        "cliente": [
+          444,
+          228,
+          640,
+          268
+        ],
+        "lista": [
+          284,
+          358,
+          924,
+          423
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T12:05:22"
+    },
+    {
+      "nombre": "ven_03_producto",
+      "archivo": "evidencias/originales/ventas/ven_03_producto.png",
+      "url": "/admin/ventas",
+      "descripcion": "",
+      "objetivos": {
+        "ficha": [
+          284,
+          310,
+          924,
+          366
+        ],
+        "producto": [
+          284,
+          442,
+          924,
+          486
+        ],
+        "cantidad": [
+          284,
+          590,
+          444,
+          634
+        ],
+        "precio": [
+          284,
+          645,
+          924,
+          706
+        ],
+        "confirmar": [
+          1076,
+          617,
+          1388,
+          663
+        ]
+      },
+      "textos_visibles": [
+        "¿Quién compra?\nPúblico general\nComprador registrado\nProveedor\nComprador\n+ Nuevo comprador\nComprador Prueba Manual\n99000006\nCambiar\nProducto\nSelecciona un producto\nProducto Prueba Manual · 1 L\n\nStock disponible: 2 unidades\n\nCantidad\nPrecio público\nS/ 8.00 c/u\n\nⓘ Precio mayorista desde 10 unidades. Faltan 9 unidades para aplicarlo.\n\nForma de pago\n\nContado\n\nRESUMEN DE VENTA\n\nProducto Prueba Manual · 1 L\n\nComprador Prueba Manual\n\nCantidad\n1 unidad\nPrecio aplicado\nPúblico\nPrecio unitario\nS/ 8.00\nTOTAL\nS/ 8.00\nStock actual\n2\nStock después\n1\nPago\nContado\nConfirmar venta"
+      ],
+      "hora": "2026-10-28T12:05:26"
+    }
+  ]
+}

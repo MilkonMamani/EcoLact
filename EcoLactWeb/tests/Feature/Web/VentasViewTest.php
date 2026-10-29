@@ -104,6 +104,60 @@ it('exige el comprador cuando quien compra es un comprador registrado', function
     ])->assertSessionHasErrors('comprador_id');
 });
 
+it('el catálogo indica la lista de precios del comprador elegido y ofrece productos con precio solo para proveedores', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $soloProveedor = ventasview_crearProducto('Yogurt Solo Proveedor');
+    app(RegistrarProductoPrecio::class)->execute($soloProveedor->id, 'PROVEEDOR', 3.0, $admin->id);
+
+    $this->actingAs($admin)->get(route('admin.ventas.index'))
+        ->assertSee('Precios para público general')
+        ->assertSee('Yogurt Solo Proveedor')
+        ->assertSee('name="precio_mostrado"', false);
+
+    // Tras un error se restaura el tipo de comprador y su lista de precios.
+    $this->actingAs($admin)->withSession(['_old_input' => ['cliente' => 'PROVEEDOR']])
+        ->get(route('admin.ventas.index'))
+        ->assertSee('<span data-vpos-tarifa-texto>Precios para proveedores</span>', false);
+});
+
+it('no sustituye la tarifa: a un proveedor sin precio de proveedor no se le vende al precio público', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $proveedor = fixture_proveedor(fixture_zona());
+    $producto = ventasview_crearProducto('Queso Paria Fresco');
+    app(RegistrarProductoPrecio::class)->execute($producto->id, 'PUBLICO', 5.0, $admin->id);
+    fixture_ingreso_producto($producto->id, 20.0, $admin->id);
+
+    $this->actingAs($admin)->post(route('admin.ventas.store'), [
+        'cliente' => 'PROVEEDOR', 'proveedor_id' => $proveedor->id, 'producto_id' => $producto->id,
+        'cantidad' => 1, 'forma_pago' => 'CONTADO',
+    ])->assertSessionHas('venta_error', 'Este producto no tiene un precio de proveedor vigente.');
+
+    expect(VentaProductoModel::count())->toBe(0);
+    expect(MovimientoCajaModel::count())->toBe(0);
+});
+
+it('rechaza la venta si el precio mostrado ya no es la tarifa vigente de ese comprador, y cobra la vigente si coincide', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $proveedor = fixture_proveedor(fixture_zona());
+    $producto = ventasview_crearProducto('Queso Paria Fresco');
+    app(ConfigurarPreciosProducto::class)->execute($producto->id, 4.0, 5.0, null, null, $admin->id);
+    fixture_ingreso_producto($producto->id, 20.0, $admin->id);
+    $venta = ['cliente' => 'PROVEEDOR', 'proveedor_id' => $proveedor->id, 'producto_id' => $producto->id, 'cantidad' => 2, 'forma_pago' => 'CONTADO'];
+
+    // El navegador se quedó con la tarifa pública tras cambiar a proveedor.
+    $this->actingAs($admin)->post(route('admin.ventas.store'), $venta + ['precio_mostrado' => 5.0])
+        ->assertSessionHas('venta_error', 'El precio cambió. Revisa la venta antes de registrarla nuevamente.');
+    expect(VentaProductoModel::count())->toBe(0);
+    expect(MovimientoCajaModel::count())->toBe(0);
+
+    $this->actingAs($admin)->post(route('admin.ventas.store'), $venta + ['precio_mostrado' => 4.0])
+        ->assertSessionHas('venta_registrada');
+    $registrada = VentaProductoModel::sole();
+    expect($registrada->tipo_cliente)->toBe('PROVEEDOR');
+    expect((float) $registrada->importe_total)->toBe(8.0);
+    expect(MovimientoCajaModel::count())->toBe(1);
+});
+
 it('el historial filtra por forma de pago y busca por código de venta', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $proveedor = fixture_proveedor(fixture_zona());

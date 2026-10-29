@@ -76,16 +76,17 @@ it('abre la ventana para cada rol con su valor por día, nunca por litros acopia
         ->and($obligacion->base_calculo)->not->toHaveKey('litros_pagables');
 })->with(['ACOPIADOR', 'CALIDAD', 'ENCARGADO_PLANTA', 'VENTAS', 'ADMINISTRADOR']);
 
-it('el sueldo es de cada trabajador: un compañero del mismo rol sin sueldo configurado no genera pago', function () {
+it('el sueldo es del rol: todos sus trabajadores generan pago con el mismo sueldo, sin configurarlos uno por uno', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     $juan = pagos_personal('ACOPIADOR', 'Juan');
     $pedro = pagos_personal('ACOPIADOR', 'Pedro');
-    pagos_configurar_trabajador($juan->id, 1500, '2026-09-01', $admin);
+    pagos_personal('VENTAS', 'Sin sueldo de rol');
+    pagos_configurar('ACOPIADOR', 1500, '2026-09-01', $admin);
 
     generar_pagos('2026-09-20');
 
-    expect(ObligacionPagoModel::pluck('user_id')->all())->toBe([$juan->id])
-        ->and(ObligacionPagoModel::where('user_id', $pedro->id)->exists())->toBeFalse();
+    expect(ObligacionPagoModel::orderBy('user_id')->pluck('user_id')->all())->toBe([$juan->id, $pedro->id])
+        ->and(ObligacionPagoModel::pluck('base_calculo')->map(fn (array $base): float => (float) $base['sueldo_base'])->unique()->all())->toBe([1500.0]);
 });
 
 it('dos acopiadores del mismo rol abren dos ventanas EN_CURSO con el mismo valor por día', function () {

@@ -9,10 +9,10 @@
     [$desde, $hasta] = $periodo->limitesFecha();
     $rango = ['desde' => $desde, 'hasta' => $hasta];
     $titulos = match ($periodo->nombre) {
-        'hoy' => ['acopio' => 'Leche acopiada hoy', 'produccion' => 'Producción de hoy', 'ventas' => 'Ventas del día', 'pagos' => 'Pagos pendientes de hoy'],
-        'semana' => ['acopio' => 'Leche acopiada esta semana', 'produccion' => 'Producción de la semana', 'ventas' => 'Ventas de la semana', 'pagos' => 'Pagos pendientes de la semana'],
-        'mes' => ['acopio' => 'Leche acopiada este mes', 'produccion' => 'Producción del mes', 'ventas' => 'Ventas del mes', 'pagos' => 'Pagos pendientes del mes'],
-        default => ['acopio' => 'Leche acopiada', 'produccion' => 'Producción', 'ventas' => 'Ventas del período', 'pagos' => 'Pagos pendientes'],
+        'hoy' => ['acopio' => 'Leche acopiada hoy', 'produccion' => 'Producción de hoy', 'ventas' => 'Ventas del día', 'vence' => 'vencen hoy'],
+        'semana' => ['acopio' => 'Leche acopiada esta semana', 'produccion' => 'Producción de la semana', 'ventas' => 'Ventas de la semana', 'vence' => 'vencen esta semana'],
+        'mes' => ['acopio' => 'Leche acopiada este mes', 'produccion' => 'Producción del mes', 'ventas' => 'Ventas del mes', 'vence' => 'vencen este mes'],
+        default => ['acopio' => 'Leche acopiada', 'produccion' => 'Producción', 'ventas' => 'Ventas del período', 'vence' => 'vencen en el período'],
     };
     $cantidad = fn (float $valor): string => rtrim(rtrim(number_format($valor, 2), '0'), '.');
     $litros = fn (float $valor): string => $cantidad($valor).' L';
@@ -21,16 +21,33 @@
     $estadoLote = fn (string $estado): string => match ($estado) { 'EN_PROCESO' => 'En proceso', 'FINALIZADO' => 'Finalizado', default => ucfirst(strtolower(str_replace('_', ' ', $estado))) };
 
     $ventas = $dashboard->ventas;
-    $pagos = $dashboard->pagos;
-    $enlaceProveedores = route('admin.pagos.proveedores.index', ['semana' => $pagos['proveedores']['semana'] ?? 'todos', 'estado' => 'pendientes']);
-    $enlaceTrabajadores = $pagos['trabajadores']['mes'] !== null
-        ? route('admin.pagos.trabajadores.index', ['periodo' => $pagos['trabajadores']['mes'], 'estado' => 'PENDIENTE'])
+    $finanzas = $dashboard->finanzas;
+    $proveedores = $finanzas->proveedores;
+    $trabajadores = $finanzas->trabajadores;
+    $corte = \Carbon\CarbonImmutable::parse($finanzas->corte)->format('d/m/Y');
+    $enlaceProveedores = route('admin.pagos.proveedores.index', ['semana' => $proveedores['semana'] ?? 'todos', 'estado' => 'pendientes']);
+    $enlaceTrabajadores = $trabajadores['mes'] !== null
+        ? route('admin.pagos.trabajadores.index', ['periodo' => $trabajadores['mes'], 'estado' => 'PENDIENTE'])
         : route('admin.pagos.trabajadores.index');
+    $pendienteTrabajadores = route('admin.pagos.trabajadores.index', ['estado' => 'PENDIENTE']);
+    $pendienteProveedores = route('admin.pagos.proveedores.index', ['semana' => 'todos', 'estado' => 'pendientes']);
+    $incidencias = $trabajadores['incidencias'];
+    $vencidas = $proveedores['vencidas'] + $trabajadores['vencidas'];
+    $nomina = array_filter([
+        ...array_map(fn (string $mes): string => 'nómina de '.\Carbon\CarbonImmutable::createFromFormat('!Y-m', $mes)->locale('es')->translatedFormat('F Y').' sin cerrar', $incidencias['mesesSinCerrar']),
+        $incidencias['sinObligacion'] > 0 ? $plural($incidencias['sinObligacion'], 'trabajador sin obligación de sueldo', 'trabajadores sin obligación de sueldo') : null,
+        $incidencias['sueldoDistinto'] > 0 ? $plural($incidencias['sueldoDistinto'], 'sueldo distinto al vigente', 'sueldos distintos al vigente') : null,
+    ]);
     $porAtender = array_values(array_filter([
         ['cantidad' => $dashboard->porAtender['analisisPorConfirmar'], 'texto' => $plural($dashboard->porAtender['analisisPorConfirmar'], 'análisis por confirmar', 'análisis por confirmar'), 'accion' => 'Revisar calidad', 'href' => route('admin.analisis-calidad.index', ['estado' => 'BORRADOR', 'fecha' => 'personalizado'] + $rango), 'tono' => 'info', 'icono' => 'beaker'],
         ['cantidad' => $dashboard->porAtender['insumosSinStock'], 'texto' => $plural($dashboard->porAtender['insumosSinStock'], 'insumo sin stock', 'insumos sin stock'), 'accion' => 'Ver insumos', 'href' => route('admin.insumos.index', ['nivel' => 'sin_stock']), 'tono' => 'danger', 'icono' => 'alert-circle'],
         ['cantidad' => $dashboard->porAtender['insumosBajoMinimo'], 'texto' => $plural($dashboard->porAtender['insumosBajoMinimo'], 'insumo bajo su mínimo', 'insumos bajo su mínimo'), 'accion' => 'Ver insumos', 'href' => route('admin.insumos.index', ['nivel' => 'bajo']), 'tono' => 'warning', 'icono' => 'triangle-alert'],
         ['cantidad' => $dashboard->porAtender['lotesEnProceso'], 'texto' => $plural($dashboard->porAtender['lotesEnProceso'], 'lote en proceso', 'lotes en proceso'), 'accion' => 'Ver producción', 'href' => route('admin.produccion.index', ['estado' => 'EN_PROCESO', 'periodo' => 'personalizado'] + $rango), 'tono' => 'primary', 'icono' => 'clock'],
+        ['cantidad' => $vencidas, 'texto' => $plural($vencidas, 'pago vencido', 'pagos vencidos').' · '.$soles($proveedores['vencido'] + $trabajadores['vencido']), 'accion' => 'Ver pagos', 'href' => $trabajadores['vencidas'] === 0 ? $pendienteProveedores : ($proveedores['vencidas'] === 0 ? $pendienteTrabajadores : route('admin.pagos.index')), 'tono' => 'danger', 'icono' => 'alert-circle'],
+        ['cantidad' => $proveedores['litros']['enAnalisis'], 'texto' => $litros($proveedores['litros']['enAnalisis']).' con muestra de calidad sin resultado', 'accion' => 'Revisar calidad', 'href' => route('admin.analisis-calidad.index'), 'tono' => 'info', 'icono' => 'beaker'],
+        ['cantidad' => $proveedores['litros']['sinValorizar'], 'texto' => $litros($proveedores['litros']['sinValorizar']).' de leche aún sin valorizar', 'accion' => 'Ver pagos', 'href' => $pendienteProveedores, 'tono' => 'warning', 'icono' => 'triangle-alert'],
+        ['cantidad' => count($incidencias['rolesSinSueldo']), 'texto' => 'Sin sueldo vigente: '.implode(', ', array_map(fn (string $rol): string => ucfirst(strtolower($rol)), $incidencias['rolesSinSueldo'])), 'accion' => 'Configurar sueldos', 'href' => route('admin.configuracion-pagos.index'), 'tono' => 'warning', 'icono' => 'triangle-alert'],
+        ['cantidad' => count($nomina), 'texto' => ucfirst(implode(' · ', $nomina)), 'accion' => 'Ver nómina', 'href' => $pendienteTrabajadores, 'tono' => 'warning', 'icono' => 'clock'],
     ], fn (array $aviso): bool => $aviso['cantidad'] > 0));
     $maxZona = max([0.0, ...array_column($dashboard->acopioPorZona, 'litros')]);
     $existencias = $dashboard->existencias;
@@ -60,7 +77,7 @@
         <div class="dash-toolbar">
             <p class="dash-range"><x-ui.icon name="calendar" class="h-4 w-4" /><span class="sr-only">{{ $periodo->nombreVisible() }}:</span> {{ $periodo->rangoVisible() }}</p>
             <nav class="dash-segments" aria-label="Período del dashboard">
-                @foreach (['hoy' => 'Hoy', 'semana' => '7 días', 'mes' => 'Mes'] as $valor => $etiqueta)
+                @foreach (['hoy' => 'Hoy', 'semana' => 'Semana', 'mes' => 'Mes'] as $valor => $etiqueta)
                     <a href="{{ route('admin.dashboard', ['periodo' => $valor]) }}"
                        @if ($periodo->nombre === $valor) aria-current="page" @endif
                        @if ($valor === 'semana') title="Semana actual, de lunes a domingo" @endif>{{ $etiqueta }}</a>
@@ -102,9 +119,10 @@
             </p>
         </article>
         <article class="dash-card dash-kpi is-highlight">
-            <div class="dash-kpi-head"><h2>{{ $titulos['pagos'] }}</h2><span class="dash-icon" data-tone="primary-solid"><x-ui.icon name="calendar-coin" class="h-5 w-5" /></span></div>
-            <p class="dash-kpi-value">{{ $soles($pagos['total']) }}</p>
-            <p class="dash-kpi-note">{{ $plural($pagos['obligaciones'], 'obligación programada', 'obligaciones programadas') }}</p>
+            <div class="dash-kpi-head"><h2>Pagos pendientes</h2><span class="dash-icon" data-tone="primary-solid"><x-ui.icon name="calendar-coin" class="h-5 w-5" /></span></div>
+            <p class="dash-kpi-value">{{ $soles($finanzas->totales['pendienteReconocido']) }}</p>
+            <p class="dash-kpi-note">Saldo pendiente acumulado al {{ $corte }}</p>
+            <p class="dash-kpi-note">{{ $soles($finanzas->totales['venceEnPeriodo']) }} {{ $titulos['vence'] }}</p>
         </article>
     </section>
 
@@ -174,23 +192,23 @@
             </section>
 
             <section class="dash-card" aria-labelledby="dash-pagos-titulo">
-                <div class="dash-card-head"><div><h2 id="dash-pagos-titulo">Pagos pendientes</h2><p>Con pago programado en el período</p></div></div>
+                <div class="dash-card-head"><div><h2 id="dash-pagos-titulo">Pagos pendientes</h2><p>Obligaciones y remuneraciones por pagar al {{ $corte }}</p></div></div>
                 <ul class="dash-rows">
                     <li>
-                        <div class="dash-row-text"><p>Proveedores · {{ strtolower(\App\Domain\Shared\Enums\PeriodicidadPago::SEMANAL->etiqueta()) }}</p><p class="dash-muted">{{ $plural($pagos['proveedores']['obligaciones'], 'obligación', 'obligaciones') }}</p></div>
-                        <strong class="dash-amount">{{ $soles($pagos['proveedores']['importe']) }}</strong>
+                        <div class="dash-row-text"><p>Proveedores · {{ strtolower(\App\Domain\Shared\Enums\PeriodicidadPago::SEMANAL->etiqueta()) }}</p><p class="dash-muted">{{ $plural($proveedores['pendienteObligaciones'], 'obligación por pagar', 'obligaciones por pagar') }}</p></div>
+                        <strong class="dash-amount">{{ $soles($proveedores['pendiente']) }}</strong>
                     </li>
                     <li>
-                        <div class="dash-row-text"><p>Trabajadores · {{ strtolower(\App\Domain\Shared\Enums\PeriodicidadPago::MENSUAL->etiqueta()) }}</p><p class="dash-muted">{{ $plural($pagos['trabajadores']['obligaciones'], 'obligación', 'obligaciones') }}</p></div>
-                        <strong class="dash-amount">{{ $soles($pagos['trabajadores']['importe']) }}</strong>
+                        <div class="dash-row-text">
+                            <p>Trabajadores · {{ strtolower(\App\Domain\Shared\Enums\PeriodicidadPago::MENSUAL->etiqueta()) }}</p>
+                            <p class="dash-muted">{{ $plural($trabajadores['pendienteObligaciones'], 'obligación por pagar', 'obligaciones por pagar') }}</p>
+                            @if ($trabajadores['pendienteEnCurso'] > 0)
+                                <p class="dash-muted" title="Remuneración del mes en curso; se reconoce al cierre mensual">{{ $soles($trabajadores['pendienteEnCurso']) }} acumulados pendientes de liquidar</p>
+                            @endif
+                        </div>
+                        <strong class="dash-amount">{{ $soles($trabajadores['pendienteCerrado']) }}</strong>
                     </li>
                 </ul>
-                @if ($pagos['sinFecha']['obligaciones'] > 0)
-                    <p class="dash-note" data-tone="warning">{{ $plural($pagos['sinFecha']['obligaciones'], 'pago de trabajador pendiente', 'pagos de trabajadores pendientes') }} sin fecha programada ({{ $soles($pagos['sinFecha']['importe']) }}), no incluidos arriba.</p>
-                @endif
-                @if ($pagos['atrasados']['obligaciones'] > 0)
-                    <p class="dash-note">Además, {{ $plural($pagos['atrasados']['obligaciones'], 'pago programado', 'pagos programados') }} antes de este período sigue{{ $pagos['atrasados']['obligaciones'] === 1 ? '' : 'n' }} sin pagar ({{ $soles($pagos['atrasados']['importe']) }}).</p>
-                @endif
                 <div class="dash-card-foot">
                     <a href="{{ $enlaceProveedores }}" class="dash-link">Ver pagos a proveedores</a>
                     <a href="{{ $enlaceTrabajadores }}" class="dash-link">Ver pagos a trabajadores</a>

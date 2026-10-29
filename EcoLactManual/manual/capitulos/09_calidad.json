@@ -1,0 +1,213 @@
+{
+  "id": "CAL",
+  "tipo": "modulo",
+  "titulo": "Calidad: análisis de las entregas",
+  "registro": "evidencias/originales/calidad/calidad_3_analisis.registro.json",
+  "introduccion": "El módulo Calidad lista las entregas y su análisis. El Administrador puede consultar los análisis, registrar los valores medidos de una entrega (en borrador) y confirmarlos. Al confirmar, el sistema calcula el resultado (Aceptada, Observada o Rechazada) con las reglas de los parámetros de calidad, y ese resultado ajusta el pago semanal del proveedor.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Calidad › Calidad"
+    ],
+    [
+      "Depende de",
+      "Entregas registradas (capítulo 8) y parámetros activos con regla vigente (capítulo 6)."
+    ],
+    [
+      "Habilita",
+      "Ajuste por calidad del pago a proveedores (capítulo 7)."
+    ],
+    [
+      "Estados del análisis",
+      "«Sin análisis», «Borrador» y «Confirmado»."
+    ],
+    [
+      "Reglas principales",
+      [
+        "El análisis es opcional: sin análisis la leche se acopia y se paga al precio base.",
+        "Un análisis en borrador puede corregirse registrándolo de nuevo.",
+        "Un análisis confirmado queda bloqueado, incluso para el Administrador.",
+        "La semana del proveedor se paga según el peor resultado de sus entregas."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "cal_01_listado",
+    "pie": "Pantalla «Análisis de calidad» (filtrada por la entrega ficticia).",
+    "elementos": [
+      [
+        "Buscador",
+        "Busca por proveedor, DNI o código de entrega."
+      ],
+      [
+        "Filtros",
+        "«Fecha», «Zona», «Resultado», «Analista» y «Estado» (Sin análisis, Borrador, Confirmado)."
+      ],
+      [
+        "Tabla",
+        "Proveedor, entrega, zona, litros, resultado, estado, analista y acción «Ver análisis»; las columnas con flecha permiten ordenar."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-CAL-001",
+      "titulo": "Consultar el análisis de una entrega",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar si una entrega tiene análisis y su resultado.",
+      "acceso": "Calidad › Calidad",
+      "requisitos": [
+        "Entregas registradas."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Calidad",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Calidad».",
+          "captura": "cal_01_listado",
+          "objetivo": "menu",
+          "pie": "Opción «Calidad»."
+        },
+        {
+          "titulo": "Ubicar la entrega",
+          "instruccion": "Usa el buscador o los filtros para encontrar la entrega.",
+          "captura": "cal_01_listado",
+          "objetivo": "fila",
+          "pie": "Entrega ficticia «Sin análisis»."
+        },
+        {
+          "titulo": "Ver el análisis",
+          "instruccion": "Haz clic en el ícono «Ver análisis» de la fila.",
+          "captura": "cal_01_listado",
+          "objetivo": "ver",
+          "pie": "Ícono «Ver análisis».",
+          "resultado": "Se abre el detalle: si la entrega no tiene análisis, muestra «Sin análisis de calidad» y el botón «Registrar análisis»."
+        }
+      ],
+      "resultado": "Puedes ver el estado y, si existe, el resultado del análisis de cada entrega."
+    },
+    {
+      "codigo": "ADM-CAL-002",
+      "titulo": "Registrar un análisis de calidad",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Guardar los valores medidos de una entrega como borrador.",
+      "acceso": "Detalle del análisis › «Registrar análisis»",
+      "requisitos": [
+        "Entrega registrada.",
+        "Parámetros de calidad activos."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el registro",
+          "instruccion": "En el detalle, haz clic en «Registrar análisis».",
+          "captura": "cal_02_detalle",
+          "objetivo": "registrar",
+          "pie": "Botón «Registrar análisis»."
+        },
+        {
+          "titulo": "Revisar la entrega",
+          "instruccion": "Comprueba los datos de la entrega (proveedor, zona, litros) en la parte superior del formulario.",
+          "captura": "cal_03_formulario",
+          "objetivo": "parametros",
+          "pie": "Formulario «Análisis de calidad» con un campo por cada parámetro activo."
+        },
+        {
+          "titulo": "Ingresar los valores",
+          "instruccion": "Escribe el valor medido de cada parámetro y, si lo necesitas, una «Observación». También puedes usar «Tomar foto» o «Seleccionar imagen» del ticket del analizador para proponer los valores.",
+          "captura": "cal_04_valores",
+          "objetivo": "parametros",
+          "pie": "Valores ficticios ingresados.",
+          "nota": "La lectura del ticket del analizador (OCR) solo propone valores y no guarda nada hasta pulsar «Guardar análisis». No se verificó con un ticket real: pendiente de comprobar."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar análisis».",
+          "captura": "cal_04_valores",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar análisis»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el estado «Borrador».",
+          "captura": "cal_05_borrador",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            800
+          ],
+          "pie": "Mensaje «Análisis de calidad registrado correctamente.»",
+          "resultado": "La página indica: «Este análisis está en borrador. Puedes corregir los valores registrando de nuevo, o confirmarlo abajo cuando esté listo.»"
+        }
+      ],
+      "resultado": "El análisis queda en «Borrador»; aún no afecta el pago.",
+      "validaciones": [
+        [
+          "Valores",
+          "Al menos un valor; cada valor numérico.",
+          "«Debe registrar al menos un valor de parámetro de calidad.» / «Cada valor de parámetro debe ser numérico.»"
+        ],
+        [
+          "Imagen del ticket",
+          "jpg, jpeg o png; máximo 5 MB.",
+          "«La imagen debe tener formato jpg, jpeg o png.» / «La imagen no debe superar los 5 MB.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-CAL-003",
+      "titulo": "Confirmar un análisis e interpretar el resultado",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Cerrar el análisis para que el sistema calcule el resultado.",
+      "acceso": "Página del análisis › «Confirmar análisis»",
+      "requisitos": [
+        "Análisis en borrador.",
+        "**Cada parámetro activo debe tener una regla de evaluación vigente** (ADM-PAR-002)."
+      ],
+      "pasos": [
+        {
+          "titulo": "Confirmar",
+          "instruccion": "En la página del análisis en borrador, haz clic en «Confirmar análisis».",
+          "registro": "evidencias/originales/calidad/calidad_5_confirmar.registro.json",
+          "captura": "cal_10_antes_confirmar",
+          "objetivo": "confirmar",
+          "pie": "Botón «Confirmar análisis»: «Al confirmar se calcula el resultado, el análisis queda bloqueado y el pago pendiente del proveedor se recalcula con el ajuste de calidad.»"
+        },
+        {
+          "titulo": "Aceptar el aviso",
+          "instruccion": "En el cuadro del navegador «¿Confirmar análisis? Después de confirmar no podrás modificar los valores ni el resultado.», haz clic en «Aceptar».",
+          "nota": "Este cuadro es propio del navegador y no aparece en las capturas; su texto se registró literalmente."
+        },
+        {
+          "titulo": "Comprobar el resultado",
+          "instruccion": "Verifica el mensaje, el estado «Confirmado» y el «Resultado».",
+          "registro": "evidencias/originales/calidad/calidad_5_confirmar.registro.json",
+          "captura": "cal_11_confirmado",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            900
+          ],
+          "pie": "«Análisis de calidad confirmado correctamente.»: estado «Confirmado», resultado «Aceptada»."
+        },
+        {
+          "titulo": "Revisar en el listado",
+          "instruccion": "En Calidad, la entrega muestra el resultado y «Análisis confirmado».",
+          "registro": "evidencias/originales/calidad/calidad_5_confirmar.registro.json",
+          "captura": "cal_12_listado_confirmado",
+          "objetivo": "fila",
+          "pie": "Entrega con resultado «Aceptada» y análisis confirmado (analista difuminado)."
+        }
+      ],
+      "resultado": "El análisis queda «Confirmado» e inmutable («Este análisis ya fue confirmado y es inmutable.»). Interpretación: **Aceptada** = todos los valores dentro del rango de cada regla; **Observada** o **Rechazada** = algún valor fuera de rango, según «Resultado si incumple» de esa regla. Si hay varios incumplimientos, se aplica el más severo. El resultado ajusta el pago de la semana del proveedor (capítulo 7).",
+      "errores": [
+        [
+          "Aparece «Internal Server Error» al confirmar",
+          "Algún parámetro activo no tiene regla vigente: configúrela (ADM-PAR-002) y vuelva a confirmar. Es un defecto del sistema (OBS-07): debería mostrar un mensaje."
+        ],
+        [
+          "Se necesita corregir un análisis confirmado",
+          "No es posible: el análisis confirmado queda bloqueado."
+        ]
+      ]
+    }
+  ]
+}

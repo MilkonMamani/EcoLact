@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_compra.json",
+  "fecha": "2026-10-28T11:54:58",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_tras_compra",
+      "archivo": "evidencias/exploracion/x_tras_compra.png",
+      "url": "/admin/insumos",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Insumo Prueba Manual\n\nInsumo · ml\n\n\t2,000 ml\t500 ml\t\nActivo\n\t28/10/2026"
+      ],
+      "hora": "2026-10-28T11:55:03"
+    }
+  ],
+  "dialogos": []
+}

@@ -1,0 +1,143 @@
+{
+  "plan": "calidad_2_parametros_edicion.json",
+  "fecha": "2026-10-28T11:02:57",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "par_09_antes_editar_regla",
+      "archivo": "evidencias/originales/parametros/par_09_antes_editar_regla.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          635,
+          935,
+          709
+        ],
+        "editar_regla": [
+          981,
+          680,
+          1097,
+          712
+        ],
+        "editar_parametro": [
+          981,
+          433,
+          1130,
+          465
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:03:03"
+    },
+    {
+      "nombre": "par_10_regla_inactiva",
+      "archivo": "evidencias/originales/parametros/par_10_regla_inactiva.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "estado": [
+          380,
+          564,
+          710,
+          606
+        ],
+        "guardar": [
+          917,
+          646,
+          1060,
+          682
+        ]
+      },
+      "textos_visibles": [
+        "Selecciona una opción\nActivo\nInactivo"
+      ],
+      "hora": "2026-10-28T11:03:05"
+    },
+    {
+      "nombre": "par_11_regla_actualizada",
+      "archivo": "evidencias/originales/parametros/par_11_regla_actualizada.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Regla de calidad actualizada correctamente.",
+        "Prueba Manual\nInactivo\n\n%\n\nInformación general\n\nQué se mide: nombre, unidad, estado y descripción.\n\nCódigo\nPRUEBA_MANUAL\nNombre\nPrueba Manual\nUnidad\n%\nEstado\nInactivo\nÚltima actualización\n28/10/2026\nDescripción\nParámetro ficticio del manual.\nEditar parámetro\nRegla de evaluación\n\nCuál es el rango aceptado para el valor medido.\n\nSin configurar\n\nSu regla anterior ya no está vigente. Define el rango que se aplicará desde ahora.\n\nConfigurar regla"
+      ],
+      "hora": "2026-10-28T11:03:08"
+    },
+    {
+      "nombre": "par_12_editar",
+      "archivo": "evidencias/originales/parametros/par_12_editar.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "codigo_bloqueado": [
+          730,
+          312,
+          1060,
+          354
+        ],
+        "descripcion": [
+          380,
+          517,
+          1060,
+          575
+        ],
+        "guardar": [
+          917,
+          622,
+          1060,
+          658
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:03:10"
+    },
+    {
+      "nombre": "par_13_actualizado",
+      "archivo": "evidencias/originales/parametros/par_13_actualizado.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Parámetro de calidad actualizado correctamente."
+      ],
+      "hora": "2026-10-28T11:03:13"
+    },
+    {
+      "nombre": "par_14_duplicado",
+      "archivo": "evidencias/originales/parametros/par_14_duplicado.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "codigo": [
+          730,
+          301,
+          1060,
+          343
+        ]
+      },
+      "textos_visibles": [
+        "Nuevo parámetro de calidad\n\nDefine el parámetro y la unidad de medida.\n\nNombre *\nCódigo *\n\nYa existe un parámetro de calidad con ese código.\n\nSe genera a partir del nombre. Solo mayúsculas, números y _. No se podrá cambiar después.\n\nUnidad *\nEstado *\nSelecciona una opción\nActivo\nInactivo\nDescripción\nCancelar\nGuardar parámetro"
+      ],
+      "hora": "2026-10-28T11:03:17"
+    }
+  ],
+  "dialogos": []
+}

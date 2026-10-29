@@ -53,18 +53,18 @@ final class GenerarObligacionesPersonal
         foreach ($this->roles->listarRemunerables() as $rol) {
             $rolId = $rol->id();
 
+            // El sueldo es del ROL (Configuración de pagos > Trabajadores) y lo heredan
+            // todos sus trabajadores: sin sueldo del rol no se abre ni se recalcula nada.
+            $configuraciones = array_values(array_filter(
+                $this->configuraciones->listarHistorial(TipoBeneficiarioPago::PERSONAL, $rolId),
+                fn (ConfiguracionPago $configuracion): bool => $configuracion->estado() === 'ACTIVO',
+            ));
+
+            if ($configuraciones === []) {
+                continue;
+            }
+
             foreach ($this->personal->activosPorRol($rolId) as $persona) {
-                // El sueldo es de cada trabajador (Configuración de pagos > Trabajadores):
-                // sin sueldo configurado no se abre ni se recalcula nada.
-                $configuraciones = array_values(array_filter(
-                    $this->configuraciones->listarHistorialDeTrabajador($persona->userId),
-                    fn (ConfiguracionPago $configuracion): bool => $configuracion->estado() === 'ACTIVO',
-                ));
-
-                if ($configuraciones === []) {
-                    continue;
-                }
-
                 $trabajador = $this->trabajadores->buscarPorUserId($persona->userId);
 
                 if ($trabajador === null || ! $trabajador->estaActivo() || ! $trabajador->estaVigenteEn($hoy)) {

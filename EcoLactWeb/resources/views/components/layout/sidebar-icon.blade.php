@@ -16,6 +16,7 @@
         @case('audit') <path d="M6 3h12v18H6zM3 7h3m-3 5h3m-3 5h3m3-9h6m-6 4h6m-6 4h4"/> @break
         @case('box') <path d="M21 8 12 3 3 8l9 5 9-5Zm0 0v8l-9 5-9-5V8m9 5v8"/> @break
         @case('package') <path d="M21 8 12 3 3 8l9 5 9-5Zm0 0v8l-9 5-9-5V8m9 5v8M12 3v10"/> @break
+        @case('receipt') <path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2V3Z"/><path d="M9 8h6M9 12h6M9 16h3"/> @break
         @case('sales') <circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.8h7.2a2 2 0 0 0 2-1.6L21 8H6"/> @break
         @case('settings') <path d="m10 2-1 3-3 1-3-1-2 4 3 2v3l-2 2 2 4 3-1 3 2h4l1-3 3-1 3 1 2-4-3-2v-3l2-2-2-4-3 1-3-2Z"/><circle cx="12" cy="12" r="3"/> @break
         @case('qr-code')

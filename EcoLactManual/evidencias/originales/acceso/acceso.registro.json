@@ -1,0 +1,56 @@
+{
+  "plan": "acceso_login (público)",
+  "capturas": [
+    {
+      "nombre": "acc_login",
+      "archivo": "evidencias/originales/acceso/acc_login.png",
+      "url": "/login",
+      "objetivos": {
+        "usuario": [
+          91,
+          414,
+          471,
+          468
+        ],
+        "clave": [
+          91,
+          516,
+          471,
+          570
+        ],
+        "ingresar": [
+          91,
+          641,
+          471,
+          695
+        ],
+        "recordar": [
+          91,
+          592,
+          109,
+          610
+        ]
+      },
+      "textos_visibles": [
+        "Usuario\nContraseña\nRecordarme\nIniciar sesión"
+      ]
+    },
+    {
+      "nombre": "acc_02_credenciales_incorrectas",
+      "archivo": "evidencias/originales/acceso/acc_02_credenciales_incorrectas.png",
+      "url": "/login",
+      "objetivos": {
+        "error": [
+          107,
+          353,
+          455,
+          373
+        ]
+      },
+      "textos_visibles": [
+        "Usuario o contraseña incorrectos."
+      ],
+      "nota": "Usuario inexistente y ficticio; contraseña borrada antes de capturar."
+    }
+  ]
+}

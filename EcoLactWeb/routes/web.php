@@ -8,7 +8,7 @@ use App\Http\Controllers\Web\Acopiador\RecorridoController as AcopiadorRecorrido
 use App\Http\Controllers\Web\Acopiador\SeguimientoCalidadController as AcopiadorSeguimientoCalidadController;
 use App\Http\Controllers\Web\AcopiadorController;
 use App\Http\Controllers\Web\Admin\CajaController;
-use App\Http\Controllers\Web\Admin\CompraInsumoController as AdminCompraInsumoController;
+use App\Http\Controllers\Web\Admin\CompraController as AdminCompraController;
 use App\Http\Controllers\Web\Admin\DashboardController;
 use App\Http\Controllers\Web\Admin\InsumoController as AdminInsumoController;
 use App\Http\Controllers\Web\Admin\PresentacionInsumoController as AdminPresentacionInsumoController;
@@ -207,7 +207,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         // vigencia histórica en precios_leche) y descuento por la semana OBSERVADA.
         // Define reglas versionadas: NO registra dinero, asistencia ni pagos.
         Route::get('configuracion-pagos', [ConfiguracionPagoController::class, 'index'])->name('configuracion-pagos.index');
-        Route::get('configuracion-pagos/trabajadores/{userId}/panel', [ConfiguracionPagoController::class, 'panelTrabajador'])->whereNumber('userId')->name('configuracion-pagos.trabajadores.panel');
+        Route::get('configuracion-pagos/roles/{rolId}/panel', [ConfiguracionPagoController::class, 'panelRol'])->whereNumber('rolId')->name('configuracion-pagos.roles.panel');
         Route::post('configuracion-pagos', [ConfiguracionPagoController::class, 'store'])->name('configuracion-pagos.store');
         Route::patch('configuracion-pagos/{configuracion}', [ConfiguracionPagoController::class, 'update'])->name('configuracion-pagos.update');
 
@@ -296,15 +296,25 @@ Route::middleware(['auth', 'active'])->group(function () {
         // Controllers que ya usa VENTAS (/ventas) — mismos Use Cases, mismas
         // Policies (Gate::before ya concede acceso a ADMINISTRADOR).
         Route::get('insumos', [AdminInsumoController::class, 'index'])->name('insumos.index');
+        Route::get('insumos/movimientos', [AdminInsumoController::class, 'movimientos'])->name('insumos.movimientos');
         Route::get('insumos/{insumo}', [AdminInsumoController::class, 'show'])->name('insumos.show');
         Route::get('insumos/{insumo}/panel', [AdminInsumoController::class, 'panel'])->name('insumos.panel');
         Route::post('insumos/{insumo}/presentaciones', [AdminPresentacionInsumoController::class, 'store'])->name('insumos.presentaciones.store');
         Route::patch('insumos/{insumo}/presentaciones/{presentacion}', [AdminPresentacionInsumoController::class, 'update'])->whereNumber('presentacion')->name('insumos.presentaciones.update');
-        // Compra de insumos: boleta escaneada (OCR propone, la persona revisa) o registro manual.
-        Route::post('compras-insumo/boleta', [AdminCompraInsumoController::class, 'procesarBoleta'])->name('compras-insumo.boleta');
-        Route::post('compras-insumo/previsualizar', [AdminCompraInsumoController::class, 'previsualizar'])->name('compras-insumo.previsualizar');
-        Route::post('compras-insumo', [AdminCompraInsumoController::class, 'store'])->name('compras-insumo.store');
-        Route::get('compras-insumo/{compra}', [AdminCompraInsumoController::class, 'show'])->whereNumber('compra')->name('compras-insumo.show');
+        // Inventario > Compras y gastos: ÚNICO registro de adquisiciones (insumos, limpieza,
+        // servicios...). Boleta escaneada (el OCR propone, la persona revisa) o registro manual;
+        // Insumos no registra compras, solo enlaza aquí ("Comprar este insumo").
+        Route::get('compras', [AdminCompraController::class, 'index'])->name('compras.index');
+        Route::post('compras/boleta', [AdminCompraController::class, 'procesarBoleta'])->name('compras.boleta');
+        Route::post('compras/previsualizar', [AdminCompraController::class, 'previsualizar'])->name('compras.previsualizar');
+        Route::post('compras', [AdminCompraController::class, 'store'])->name('compras.store');
+        Route::get('compras/{compra}', [AdminCompraController::class, 'show'])->whereNumber('compra')->name('compras.show');
+        Route::post('compras/{compra}/pagos', [AdminCompraController::class, 'registrarPago'])->whereNumber('compra')->name('compras.pagos.store');
+        Route::post('compras/{compra}/recepcion', [AdminCompraController::class, 'recibir'])->whereNumber('compra')->name('compras.recepcion');
+        Route::post('compras/{compra}/comprobantes', [AdminCompraController::class, 'adjuntarComprobante'])->whereNumber('compra')->name('compras.comprobantes.store');
+        Route::get('compras/{compra}/comprobantes/{comprobante}', [AdminCompraController::class, 'verComprobante'])->whereNumber(['compra', 'comprobante'])->name('compras.comprobantes.show');
+        // Enlaces anteriores (Caja, Insumos, marcadores): la misma compra en su ficha nueva.
+        Route::get('compras-insumo/{compra}', [AdminCompraController::class, 'redirigirHistorica'])->whereNumber('compra')->name('compras-insumo.show');
         Route::post('insumos', [AdminInsumoController::class, 'store'])->name('insumos.store');
         Route::patch('insumos/{insumo}', [AdminInsumoController::class, 'update'])->name('insumos.update');
         Route::post('insumos/{insumo}/ajuste', [AdminInsumoController::class, 'registrarAjuste'])->name('insumos.ajuste');

@@ -25,6 +25,13 @@ interface LoteProduccionRepository
     public function listarPorEstado(string $estado): array;
 
     /**
+     * Lotes iniciados juntos en una misma planificación, en orden de creación.
+     *
+     * @return LoteProduccion[]
+     */
+    public function listarPorPlanificacion(int $planificacionProduccionId): array;
+
+    /**
      * @return LoteProduccion[]
      */
     public function listar(): array;

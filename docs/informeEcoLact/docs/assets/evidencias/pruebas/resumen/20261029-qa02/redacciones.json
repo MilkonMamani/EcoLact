@@ -1,0 +1,27 @@
+[
+  {
+    "file": "resumen/20261029-qa02/casos.csv",
+    "original_sha256": "c9bf342352167364cb2a509e280373786b3b5ceff1ce115e4d67de58b7e35cd6",
+    "public_sha256": "e78365b54849b9fe1ff4ae6c8cf1b8c089fbbeef932553955f3ec1735a68e7a8"
+  },
+  {
+    "file": "resumen/20261029-qa02/casos.json",
+    "original_sha256": "ea4d252528cc8078761aaf4e0ae2cbaacbe02e739d793b4378a1bcf525405172",
+    "public_sha256": "121c01153d0f350fca42e9a1b7214e224c0e3d690ecbca6f725859011dadd8b2"
+  },
+  {
+    "file": "backend/20261029-qa02/funcionales.html",
+    "original_sha256": "f6da40ab6e9c816896ca84d4c3e2bc51d621041655e611c061922c185167e481",
+    "public_sha256": "36edad4119fe0cec95c555bee8050f196c9dc8a6ab0d819979ba02290441e3dd"
+  },
+  {
+    "file": "backend/20261029-qa02/funcionales.log",
+    "original_sha256": "76589c9cedf1f6ac038865c4a0ba550b28ed810ecb21bcf0fb843a65b95e4b73",
+    "public_sha256": "45e7c0f8266199048bac9c4fde97e68f0edcb5ece6fd52db3b084e026a3109d6"
+  },
+  {
+    "file": "backend/20261029-qa02/funcionales.xml",
+    "original_sha256": "605e2520f470fcedf9d0a93ade987c7fc63b63279be64af0772d85ede95cc5f6",
+    "public_sha256": "a5af76c885d9660ba8be1adfe95708ab122a30adec64c69c42bdf458f1a99c24"
+  }
+]

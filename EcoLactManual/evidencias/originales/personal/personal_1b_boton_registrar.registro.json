@@ -1,0 +1,30 @@
+{
+  "plan": "personal_1b_boton_registrar.json",
+  "fecha": "2026-10-28T10:33:50",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "per_05b_formulario_completo",
+      "archivo": "evidencias/originales/personal/per_05b_formulario_completo.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {
+        "usuario": [
+          312,
+          821,
+          663,
+          863
+        ],
+        "registrar": [
+          845,
+          905,
+          1037,
+          947
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:33:53"
+    }
+  ],
+  "dialogos": []
+}

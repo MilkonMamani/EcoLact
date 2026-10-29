@@ -1,0 +1,19 @@
+{"descripcion": "Productos: consulta del producto FICTICIO (stock 2) y configuración de sus precios por tipo de cliente. BD de prueba autorizada.",
+ "salida": "evidencias/originales/productos", "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {"accion": "ir", "url": "/admin/productos", "ms": 2500},
+  {"accion": "captura", "nombre": "prd_01_listado", "medir": {"buscar": "main input[name=q]", "estado": "main select[name=estado]", "fila": "tbody tr:has-text('Producto Prueba Manual') >> nth=0"}, "leer": ["main thead", "tbody tr:has-text('Producto Prueba Manual') >> nth=0"]},
+  {"accion": "clic", "selector": "tbody tr:has-text('Producto Prueba Manual') button[data-toggle-row]"},
+  {"accion": "esperar", "ms": 800},
+  {"accion": "captura", "nombre": "prd_02_detalle", "medir": {"ver": "tbody tr:has-text('Producto Prueba Manual') button[data-toggle-row]", "detalle": "tr.recetas-detalle:visible", "configurar": "tr.recetas-detalle:visible [data-precios-editar]"}, "leer": ["tr.recetas-detalle:visible"]},
+  {"accion": "clic", "selector": "tr.recetas-detalle:visible [data-precios-editar]"},
+  {"accion": "esperar", "ms": 700},
+  {"accion": "escribir", "selector": "tr.recetas-detalle:visible input[name=precio_publico]", "texto": "8.00"},
+  {"accion": "escribir", "selector": "tr.recetas-detalle:visible input[name=precio_proveedor]", "texto": "7.00"},
+  {"accion": "escribir", "selector": "tr.recetas-detalle:visible input[name=precio_mayorista]", "texto": "7.50"},
+  {"accion": "escribir", "selector": "tr.recetas-detalle:visible input[name=cantidad_minima_mayorista]", "texto": "10"},
+  {"accion": "captura", "nombre": "prd_03_precios", "medir": {"formulario": "tr.recetas-detalle:visible [data-precios]", "guardar": "tr.recetas-detalle:visible button[type=submit]:has-text('Guardar precios')"}, "leer": ["tr.recetas-detalle:visible [data-precios]"]},
+  {"accion": "clic", "selector": "tr.recetas-detalle:visible button[type=submit]:has-text('Guardar precios')"},
+  {"accion": "esperar", "ms": 3000},
+  {"accion": "captura", "nombre": "prd_04_guardados", "medir": {"mensaje": "[role=alert]", "precios": "tr.recetas-detalle:visible [data-precios]"}, "leer": ["[role=alert]", "tr.recetas-detalle:visible [data-precios]"]}
+ ]}

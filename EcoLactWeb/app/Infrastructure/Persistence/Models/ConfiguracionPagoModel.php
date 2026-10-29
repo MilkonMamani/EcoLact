@@ -38,7 +38,7 @@ class ConfiguracionPagoModel extends Model
         return $this->belongsTo(RoleModel::class, 'rol_id');
     }
 
-    /** Trabajador dueño del sueldo (null: proveedor o configuración histórica por rol). */
+    /** Trabajador de una fila histórica del modelo por trabajador (null: proveedor o sueldo del rol). */
     public function trabajador(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

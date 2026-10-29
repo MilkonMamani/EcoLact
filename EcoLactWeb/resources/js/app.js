@@ -40,8 +40,12 @@ if (document.querySelector('[data-insumos-page]')) {
     import('./pages/insumos.js');
 }
 
-if (document.querySelector('[data-compra-insumos]')) {
+if (document.querySelector('[data-insumos-page]')) {
     import('./pages/insumos-compra.js');
+}
+
+if (document.querySelector('[data-compras-page], [data-compra-ficha]')) {
+    import('./pages/compras.js');
 }
 
 if (document.querySelector('[data-pago-semanal]')) {

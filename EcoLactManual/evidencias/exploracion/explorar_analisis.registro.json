@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_analisis.json",
+  "fecha": "2026-10-28T11:15:44",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_analisis_estado",
+      "archivo": "evidencias/exploracion/x_analisis_estado.png",
+      "url": "/admin/entregas/1/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "← Calidad\nAnálisis de calidad\n\nEntrega #1 · Proveedor Prueba Manual · 48.00 L · 28/10/2026 16:09\n\nBorrador\nEste análisis está en borrador. Puedes corregir los valores registrando de nuevo, o confirmarlo abajo cuando esté listo.\nPROVEEDOR\nProveedor Prueba Manual\nDNI\n99000005\nENTREGA\n#1\nZONA\nFaon\nLITROS\n48.00 L\nACOPIADOR\n—\n\nTicket del analizador\n\nToma una foto del ticket y los valores se completarán solos. Revísalos antes de guardar.\n\nTomar foto\nSeleccionar imagen\n\nParámetros de calidad\n\nAgua añadida (%)\nDensidad (g/mL)\nGrasa (%)\nLactosa (%)\npH (pH)\nProteína (%)\nTemperatura (°C)\nObservación (opcional)\nGuardar análisis\n\nConfirmar análisis\n\nAl confirmar se calcula el resultado, el análisis queda bloqueado y el pago pendiente del proveedor se recalcula con el ajuste de calidad.\n\nConfirmar análisis"
+      ],
+      "hora": "2026-10-28T11:15:49"
+    }
+  ],
+  "dialogos": []
+}

@@ -1,0 +1,7 @@
+{"descripcion": "Comprobante del pago ficticio (consulta), con el usuario registrador difuminado.", "salida": "evidencias/originales/pagos_proveedores", "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {"accion": "ir", "url": "/admin/pagos/proveedores", "ms": 3000},
+  {"accion": "ir_atributo", "selector": "tr[data-fila]:has-text('Prueba Manual')", "atributo": "data-url-comprobante", "ms": 2500},
+  {"accion": "js", "codigo": "document.querySelectorAll('body *').forEach(e=>{ if(!e.children.length && e.textContent.includes('Registrado por')) e.style.filter='blur(5px)'; })"},
+  {"accion": "captura", "nombre": "ppv_07_comprobante_impreso", "pagina_completa": true, "medir": {"imprimir": "button:has-text('Imprimir'), a:has-text('Imprimir')", "volver": "a:has-text('Volver')"}}
+ ]}

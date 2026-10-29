@@ -1,0 +1,144 @@
+{
+  "plan": "produccion_1.json",
+  "fecha": "2026-10-28T11:59:54",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "pro_01_historial",
+      "archivo": "evidencias/originales/produccion/pro_01_historial.png",
+      "url": "/admin/produccion",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          898,
+          239,
+          938
+        ],
+        "nueva": [
+          1238,
+          247,
+          1387,
+          275
+        ]
+      },
+      "textos_visibles": [
+        "Producción\n›\nProducción\n\nLotes en proceso\n\n0\n\nPendientes de finalizar\n\nLeche disponible\n\n48 L\n\nIngresa automáticamente desde Acopio\n\nLotes finalizados\n\n0\n\nSegún filtros aplicados\n\nProducción\n\nGestiona los lotes de producción y registra los productos obtenidos.\n\nNueva producción\nBuscar por código de lote\nPeriodo\nTodos\nHoy\nEsta semana\nEste mes\nPersonalizado\nEstado\nTodos\nEn proceso\nFinalizado\nFiltrar\n\nNo hay lotes de producción\n\nPulsa «Nueva producción», elige qué producto fabricar y cuántos."
+      ],
+      "hora": "2026-10-28T12:00:03"
+    },
+    {
+      "nombre": "pro_02_requerimientos",
+      "archivo": "evidencias/originales/produccion/pro_02_requerimientos.png",
+      "url": "/admin/produccion",
+      "descripcion": "",
+      "objetivos": {
+        "producto": [
+          408,
+          275,
+          776,
+          317
+        ],
+        "cantidad": [
+          792,
+          275,
+          1032,
+          317
+        ],
+        "recursos": [
+          408,
+          386,
+          1032,
+          542
+        ],
+        "veredicto": [
+          408,
+          562,
+          1032,
+          608
+        ],
+        "iniciar": [
+          883,
+          755,
+          1032,
+          791
+        ]
+      },
+      "textos_visibles": [
+        "Nueva producción\n\nSelecciona qué fabricar. EcoLact calculará automáticamente los insumos necesarios.\n\nLECHE DISPONIBLE\n\nIngresa automáticamente desde Acopio\n\n48 L\n\nPRODUCTO\nElegir un producto\nProducto Prueba Manual · 1 L\nCANTIDAD A PRODUCIR\nREQUERIMIENTOS DE PRODUCCIÓN\n\nProducto Prueba Manual · 1 L\n\n2 unidades planificadas\n\nINSUMO\nNECESARIO\nDISPONIBLE\nESTADO\nLeche\ndesde Acopio\n\n2 L\n\n48 L\n\nSuficiente\nInsumo Prueba Manual\n\n120 ml\n\n1,900 ml\n\nSuficiente\n\nTodos los insumos están disponibles.\n\nObservación (opcional)\n\nAl iniciar se descuentan los insumos. El producto se suma al stock cuando finalices el lote.\n\nCancelar\nIniciar producción"
+      ],
+      "hora": "2026-10-28T12:00:09"
+    },
+    {
+      "nombre": "pro_03_iniciada",
+      "archivo": "evidencias/originales/produccion/pro_03_iniciada.png",
+      "url": "/admin/produccion/1",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "obtenido": [
+          523,
+          472,
+          720,
+          518
+        ],
+        "finalizar": [
+          771,
+          810,
+          934,
+          846
+        ]
+      },
+      "textos_visibles": [
+        "Producción LOT-00001 iniciada. Los insumos fueron descontados.",
+        "Producción LOT-00001 iniciada. Los insumos fueron descontados.\nVolver a producción\n\nLOT-00001\n\nEn Proceso\nProducto Prueba Manual · 1 L\nINICIO\n28/10/2026 · 17:00\nCANTIDAD PLANIFICADA\n2 unidades\nLECHE UTILIZADA\n2 L\nFinalizar producción\n\nRegistra cuánto se obtuvo realmente.\n\nProducto Prueba Manual · 1 L\n\nPLANIFICADO\n\n2 unidades\n\nCANTIDAD OBTENIDA\n\nMERMA\n\n—\n\nIMPACTO EN INVENTARIO\n\nStock actual\n0 unidades\nProducción obtenida\n—\nStock resultante\n—\nObservación (opcional)\n\nLos insumos ya fueron descontados al iniciar el lote.\n\nEscribe la cantidad obtenida para ver cuánto se agregará al stock de Productos.\n\nFinalizar producción\nINSUMOS CONSUMIDOS\nLeche\n2 L\nInsumo Prueba Manual\n120 ml\n\nEstos insumos ya fueron descontados al iniciar el lote."
+      ],
+      "hora": "2026-10-28T12:00:16"
+    },
+    {
+      "nombre": "pro_04_finalizada",
+      "archivo": "evidencias/originales/produccion/pro_04_finalizada.png",
+      "url": "/admin/produccion/1",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Producción LOT-00001 finalizada. Se agregaron 2 unidades al stock de Producto Prueba Manual · 1 L.",
+        "Producción LOT-00001 finalizada. Se agregaron 2 unidades al stock de Producto Prueba Manual · 1 L.\nVolver a producción\n\nLOT-00001\n\nFinalizado\nProducto Prueba Manual · 1 L\nINICIO\n28/10/2026 · 17:00\nCANTIDAD PLANIFICADA\n2 unidades\nLECHE UTILIZADA\n2 L\nFINALIZADO\n28/10/2026 · 17:00\nProducción finalizada\n\nLo obtenido ya está en el stock de Productos. Este registro no se puede modificar.\n\nProducto Prueba Manual · 1 L\n\nPLANIFICADO\n2 unidades\nOBTENIDO\n2 unidades\nMERMA\n0 unidades\nSTOCK INCORPORADO\n+2 unidades\nINSUMOS CONSUMIDOS\nLeche\n2 L\nInsumo Prueba Manual\n120 ml\n\nEstos insumos ya fueron descontados al iniciar el lote."
+      ],
+      "hora": "2026-10-28T12:00:21"
+    },
+    {
+      "nombre": "pro_05_historial_final",
+      "archivo": "evidencias/originales/produccion/pro_05_historial_final.png",
+      "url": "/admin/produccion",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          305,
+          442,
+          1387,
+          499
+        ]
+      },
+      "textos_visibles": [
+        "Producción\n›\nProducción\n\nLotes en proceso\n\n0\n\nPendientes de finalizar\n\nLeche disponible\n\n46 L\n\nIngresa automáticamente desde Acopio\n\nLotes finalizados\n\n1\n\nSegún filtros aplicados\n\nProducción\n\nGestiona los lotes de producción y registra los productos obtenidos.\n\nNueva producción\nBuscar por código de lote\nPeriodo\nTodos\nHoy\nEsta semana\nEste mes\nPersonalizado\nEstado\nTodos\nEn proceso\nFinalizado\nFiltrar\nCÓDIGO\tPRODUCTO(S)\tINICIO\tLECHE UTILIZADA\tRESULTADO\tESTADO\tACCIÓN\nLOT-00001\tProducto Prueba Manual · 1 L\t28/10/2026 17:00\t2 L\t2 unidades\t\nFinalizado"
+      ],
+      "hora": "2026-10-28T12:00:24"
+    }
+  ],
+  "dialogos": [
+    "¿Finalizar la producción LOT-00001? Lo obtenido se sumará al stock de Productos y el lote ya no se podrá modificar."
+  ]
+}

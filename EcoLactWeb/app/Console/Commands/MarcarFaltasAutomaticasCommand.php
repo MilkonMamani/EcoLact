@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use Throwable;
 
 /**
- * Corre todos los días a las 07:00 hora del negocio (routes/console.php),
+ * Corre todos los días a las 23:59 hora del negocio (routes/console.php),
  * el cierre oficial de asistencia (VentanaAsistencia): crea la FALTA
  * automática de quien debía asistir y no registró nada en los días ya
  * cerrados del mes. Idempotente: quien ya tiene jornada no se toca.
@@ -16,9 +16,9 @@ use Throwable;
 class MarcarFaltasAutomaticasCommand extends Command
 {
     protected $signature = 'ecolact:marcar-faltas
-        {--fecha= : Último día (AAAA-MM-DD) a cerrar; por defecto el último día ya cerrado (hoy desde las 07:00)}';
+        {--fecha= : Último día (AAAA-MM-DD) a cerrar; por defecto el último día ya cerrado (hoy desde las 23:59)}';
 
-    protected $description = 'Marca FALTA automática a quien debía asistir y no registró asistencia antes de las 07:00.';
+    protected $description = 'Marca FALTA automática a quien debía asistir y no registró asistencia antes de las 23:59.';
 
     public function handle(MarcarFaltasAutomaticas $marcarFaltas): int
     {

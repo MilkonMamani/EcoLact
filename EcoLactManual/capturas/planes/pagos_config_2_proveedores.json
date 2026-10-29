@@ -1,0 +1,16 @@
+{"descripcion": "Configuración de pagos a proveedores: precio de PRUEBA S/ 1.20 por litro y descuento OBSERVADA S/ 0.10 (autorizado por el usuario, BD de prueba).",
+ "salida": "evidencias/originales/config_pagos",
+ "pasos": [
+  {"accion": "ir", "url": "/admin/configuracion-pagos?tab=proveedores", "ms": 2500},
+  {"accion": "clic", "selector": "#seccion-proveedores button[data-modal-open]:visible >> nth=0"},
+  {"accion": "esperar", "ms": 900},
+  {"accion": "escribir", "selector": "[data-modal].is-open input[name=precio_base_litro]", "texto": "1.20"},
+  {"accion": "escribir", "selector": "[data-modal].is-open input[name=descuento_observada]", "texto": "0.10"},
+  {"accion": "escribir", "selector": "[data-modal].is-open textarea[name=observacion]", "texto": "Precio de prueba para el manual."},
+  {"accion": "esperar", "ms": 500},
+  {"accion": "captura", "nombre": "cfg_07_precio", "medir": {"precio": "[data-modal].is-open input[name=precio_base_litro]", "descuento": "[data-modal].is-open input[name=descuento_observada]", "guardar": "[data-modal].is-open button[type=submit]"}, "leer": ["[data-modal].is-open [data-modal-panel]"]},
+  {"accion": "clic", "selector": "[data-modal].is-open button[type=submit]"},
+  {"accion": "esperar", "selector": "[role=alert]:has-text('Configuración de proveedores guardada')"},
+  {"accion": "esperar", "ms": 1500},
+  {"accion": "captura", "nombre": "cfg_08_precio_guardado", "medir": {"mensaje": "[role=alert]:has-text('Configuración de proveedores guardada')", "seccion": "#seccion-proveedores"}, "leer": ["[role=alert]:has-text('Configuración')", "#seccion-proveedores"]}
+ ]}

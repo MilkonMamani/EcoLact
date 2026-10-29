@@ -9,16 +9,23 @@ use DomainException;
 /**
  * Política oficial de asistencia de EcoLact (la ÚNICA regla de cierre):
  * la asistencia de un día se registra o corrige solo ese mismo día ANTES de
- * las 07:00 (hora del negocio, config app.zona_horaria_negocio). Desde las
- * 07:00:00 el día queda CERRADO: solo consulta, y a quien debía asistir y no
+ * la hora de cierre (config app.asistencia_hora_cierre, por defecto 23:59, hora
+ * del negocio, config app.zona_horaria_negocio). Desde esa hora el día queda CERRADO: solo consulta, y a quien debía asistir y no
  * registró nada se le marca FALTA automática (MarcarFaltasAutomaticas).
  * "Pendiente" solo existe para hoy antes del cierre.
  */
 final class VentanaAsistencia
 {
-    public const HORA_CIERRE = '07:00';
+    /** Hora de cierre por defecto (config app.asistencia_hora_cierre / ASISTENCIA_HORA_CIERRE). */
+    public const HORA_CIERRE = '23:59';
 
     public function __construct(private readonly Reloj $reloj) {}
+
+    /** Hora de cierre vigente ("HH:MM", hora del negocio). */
+    public static function horaCierre(): string
+    {
+        return (string) config('app.asistencia_hora_cierre', self::HORA_CIERRE);
+    }
 
     /**
      * Fecha de hoy en la zona horaria del negocio, como día calendario a las
@@ -30,10 +37,10 @@ final class VentanaAsistencia
         return new DateTimeImmutable($this->reloj->hoy()->format('Y-m-d'));
     }
 
-    /** Momento del cierre de hoy (07:00:00 hora del negocio). */
+    /** Momento del cierre de hoy (23:59:00 hora del negocio). */
     public function cierreDeHoy(): DateTimeImmutable
     {
-        [$hora, $minuto] = array_map('intval', explode(':', self::HORA_CIERRE));
+        [$hora, $minuto] = array_map('intval', explode(':', self::horaCierre()));
 
         return $this->reloj->hoy()->setTime($hora, $minuto);
     }
@@ -45,7 +52,7 @@ final class VentanaAsistencia
             && $this->reloj->ahora() < $this->cierreDeHoy();
     }
 
-    /** Último día ya cerrado: hoy desde las 07:00; antes de esa hora, ayer. */
+    /** Último día ya cerrado: hoy desde las 23:59; antes de esa hora, ayer. */
     public function ultimoDiaCerrado(): DateTimeImmutable
     {
         return $this->reloj->ahora() >= $this->cierreDeHoy() ? $this->hoy() : $this->hoy()->modify('-1 day');
@@ -69,7 +76,7 @@ final class VentanaAsistencia
         }
 
         throw new DomainException($fecha->format('Y-m-d') === $this->hoy()->format('Y-m-d')
-            ? 'La asistencia de hoy ya se cerró a las '.self::HORA_CIERRE.' a. m.: solo se puede consultar.'
+            ? 'La asistencia de hoy ya se cerró a las '.self::horaCierre().': solo se puede consultar.'
             : 'La asistencia de ese día ya está cerrada: solo se puede consultar.');
     }
 }

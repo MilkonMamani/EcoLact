@@ -2,7 +2,6 @@
 
 use App\Application\Liquidacion\ValorizarEntrega;
 use App\Application\Pago\CerrarNominaMensual;
-use App\Application\Pago\Contracts\PersonalPagableQuery;
 use App\Application\Pago\RegistrarConfiguracionPago;
 use App\Application\Pago\RegistrarJornadaTrabajador;
 use App\Application\Trabajador\SincronizarTrabajadores;
@@ -12,6 +11,7 @@ use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use App\Infrastructure\Persistence\Models\AcopiadorModel;
 use App\Infrastructure\Persistence\Models\AnalisisCalidadModel;
 use App\Infrastructure\Persistence\Models\AnalistaCalidadModel;
+use App\Infrastructure\Persistence\Models\ConfiguracionPagoModel;
 use App\Infrastructure\Persistence\Models\EncargadoPlantaModel;
 use App\Infrastructure\Persistence\Models\EntregaModel;
 use App\Infrastructure\Persistence\Models\JornadaPersonalModel;
@@ -28,11 +28,8 @@ require_once __DIR__.'/EcoLactFixtures.php';
 if (! function_exists('pagos_configurar')) {
     /**
      * Configura el pago del proveedor ('PROVEEDOR': por litros; el precio base es el vigente en
-     * precios_leche, o $precio si se indica) o el sueldo de los trabajadores de un rol (por nombre).
-     *
-     * El sueldo se configura POR TRABAJADOR: con un rol, se configura cada trabajador real (con
-     * ficha activa) de ese rol que ya exista, y también los que pagos_personal() cree después en
-     * el mismo test. Un rol sin ficha (administrador) no es un trabajador: no recibe sueldo.
+     * precios_leche, o $precio si se indica) o el sueldo base de un rol (por nombre), que heredan
+     * todos sus trabajadores, también los que pagos_personal() cree después.
      *
      * @param  array<string, array{tipo_ajuste?: string, valor_ajuste?: float|string}>|null  $ajustes
      */
@@ -41,7 +38,7 @@ if (! function_exists('pagos_configurar')) {
         if ($destino === 'PROVEEDOR') {
             app(RegistrarConfiguracionPago::class)->execute(
                 tipo: TipoBeneficiarioPago::PROVEEDOR,
-                userId: null,
+                rolId: null,
                 montoBase: null,
                 aplicaCalidad: $aplicaCalidad,
                 fechaInicio: new DateTimeImmutable($desde),
@@ -54,34 +51,30 @@ if (! function_exists('pagos_configurar')) {
             return;
         }
 
-        // El contenedor se reconstruye en cada test: el registro no se filtra a otros tests.
-        $porRol = app()->bound('tests.sueldos_por_rol') ? app('tests.sueldos_por_rol') : [];
-        $porRol[$destino] = ['sueldo' => $sueldo, 'desde' => $desde, 'admin' => $admin];
-        app()->instance('tests.sueldos_por_rol', $porRol);
-
-        foreach (User::where('role_id', fixture_rol($destino)->id)->pluck('id') as $userId) {
-            if (app(PersonalPagableQuery::class)->trabajadorActivo($userId) !== null) {
-                pagos_configurar_trabajador($userId, $sueldo, $desde, $admin);
-            }
-        }
-    }
-}
-
-if (! function_exists('pagos_configurar_trabajador')) {
-    /**
-     * Sueldo mensual de UN trabajador (Configuración de pagos > Trabajadores).
-     */
-    function pagos_configurar_trabajador(int $userId, ?float $sueldo, string $desde, User $admin): void
-    {
         app(RegistrarConfiguracionPago::class)->execute(
             tipo: TipoBeneficiarioPago::PERSONAL,
-            userId: $userId,
+            rolId: fixture_rol($destino)->id,
             montoBase: $sueldo,
             aplicaCalidad: false,
             fechaInicio: new DateTimeImmutable($desde),
             observacion: null,
             creadoPorUserId: $admin->id,
         );
+    }
+}
+
+if (! function_exists('pagos_sueldo_individual_anterior')) {
+    /**
+     * Fila individual de sueldo del modelo por trabajador (oct. 2026), que hoy solo es historial:
+     * sirve para comprobar que ya no se usa para calcular sueldos.
+     */
+    function pagos_sueldo_individual_anterior(User $trabajador, float $sueldo, string $desde, User $admin): int
+    {
+        return ConfiguracionPagoModel::create([
+            'tipo_beneficiario' => 'PERSONAL', 'rol_id' => $trabajador->role_id, 'user_id' => $trabajador->id,
+            'tipo_calculo' => 'SUELDO_FIJO', 'monto_base' => $sueldo, 'periodicidad' => 'MENSUAL', 'aplica_calidad' => false,
+            'fecha_inicio' => $desde, 'estado' => 'ACTIVO', 'creado_por_user_id' => $admin->id,
+        ])->id;
     }
 }
 
@@ -112,13 +105,6 @@ if (! function_exists('pagos_personal')) {
             'VENTAS' => PersonalVentasModel::create($ficha),
             default => null,
         };
-
-        // Si el test ya configuró el sueldo de este rol (pagos_configurar), el trabajador nuevo también lo recibe.
-        $sueldoDelRol = (app()->bound('tests.sueldos_por_rol') ? app('tests.sueldos_por_rol') : [])[$rol] ?? null;
-
-        if ($sueldoDelRol !== null && app(PersonalPagableQuery::class)->trabajadorActivo($usuario->id) !== null) {
-            pagos_configurar_trabajador($usuario->id, $sueldoDelRol['sueldo'], $sueldoDelRol['desde'], $sueldoDelRol['admin']);
-        }
 
         return $usuario;
     }

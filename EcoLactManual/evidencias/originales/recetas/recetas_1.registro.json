@@ -1,0 +1,203 @@
+{
+  "plan": "recetas_1.json",
+  "fecha": "2026-10-28T11:58:19",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "rec_01_listado",
+      "archivo": "evidencias/originales/recetas/rec_01_listado.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          856,
+          239,
+          896
+        ],
+        "nueva": [
+          1265,
+          48,
+          1408,
+          88
+        ]
+      },
+      "textos_visibles": [
+        "Producción\n›\nRecetas\nRecetas\n\nDefine cómo se fabrica cada producto.\n\nNueva receta\n\nNo hay recetas registradas.\n\nCrea una receta para definir cómo se fabrica un producto.\n\nNueva receta"
+      ],
+      "hora": "2026-10-28T11:58:23"
+    },
+    {
+      "nombre": "rec_02_producto",
+      "archivo": "evidencias/originales/recetas/rec_02_producto.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {
+        "categoria": [
+          332,
+          225,
+          710,
+          267
+        ],
+        "nombre": [
+          730,
+          225,
+          1108,
+          267
+        ],
+        "presentacion": [
+          332,
+          309,
+          710,
+          351
+        ],
+        "unidad": [
+          730,
+          309,
+          1108,
+          351
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:58:26"
+    },
+    {
+      "nombre": "rec_03_formula",
+      "archivo": "evidencias/originales/recetas/rec_03_formula.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {
+        "ingredientes": [
+          332,
+          600,
+          1108,
+          718
+        ],
+        "agregar": [
+          332,
+          741,
+          502,
+          773
+        ],
+        "guardar": [
+          975,
+          792,
+          1108,
+          832
+        ]
+      },
+      "textos_visibles": [
+        "Elija un insumo\nLeche\nInsumo Prueba Manual\nLitros (L)\nMililitros (ml)\nElija un insumo\nLeche\nInsumo Prueba Manual\nLitros (L)\nMililitros (ml)",
+        "Producto Prueba Manual · 1 L"
+      ],
+      "hora": "2026-10-28T11:58:28"
+    },
+    {
+      "nombre": "rec_04_guardada",
+      "archivo": "evidencias/originales/recetas/rec_04_guardada.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "fila": [
+          285,
+          244,
+          1407,
+          304
+        ]
+      },
+      "textos_visibles": [
+        "Receta guardada. Su producto queda con stock 0 y no se descontaron insumos: se consumen al iniciar una producción.",
+        "Producto Prueba Manual\n\nYogures\n\n\t1 L\t2 ingredientes\t\nReceta activa\n\t28/10/2026"
+      ],
+      "hora": "2026-10-28T11:58:33"
+    },
+    {
+      "nombre": "rec_05_ver",
+      "archivo": "evidencias/originales/recetas/rec_05_ver.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {
+        "ver": [
+          1290,
+          258,
+          1322,
+          290
+        ],
+        "editar": [
+          1325,
+          258,
+          1357,
+          290
+        ],
+        "detalle": [
+          285,
+          305,
+          1407,
+          519
+        ]
+      },
+      "textos_visibles": [
+        "Producto Prueba Manual\n\nYogures\n\n\t1 L\t2 ingredientes\t\nReceta activa\n\t28/10/2026\t\n\n\n\nProducto Prueba Manual\n\nYogures\n\nPresentación: 1 L\n\nDESCRIPCIÓN\n\nProducto ficticio del manual.\n\nFórmula para producir 1 unidad de 1 L\n\nINGREDIENTE\tCANTIDAD\nLeche\t1 L\nInsumo Prueba Manual\t50 ml\n\nGuardar o editar una receta no descuenta insumos. Los insumos se consumen al iniciar una producción."
+      ],
+      "hora": "2026-10-28T11:58:34"
+    },
+    {
+      "nombre": "rec_06_editar",
+      "archivo": "evidencias/originales/recetas/rec_06_editar.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {
+        "producto_fijo": [
+          332,
+          199,
+          1108,
+          240
+        ],
+        "ingredientes": [
+          332,
+          611,
+          1108,
+          729
+        ],
+        "guardar": [
+          961,
+          792,
+          1108,
+          832
+        ]
+      },
+      "textos_visibles": [
+        "Editar receta",
+        "Producto Prueba Manual · 1 L",
+        "Elija un insumo\nLeche\nInsumo Prueba Manual\nLitros (L)\nMililitros (ml)\nElija un insumo\nLeche\nInsumo Prueba Manual\nLitros (L)\nMililitros (ml)"
+      ],
+      "hora": "2026-10-28T11:58:37"
+    },
+    {
+      "nombre": "rec_07_editada",
+      "archivo": "evidencias/originales/recetas/rec_07_editada.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Receta actualizada. Guardar cambios no descuenta inventario.",
+        "Producto Prueba Manual\n\nYogures\n\n\t1 L\t2 ingredientes\t\nReceta activa\n\t28/10/2026"
+      ],
+      "hora": "2026-10-28T11:58:42"
+    }
+  ],
+  "dialogos": []
+}

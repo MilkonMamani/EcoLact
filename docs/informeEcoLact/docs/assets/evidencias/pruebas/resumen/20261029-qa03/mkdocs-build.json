@@ -1,0 +1,10 @@
+{
+  "command": "mkdocs build --clean",
+  "cwd": "C:\\CICLO VI\\EcoLact\\docs\\informeEcoLact",
+  "started": "2026-10-29T01:30:19.219488-05:00",
+  "ended": "2026-10-29T01:30:22.678020-05:00",
+  "duration_seconds": 3.459,
+  "exit_code": 0,
+  "log": "mkdocs-build.log",
+  "sha256": "8932679c8f2646f74eea36e3c1615cd4e3b59952cebae78d85834cd284156403"
+}

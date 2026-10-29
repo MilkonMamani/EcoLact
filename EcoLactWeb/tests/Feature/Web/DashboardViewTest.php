@@ -11,7 +11,7 @@ require_once __DIR__.'/../../Support/DashboardFixtures.php';
 uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->travelTo(CarbonImmutable::parse('2026-09-10 12:00:00', config('app.timezone')));
+    $this->travelTo(CarbonImmutable::parse('2026-09-10 12:00:00', config('app.zona_horaria_negocio')));
 });
 
 function dashboard_xpath(TestResponse $response): DOMXPath
@@ -27,7 +27,7 @@ it('muestra el encabezado del resumen con el rango aplicado y el filtro activo',
 
     $xpath = dashboard_xpath($response);
     expect(trim($xpath->evaluate('string(//h1)')))->toBe('Resumen general');
-    expect(trim($xpath->evaluate('string(//nav[@aria-label="Período del dashboard"]/a[@aria-current="page"])')))->toBe('7 días');
+    expect(trim($xpath->evaluate('string(//nav[@aria-label="Período del dashboard"]/a[@aria-current="page"])')))->toBe('Semana');
     $response->assertSeeText(['Esta semana', 'lun. 7 sep. – dom. 13 sep. 2026']);
     $response->assertSeeText('Lo esencial de tu operación, en un solo lugar')->assertDontSee('Personalizado');
 });
@@ -40,9 +40,9 @@ it('adapta los títulos de los indicadores al período con valores reales', func
 
     $response->assertSeeText($titulos)->assertSeeText(['30.25', 'S/ 45.50', '1 proveedor con entregas']);
 })->with([
-    'hoy' => ['hoy', ['Leche acopiada hoy', 'Producción de hoy', 'Ventas del día', 'Pagos pendientes de hoy']],
-    'semana' => ['semana', ['Leche acopiada esta semana', 'Producción de la semana', 'Ventas de la semana', 'Pagos pendientes de la semana']],
-    'mes' => ['mes', ['Leche acopiada este mes', 'Producción del mes', 'Ventas del mes', 'Pagos pendientes del mes']],
+    'hoy' => ['hoy', ['Leche acopiada hoy', 'Producción de hoy', 'Ventas del día', 'Pagos pendientes', 'vencen hoy']],
+    'semana' => ['semana', ['Leche acopiada esta semana', 'Producción de la semana', 'Ventas de la semana', 'Pagos pendientes', 'vencen esta semana']],
+    'mes' => ['mes', ['Leche acopiada este mes', 'Producción del mes', 'Ventas del mes', 'Pagos pendientes', 'vencen este mes']],
 ]);
 
 it('no presenta distribución ni porcentajes de calidad ni enlaces vacíos', function () {
@@ -65,7 +65,13 @@ it('separa los pagos de proveedores y trabajadores con destinos filtrados según
         ->toBe(route('admin.pagos.proveedores.index', ['semana' => 'todos', 'estado' => 'pendientes']));
     expect($xpath->evaluate('string(//a[normalize-space(.)="Ver pagos a trabajadores"]/@href)'))
         ->toBe(route('admin.pagos.trabajadores.index', ['periodo' => '2026-08', 'estado' => 'PENDIENTE']));
-    $response->assertSeeText(['Proveedores · semanal', 'Trabajadores · mensual', 'S/ 10.00', 'S/ 1,200.00', 'S/ 1,210.00']);
+    $response->assertSeeText(['Obligaciones y remuneraciones por pagar', 'S/ 1,210.00'])
+        ->assertSeeTextInOrder(['Proveedores', '1 obligación por pagar', 'S/ 10.00'])
+        ->assertSeeTextInOrder(['Trabajadores', '1 obligación por pagar', 'S/ 1,200.00'])
+        ->assertDontSeeText('Resumen de obligaciones');
+    // Los vencidos van a "Por atender", no a la tarjeta de pagos.
+    $response->assertSeeTextInOrder(['Por atender', '2 pagos vencidos · S/ 1,210.00', 'Pagos pendientes']);
+    expect($xpath->evaluate('string(//li[contains(., "2 pagos vencidos")]//a/@href)'))->toBe(route('admin.pagos.index'));
 });
 
 it('enlaza cada aviso por atender a su pantalla con el filtro correspondiente', function () {

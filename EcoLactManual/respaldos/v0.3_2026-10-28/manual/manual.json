@@ -1,0 +1,35 @@
+{
+  "titulo": "EcoLact — Manual de usuario del Administrador",
+  "subtitulo": "Manual de usuario del Administrador",
+  "descripcion": "Aplicación web de gestión de acopio lácteo, calidad, producción, ventas y pagos",
+  "sistema": "EcoLactWeb (aplicación web Laravel)",
+  "version": "0.3 — edición en construcción por capítulos",
+  "fecha": "28 de octubre de 2026",
+  "estado": "Borrador verificado parcialmente — ver Anexo de verificación",
+  "historial": [
+    {
+      "version": "0.1",
+      "fecha": "28/10/2026",
+      "cambio": "Prototipo de demostración de Zonas (Antigravity), sin captura del resultado final."
+    },
+    {
+      "version": "0.2",
+      "fecha": "28/10/2026",
+      "cambio": "Estructura del manual completo. Capítulos: Introducción, Acceso y navegación, Zonas y rutas (verificados en interfaz)."
+    },
+    {
+      "version": "0.3",
+      "fecha": "28/10/2026",
+      "cambio": "Capítulo 4: Personal (alta, edición, cambio de zona y estado de acopiadores)."
+    }
+  ],
+  "capitulos": [
+    "capitulos/01_introduccion.json",
+    "capitulos/02_acceso.json",
+    "capitulos/03_zonas.json",
+    "capitulos/04_personal.json"
+  ],
+  "anexos": [
+    "capitulos/A_verificacion.json"
+  ]
+}

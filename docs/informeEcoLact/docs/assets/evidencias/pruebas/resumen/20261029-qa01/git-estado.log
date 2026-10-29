@@ -1,0 +1,354 @@
+ M EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt
+ M EcoLactWeb/app/Application/Caja/MovimientoCajaFila.php
+ M EcoLactWeb/app/Application/Caja/RegistrarMovimientoCaja.php
+ M EcoLactWeb/app/Application/Dashboard/DashboardAdministradorData.php
+ M EcoLactWeb/app/Application/Dashboard/DashboardPeriodo.php
+ M EcoLactWeb/app/Application/Pago/ActualizarConfiguracionPago.php
+D  EcoLactWeb/app/Application/Pago/Contracts/SueldosTrabajadoresQuery.php
+ M EcoLactWeb/app/Application/Pago/CorregirJornada.php
+ M EcoLactWeb/app/Application/Pago/DiagnosticarSueldosDelPeriodo.php
+ M EcoLactWeb/app/Application/Pago/EstadoAsistencia.php
+ M EcoLactWeb/app/Application/Pago/GenerarObligacionesPersonal.php
+ M EcoLactWeb/app/Application/Pago/MarcarFaltasAutomaticas.php
+ M EcoLactWeb/app/Application/Pago/ObtenerConfiguracionesPago.php
+ M EcoLactWeb/app/Application/Pago/ObtenerControlPeriodoTrabajador.php
+ M EcoLactWeb/app/Application/Pago/ObtenerMiAsistencia.php
+ M EcoLactWeb/app/Application/Pago/RegistrarAsistenciaQr.php
+ M EcoLactWeb/app/Application/Pago/RegistrarConfiguracionPago.php
+ M EcoLactWeb/app/Application/Pago/RegistrarJornadaTrabajador.php
+ M EcoLactWeb/app/Application/Pago/VentanaAsistencia.php
+ M EcoLactWeb/app/Application/Produccion/ActualizarInsumo.php
+ M EcoLactWeb/app/Application/Produccion/CalcularRequerimientosProduccion.php
+ M EcoLactWeb/app/Application/Produccion/ObtenerInventarioInsumos.php
+ M EcoLactWeb/app/Application/Produccion/ObtenerPanelInsumo.php
+ M EcoLactWeb/app/Application/Produccion/RegistrarCompraInsumos.php
+ M EcoLactWeb/app/Application/Trabajador/SincronizarTrabajadores.php
+ M EcoLactWeb/app/Console/Commands/MarcarFaltasAutomaticasCommand.php
+ M EcoLactWeb/app/Domain/Caja/MovimientoCaja.php
+ M EcoLactWeb/app/Domain/Pago/ConfiguracionPago.php
+ M EcoLactWeb/app/Domain/Pago/ConfiguracionPagoRepository.php
+ M EcoLactWeb/app/Domain/Produccion/CompraInsumo.php
+ M EcoLactWeb/app/Domain/Produccion/CompraInsumoDetalle.php
+ M EcoLactWeb/app/Domain/Produccion/CompraInsumoRepository.php
+ M EcoLactWeb/app/Domain/Produccion/Insumo.php
+ M EcoLactWeb/app/Domain/Produccion/InsumoMovimientoRepository.php
+ M EcoLactWeb/app/Domain/Produccion/InsumoRepository.php
+ M EcoLactWeb/app/Domain/Produccion/UnidadMedida.php
+ M EcoLactWeb/app/Domain/Shared/Enums/CategoriaMovimientoCaja.php
+ M EcoLactWeb/app/Domain/Shared/Enums/CondicionAsistencia.php
+ M EcoLactWeb/app/Http/Controllers/Api/Admin/DashboardController.php
+ M EcoLactWeb/app/Http/Controllers/Api/Planta/CompraInsumoController.php
+ M EcoLactWeb/app/Http/Controllers/Web/Admin/InsumoController.php
+ M EcoLactWeb/app/Http/Controllers/Web/Pago/ConfiguracionPagoController.php
+ M EcoLactWeb/app/Http/Controllers/Web/Pago/ControlAsistenciaController.php
+ M EcoLactWeb/app/Http/Controllers/Web/Pago/PagoTrabajadorController.php
+ M EcoLactWeb/app/Http/Controllers/Web/Planta/InsumoController.php
+ M EcoLactWeb/app/Http/Requests/Pago/StoreConfiguracionPagoRequest.php
+ M EcoLactWeb/app/Http/Requests/Pago/UpdateConfiguracionPagoRequest.php
+ M EcoLactWeb/app/Http/Requests/Produccion/CompraInsumosRequest.php
+ M EcoLactWeb/app/Http/Requests/Produccion/UpdateInsumoRequest.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Models/CompraInsumoDetalleModel.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Models/CompraInsumoModel.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Models/ConfiguracionPagoModel.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Models/InsumoMovimientoModel.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentCajaQuery.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentDashboardAdministradorQuery.php
+D  EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentSueldosTrabajadoresQuery.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentTrabajadoresPagoListadoQuery.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentCompraInsumoRepository.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentConfiguracionPagoRepository.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentInsumoMovimientoRepository.php
+ M EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentInsumoRepository.php
+ M EcoLactWeb/app/Providers/AppServiceProvider.php
+ M EcoLactWeb/config/app.php
+ M EcoLactWeb/phpunit.xml
+ M EcoLactWeb/resources/css/app.css
+ M EcoLactWeb/resources/css/pages/admin-caja.css
+ M EcoLactWeb/resources/css/pages/admin-configuracion-pagos.css
+ M EcoLactWeb/resources/css/pages/admin-fichas.css
+ M EcoLactWeb/resources/css/pages/admin-insumos.css
+ M EcoLactWeb/resources/js/app.js
+ M EcoLactWeb/resources/js/pages/admin-asistencia.js
+ M EcoLactWeb/resources/js/pages/admin-configuracion-pagos.js
+ M EcoLactWeb/resources/js/pages/admin-jornadas.js
+ M EcoLactWeb/resources/js/pages/insumos-compra.js
+ M EcoLactWeb/resources/js/pages/insumos.js
+ M EcoLactWeb/resources/views/admin/asistencia/index.blade.php
+ M EcoLactWeb/resources/views/admin/caja/_detalle.blade.php
+ M EcoLactWeb/resources/views/admin/caja/index.blade.php
+D  EcoLactWeb/resources/views/admin/configuracion-pagos/_panel-trabajador-vacio.blade.php
+D  EcoLactWeb/resources/views/admin/configuracion-pagos/_panel-trabajador.blade.php
+ M EcoLactWeb/resources/views/admin/configuracion-pagos/index.blade.php
+ M EcoLactWeb/resources/views/admin/dashboard.blade.php
+ M EcoLactWeb/resources/views/admin/insumos/_modales-panel.blade.php
+ M EcoLactWeb/resources/views/admin/insumos/_panel.blade.php
+ M EcoLactWeb/resources/views/admin/insumos/index.blade.php
+ M EcoLactWeb/resources/views/admin/pagos/trabajadores/_panel.blade.php
+ M EcoLactWeb/resources/views/components/fichas/asistencia.blade.php
+ M EcoLactWeb/resources/views/components/layout/sidebar-icon.blade.php
+ M EcoLactWeb/resources/views/components/ui/icon.blade.php
+ M EcoLactWeb/resources/views/insumos/_ficha.blade.php
+ M EcoLactWeb/resources/views/insumos/_inventario.blade.php
+ M EcoLactWeb/resources/views/insumos/_modales-insumo.blade.php
+ M EcoLactWeb/resources/views/layouts/admin.blade.php
+ M EcoLactWeb/routes/console.php
+ M EcoLactWeb/routes/web.php
+ M EcoLactWeb/tests/Feature/Application/Dashboard/DashboardPeriodoTest.php
+ M EcoLactWeb/tests/Feature/Application/Pago/CierreAsistenciaTest.php
+ M EcoLactWeb/tests/Feature/Application/Pago/ConfiguracionPagoTest.php
+ M EcoLactWeb/tests/Feature/Application/Pago/GenerarPagosPendientesTest.php
+ M EcoLactWeb/tests/Feature/Application/Produccion/CompraInsumosTest.php
+ M EcoLactWeb/tests/Feature/Application/Produccion/IniciarProduccionTest.php
+ M EcoLactWeb/tests/Feature/Http/Controllers/Web/Admin/DashboardControllerTest.php
+ M EcoLactWeb/tests/Feature/Infrastructure/Persistence/EloquentDashboardAdministradorQueryTest.php
+ M EcoLactWeb/tests/Feature/Web/AsistenciaDeHoyTest.php
+ M EcoLactWeb/tests/Feature/Web/CajaTest.php
+ M EcoLactWeb/tests/Feature/Web/CompraInsumosWebTest.php
+ M EcoLactWeb/tests/Feature/Web/DashboardViewTest.php
+ M EcoLactWeb/tests/Feature/Web/InsumosInventarioViewTest.php
+ M EcoLactWeb/tests/Feature/Web/PagoTrabajadoresTest.php
+ M EcoLactWeb/tests/Feature/Web/PagosModuloTest.php
+ M EcoLactWeb/tests/Feature/Web/ProduccionModalYInsumosTest.php
+ M EcoLactWeb/tests/Support/DashboardFixtures.php
+ M EcoLactWeb/tests/Support/PagosFixtures.php
+ M docs/informeEcoLact/docs/arquitectura/api.md
+ M docs/informeEcoLact/docs/arquitectura/backend.md
+ M docs/informeEcoLact/docs/arquitectura/base-datos.md
+ M docs/informeEcoLact/docs/arquitectura/dominio.md
+ M docs/informeEcoLact/docs/arquitectura/index.md
+ M docs/informeEcoLact/docs/arquitectura/integracion.md
+ M docs/informeEcoLact/docs/arquitectura/mobile.md
+ M docs/informeEcoLact/docs/arquitectura/seguridad.md
+ M docs/informeEcoLact/docs/desarrollo/backend.md
+ M docs/informeEcoLact/docs/desarrollo/base-datos.md
+ M docs/informeEcoLact/docs/desarrollo/configuracion.md
+ M docs/informeEcoLact/docs/desarrollo/git.md
+ M docs/informeEcoLact/docs/desarrollo/index.md
+ M docs/informeEcoLact/docs/desarrollo/mobile.md
+ M docs/informeEcoLact/docs/desarrollo/repositorio.md
+ M docs/informeEcoLact/docs/flujos/acopio.md
+ M docs/informeEcoLact/docs/flujos/calidad.md
+ M docs/informeEcoLact/docs/flujos/finanzas.md
+ M docs/informeEcoLact/docs/flujos/index.md
+ M docs/informeEcoLact/docs/flujos/insumos.md
+ M docs/informeEcoLact/docs/flujos/integracion.md
+ M docs/informeEcoLact/docs/flujos/liquidacion-pagos.md
+ M docs/informeEcoLact/docs/flujos/produccion.md
+ M docs/informeEcoLact/docs/flujos/ventas-caja.md
+ M docs/informeEcoLact/docs/sistema/actores-roles.md
+ M docs/informeEcoLact/docs/sistema/alcance.md
+ M docs/informeEcoLact/docs/sistema/index.md
+ M docs/informeEcoLact/docs/sistema/modulos.md
+ M docs/informeEcoLact/docs/sistema/problema-solucion.md
+ M docs/informeEcoLact/docs/sistema/reglas-negocio.md
+ M docs/informeEcoLact/mkdocs.yml
+ M docs/informeEcoLact/site/404.html
+ M docs/informeEcoLact/site/arquitectura/api/index.html
+ M docs/informeEcoLact/site/arquitectura/backend/index.html
+ M docs/informeEcoLact/site/arquitectura/base-datos/index.html
+ M docs/informeEcoLact/site/arquitectura/dominio/index.html
+ M docs/informeEcoLact/site/arquitectura/index.html
+ M docs/informeEcoLact/site/arquitectura/integracion/index.html
+ M docs/informeEcoLact/site/arquitectura/mobile/index.html
+ M docs/informeEcoLact/site/arquitectura/seguridad/index.html
+ M docs/informeEcoLact/site/desarrollo/backend/index.html
+ M docs/informeEcoLact/site/desarrollo/base-datos/index.html
+ M docs/informeEcoLact/site/desarrollo/configuracion/index.html
+ M docs/informeEcoLact/site/desarrollo/git/index.html
+ M docs/informeEcoLact/site/desarrollo/index.html
+ M docs/informeEcoLact/site/desarrollo/mobile/index.html
+ M docs/informeEcoLact/site/desarrollo/repositorio/index.html
+ M docs/informeEcoLact/site/flujos/acopio/index.html
+ M docs/informeEcoLact/site/flujos/calidad/index.html
+ M docs/informeEcoLact/site/flujos/finanzas/index.html
+ M docs/informeEcoLact/site/flujos/index.html
+ M docs/informeEcoLact/site/flujos/insumos/index.html
+ M docs/informeEcoLact/site/flujos/integracion/index.html
+ M docs/informeEcoLact/site/flujos/liquidacion-pagos/index.html
+ M docs/informeEcoLact/site/flujos/produccion/index.html
+ M docs/informeEcoLact/site/flujos/ventas-caja/index.html
+ M docs/informeEcoLact/site/index.html
+ M docs/informeEcoLact/site/pruebas/backend/index.html
+ M docs/informeEcoLact/site/pruebas/evidencias/index.html
+ M docs/informeEcoLact/site/pruebas/index.html
+ M docs/informeEcoLact/site/pruebas/integracion/index.html
+ M docs/informeEcoLact/site/pruebas/mobile/index.html
+ M docs/informeEcoLact/site/search/search_index.json
+ M docs/informeEcoLact/site/sistema/actores-roles/index.html
+ M docs/informeEcoLact/site/sistema/alcance/index.html
+ M docs/informeEcoLact/site/sistema/index.html
+ M docs/informeEcoLact/site/sistema/modulos/index.html
+ M docs/informeEcoLact/site/sistema/problema-solucion/index.html
+ M docs/informeEcoLact/site/sistema/reglas-negocio/index.html
+ M docs/informeEcoLact/site/sitemap.xml.gz
+?? EcoLactManual/
+?? EcoLactWeb/app/Application/Compra/
+?? EcoLactWeb/app/Application/Dashboard/ObtenerResumenFinanciero.php
+?? EcoLactWeb/app/Application/Dashboard/ResumenFinanciero.php
+?? EcoLactWeb/app/Application/Pago/CalcularDevengoPersonal.php
+?? EcoLactWeb/app/Application/Pago/Contracts/DevengoPersonalQuery.php
+?? EcoLactWeb/app/Application/Pago/Contracts/DevengoProveedoresQuery.php
+?? EcoLactWeb/app/Application/Pago/Contracts/SaldosObligacionesQuery.php
+?? EcoLactWeb/app/Application/Pago/Contracts/SueldosPorRolQuery.php
+?? EcoLactWeb/app/Application/Pago/DevengoPersonal.php
+?? EcoLactWeb/app/Application/Produccion/EvaluarCambioUnidadBase.php
+?? EcoLactWeb/app/Console/Commands/ConsolidarSueldosPorRolCommand.php
+?? EcoLactWeb/app/Console/Commands/RegistrarSaldoInicialCajaCommand.php
+?? EcoLactWeb/app/Console/Commands/SimularAcopioCommand.php
+?? EcoLactWeb/app/Domain/Compra/
+?? EcoLactWeb/app/Domain/Shared/Enums/CondicionPagoCompra.php
+?? EcoLactWeb/app/Domain/Shared/Enums/EstadoPagoCompra.php
+?? EcoLactWeb/app/Domain/Shared/Enums/EstadoRecepcionCompra.php
+?? EcoLactWeb/app/Domain/Shared/Enums/TipoComprobanteCompra.php
+?? EcoLactWeb/app/Domain/Shared/Enums/TipoDocumentoCompra.php
+?? EcoLactWeb/app/Domain/Shared/Enums/TratamientoCompra.php
+?? EcoLactWeb/app/Http/Controllers/Web/Admin/CompraController.php
+?? EcoLactWeb/app/Http/Requests/Compra/
+?? EcoLactWeb/app/Http/Support/ComprobantesCompra.php
+?? EcoLactWeb/app/Infrastructure/Mantenimiento/ConsolidadorSueldosPorRol.php
+?? EcoLactWeb/app/Infrastructure/Mantenimiento/SimuladorAcopio.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Models/CategoriaCompraModel.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Models/ComprobanteCompraModel.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Models/PagoCompraModel.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Models/ProveedorComercialModel.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentComprasQuery.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentDevengoPersonalQuery.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentDevengoProveedoresQuery.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentSaldosObligacionesQuery.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Queries/EloquentSueldosPorRolQuery.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentCategoriaCompraRepository.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentComprobanteCompraRepository.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentPagoCompraRepository.php
+?? EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentProveedorComercialRepository.php
+?? EcoLactWeb/app/Policies/CompraPolicy.php
+?? EcoLactWeb/database/migrations/2026_10_29_025205_corregir_unidad_base_de_sal_a_kilogramos.php
+?? EcoLactWeb/database/migrations/2026_10_29_100000_create_categorias_compra_table.php
+?? EcoLactWeb/database/migrations/2026_10_29_100001_create_proveedores_comerciales_table.php
+?? EcoLactWeb/database/migrations/2026_10_29_100002_alter_compras_insumo_add_compras_y_gastos.php
+?? EcoLactWeb/database/migrations/2026_10_29_100003_alter_compra_insumo_detalles_add_tratamiento.php
+?? EcoLactWeb/database/migrations/2026_10_29_100004_create_pagos_compra_table.php
+?? EcoLactWeb/database/migrations/2026_10_29_100005_create_comprobantes_compra_table.php
+?? EcoLactWeb/database/migrations/2026_10_29_100006_backfill_compras_historicas_a_compras_y_gastos.php
+?? EcoLactWeb/resources/css/pages/admin-compras.css
+?? EcoLactWeb/resources/js/pages/compras.js
+?? EcoLactWeb/resources/views/admin/compras/
+?? EcoLactWeb/resources/views/admin/configuracion-pagos/_form-sueldo-rol.blade.php
+?? EcoLactWeb/resources/views/admin/configuracion-pagos/_panel-rol.blade.php
+?? EcoLactWeb/resources/views/admin/insumos/_nivel.blade.php
+?? EcoLactWeb/resources/views/admin/insumos/movimientos.blade.php
+?? EcoLactWeb/resources/views/insumos/_selector-unidad.blade.php
+?? EcoLactWeb/tests/Feature/Application/Caja/
+?? EcoLactWeb/tests/Feature/Application/Dashboard/ResumenFinancieroTest.php
+?? EcoLactWeb/tests/Feature/Application/Produccion/UnidadesInsumoTest.php
+?? EcoLactWeb/tests/Feature/Infrastructure/Mantenimiento/SimularAcopioTest.php
+?? EcoLactWeb/tests/Feature/Web/ComprasYGastosTest.php
+?? docs/informeEcoLact/CAPTURAS-ARQUITECTURA.md
+?? docs/informeEcoLact/CAPTURAS-DESARROLLO.md
+?? docs/informeEcoLact/IMPLEMENTACION-ARQUITECTURA.md
+?? docs/informeEcoLact/IMPLEMENTACION-DESARROLLO.md
+?? docs/informeEcoLact/IMPLEMENTACION-FLUJOS.md
+?? docs/informeEcoLact/REVISION-SISTEMA.md
+?? docs/informeEcoLact/docs/arquitectura/offline-first.md
+?? docs/informeEcoLact/docs/arquitectura/sincronizacion.md
+?? docs/informeEcoLact/docs/assets/diagrams/
+?? docs/informeEcoLact/docs/assets/evidencias/
+?? docs/informeEcoLact/docs/assets/images/alcance-planta-nitida.png
+?? docs/informeEcoLact/docs/assets/images/alcance-planta.png
+?? docs/informeEcoLact/docs/assets/images/arquitectura/
+?? docs/informeEcoLact/docs/assets/images/desarrollo/
+?? docs/informeEcoLact/docs/assets/images/diagrama-calidad.png
+?? docs/informeEcoLact/docs/assets/images/diagrama-reglas-calidad.svg
+?? docs/informeEcoLact/docs/assets/images/diagrama-reglas-pagos.svg
+?? docs/informeEcoLact/docs/assets/images/flujos/
+?? docs/informeEcoLact/docs/assets/images/modulo-acopio-nitida.png
+?? docs/informeEcoLact/docs/assets/images/modulo-acopio.png
+?? docs/informeEcoLact/docs/assets/images/modulo-admin-nitida.png
+?? docs/informeEcoLact/docs/assets/images/modulo-admin.png
+?? docs/informeEcoLact/docs/assets/images/modulo-calidad-nitida.png
+?? docs/informeEcoLact/docs/assets/images/modulo-calidad.png
+?? docs/informeEcoLact/docs/assets/images/modulo-insumos-nitida.png
+?? docs/informeEcoLact/docs/assets/images/modulo-insumos.png
+?? docs/informeEcoLact/docs/assets/images/modulo-produccion-nitida.png
+?? docs/informeEcoLact/docs/assets/images/modulo-produccion.png
+?? docs/informeEcoLact/docs/assets/images/modulo-ventas-nitida.png
+?? docs/informeEcoLact/docs/assets/images/modulo-ventas.png
+?? docs/informeEcoLact/docs/assets/images/problema-actual-nitida.png
+?? docs/informeEcoLact/docs/assets/images/problema-actual.png
+?? docs/informeEcoLact/docs/assets/images/rol-acopiador-nitida.png
+?? docs/informeEcoLact/docs/assets/images/rol-acopiador.png
+?? docs/informeEcoLact/docs/assets/images/rol-admin-nitida.png
+?? docs/informeEcoLact/docs/assets/images/rol-admin.png
+?? docs/informeEcoLact/docs/assets/images/rol-calidad-nitida.png
+?? docs/informeEcoLact/docs/assets/images/rol-calidad.png
+?? docs/informeEcoLact/docs/assets/images/rol-planta-nitida.png
+?? docs/informeEcoLact/docs/assets/images/rol-planta.png
+?? docs/informeEcoLact/docs/assets/images/rol-proveedor-nitida.png
+?? docs/informeEcoLact/docs/assets/images/rol-proveedor.png
+?? docs/informeEcoLact/docs/assets/images/rol-ventas-nitida.png
+?? docs/informeEcoLact/docs/assets/images/rol-ventas.png
+?? docs/informeEcoLact/docs/assets/images/sistema-hero-nitida.png
+?? docs/informeEcoLact/docs/assets/images/sistema-hero.png
+?? docs/informeEcoLact/docs/assets/images/solucion-digital-nitida.png
+?? docs/informeEcoLact/docs/assets/images/solucion-digital.png
+?? docs/informeEcoLact/docs/flujos/consulta-proveedor.md
+?? docs/informeEcoLact/docs/flujos/personal-asistencia.md
+?? docs/informeEcoLact/docs/stylesheets/actores.css
+?? docs/informeEcoLact/docs/stylesheets/arquitectura.css
+?? docs/informeEcoLact/docs/stylesheets/desarrollo.css
+?? docs/informeEcoLact/docs/stylesheets/flujos.css
+?? docs/informeEcoLact/docs/stylesheets/modulos.css
+?? docs/informeEcoLact/docs/stylesheets/reglas-negocio.css
+?? docs/informeEcoLact/docs/stylesheets/sistema.css
+?? docs/informeEcoLact/scripts/
+?? docs/informeEcoLact/site/arquitectura/offline-first/
+?? docs/informeEcoLact/site/arquitectura/sincronizacion/
+?? docs/informeEcoLact/site/assets/diagrams/
+?? docs/informeEcoLact/site/assets/images/alcance-planta-nitida.png
+?? docs/informeEcoLact/site/assets/images/alcance-planta.png
+?? docs/informeEcoLact/site/assets/images/arquitectura.png
+?? docs/informeEcoLact/site/assets/images/arquitectura/
+?? docs/informeEcoLact/site/assets/images/desarrollo/
+?? docs/informeEcoLact/site/assets/images/diagrama-calidad.png
+?? docs/informeEcoLact/site/assets/images/diagrama-reglas-calidad.svg
+?? docs/informeEcoLact/site/assets/images/diagrama-reglas-pagos.svg
+?? docs/informeEcoLact/site/assets/images/flujos.png
+?? docs/informeEcoLact/site/assets/images/flujos/
+?? docs/informeEcoLact/site/assets/images/modulo-acopio-nitida.png
+?? docs/informeEcoLact/site/assets/images/modulo-acopio.png
+?? docs/informeEcoLact/site/assets/images/modulo-admin-nitida.png
+?? docs/informeEcoLact/site/assets/images/modulo-admin.png
+?? docs/informeEcoLact/site/assets/images/modulo-calidad-nitida.png
+?? docs/informeEcoLact/site/assets/images/modulo-calidad.png
+?? docs/informeEcoLact/site/assets/images/modulo-insumos-nitida.png
+?? docs/informeEcoLact/site/assets/images/modulo-insumos.png
+?? docs/informeEcoLact/site/assets/images/modulo-produccion-nitida.png
+?? docs/informeEcoLact/site/assets/images/modulo-produccion.png
+?? docs/informeEcoLact/site/assets/images/modulo-ventas-nitida.png
+?? docs/informeEcoLact/site/assets/images/modulo-ventas.png
+?? docs/informeEcoLact/site/assets/images/problema-actual-nitida.png
+?? docs/informeEcoLact/site/assets/images/problema-actual.png
+?? docs/informeEcoLact/site/assets/images/rol-acopiador-nitida.png
+?? docs/informeEcoLact/site/assets/images/rol-acopiador.png
+?? docs/informeEcoLact/site/assets/images/rol-admin-nitida.png
+?? docs/informeEcoLact/site/assets/images/rol-admin.png
+?? docs/informeEcoLact/site/assets/images/rol-calidad-nitida.png
+?? docs/informeEcoLact/site/assets/images/rol-calidad.png
+?? docs/informeEcoLact/site/assets/images/rol-planta-nitida.png
+?? docs/informeEcoLact/site/assets/images/rol-planta.png
+?? docs/informeEcoLact/site/assets/images/rol-proveedor-nitida.png
+?? docs/informeEcoLact/site/assets/images/rol-proveedor.png
+?? docs/informeEcoLact/site/assets/images/rol-ventas-nitida.png
+?? docs/informeEcoLact/site/assets/images/rol-ventas.png
+?? docs/informeEcoLact/site/assets/images/sistema-hero-nitida.png
+?? docs/informeEcoLact/site/assets/images/sistema-hero.png
+?? docs/informeEcoLact/site/assets/images/sistema.png
+?? docs/informeEcoLact/site/assets/images/solucion-digital-nitida.png
+?? docs/informeEcoLact/site/assets/images/solucion-digital.png
+?? docs/informeEcoLact/site/flujos/consulta-proveedor/
+?? docs/informeEcoLact/site/flujos/personal-asistencia/
+?? docs/informeEcoLact/site/stylesheets/
+?? docs/informeEcoLact/tools/
+?? docs/informeEcoLact/validacion-arquitectura/
+?? docs/informeEcoLact/validacion-desarrollo/
+?? docs/informeEcoLact/validacion-flujos/
+?? imagenes/

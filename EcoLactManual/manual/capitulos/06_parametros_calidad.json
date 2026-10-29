@@ -1,0 +1,276 @@
+{
+  "id": "PAR",
+  "tipo": "modulo",
+  "titulo": "Parámetros de calidad",
+  "registro": "evidencias/originales/parametros/calidad_1_parametros.registro.json",
+  "introduccion": "Los parámetros de calidad definen qué se mide en la leche (grasa, densidad, pH, etc.) y su regla de evaluación indica el rango aceptado y el resultado cuando el valor medido queda fuera. El Administrador los crea y mantiene; el análisis de calidad usa los parámetros activos.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Configuración › Parámetros de calidad"
+    ],
+    [
+      "Depende de",
+      "Ningún otro módulo."
+    ],
+    [
+      "Habilita",
+      "Registro y evaluación de análisis de calidad."
+    ],
+    [
+      "Reglas principales",
+      [
+        "El código se genera a partir del nombre y no se modifica después.",
+        "Cada parámetro muestra una sola regla vigente (rango mínimo–máximo).",
+        "Un parámetro con reglas activas no puede quedar inactivo: desactive antes la regla."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "par_01_listado",
+    "pie": "Parámetros de calidad registrados.",
+    "elementos": [
+      [
+        "«Nuevo parámetro»",
+        "Abre el alta de un parámetro."
+      ],
+      [
+        "Tabla",
+        "Parámetro y descripción, unidad, estado, «Regla actual» y última actualización."
+      ],
+      [
+        "Panel derecho",
+        "«Información general» con «Editar parámetro» y «Regla de evaluación» con «Configurar regla» o «Editar regla»."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-PAR-001",
+      "titulo": "Registrar un parámetro de calidad",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Agregar un nuevo parámetro que se medirá en los análisis.",
+      "acceso": "Configuración › Parámetros de calidad › «Nuevo parámetro»",
+      "requisitos": [
+        "Nombre y unidad de medida del parámetro."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Parámetros de calidad",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Parámetros de calidad».",
+          "captura": "par_01_listado",
+          "objetivo": "menu",
+          "pie": "Opción «Parámetros de calidad»."
+        },
+        {
+          "titulo": "Abrir el formulario",
+          "instruccion": "Haz clic en «Nuevo parámetro».",
+          "captura": "par_01_listado",
+          "objetivo": "nuevo",
+          "pie": "Botón «Nuevo parámetro»."
+        },
+        {
+          "titulo": "Escribir el nombre",
+          "instruccion": "Escribe el «Nombre». El «Código» se completa solo (mayúsculas, números y guion bajo).",
+          "captura": "par_02_modal",
+          "objetivo": "codigo",
+          "pie": "Código generado a partir del nombre."
+        },
+        {
+          "titulo": "Completar unidad y estado",
+          "instruccion": "Escribe la «Unidad» (por ejemplo %, g/mL, °C), elige el «Estado» y, si lo necesitas, una «Descripción».",
+          "captura": "par_02_modal",
+          "objetivo": "estado",
+          "pie": "Estado del parámetro. En el ejemplo se registró «Inactivo» para no intervenir en los análisis reales.",
+          "nota": "Solo los parámetros **activos** se usan en los análisis de calidad."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar parámetro».",
+          "captura": "par_02_modal",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar parámetro»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el panel del parámetro.",
+          "captura": "par_03_registrado",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            800
+          ],
+          "pie": "Mensaje «Parámetro de calidad registrado correctamente.»",
+          "resultado": "El panel muestra el parámetro con su regla «Sin configurar»."
+        }
+      ],
+      "resultado": "El parámetro queda registrado. Configure su regla de evaluación (ADM-PAR-002).",
+      "validaciones": [
+        [
+          "Código",
+          "Obligatorio; solo A–Z, 0–9 y «_»; máx. 40; único.",
+          "«Ya existe un parámetro de calidad con ese código.» / «El código solo admite letras mayúsculas, números y guion bajo (ej. GRASA_LACTEA).»"
+        ],
+        [
+          "Nombre",
+          "Obligatorio; máx. 100.",
+          "El navegador no permite enviarlo vacío."
+        ],
+        [
+          "Unidad",
+          "Obligatoria en el formulario; máx. 30.",
+          "El navegador no permite enviarla vacía."
+        ],
+        [
+          "Descripción",
+          "Opcional; máx. 200.",
+          "—"
+        ]
+      ],
+      "figuras_validacion": [
+        {
+          "registro": "evidencias/originales/parametros/calidad_2_parametros_edicion.registro.json",
+          "captura": "par_14_duplicado",
+          "objetivo": "codigo",
+          "pie": "Código repetido: «Ya existe un parámetro de calidad con ese código.»"
+        }
+      ]
+    },
+    {
+      "codigo": "ADM-PAR-002",
+      "titulo": "Configurar la regla de evaluación (límites)",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Definir el rango aceptado del parámetro y el resultado cuando no se cumple.",
+      "acceso": "Panel del parámetro › «Regla de evaluación» › «Configurar regla»",
+      "requisitos": [
+        "Parámetro registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir la regla",
+          "instruccion": "En «Regla de evaluación», haz clic en «Configurar regla» (o «Editar regla» si ya existe).",
+          "captura": "par_03_registrado",
+          "objetivo": "configurar",
+          "pie": "Botón «Configurar regla»."
+        },
+        {
+          "titulo": "Indicar el rango",
+          "instruccion": "Escribe el «Valor mínimo» y el «Valor máximo» aceptados. Puedes dejar uno vacío si solo hay límite inferior o superior.",
+          "captura": "par_04_regla",
+          "objetivo": "minimo",
+          "pie": "Valores mínimo y máximo del rango."
+        },
+        {
+          "titulo": "Elegir el resultado si incumple",
+          "instruccion": "En «Resultado si incumple», elige «Aceptada», «Observada» o «Rechazada».",
+          "captura": "par_04_regla",
+          "objetivo": "resultado",
+          "pie": "Lista «Resultado si incumple»."
+        },
+        {
+          "titulo": "Definir la vigencia y guardar",
+          "instruccion": "Revisa la «Fecha inicio» (y «Fecha fin» si corresponde), el «Estado» y haz clic en «Guardar regla».",
+          "captura": "par_04_regla",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar regla»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica la regla en el panel.",
+          "captura": "par_05_regla_guardada",
+          "objetivo": "regla",
+          "pie": "Regla vigente: «Rango aceptado 1 – 5 %», «Si incumple: Rechazada».",
+          "resultado": "Aparece «Regla de calidad registrada correctamente.» y la columna «Regla actual» muestra el rango."
+        }
+      ],
+      "resultado": "Los análisis cuyo valor quede fuera del rango tomarán el resultado indicado en «Si incumple».",
+      "validaciones": [
+        [
+          "Resultado si incumple",
+          "Obligatorio: Aceptada, Observada o Rechazada.",
+          "«El resultado de incumplimiento no es un valor permitido.»"
+        ],
+        [
+          "Fecha inicio",
+          "Obligatoria.",
+          "El navegador no permite enviarla vacía."
+        ],
+        [
+          "Fecha fin",
+          "Opcional; no anterior a la fecha inicio.",
+          "«La fecha fin no puede ser anterior a la fecha inicio.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PAR-003",
+      "titulo": "Editar un parámetro o su regla",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Corregir los datos de un parámetro o cambiar el estado de su regla.",
+      "acceso": "Panel del parámetro › «Editar parámetro» / «Editar regla»",
+      "requisitos": [
+        "Parámetro registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Seleccionar el parámetro",
+          "instruccion": "Haz clic en la fila del parámetro.",
+          "registro": "evidencias/originales/parametros/calidad_2_parametros_edicion.registro.json",
+          "captura": "par_09_antes_editar_regla",
+          "objetivo": "fila",
+          "pie": "Parámetro seleccionado."
+        },
+        {
+          "titulo": "Editar la regla",
+          "instruccion": "Haz clic en «Editar regla», cambia lo necesario (por ejemplo el «Estado») y haz clic en «Guardar cambios».",
+          "registro": "evidencias/originales/parametros/calidad_2_parametros_edicion.registro.json",
+          "captura": "par_10_regla_inactiva",
+          "objetivo": "estado",
+          "pie": "Estado de la regla cambiado a «Inactivo».",
+          "resultado": "Aparece «Regla de calidad actualizada correctamente.»"
+        },
+        {
+          "titulo": "Editar el parámetro",
+          "instruccion": "Haz clic en «Editar parámetro», corrige nombre, unidad, estado o descripción y haz clic en «Guardar cambios». El código no se puede cambiar.",
+          "registro": "evidencias/originales/parametros/calidad_2_parametros_edicion.registro.json",
+          "captura": "par_12_editar",
+          "objetivo": "guardar",
+          "pie": "Ventana «Editar parámetro de calidad»; el código aparece bloqueado."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje de confirmación.",
+          "registro": "evidencias/originales/parametros/calidad_2_parametros_edicion.registro.json",
+          "captura": "par_13_actualizado",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            800
+          ],
+          "pie": "Mensaje «Parámetro de calidad actualizado correctamente.»"
+        }
+      ],
+      "resultado": "El parámetro y su regla muestran los datos modificados.",
+      "validaciones": [
+        [
+          "Estado del parámetro",
+          "No puede quedar inactivo con reglas activas.",
+          "«No se puede desactivar el parámetro: tiene reglas de calidad activas asociadas. Desactívelas primero.»"
+        ]
+      ],
+      "figuras_validacion": [
+        {
+          "registro": "evidencias/originales/parametros/parametros_extra.registro.json",
+          "captura": "par_06b_error_regla_activa",
+          "pie": "Error al guardar un parámetro inactivo que tiene una regla activa (ver OBS-04 en el Anexo A)."
+        }
+      ],
+      "errores": [
+        [
+          "Error «No se puede desactivar el parámetro…» aunque el parámetro ya está inactivo",
+          "Ponga la regla en «Inactivo» (paso 2) y vuelva a guardar el parámetro."
+        ]
+      ]
+    }
+  ]
+}

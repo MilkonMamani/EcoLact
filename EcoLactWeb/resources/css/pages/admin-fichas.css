@@ -260,7 +260,8 @@
 .asistencia-dato .is-pendiente { color: #98a2b3; }
 
 /* menú de acciones (⋮) por fila: <details> nativo, uno abierto a la vez (admin-asistencia.js) */
-.asistencia-tabla .is-accion { width: 3.5rem; text-align: center; }
+.asistencia-tabla .is-accion { width: 3.5rem; text-align: center; white-space: nowrap; }
+.asistencia-tabla .is-accion > .fichas-btn { margin-right: .25rem; vertical-align: middle; }
 .asistencia-acciones { position: relative; display: inline-block; }
 .asistencia-acciones > summary { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border: 1px solid transparent; border-radius: .5rem; color: #475467; cursor: pointer; list-style: none; transition: background-color .15s, border-color .15s; }
 .asistencia-acciones > summary::-webkit-details-marker { display: none; }

@@ -12,6 +12,7 @@ class LoteProduccionModel extends Model
     protected $table = 'lotes_produccion';
 
     protected $fillable = [
+        'planificacion_produccion_id',
         'codigo',
         'fecha_hora_inicio',
         'fecha_hora_fin',
@@ -29,6 +30,11 @@ class LoteProduccionModel extends Model
     public function registradoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'registrado_por_user_id');
+    }
+
+    public function planificacion(): BelongsTo
+    {
+        return $this->belongsTo(PlanificacionProduccionModel::class, 'planificacion_produccion_id');
     }
 
     public function produccionDetalles(): HasMany

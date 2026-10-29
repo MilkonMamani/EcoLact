@@ -141,7 +141,7 @@ document.addEventListener('fichas:panel-actualizado', (event) => iniciarCalendar
 const DETALLE_POR_ESTADO = {
     PRESENTE: { titulo: '✓ Asistió', clase: 'is-presente', observacion: 'Sin observaciones' },
     FALTA: { titulo: '✕ Falta', clase: 'is-falta', observacion: 'No registró asistencia' },
-    SIN_REGISTRO: { titulo: 'Pendiente', clase: 'is-neutro', nota: 'Aún puede registrarse hasta las 07:00 a. m.', observacion: 'Sin observaciones' },
+    SIN_REGISTRO: { titulo: 'Pendiente', clase: 'is-neutro', nota: 'Aún puede registrarse hasta las 23:59', observacion: 'Sin observaciones' },
     NO_APLICABLE: { titulo: '— No correspondía', clase: 'is-neutro', nota: 'Fuera de su periodo laboral: antes de su fecha de ingreso o después de su salida.', observacion: 'Sin observaciones' },
 };
 

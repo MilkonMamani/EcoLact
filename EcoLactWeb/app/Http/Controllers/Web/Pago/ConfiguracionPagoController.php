@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web\Pago;
 
 use App\Application\Pago\ActualizarConfiguracionPago;
-use App\Application\Pago\Contracts\SueldosTrabajadoresQuery;
+use App\Application\Pago\Contracts\SueldosPorRolQuery;
 use App\Application\Pago\ObtenerConfiguracionesPago;
 use App\Application\Pago\RegistrarConfiguracionPago;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
@@ -21,8 +21,9 @@ use Illuminate\View\View;
 /**
  * Configuración de pagos: define los VALORES BASE que usa Pagos, en dos pestañas.
  *
- * - Trabajadores: el sueldo mensual de cada trabajador registrado (tabla + panel
- *   lateral; ?trabajador=ID deja uno seleccionado y el panel se pide por fetch).
+ * - Trabajadores: el sueldo base mensual de cada ROL laboral, que heredan todos sus
+ *   trabajadores (indicadores + tabla + panel lateral; ?rol=ID deja uno seleccionado
+ *   y el panel se pide por fetch).
  * - Proveedores: la configuración general (precio por litro y descuento por la
  *   semana OBSERVADA).
  *
@@ -34,7 +35,7 @@ final class ConfiguracionPagoController extends Controller
 
     public function __construct(
         private readonly ObtenerConfiguracionesPago $obtenerConfiguraciones,
-        private readonly SueldosTrabajadoresQuery $sueldos,
+        private readonly SueldosPorRolQuery $sueldos,
         private readonly RegistrarConfiguracionPago $registrarConfiguracion,
         private readonly ActualizarConfiguracionPago $actualizarConfiguracion,
     ) {}
@@ -49,17 +50,17 @@ final class ConfiguracionPagoController extends Controller
         return view('admin.configuracion-pagos.index', [
             'datos' => $this->obtenerConfiguraciones->execute($hoy),
             'pestana' => $pestana,
-            'trabajador' => $request->filled('trabajador') ? $this->sueldos->detalle($request->integer('trabajador'), $hoy) : null,
+            'rolSeleccionado' => $request->filled('rol') ? $this->sueldos->detalle($request->integer('rol'), $hoy) : null,
         ]);
     }
 
-    /** Fragmento HTML del panel de un trabajador (lo pide admin-fichas.js al elegir una fila). */
-    public function panelTrabajador(int $userId): View
+    /** Fragmento HTML del panel de un rol (lo pide admin-fichas.js al elegir una fila). */
+    public function panelRol(int $rolId): View
     {
         Gate::authorize('viewAny', ConfiguracionPagoModel::class);
 
-        return view('admin.configuracion-pagos._panel-trabajador', [
-            'trabajador' => $this->sueldos->detalle($userId, DateTimeImmutable::createFromInterface(today())),
+        return view('admin.configuracion-pagos._panel-rol', [
+            'rol' => $this->sueldos->detalle($rolId, DateTimeImmutable::createFromInterface(today())),
         ]);
     }
 
@@ -73,7 +74,7 @@ final class ConfiguracionPagoController extends Controller
         try {
             $configuracion = $this->registrarConfiguracion->execute(
                 tipo: $tipo,
-                userId: isset($datos['user_id']) ? (int) $datos['user_id'] : null,
+                rolId: isset($datos['rol_id']) ? (int) $datos['rol_id'] : null,
                 montoBase: isset($datos['monto_base']) ? (float) $datos['monto_base'] : null,
                 aplicaCalidad: true,
                 fechaInicio: new DateTimeImmutable($datos['fecha_inicio']),
@@ -87,8 +88,8 @@ final class ConfiguracionPagoController extends Controller
             return back()->withInput()->withErrors(['configuracion' => $exception->getMessage()]);
         }
 
-        return $this->volver($configuracion->tipoBeneficiario(), $configuracion->userId())
-            ->with('success', $tipo === TipoBeneficiarioPago::PERSONAL ? 'Sueldo configurado correctamente.' : 'Configuración de proveedores guardada correctamente.');
+        return $this->volver($configuracion->tipoBeneficiario(), $configuracion->rolId())
+            ->with('success', $tipo === TipoBeneficiarioPago::PERSONAL ? 'Sueldo del rol configurado. Todo su personal lo hereda.' : 'Configuración de proveedores guardada correctamente.');
     }
 
     public function update(UpdateConfiguracionPagoRequest $request, ConfiguracionPagoModel $configuracion): RedirectResponse
@@ -112,7 +113,7 @@ final class ConfiguracionPagoController extends Controller
             return back()->withInput()->withErrors(['configuracion' => $exception->getMessage()]);
         }
 
-        return $this->volver($actualizada->tipoBeneficiario(), $actualizada->userId())
+        return $this->volver($actualizada->tipoBeneficiario(), $actualizada->rolId())
             ->with('success', 'Configuración actualizada. Los pagos ya generados conservan su monto.');
     }
 
@@ -132,10 +133,10 @@ final class ConfiguracionPagoController extends Controller
         return ['OBSERVADA' => ['tipo_ajuste' => 'MONTO', 'valor_ajuste' => -abs((float) $datos['descuento_observada'])]];
     }
 
-    private function volver(TipoBeneficiarioPago $tipo, ?int $userId): RedirectResponse
+    private function volver(TipoBeneficiarioPago $tipo, ?int $rolId): RedirectResponse
     {
         return redirect()->route('admin.configuracion-pagos.index', $tipo === TipoBeneficiarioPago::PERSONAL
-            ? ['tab' => 'trabajadores', 'trabajador' => $userId]
+            ? ['tab' => 'trabajadores', 'rol' => $rolId]
             : ['tab' => 'proveedores']);
     }
 }

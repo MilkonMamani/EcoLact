@@ -22,7 +22,7 @@ enum CondicionAsistencia: string
     /** Todavía no hay jornada ese día. */
     case SIN_ASISTENCIA = 'SIN_ASISTENCIA';
 
-    /** Jornada FALTA (automática del cierre de las 07:00 o registrada así). */
+    /** Jornada FALTA (automática del cierre de las 23:59 o registrada así). */
     case FALTA = 'FALTA';
 
     /** Ese día no estaba dentro de ninguno de sus periodos de actividad. */

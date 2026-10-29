@@ -1,0 +1,147 @@
+{
+ "descripcion": "Acopio: consulta, corrección de litros (48→49) y edición auditada (→47) de la entrega FICTICIA #1, con el usuario registrador difuminado.",
+ "salida": "evidencias/originales/acopio",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/entregas",
+   "ms": 2500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-acopio-fila]:has-text('Prueba Manual') [data-entrega-ver]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 2000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_05_detalle",
+   "medir": {
+    "ver": "[data-acopio-fila]:has-text('Prueba Manual') [data-entrega-ver]",
+    "editar_litros": "[data-litros-editar]",
+    "titulo": ".acopio-detalle-titulo"
+   },
+   "leer": [
+    "#modal-ver-entrega [data-entrega-detalle-contenido]"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-litros-editar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 600
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-litros-input]",
+   "texto": "49"
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_06_corregir",
+   "medir": {
+    "litros": "[data-litros-input]",
+    "guardar": "[data-litros-guardar]"
+   }
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-litros-guardar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 2000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_07_corregida",
+   "medir": {
+    "aviso": "[data-litros-aviso]",
+    "litros_fila": "[data-acopio-fila]:has-text('Prueba Manual') .acopio-litros"
+   },
+   "leer": [
+    "[data-litros-aviso]",
+    "#modal-ver-entrega [data-entrega-detalle-contenido]",
+    "[data-acopio-fila]:has-text('Prueba Manual')"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/entregas/1",
+   "ms": 2500
+  },
+  {
+   "accion": "esperar",
+   "ms": 3000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_08_show",
+   "medir": {
+    "editar": "button[data-modal-open='modal-editar-entrega']",
+    "tarjeta": "main .card, main section >> nth=0"
+   },
+   "leer": [
+    "main"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "button[data-modal-open='modal-editar-entrega']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-editar-entrega [name=litros]",
+   "texto": "47"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-editar-entrega [name=motivo_modificacion]",
+   "texto": "Corrección de prueba del manual."
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_09_editar",
+   "medir": {
+    "litros": "#modal-editar-entrega [name=litros]",
+    "motivo": "#modal-editar-entrega [name=motivo_modificacion]",
+    "guardar": "#modal-editar-entrega button[type=submit]"
+   },
+   "leer": [
+    "#modal-editar-entrega [data-modal-panel]"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "#modal-editar-entrega button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 3000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_10_editada",
+   "medir": {
+    "mensaje": "[role=alert]"
+   },
+   "leer": [
+    "[role=alert]",
+    "main"
+   ]
+  }
+ ],
+ "difuminar": [
+  "dt:has-text('Registrado por') + dd",
+  "dt:has-text('Registrado') + dd"
+ ]
+}

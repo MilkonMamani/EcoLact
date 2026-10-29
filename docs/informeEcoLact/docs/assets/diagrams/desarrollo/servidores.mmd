@@ -1,0 +1,7 @@
+flowchart TB
+ B[Navegador] -->|HTML y acciones| L[Laravel · puerto 8000]
+ B -->|CSS, JavaScript y recarga| V[Vite · puerto indicado en terminal]
+ L --> D[(MySQL · desarrollo)]
+ A[App móvil] -->|JSON · /api/v1/| L
+
+classDef default fill:#eaf3ff,stroke:#7ca5df,color:#103b86;

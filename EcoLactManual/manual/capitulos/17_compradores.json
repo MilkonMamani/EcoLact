@@ -1,0 +1,116 @@
+{
+  "id": "COM",
+  "tipo": "modulo",
+  "titulo": "Compradores",
+  "registro": "evidencias/originales/compradores/compradores_1.registro.json",
+  "introduccion": "Compradores es la agenda de clientes registrados que compran productos terminados. El Administrador puede consultarlos y registrarlos; la pantalla no ofrece edición ni cambio de estado.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Ventas › Compradores"
+    ],
+    [
+      "Habilita",
+      "Ventas a «Comprador registrado» (capítulo 16)."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Solo el nombre o razón social es obligatorio.",
+        "También se pueden registrar desde la pantalla de ventas («+ Nuevo comprador»)."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "com_03_registrado",
+    "pie": "Agenda de compradores (otros registros difuminados).",
+    "elementos": [
+      [
+        "«+ Nuevo comprador»",
+        "Abre el registro."
+      ],
+      [
+        "Tabla",
+        "Nombre o razón social, documento o RUC, teléfono y estado."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-COM-001",
+      "titulo": "Registrar un comprador",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Agregar un cliente a la agenda.",
+      "acceso": "Ventas › Compradores › «+ Nuevo comprador»",
+      "requisitos": [
+        "Nombre o razón social."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el formulario",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Compradores» y haz clic en «+ Nuevo comprador».",
+          "captura": "com_01_listado",
+          "objetivo": "nuevo",
+          "pie": "Botón «+ Nuevo comprador»."
+        },
+        {
+          "titulo": "Completar los datos",
+          "instruccion": "Escribe «Nombre / Razón social» (obligatorio), «Documento / RUC» y «Teléfono».",
+          "captura": "com_02_modal",
+          "objetivo": "nombre",
+          "pie": "Datos del comprador ficticio."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar comprador».",
+          "captura": "com_02_modal",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar comprador»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y la nueva fila «Activo».",
+          "captura": "com_03_registrado",
+          "objetivo": "fila",
+          "pie": "Comprador registrado, estado «Activo».",
+          "resultado": "Aparece «Comprador registrado correctamente.»"
+        }
+      ],
+      "resultado": "El comprador queda disponible para las ventas.",
+      "validaciones": [
+        [
+          "Nombre / Razón social",
+          "Obligatorio; máx. 150.",
+          "El navegador no permite enviarlo vacío."
+        ],
+        [
+          "Documento / RUC",
+          "Opcional; máx. 20.",
+          "—"
+        ],
+        [
+          "Teléfono",
+          "Opcional; máx. 20.",
+          "—"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-COM-002",
+      "titulo": "Editar compradores, cambiar su estado y ver sus operaciones",
+      "estado": "No disponible en la interfaz",
+      "objetivo": "Aclarar operaciones que no existen.",
+      "acceso": "—",
+      "requisitos": [
+        "—"
+      ],
+      "pasos": [
+        {
+          "titulo": "Situación observada",
+          "instruccion": "La pantalla Compradores no tiene acciones de edición ni de activar/desactivar. Las ventas de un comprador se consultan en Ventas › Historial, buscando por su nombre (ADM-VEN-002)."
+        }
+      ],
+      "resultado": "Solo se registran y consultan compradores."
+    }
+  ]
+}

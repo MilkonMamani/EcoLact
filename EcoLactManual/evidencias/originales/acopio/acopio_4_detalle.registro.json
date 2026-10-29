@@ -1,0 +1,86 @@
+{
+  "plan": "acopio_4_detalle.json",
+  "fecha": "2026-10-28T11:12:15",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "aco_05_detalle",
+      "archivo": "evidencias/originales/acopio/aco_05_detalle.png",
+      "url": "/admin/entregas",
+      "descripcion": "",
+      "objetivos": {
+        "ver": [
+          1352,
+          350,
+          1384,
+          382
+        ],
+        "editar_litros": [
+          924,
+          151,
+          998,
+          179
+        ],
+        "titulo": [
+          408,
+          150,
+          536,
+          179
+        ]
+      },
+      "textos_visibles": [
+        "Ver entrega #1\nPendiente de análisis\nEditar\nINFORMACIÓN DE LA ENTREGA\nProveedor\nProveedor Prueba Manual\nDNI\n99000005\nZona\nFaon\nAcopiador\n—\nFecha y hora\n28/10/2026 16:09\nLitros entregados\n46.00 L\nMétodo de identificación\nDNI\nRESUMEN DEL REGISTRO\nRegistrado por\nadmin\nFecha de registro\n28/10/2026 16:09\nESTADO DEL FLUJO\nEntrega registrada\nAnálisis de calidad\nANÁLISIS DE CALIDAD\n\nEsta entrega todavía no tiene un análisis de calidad asociado."
+      ],
+      "hora": "2026-10-28T11:12:24"
+    },
+    {
+      "nombre": "aco_06_corregir",
+      "archivo": "evidencias/originales/acopio/aco_06_corregir.png",
+      "url": "/admin/entregas",
+      "descripcion": "",
+      "objetivos": {
+        "litros": [
+          731,
+          349,
+          861,
+          391
+        ],
+        "guardar": [
+          816,
+          397,
+          946,
+          429
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:12:26"
+    },
+    {
+      "nombre": "aco_07_corregida",
+      "archivo": "evidencias/originales/acopio/aco_07_corregida.png",
+      "url": "/admin/entregas",
+      "descripcion": "",
+      "objetivos": {
+        "aviso": [
+          408,
+          168,
+          1032,
+          205
+        ],
+        "litros_fila": [
+          949,
+          338,
+          1052,
+          395
+        ]
+      },
+      "textos_visibles": [
+        "Litros actualizados correctamente.",
+        "Ver entrega #1\nPendiente de análisis\nEditar\n\nLitros actualizados correctamente.\n\nINFORMACIÓN DE LA ENTREGA\nProveedor\nProveedor Prueba Manual\nDNI\n99000005\nZona\nFaon\nAcopiador\n—\nFecha y hora\n28/10/2026 16:09\nLitros entregados\n48.00 L\nMétodo de identificación\nDNI\nRESUMEN DEL REGISTRO\nRegistrado por\nadmin\nFecha de registro\n28/10/2026 16:09\nESTADO DEL FLUJO\nEntrega registrada\nAnálisis de calidad\nANÁLISIS DE CALIDAD\n\nEsta entrega todavía no tiene un análisis de calidad asociado.",
+        "28/10/2026 16:09\t\nProveedor Prueba Manual\nDNI: 99000005\n\tFaon\t—\t48.00 L\tDNI\t\nPendiente de análisis"
+      ],
+      "hora": "2026-10-28T11:12:29"
+    }
+  ],
+  "dialogos": []
+}

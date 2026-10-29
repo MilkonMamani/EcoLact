@@ -1,0 +1,62 @@
+{
+  "id": "PER2",
+  "tipo": "modulo",
+  "titulo": "Mi perfil",
+  "registro": "evidencias/originales/perfil/perfil_1.registro.json",
+  "introduccion": "Mi perfil muestra los datos de la cuenta del Administrador conectado. Es una pantalla de consulta: no permite editar datos ni cambiar la contraseña.",
+  "ficha": [
+    [
+      "Acceso",
+      "Pie del menú lateral › cuenta › «Mi perfil»"
+    ],
+    [
+      "Contenido",
+      "Usuario, rol y sección de asistencia y resumen de nómina del mes."
+    ]
+  ],
+  "procedimientos": [
+    {
+      "codigo": "ADM-PRF-001",
+      "titulo": "Consultar mi perfil",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar los datos de la propia cuenta.",
+      "acceso": "Menú de la cuenta › «Mi perfil»",
+      "requisitos": [
+        "Sesión iniciada."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Mi perfil",
+          "instruccion": "En el pie del menú lateral, haz clic en tu usuario y luego en «Mi perfil».",
+          "captura": "per_50_menu_perfil",
+          "objetivo": "mi_perfil",
+          "pie": "Opción «Mi perfil» del menú de la cuenta."
+        },
+        {
+          "titulo": "Revisar la información",
+          "instruccion": "Consulta «Usuario» y «Rol», y la sección «Asistencia» y «Resumen del mes».",
+          "captura": "per_51_perfil",
+          "pie": "Mi perfil (usuario difuminado): en el ejemplo, «No marca asistencia: cobra sueldo fijo mensual…» y «No hay registro de nómina para este mes.»"
+        }
+      ],
+      "resultado": "Se muestran los datos de la cuenta sin opciones de edición."
+    },
+    {
+      "codigo": "ADM-PRF-002",
+      "titulo": "Actualizar datos y cambiar la contraseña",
+      "estado": "No disponible en la interfaz",
+      "objetivo": "Aclarar operaciones que no existen.",
+      "acceso": "—",
+      "requisitos": [
+        "—"
+      ],
+      "pasos": [
+        {
+          "titulo": "Situación observada",
+          "instruccion": "El panel del Administrador no tiene formularios para editar el perfil propio ni para cambiar la contraseña."
+        }
+      ],
+      "resultado": "Solicite cualquier cambio de la cuenta al responsable técnico del sistema."
+    }
+  ]
+}

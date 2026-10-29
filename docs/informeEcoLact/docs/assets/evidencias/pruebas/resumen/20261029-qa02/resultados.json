@@ -1,0 +1,47 @@
+{
+  "unit": {
+    "total": 86,
+    "passed": 86,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "executed": 86,
+    "seconds": 0.302
+  },
+  "feature": {
+    "total": 1843,
+    "passed": 1820,
+    "failures": 6,
+    "errors": 16,
+    "skipped": 1,
+    "executed": 1842,
+    "seconds": 238.552
+  },
+  "mobile": {
+    "total": 93,
+    "passed": 93,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "executed": 93,
+    "seconds": 2.174
+  },
+  "integration": {
+    "total": 65,
+    "passed": 62,
+    "failures": 2,
+    "errors": 1,
+    "skipped": 0,
+    "executed": 65,
+    "seconds": 3.596
+  },
+  "total": {
+    "total": 2022,
+    "passed": 1999,
+    "failures": 6,
+    "errors": 16,
+    "skipped": 1,
+    "executed": 2021,
+    "seconds": 241.028
+  }
+}

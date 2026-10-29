@@ -1,0 +1,140 @@
+{
+  "plan": "calidad_3_analisis.json",
+  "fecha": "2026-10-28T11:14:24",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "cal_01_listado",
+      "archivo": "evidencias/originales/calidad/cal_01_listado.png",
+      "url": "/admin/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          514,
+          239,
+          554
+        ],
+        "filtros": [
+          284,
+          162,
+          1408,
+          367
+        ],
+        "fila": [
+          284,
+          432,
+          1408,
+          489
+        ],
+        "ver": [
+          1352,
+          445,
+          1384,
+          477
+        ]
+      },
+      "textos_visibles": [
+        "Calidad\n›\nAnálisis\nAnálisis de calidad\n\nConsulta y gestiona los análisis realizados a las entregas de leche.\n\nBuscar por proveedor, DNI o código de entrega\nFecha\nTodas\nHoy\nAyer\nEsta semana\nSemana anterior\nEste mes\nPersonalizado\nZona\nTodas\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nResultado\nTodos\nAceptada\nObservada\nRechazada\nAnalista\nTodos\nAnalista Prueba Manual\nMaria Ttito\nEstado\nTodos\nSin análisis\nBorrador\nConfirmado\nFiltrar\nLimpiar\nFECHA\n\tPROVEEDOR\n\tENTREGA\tZONA\tLITROS\tRESULTADO\n\tESTADO\tANALISTA\tACCIÓN\n\n28/10/2026\n16:09\n\t\nProveedor Prueba Manual\nDNI: 99000005\n\t#1\tFaon\t48.00 L\t—\t\nSin análisis\n\t—\t\n\nMostrando 1 a 1 de 1 análisis\n\n«\n‹\n1\n›\n»\nMostrar\n25\n50\n100\npor página"
+      ],
+      "hora": "2026-10-28T11:14:32"
+    },
+    {
+      "nombre": "cal_02_detalle",
+      "archivo": "evidencias/originales/calidad/cal_02_detalle.png",
+      "url": "/admin/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "registrar": [
+          408,
+          626,
+          576,
+          666
+        ]
+      },
+      "textos_visibles": [
+        "Entrega #1\nSin análisis\nENTREGA\nProveedor\nProveedor Prueba Manual\nDNI\n99000005\nEntrega\n#1 · 28/10/2026 16:09\nZona\nFaon\nLitros\n48.00 L\n\nSin análisis de calidad\n\nEsta entrega todavía no tiene análisis de calidad. El análisis es opcional: la entrega igual se acopia y se paga.\n\nRegistrar análisis"
+      ],
+      "hora": "2026-10-28T11:14:35"
+    },
+    {
+      "nombre": "cal_03_formulario",
+      "archivo": "evidencias/originales/calidad/cal_03_formulario.png",
+      "url": "/admin/entregas/1/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "ticket": [
+          285,
+          180,
+          1407,
+          906
+        ],
+        "parametros": [
+          305,
+          492,
+          1387,
+          708
+        ],
+        "guardar": [
+          1251,
+          850,
+          1387,
+          886
+        ]
+      },
+      "textos_visibles": [
+        "← Calidad\nAnálisis de calidad\n\nEntrega #1 · Proveedor Prueba Manual · 48.00 L · 28/10/2026 16:09\n\nPendiente\n\nEsta entrega todavía no tiene análisis de calidad. El análisis es opcional: mientras tanto la leche se acopia y se paga al precio base.\n\nPROVEEDOR\nProveedor Prueba Manual\nDNI\n99000005\nENTREGA\n#1\nZONA\nFaon\nLITROS\n48.00 L\nACOPIADOR\n—\n\nTicket del analizador\n\nToma una foto del ticket y los valores se completarán solos. Revísalos antes de guardar.\n\nTomar foto\nSeleccionar imagen\n\nParámetros de calidad\n\nAgua añadida (%)\nDensidad (g/mL)\nGrasa (%)\nLactosa (%)\npH (pH)\nProteína (%)\nTemperatura (°C)\nObservación (opcional)\nGuardar análisis"
+      ],
+      "hora": "2026-10-28T11:14:43"
+    },
+    {
+      "nombre": "cal_04_valores",
+      "archivo": "evidencias/originales/calidad/cal_04_valores.png",
+      "url": "/admin/entregas/1/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "parametros": [
+          305,
+          492,
+          1387,
+          708
+        ],
+        "guardar": [
+          1251,
+          850,
+          1387,
+          886
+        ]
+      },
+      "textos_visibles": [
+        "Agua añadida (%)\nDensidad (g/mL)\nGrasa (%)\nLactosa (%)\npH (pH)\nProteína (%)\nTemperatura (°C)"
+      ],
+      "hora": "2026-10-28T11:14:44"
+    },
+    {
+      "nombre": "cal_05_borrador",
+      "archivo": "evidencias/originales/calidad/cal_05_borrador.png",
+      "url": "/admin/entregas/1/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "confirmar": [
+          322,
+          1047,
+          471,
+          1083
+        ]
+      },
+      "textos_visibles": [
+        "Análisis de calidad registrado correctamente.",
+        "Análisis de calidad registrado correctamente.\n← Calidad\nAnálisis de calidad\n\nEntrega #1 · Proveedor Prueba Manual · 48.00 L · 28/10/2026 16:09\n\nBorrador\nEste análisis está en borrador. Puedes corregir los valores registrando de nuevo, o confirmarlo abajo cuando esté listo.\nPROVEEDOR\nProveedor Prueba Manual\nDNI\n99000005\nENTREGA\n#1\nZONA\nFaon\nLITROS\n48.00 L\nACOPIADOR\n—\n\nTicket del analizador\n\nToma una foto del ticket y los valores se completarán solos. Revísalos antes de guardar.\n\nTomar foto\nSeleccionar imagen\n\nParámetros de calidad\n\nAgua añadida (%)\nDensidad (g/mL)\nGrasa (%)\nLactosa (%)\npH (pH)\nProteína (%)\nTemperatura (°C)\nObservación (opcional)\nGuardar análisis\n\nConfirmar análisis\n\nAl confirmar se calcula el resultado, el análisis queda bloqueado y el pago pendiente del proveedor se recalcula con el ajuste de calidad.\n\nConfirmar análisis"
+      ],
+      "hora": "2026-10-28T11:14:49"
+    }
+  ]
+}

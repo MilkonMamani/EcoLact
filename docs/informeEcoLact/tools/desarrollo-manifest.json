@@ -1,0 +1,157 @@
+{
+  "revision": "75901337489dbe3c61bf5e95357ea365790ab565",
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Comenzar a desarrollar EcoLact"
+    },
+    {
+      "slug": "repositorio",
+      "title": "Organización del proyecto"
+    },
+    {
+      "slug": "backend",
+      "title": "Backend Laravel 13"
+    },
+    {
+      "slug": "mobile",
+      "title": "Aplicación móvil con Kotlin Multiplatform"
+    },
+    {
+      "slug": "base-datos",
+      "title": "Configuración de MySQL"
+    },
+    {
+      "slug": "configuracion",
+      "title": "Configuración del proyecto"
+    },
+    {
+      "slug": "git",
+      "title": "Control de versiones con Git"
+    }
+  ],
+  "diagrams": [
+    "servidores",
+    "conexion-mobile",
+    "mysql"
+  ],
+  "captures": [
+    {
+      "file": "entorno-desarrollo.png",
+      "title": "Entorno de desarrollo",
+      "description": "El editor abierto en EcoLact y las herramientas instaladas, sin información privada.",
+      "tool": "VS Code y terminal"
+    },
+    {
+      "file": "estructura-repositorio.png",
+      "title": "Vista del repositorio",
+      "description": "Las carpetas EcoLactWeb, EcoLactMobile y docs desplegadas.",
+      "tool": "Explorador de VS Code"
+    },
+    {
+      "file": "backend-dependencias.png",
+      "title": "Dependencias del backend",
+      "description": "La finalización de composer install y la comprobación de requisitos PHP.",
+      "tool": "PowerShell"
+    },
+    {
+      "file": "backend-servidor.png",
+      "title": "Servidores de desarrollo",
+      "description": "Laravel y Vite ejecutándose en terminales separadas y sus direcciones locales.",
+      "tool": "Terminales de VS Code"
+    },
+    {
+      "file": "android-studio.png",
+      "title": "Proyecto móvil abierto",
+      "description": "EcoLactMobile importado y los módulos androidApp y shared visibles.",
+      "tool": "Android Studio"
+    },
+    {
+      "file": "mobile-gradle.png",
+      "title": "Compilación Android",
+      "description": "El resultado real de :androidApp:assembleDebug y la variante debug.",
+      "tool": "Android Studio o PowerShell"
+    },
+    {
+      "file": "mobile-api.png",
+      "title": "Dirección de la API móvil",
+      "description": "ApiConfig.kt con la dirección del entorno, sin cabeceras ni tokens.",
+      "tool": "Android Studio"
+    },
+    {
+      "file": "mysql-base-datos.png",
+      "title": "Base de desarrollo",
+      "description": "El esquema ecolactv1 y su listado de tablas, sin registros personales.",
+      "tool": "MySQL Workbench o cliente MySQL"
+    },
+    {
+      "file": "mysql-migraciones.png",
+      "title": "Estado de las migraciones",
+      "description": "La finalización de migrate y el listado migrate:status.",
+      "tool": "PowerShell"
+    },
+    {
+      "file": "configuracion-entorno.png",
+      "title": "Configuración del backend",
+      "description": "Un ejemplo saneado de las variables de entorno; contraseñas y claves ocultas.",
+      "tool": "Editor de código"
+    },
+    {
+      "file": "configuracion-api.png",
+      "title": "Configuración del cliente",
+      "description": "ApiConfig.kt y la configuración de Ktor, sin valores de sesión.",
+      "tool": "Android Studio"
+    },
+    {
+      "file": "git-historial.png",
+      "title": "Historial de trabajo",
+      "description": "La rama y los commits de una modificación real.",
+      "tool": "VS Code o GitHub"
+    }
+  ],
+  "sources": [
+    "EcoLactMobile/.gitignore",
+    "EcoLactMobile/androidApp/build.gradle.kts",
+    "EcoLactMobile/androidApp/src/main/res/xml/network_security_config.xml",
+    "EcoLactMobile/build.gradle.kts",
+    "EcoLactMobile/gradle.properties",
+    "EcoLactMobile/gradle/libs.versions.toml",
+    "EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+    "EcoLactMobile/iosApp/iosApp.xcodeproj",
+    "EcoLactMobile/settings.gradle.kts",
+    "EcoLactMobile/shared/build.gradle.kts",
+    "EcoLactMobile/shared/src/androidMain",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+    "EcoLactMobile/shared/src/commonMain/sqldelight",
+    "EcoLactMobile/shared/src/iosMain",
+    "EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+    "EcoLactWeb/.env.example",
+    "EcoLactWeb/.gitignore",
+    "EcoLactWeb/AGENTS.md",
+    "EcoLactWeb/app/Application",
+    "EcoLactWeb/app/Domain",
+    "EcoLactWeb/app/Http/Controllers/Api",
+    "EcoLactWeb/app/Infrastructure/Ocr/PreprocesadorImagenTicket.php",
+    "EcoLactWeb/app/Infrastructure/Ocr/TesseractOcr.php",
+    "EcoLactWeb/composer.json",
+    "EcoLactWeb/composer.lock",
+    "EcoLactWeb/config/database.php",
+    "EcoLactWeb/config/services.php",
+    "EcoLactWeb/database/migrations",
+    "EcoLactWeb/database/seeders/AdminUserSeeder.php",
+    "EcoLactWeb/database/seeders/DatabaseSeeder.php",
+    "EcoLactWeb/database/seeders/ParametroCalidadSeeder.php",
+    "EcoLactWeb/database/seeders/PrecioLecheSeeder.php",
+    "EcoLactWeb/database/seeders/ReglaPagoCalidadSeeder.php",
+    "EcoLactWeb/database/seeders/RoleSeeder.php",
+    "EcoLactWeb/database/seeders/ZonaDelimitacionSeeder.php",
+    "EcoLactWeb/database/seeders/ZonaSeeder.php",
+    "EcoLactWeb/package-lock.json",
+    "EcoLactWeb/package.json",
+    "EcoLactWeb/resources/views",
+    "EcoLactWeb/tests",
+    "docs/informeEcoLact/mkdocs.yml"
+  ]
+}

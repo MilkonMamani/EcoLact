@@ -1,0 +1,19 @@
+{
+  "plan": "ventas_3_detalle.json",
+  "fecha": "2026-10-28T12:07:30",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ven_07_detalle",
+      "archivo": "evidencias/originales/ventas/ven_07_detalle.png",
+      "url": "/admin/ventas/1?tab=historial",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Saltar al contenido\nEcoLact\nGestión integral\n\nDASHBOARD\n\nInicio\nAsistencia\n\nOPERACIÓN\n\nAcopio\nProveedores\nZonas\n\nPERSONAL\n\nTrabajadores\n\nCALIDAD\n\nCalidad\n\nCONFIGURACIÓN\n\nParámetros de calidad\nConfiguración de pagos\n\nFINANZAS\n\nCaja\nPagos\n\nPRODUCCIÓN\n\nRecetas\nProducción\n\nINVENTARIO\n\nInsumos\nProductos\n\nVENTAS\n\nVentas\nCompradores\n\nCOMUNICACIÓN\n\nComunicados\n\nADMINISTRACIÓN\n\nAuditoría\nA\nadmin\nAdministrador\nVentas / POS\n\nRegistra ventas de productos terminados y consulta las operaciones realizadas.\n\nNueva venta\nHistorial\nHistorial de ventas\nBuscar cliente, producto o venta\nPeriodo\nHoy\nEsta semana\nEste mes\nPersonalizado\nPago\nTodos los pagos\nContado\nDescuento semanal\nEstado\nTodos los estados\nRegistrada\nAnulada\nVENTA\tFECHA\tCLIENTE\tPRODUCTO\tTOTAL\tPAGO\tESTADO\tACCIÓN\nV-00002\t28 oct. · 17:06\tComprador Prueba Manual\tProducto Prueba Manual 1 L\tS/ 8.00\tContado\tRegistrada\tVer\nV-00001\t28 oct. · 17:05\tComprador Prueba Manual\tProducto Prueba Manual 1 L\tS/ 8.00\tContado\tRegistrada\tVer\n\n2 ventas · S/ 16.00\n\nVENTA V-00001\n\nProducto Prueba Manual · 1 L\n\nS/ 8.00\n\n1 unidad × S/ 8.00\n\nFecha\n28/10/2026 · 17:05\nCliente\nComprador Prueba Manual\n99000006\nProducto\nProducto Prueba Manual · 1 L\nCantidad\n1 unidad\nPrecio aplicado\nPúblico\nPrecio unitario\nS/ 8.00\nTotal\nS/ 8.00\nForma de pago\nContado\nRegistrado por\nadmin\nEstado\nRegistrada\nVer boleta\nEcoLact · 2026 · Del campo a tu mesa"
+      ],
+      "hora": "2026-10-28T12:07:37"
+    }
+  ],
+  "dialogos": []
+}

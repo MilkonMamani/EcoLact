@@ -1,13 +1,18 @@
 {{--
-    INSUMOS (ADMINISTRADOR): tabla + panel lateral (mismo patrón que Proveedores). Cada acción hace UNA cosa:
-      Nuevo insumo      crea la ficha (stock 0, no es una compra),
+    INSUMOS (ADMINISTRADOR): centro de EXISTENCIAS, tabla + panel lateral (mismo patrón que Proveedores).
+    Cada acción hace UNA cosa:
+      Nuevo insumo      crea la ficha (stock 0, no es una compra) y dice cómo se mide (peso, volumen, unidades),
       Presentaciones    definen cómo se compra (Saco = 25 kg); no tocan el stock (panel del insumo),
-      Registrar compra  / Escanear boleta: lo ÚNICO que sube el stock, convirtiendo a la unidad base,
-      Ajustar stock     corrige el stock (merma, pérdida, corrección, inventario físico).
+      Comprar este insumo  NO registra nada aquí: abre Inventario > Compras y gastos con el insumo elegido
+                        (el único registro de compras; el stock sube al recibir la compra),
+      Ver movimientos   historial de entradas y salidas de todos los insumos,
+      Ajustar stock     corrige el stock (merma, pérdida, corrección, inventario físico): fila o panel.
     La LECHE es del sistema: su stock sube con Acopio y baja con Producción; no se compra ni tiene
-    presentaciones. ?insumo=ID mantiene la selección.
-    Variables: $insumos, $kpis, $ultimasCompras, $tipos, $unidades, $panel (o null), $catalogoCompra,
-    $motivosAjuste, $insumosAjuste.
+    presentaciones. ?insumo=ID mantiene la selección. El Estado de cada fila es el de sus existencias
+    (Insumo::nivelStock); un insumo inactivo se marca junto a su nombre.
+    En pantallas pequeñas cada fila se muestra como tarjeta (admin-insumos.css, data-etiqueta).
+    Variables: $insumos, $kpis, $ultimasCompras, $ultimosMovimientos, $tipos, $familiasUnidad, $panel (o null),
+    $catalogoCompra, $motivosAjuste, $insumosAjuste.
 --}}
 @extends('layouts.admin')
 
@@ -15,6 +20,7 @@
 @section('body-class', 'admin-fichas-page')
 @section('contenedor', 'max-w-[1600px]')
 
+@use('App\Domain\Produccion\UnidadMedida')
 @php
     $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 4), '0'), '.');
     $modelo = \App\Infrastructure\Persistence\Models\InsumoModel::class;
@@ -22,12 +28,8 @@
     $storeRoute = 'admin.insumos.store';
     // Solo se puede comprar un insumo que ya tiene cómo comprarse (presentación activa).
     $comprables = array_column(array_filter($catalogoCompra, fn ($item) => count($item['presentaciones']) > 0), 'id');
-    $pasos = [
-        ['plus', 'Crear insumo', 'La ficha: nombre, tipo y unidad base. Stock 0.'],
-        ['package', 'Presentaciones', 'Cómo se compra: Saco = 25 kg. No suma stock.'],
-        ['shopping-cart', 'Registrar compra', 'Convierte a la unidad base y suma stock.'],
-        ['refresh', 'Ajustar stock', 'Merma, pérdida, corrección o inventario.'],
-    ];
+    $puedeComprar = auth()->user()->can('create', \App\Infrastructure\Persistence\Models\CompraInsumoModel::class);
+    $familiaCorta = ['MASA' => 'Peso', 'VOLUMEN' => 'Volumen', 'CONTEO' => 'Unidades'];
 @endphp
 
 @section('content')
@@ -39,48 +41,26 @@
                         <div class="min-w-0">
                             <x-layout.breadcrumbs :items="[['Inventario', null], ['Insumos', null]]" />
                             <h1 class="fichas-title">Insumos</h1>
-                            <p class="fichas-subtitle">Materias primas, insumos y envases necesarios para producción.</p>
+                            <p class="fichas-subtitle">Administra las existencias y materiales utilizados en la producción.</p>
                         </div>
-                        @can('create', $modelo)
-                            <div class="flex flex-wrap gap-2">
+                        <div class="insumos-header-acciones">
+                            @can('create', $modelo)
                                 <button type="button" class="fichas-btn is-primary" data-modal-open="modal-nuevo-insumo">
                                     <x-ui.icon name="plus" class="h-4 w-4" /> Nuevo insumo
                                 </button>
-                                <button type="button" class="fichas-btn is-outline" data-compra-abrir="manual">
-                                    <x-ui.icon name="shopping-cart" class="h-4 w-4" /> Registrar compra
-                                </button>
-                                <button type="button" class="fichas-btn is-outline" data-compra-abrir="boleta">
-                                    <x-ui.icon name="camera" class="h-4 w-4" /> Escanear boleta
-                                </button>
-                                <button type="button" class="fichas-btn is-outline" data-ajuste-abrir>
-                                    <x-ui.icon name="refresh" class="h-4 w-4" /> Ajustar stock
-                                </button>
-                            </div>
-                        @endcan
+                            @endcan
+                        </div>
                     </header>
 
-                    {{-- Cómo se mueve un insumo: cada botón de arriba es uno de estos pasos. --}}
-                    <ol class="insumos-flujo" aria-label="Cómo funciona el módulo de insumos">
-                        @foreach ($pasos as $indice => [$icono, $titulo, $texto])
-                            <li>
-                                <span class="insumos-flujo-numero">{{ $indice + 1 }}</span>
-                                <div class="min-w-0">
-                                    <p class="insumos-flujo-titulo"><x-ui.icon :name="$icono" class="h-3.5 w-3.5" /> {{ $titulo }}</p>
-                                    <p class="insumos-flujo-texto">{{ $texto }}</p>
-                                </div>
-                            </li>
-                        @endforeach
-                    </ol>
-
-                    <form method="GET" action="{{ route('admin.insumos.index') }}" class="fichas-filtros mt-4" data-fichas-filtros>
+                    <form method="GET" action="{{ route('admin.insumos.index') }}" class="fichas-filtros mt-5" data-fichas-filtros>
                         <label class="fichas-search">
                             <span class="sr-only">Buscar insumo</span>
                             <x-ui.icon name="magnifying-glass" class="h-5 w-5" />
                             <input type="search" name="buscar" value="{{ request('buscar') }}" placeholder="Buscar insumo..." autocomplete="off">
                         </label>
                         <div class="fichas-filtros-fila">
-                            <x-forms.select name="tipo" label="Tipo" :options="$tipos" :value="request('tipo')" placeholder="Todos" :sticky="false" />
-                            <x-forms.select name="nivel" label="Nivel de stock" :options="['normal' => 'Normal', 'bajo' => 'Bajo el mínimo', 'sin_stock' => 'Sin stock']" :value="request('nivel')" placeholder="Todos" :sticky="false" />
+                            <x-forms.select name="tipo" label="Categoría" :options="$tipos" :value="request('tipo')" placeholder="Todas" :sticky="false" />
+                            <x-forms.select name="nivel" label="Stock" :options="['normal' => 'Disponible', 'bajo' => 'Stock bajo', 'sin_stock' => 'Sin stock']" :value="request('nivel')" placeholder="Todos" :sticky="false" />
                             <div class="fichas-filtros-acciones">
                                 <button type="submit" class="fichas-btn is-dark">Filtrar</button>
                                 @if (request()->anyFilled(['buscar', 'tipo', 'nivel']))
@@ -98,19 +78,19 @@
                     </p>
 
                     @if (count($insumos) === 0)
-                        <x-ui.empty-state class="mt-4 bg-surface" title="No hay insumos para mostrar" description="Crea la ficha de los insumos que usa producción (sal, cuajo, azúcar, envases...)." />
+                        <x-ui.empty-state class="mt-4 bg-surface" title="No hay insumos para mostrar" description="Crea la ficha de los materiales que usa producción: sal, cuajo, azúcar, envases..." />
                     @else
                         <div class="fichas-tabla is-compacta insumos-tabla is-loading" data-fichas-tabla>
                             <table>
                                 <thead>
                                     <tr>
                                         <th scope="col">Insumo</th>
-                                        <th scope="col" class="hidden 2xl:table-cell">Tipo</th>
-                                        <th scope="col" class="hidden 2xl:table-cell">Unidad base</th>
-                                        <th scope="col" class="is-num">Stock actual</th>
+                                        <th scope="col" class="hidden xl:table-cell">Categoría</th>
+                                        <th scope="col" class="hidden md:table-cell">Unidad</th>
+                                        <th scope="col" class="is-num">Stock disponible</th>
                                         <th scope="col" class="is-num hidden lg:table-cell">Stock mínimo</th>
                                         <th scope="col" class="is-centro">Estado</th>
-                                        <th scope="col" class="hidden md:table-cell">Última compra</th>
+                                        <th scope="col" class="hidden 2xl:table-cell">Último movimiento</th>
                                         <th scope="col" class="is-centro">Acciones</th>
                                     </tr>
                                 </thead>
@@ -118,12 +98,12 @@
                                     @for ($i = 0; $i < min(8, count($insumos)); $i++)
                                         <tr>
                                             <td><span class="fichas-bone is-lg"></span></td>
-                                            <td class="hidden 2xl:table-cell"><span class="fichas-bone is-md"></span></td>
-                                            <td class="hidden 2xl:table-cell"><span class="fichas-bone is-xs"></span></td>
+                                            <td class="hidden xl:table-cell"><span class="fichas-bone is-md"></span></td>
+                                            <td class="hidden md:table-cell"><span class="fichas-bone is-xs"></span></td>
                                             <td><span class="fichas-bone is-md ml-auto"></span></td>
                                             <td class="hidden lg:table-cell"><span class="fichas-bone is-sm ml-auto"></span></td>
-                                            <td class="is-centro"><span class="fichas-bone is-xs mx-auto"></span></td>
-                                            <td class="hidden md:table-cell"><span class="fichas-bone is-sm"></span></td>
+                                            <td class="is-centro"><span class="fichas-bone is-sm mx-auto"></span></td>
+                                            <td class="hidden 2xl:table-cell"><span class="fichas-bone is-sm"></span></td>
                                             <td class="is-centro"><span class="fichas-bone is-xs mx-auto"></span></td>
                                         </tr>
                                     @endfor
@@ -131,61 +111,58 @@
                                 <tbody data-fichas-filas>
                                     @foreach ($insumos as $insumo)
                                         @php
-                                            $sinStock = $insumo->stockActual() <= 0.0;
-                                            $bajo = $insumo->stockMinimo() > 0.0 && $insumo->estaBajoMinimo() && ! $sinStock;
+                                            $nivel = $insumo->nivelStock();
+                                            $simbolo = UnidadMedida::simbolo($insumo->unidadBase());
                                             $ultimaCompra = $ultimasCompras[$insumo->id()] ?? null;
+                                            $ultimoMovimiento = $ultimosMovimientos[$insumo->id()] ?? null;
                                             $comprable = in_array($insumo->id(), $comprables, true);
                                         @endphp
-                                        <tr data-fichas-fila data-ficha-id="{{ $insumo->id() }}" data-url-panel="{{ route('admin.insumos.panel', $insumo->id()) }}" tabindex="0" title="Ver detalle" aria-selected="{{ $insumo->id() === $seleccionadoId ? 'true' : 'false' }}" @class(['is-selected' => $insumo->id() === $seleccionadoId])>
-                                            <td>
+                                        <tr data-fichas-fila data-ficha-id="{{ $insumo->id() }}" data-url-panel="{{ route('admin.insumos.panel', $insumo->id()) }}" tabindex="0" title="Ver detalle" aria-selected="{{ $insumo->id() === $seleccionadoId ? 'true' : 'false' }}" @class(['is-selected' => $insumo->id() === $seleccionadoId, 'is-inactivo' => $insumo->estado() !== 'ACTIVO'])>
+                                            <td class="insumos-celda-nombre">
                                                 <a href="{{ route('admin.insumos.index', ['insumo' => $insumo->id()]) }}" class="fichas-nombre" data-fichas-seleccionar tabindex="-1">{{ $insumo->nombre() }}</a>
                                                 @if ($insumo->esDelSistema())
                                                     <span class="insumos-sistema" title="Insumo del sistema: entra por Acopio y sale por Producción.">Del sistema</span>
                                                 @endif
-                                                {{-- En pantallas medianas tipo y unidad van bajo el nombre. --}}
-                                                <p class="text-xs text-text-muted 2xl:hidden">{{ $insumo->tipo()->etiqueta() }} · {{ $insumo->unidadBase() }}</p>
-                                            </td>
-                                            <td class="is-muted hidden 2xl:table-cell">{{ $insumo->tipo()->etiqueta() }}</td>
-                                            <td class="is-muted hidden 2xl:table-cell">{{ \App\Domain\Produccion\UnidadMedida::etiqueta($insumo->unidadBase()) }}</td>
-                                            <td class="is-num">
-                                                <span @class(['font-semibold', 'text-danger' => $sinStock, 'text-warning' => $bajo])>{{ $fmt($insumo->stockActual()) }} {{ $insumo->unidadBase() }}</span>
-                                                @if ($sinStock)
-                                                    <span class="block text-xs text-danger">Sin stock</span>
-                                                @elseif ($bajo)
-                                                    <span class="block text-xs text-warning">Stock bajo</span>
+                                                @if ($insumo->estado() !== 'ACTIVO')
+                                                    <span class="insumos-inactivo">Inactivo</span>
                                                 @endif
+                                                {{-- En pantallas medianas la categoría y la unidad van bajo el nombre. --}}
+                                                <p class="text-xs text-text-muted xl:hidden">{{ $insumo->tipo()->etiqueta() }}<span class="md:hidden"> · {{ $simbolo }}</span></p>
+                                                <p class="text-xs text-text-muted">
+                                                    @if ($insumo->esLeche())
+                                                        Por Acopio
+                                                    @elseif ($ultimaCompra)
+                                                        Última compra {{ $ultimaCompra->format('d/m/Y') }}
+                                                    @else
+                                                        Sin compras
+                                                    @endif
+                                                </p>
                                             </td>
-                                            <td class="is-num is-muted hidden lg:table-cell">{{ $fmt($insumo->stockMinimo()) }} {{ $insumo->unidadBase() }}</td>
-                                            <td class="is-centro">
-                                                @if ($insumo->estado() === 'ACTIVO')
-                                                    <x-ui.badge compact status="ACTIVO">Activo</x-ui.badge>
-                                                @else
-                                                    <x-ui.badge compact status="INACTIVO">Inactivo</x-ui.badge>
-                                                @endif
+                                            <td class="is-muted hidden xl:table-cell">{{ $insumo->tipo()->etiqueta() }}</td>
+                                            <td class="hidden md:table-cell" title="{{ UnidadMedida::etiqueta($insumo->unidadBase()) }}">
+                                                <span class="insumos-unidad">{{ $simbolo }}</span>
+                                                <span class="block text-xs text-text-muted">{{ $familiaCorta[UnidadMedida::familia($insumo->unidadBase())] }}</span>
                                             </td>
-                                            <td class="is-muted hidden md:table-cell">
-                                                @if ($insumo->esLeche())
-                                                    <span class="text-xs">Por Acopio</span>
-                                                @elseif ($ultimaCompra)
-                                                    {{ $ultimaCompra->format('d/m/Y') }}
-                                                @else
-                                                    <span class="text-xs">Sin compras</span>
-                                                @endif
+                                            <td class="is-num" data-etiqueta="Stock disponible">
+                                                <span @class(['font-semibold', 'text-danger' => $nivel === 'SIN_STOCK', 'text-warning' => $nivel === 'BAJO'])>{{ $fmt($insumo->stockActual()) }} {{ $simbolo }}</span>
                                             </td>
-                                            <td class="is-centro">
+                                            <td class="is-num is-muted hidden lg:table-cell" data-etiqueta="Stock mínimo">{{ $fmt($insumo->stockMinimo()) }} {{ $simbolo }}</td>
+                                            <td class="is-centro" data-etiqueta="Estado">@include('admin.insumos._nivel', ['nivel' => $nivel])</td>
+                                            <td class="is-muted hidden 2xl:table-cell" data-etiqueta="Último movimiento">{{ $ultimoMovimiento ? \Carbon\CarbonImmutable::instance($ultimoMovimiento)->timezone(config('app.zona_horaria_negocio'))->format('d/m/Y') : 'Sin movimientos' }}</td>
+                                            <td class="is-centro insumos-celda-acciones">
                                                 @can('create', $modelo)
                                                     <div class="insumos-acciones">
-                                                        @unless ($insumo->esLeche())
+                                                        @if (! $insumo->esLeche() && $puedeComprar)
                                                             @if ($comprable)
-                                                                <button type="button" class="insumos-accion" data-compra-abrir="manual" data-compra-insumo="{{ $insumo->id() }}" title="Registrar compra de {{ $insumo->nombre() }}" aria-label="Registrar compra de {{ $insumo->nombre() }}">
+                                                                <a href="{{ route('admin.compras.index', ['nueva' => 1, 'insumo' => $insumo->id()]) }}" class="insumos-accion" title="Comprar {{ $insumo->nombre() }} (Compras y gastos)" aria-label="Comprar {{ $insumo->nombre() }}">
                                                                     <x-ui.icon name="shopping-cart" class="h-4 w-4" />
-                                                                </button>
+                                                                </a>
                                                             @else
                                                                 <button type="button" class="insumos-accion" disabled title="Primero agrega una presentación de compra" aria-label="{{ $insumo->nombre() }} aún no tiene presentaciones de compra">
                                                                     <x-ui.icon name="shopping-cart" class="h-4 w-4" />
                                                                 </button>
                                                             @endif
-                                                        @endunless
+                                                        @endif
                                                         <button type="button" class="insumos-accion" data-ajuste-abrir data-ajuste-insumo="{{ $insumo->id() }}" title="Ajustar stock de {{ $insumo->nombre() }}" aria-label="Ajustar stock de {{ $insumo->nombre() }}">
                                                             <x-ui.icon name="refresh" class="h-4 w-4" />
                                                         </button>
@@ -236,6 +213,5 @@
 
     @can('create', $modelo)
         @include('admin.insumos._modales-panel')
-        @include('admin.insumos._compra-modal')
     @endcan
 @endsection

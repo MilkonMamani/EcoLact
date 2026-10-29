@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_pago_prov.json",
+  "fecha": "2026-10-28T11:28:00",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_pago_prov",
+      "archivo": "evidencias/exploracion/x_pago_prov.png",
+      "url": "/admin/pagos/proveedores",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Pagos\n›\nPago a proveedores\nPago semanal a proveedores\n\nRevisa las liquidaciones semanales y confirma los pagos correspondientes.\n\nPendientes\n1 proveedor\nLitros pagables\n48 L\nTotal pendiente\nS/ 57.60\nBuscar proveedor por nombre, DNI o zona\nSemana\nTodas las semanas\nSemana 44\nZona\nTodas las zonas\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nEstado\nTodos los estados\nPendientes\nPagados\nFiltrar\nLimpiar\n\nLiquidaciones semanales\n\nRevisar seleccionados (\n0\n)\n\tPROVEEDOR\tZONA\tLITROS\tPRECIO/L\tCALIDAD SEMANAL\tCOMPRAS\tTOTAL\tESTADO\n\t\nProveedor Prueba Manual\nSemana 44\n\tFaon\t48 L\t\nS/ 1.20\n\tSin análisis\t—\tS/ 57.60\t\nPendiente\n\nMostrando 1 de 1 proveedores\n\nComprobante de pago\n\nVista previa del comprobante del proveedor seleccionado.\n\nSelecciona un proveedor\n\nHaz clic en una fila para revisar su liquidación y comprobante."
+      ],
+      "hora": "2026-10-28T11:28:07"
+    }
+  ],
+  "dialogos": []
+}

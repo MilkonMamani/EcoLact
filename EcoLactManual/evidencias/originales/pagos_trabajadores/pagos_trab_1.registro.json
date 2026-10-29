@@ -1,0 +1,61 @@
+{
+  "plan": "pagos_trab_1.json",
+  "fecha": "2026-10-28T11:34:23",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ptr_01_pantalla",
+      "archivo": "evidencias/originales/pagos_trabajadores/ptr_01_pantalla.png",
+      "url": "/admin/pagos/trabajadores",
+      "descripcion": "",
+      "objetivos": {
+        "filtros": [
+          284,
+          142,
+          1028,
+          230
+        ],
+        "fila": [
+          285,
+          714,
+          1140,
+          770
+        ]
+      },
+      "textos_visibles": [
+        "Finanzas\n›\nPagos\n›\nTrabajadores\nPagos a trabajadores\n\nRevisa los pagos mensuales del personal y registra la entrega correspondiente.\n\nBuscar trabajador por nombre o DNI\nMes\nRol\nTodos los roles\nAcopiador\nAdministrador\nAnalista de calidad\nEncargado de planta\nPersonal de ventas\nEstado\nTodos los estados\nEn curso\nPendiente\nPagado\nSin configurar\nFiltrar\nLimpiar\nPeriodo\nOctubre 2026\nTrabajadores\n7\nPendientes\n0\nPagados\n0\nTotal pendiente\nS/ 0.00\n\nNo hay sueldos configurados para este periodo. Los trabajadores sin sueldo configurado se muestran sin monto.\n\nTRABAJADOR\tROL\tASISTENCIAS\tFALTAS\tSUELDO MENSUAL\tVALOR/DÍA\tACUMULADO\tTOTAL\tESTADO\n\nAQ\nAbel Quispe\nDNI 77766657\n\tEncargado de planta\t0\t1\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nA\nadmin\nSin DNI\n\tAdministrador\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nAP\nAnalista Prueba Manual\nDNI 99000002\n\tAnalista de calidad\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nEP\nEncargado Prueba Manual\nDNI 99000003\n\tEncargado de planta\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nMT\nMaria Ttito\nDNI 97865415\n\tAnalista de calidad\t0\t2\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nOT\nOscar Tello\nDNI 77777721\n\tPersonal de ventas\t0\t1\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nVP\nVendedor Prueba Manual\nDNI 99000004\n\tPersonal de ventas\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\nMostrando 1 a 7 de 7 trabajadores\n\n«\n‹\n1\n›\n»\nAbel Quispe\n\nEncargado de planta\n\nPago no disponible\n\nNo existe una configuración salarial vigente para este trabajador en Octubre 2026.\n\nConfigúrala desde: Configuración > Configuración de pagos."
+      ],
+      "hora": "2026-10-28T11:34:28"
+    },
+    {
+      "nombre": "ptr_02_panel_sin_sueldo",
+      "archivo": "evidencias/originales/pagos_trabajadores/ptr_02_panel_sin_sueldo.png",
+      "url": "/admin/pagos/trabajadores?trabajador=s8",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          714,
+          1140,
+          770
+        ]
+      },
+      "textos_visibles": [
+        "Finanzas\n›\nPagos\n›\nTrabajadores\nPagos a trabajadores\n\nRevisa los pagos mensuales del personal y registra la entrega correspondiente.\n\nBuscar trabajador por nombre o DNI\nMes\nRol\nTodos los roles\nAcopiador\nAdministrador\nAnalista de calidad\nEncargado de planta\nPersonal de ventas\nEstado\nTodos los estados\nEn curso\nPendiente\nPagado\nSin configurar\nFiltrar\nLimpiar\nPeriodo\nOctubre 2026\nTrabajadores\n7\nPendientes\n0\nPagados\n0\nTotal pendiente\nS/ 0.00\n\nNo hay sueldos configurados para este periodo. Los trabajadores sin sueldo configurado se muestran sin monto.\n\nTRABAJADOR\tROL\tASISTENCIAS\tFALTAS\tSUELDO MENSUAL\tVALOR/DÍA\tACUMULADO\tTOTAL\tESTADO\n\nAQ\nAbel Quispe\nDNI 77766657\n\tEncargado de planta\t0\t1\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nA\nadmin\nSin DNI\n\tAdministrador\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nAP\nAnalista Prueba Manual\nDNI 99000002\n\tAnalista de calidad\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nEP\nEncargado Prueba Manual\nDNI 99000003\n\tEncargado de planta\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nMT\nMaria Ttito\nDNI 97865415\n\tAnalista de calidad\t0\t2\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nOT\nOscar Tello\nDNI 77777721\n\tPersonal de ventas\t0\t1\tSin configurar\t—\t—\t—\t\nSin configurar\n\n\nVP\nVendedor Prueba Manual\nDNI 99000004\n\tPersonal de ventas\t0\t0\tSin configurar\t—\t—\t—\t\nSin configurar\n\nMostrando 1 a 7 de 7 trabajadores\n\n«\n‹\n1\n›\n»\nVendedor Prueba Manual\n\nPersonal de ventas\n\nPago no disponible\n\nNo existe una configuración salarial vigente para este trabajador en Octubre 2026.\n\nConfigúrala desde: Configuración > Configuración de pagos."
+      ],
+      "hora": "2026-10-28T11:34:32"
+    },
+    {
+      "nombre": "ptr_03_busqueda_acopiador",
+      "archivo": "evidencias/originales/pagos_trabajadores/ptr_03_busqueda_acopiador.png",
+      "url": "/admin/pagos/trabajadores?q=Acopiador+Prueba",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Finanzas\n›\nPagos\n›\nTrabajadores\nPagos a trabajadores\n\nRevisa los pagos mensuales del personal y registra la entrega correspondiente.\n\nBuscar trabajador por nombre o DNI\nMes\nRol\nTodos los roles\nAcopiador\nAdministrador\nAnalista de calidad\nEncargado de planta\nPersonal de ventas\nEstado\nTodos los estados\nEn curso\nPendiente\nPagado\nSin configurar\nFiltrar\nLimpiar\nPeriodo\nOctubre 2026\nTrabajadores\n0\nPendientes\n0\nPagados\n0\nTotal pendiente\nS/ 0.00\nTRABAJADOR\tROL\tASISTENCIAS\tFALTAS\tSUELDO MENSUAL\tVALOR/DÍA\tACUMULADO\tTOTAL\tESTADO\n\nNo se encontraron trabajadores\nPrueba con otros filtros.\n\nSin trabajadores\n\n«\n‹\n1\n›\n»\n\nSelecciona un trabajador\n\nHaz clic en una fila para revisar el detalle y su comprobante de pago."
+      ],
+      "hora": "2026-10-28T11:34:36"
+    }
+  ],
+  "dialogos": []
+}

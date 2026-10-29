@@ -1,0 +1,32 @@
+[
+  {
+    "path": "EcoLactWeb/package.json",
+    "ok": true,
+    "content": "{\n    \"$schema\": \"https://www.schemastore.org/package.json\",\n    \"private\": true,\n    \"type\": \"module\",\n    \"scripts\": {\n        \"build\": \"vite build\",\n        \"dev\": \"vite\"\n    },\n    \"devDependencies\": {\n        \"@tailwindcss/vite\": \"^4.0.0\",\n        \"concurrently\": \"^10.0.3\",\n        \"laravel-vite-plugin\": \"^3.1\",\n        \"tailwindcss\": \"^4.0.0\",\n        \"vite\": \"^8.0.0\"\n    },\n    \"optionalDependencies\": {\n        \"@laravel/multiplex\": \"^0.4.1\"\n    },\n    \"dependencies\": {\n        \"chart.js\": \"^4.5.1\",\n        \"qrcode\": \"^1.5.4\"\n    }\n}\n"
+  },
+  {
+    "path": "EcoLactWeb/database/seeders/DatabaseSeeder.php",
+    "ok": true,
+    "content": "<?php\n\nnamespace Database\\Seeders;\n\nuse Illuminate\\Database\\Console\\Seeds\\WithoutModelEvents;\nuse Illuminate\\Database\\Seeder;\n\nclass DatabaseSeeder extends Seeder\n{\n    use WithoutModelEvents;\n\n    /**\n     * Seed the application's database.\n     */\n    public function run(): void\n    {\n        $this->call([\n            RoleSeeder::class,\n            AdminUserSeeder::class,\n            ParametroCalidadSeeder::class,\n            PrecioLecheSeeder::class,\n            ReglaPagoCalidadSeeder::class,\n            // Las 4 zonas operativas y su delimitación operativa referencial inicial (idempotentes:\n            // no duplican zonas ni pisan una delimitación ya editada por el administrador).\n            ZonaSeeder::class,\n            ZonaDelimitacionSeeder::class,\n        ]);\n    }\n}\n"
+  },
+  {
+    "path": "EcoLactMobile/settings.gradle.kts",
+    "ok": true,
+    "content": "rootProject.name = \"EcoLactMobile\"\n\npluginManagement {\n    repositories {\n        google {\n            mavenContent {\n                includeGroupAndSubgroups(\"androidx\")\n                includeGroupAndSubgroups(\"com.android\")\n                includeGroupAndSubgroups(\"com.google\")\n            }\n        }\n        mavenCentral()\n        gradlePluginPortal()\n    }\n}\n\ndependencyResolutionManagement {\n    repositories {\n        google {\n            mavenContent {\n                includeGroupAndSubgroups(\"androidx\")\n                includeGroupAndSubgroups(\"com.android\")\n                includeGroupAndSubgroups(\"com.google\")\n            }\n        }\n        mavenCentral()\n    }\n}\n\ninclude(\":androidApp\")\ninclude(\":shared\")"
+  },
+  {
+    "path": "EcoLactMobile/androidApp/build.gradle.kts",
+    "ok": true,
+    "content": "import org.jetbrains.kotlin.gradle.dsl.JvmTarget\n\nplugins {\n    alias(libs.plugins.androidApplication)\n    alias(libs.plugins.composeCompiler)\n}\n\nkotlin {\n    compilerOptions {\n        jvmTarget = JvmTarget.JVM_11\n    }\n}\ndependencies {\n    implementation(project(\":shared\"))\n\n    implementation(libs.androidx.activity.compose)\n\n    implementation(libs.compose.uiToolingPreview)\n    debugImplementation(libs.compose.uiTooling)\n}\n\nandroid {\n    namespace = \"pe.edu.upeu.ecolactmobile\"\n    compileSdk = libs.versions.android.compileSdk.get().toInt()\n\n    defaultConfig {\n        applicationId = \"pe.edu.upeu.ecolactmobile\"\n        minSdk = libs.versions.android.minSdk.get().toInt()\n        targetSdk = libs.versions.android.targetSdk.get().toInt()\n        versionCode = 1\n        versionName = \"1.0\"\n    }\n    packaging {\n        resources {\n            excludes += \"/META-INF/{AL2.0,LGPL2.1}\"\n        }\n    }\n    buildTypes {\n        release {\n            isMinifyEnabled = false\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n        }\n    }\n    compileOptions {\n        sourceCompatibility = JavaVersion.VERSION_11\n        targetCompatibility = JavaVersion.VERSION_11\n    }\n    buildFeatures {\n        compose = true\n    }\n}"
+  },
+  {
+    "path": "EcoLactMobile/gradle/wrapper/gradle-wrapper.properties",
+    "ok": true,
+    "content": "distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionSha256Sum=a17ddd85a26b6a7f5ddb71ff8b05fc5104c0202c6e64782429790c933686c806\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-9.1.0-bin.zip\nnetworkTimeout=10000\nvalidateDistributionUrl=true\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists"
+  },
+  {
+    "path": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiConfig.kt",
+    "ok": true,
+    "content": "package pe.edu.upeu.ecolactmobile.core.network\n\n/**\n * Host del backend Laravel. Aún no hay un valor real definido — pídele al equipo la URL\n * del servidor (o el par host/puerto de desarrollo, ej. 10.0.2.2 para el emulador Android\n * apuntando a un Laravel local) antes de compilar contra un backend real.\n */\nobject ApiConfig {\n    /**\n     * Debe terminar en \"/\": todos los paths de cada Api se escriben SIN \"/\" inicial (ej. \"login\", \"proveedor/dashboard\").\n     * `10.0.2.2` es el alias que usa el emulador de Android para llegar al `127.0.0.1` de la máquina anfitriona —\n     * el backend real corre en `http://127.0.0.1:8000` en esta misma PC (`php artisan serve`).\n     */\n    var baseUrl: String = \"http://10.0.2.2:8000/api/v1/\"\n}\n"
+  }
+]

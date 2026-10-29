@@ -1,0 +1,324 @@
+{
+  "plan": "zonas_1_consulta_crear.json",
+  "fecha": "2026-10-28T10:13:14",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "zon_00_dashboard_menu",
+      "archivo": "evidencias/originales/zonas/zon_00_dashboard_menu.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {
+        "menu_zonas": [
+          12,
+          341,
+          239,
+          381
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:18"
+    },
+    {
+      "nombre": "zon_01_pantalla",
+      "archivo": "evidencias/originales/zonas/zon_01_pantalla.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {
+        "nueva_zona": [
+          284,
+          150,
+          416,
+          190
+        ],
+        "aviso_sin_zona": [
+          284,
+          210,
+          936,
+          265
+        ],
+        "buscador": [
+          284,
+          285,
+          936,
+          329
+        ],
+        "mapa": [
+          284,
+          389,
+          936,
+          871
+        ],
+        "leyenda": [
+          295,
+          401,
+          400,
+          557
+        ],
+        "panel": [
+          960,
+          48,
+          1408,
+          738
+        ],
+        "pestanas": [
+          961,
+          163,
+          1407,
+          205
+        ],
+        "editar": [
+          1275,
+          224,
+          1349,
+          252
+        ],
+        "nueva_ruta": [
+          1286,
+          556,
+          1387,
+          584
+        ],
+        "menu_acciones": [
+          1355,
+          222,
+          1387,
+          254
+        ]
+      },
+      "textos_visibles": [
+        "Collana 1"
+      ],
+      "hora": "2026-10-28T10:13:26"
+    },
+    {
+      "nombre": "zon_02_leyenda_faon",
+      "archivo": "evidencias/originales/zonas/zon_02_leyenda_faon.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {
+        "leyenda_faon": [
+          304,
+          477,
+          361,
+          500
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:27"
+    },
+    {
+      "nombre": "zon_03_panel_faon",
+      "archivo": "evidencias/originales/zonas/zon_03_panel_faon.png",
+      "url": "/admin/zonas?zona=3",
+      "descripcion": "",
+      "objetivos": {
+        "panel_nombre": [
+          1047,
+          101,
+          1343,
+          124
+        ],
+        "resumen": [
+          981,
+          487,
+          1387,
+          570
+        ],
+        "tab_proveedores": [
+          1068,
+          163,
+          1170,
+          204
+        ]
+      },
+      "textos_visibles": [
+        "Faon"
+      ],
+      "hora": "2026-10-28T10:13:30"
+    },
+    {
+      "nombre": "zon_04_tab_proveedores",
+      "archivo": "evidencias/originales/zonas/zon_04_tab_proveedores.png",
+      "url": "/admin/zonas?zona=3",
+      "descripcion": "",
+      "objetivos": {
+        "tabla": [
+          981,
+          222,
+          1387,
+          353
+        ],
+        "tab_acopiadores": [
+          1175,
+          163,
+          1277,
+          204
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:32"
+    },
+    {
+      "nombre": "zon_05_tab_acopiadores",
+      "archivo": "evidencias/originales/zonas/zon_05_tab_acopiadores.png",
+      "url": "/admin/zonas?zona=3",
+      "descripcion": "",
+      "objetivos": {
+        "contenido": [
+          981,
+          222,
+          1387,
+          293
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:34"
+    },
+    {
+      "nombre": "zon_10_antes_nueva",
+      "archivo": "evidencias/originales/zonas/zon_10_antes_nueva.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {
+        "nueva_zona": [
+          284,
+          150,
+          416,
+          190
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:41"
+    },
+    {
+      "nombre": "zon_11_modal_vacio",
+      "archivo": "evidencias/originales/zonas/zon_11_modal_vacio.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {
+        "modal": [
+          496,
+          267,
+          944,
+          609
+        ],
+        "nombre": [
+          520,
+          357,
+          920,
+          399
+        ],
+        "descripcion": [
+          520,
+          441,
+          920,
+          519
+        ],
+        "crear": [
+          818,
+          549,
+          920,
+          585
+        ],
+        "cancelar": [
+          719,
+          549,
+          810,
+          585
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:42"
+    },
+    {
+      "nombre": "zon_12_nombre",
+      "archivo": "evidencias/originales/zonas/zon_12_nombre.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {
+        "nombre": [
+          520,
+          357,
+          920,
+          399
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:43"
+    },
+    {
+      "nombre": "zon_13_descripcion",
+      "archivo": "evidencias/originales/zonas/zon_13_descripcion.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {
+        "descripcion": [
+          520,
+          441,
+          920,
+          519
+        ],
+        "crear": [
+          818,
+          549,
+          920,
+          585
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:13:44"
+    },
+    {
+      "nombre": "zon_14_resultado",
+      "archivo": "evidencias/originales/zonas/zon_14_resultado.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "panel_nombre": [
+          1047,
+          147,
+          1343,
+          170
+        ],
+        "leyenda_nueva": [
+          304,
+          573,
+          521,
+          596
+        ]
+      },
+      "textos_visibles": [
+        "Zona registrada correctamente.",
+        "Activa\nZona Prueba Manual\n\nZona ficticia creada para el manual de usuario."
+      ],
+      "hora": "2026-10-28T10:13:49"
+    },
+    {
+      "nombre": "zon_15_duplicado",
+      "archivo": "evidencias/originales/zonas/zon_15_duplicado.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "error_campo": [
+          520,
+          346,
+          920,
+          388
+        ]
+      },
+      "textos_visibles": [
+        "Nueva zona\nNombre *\n\nYa existe una zona con ese nombre.\n\nDescripción\nCancelar\nCrear zona",
+        "Revisa los siguientes campos:\n\nYa existe una zona con ese nombre."
+      ],
+      "hora": "2026-10-28T10:13:55"
+    }
+  ],
+  "dialogos": []
+}

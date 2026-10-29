@@ -1,0 +1,75 @@
+{
+ "descripcion": "Caja (solo lectura): todos los movimientos visibles son ficticios; usuario difuminado.",
+ "salida": "evidencias/originales/caja",
+ "difuminar_textos": [
+  "admin"
+ ],
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/caja",
+   "ms": 2500
+  },
+  {
+   "accion": "js",
+   "codigo": "document.querySelectorAll('body *').forEach(e=>{ const t=[...e.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(''); if(t.includes('admin') && t.length<60) e.style.filter='blur(5px)'; })"
+  },
+  {
+   "accion": "captura",
+   "nombre": "caj_01_pantalla",
+   "medir": {
+    "menu": "#ecolact-sidebar a[href$='/admin/caja']",
+    "saldo": ".caja-saldo-icono >> xpath=ancestor::*[2]",
+    "ojo": "[data-caja-ojo]",
+    "tarjetas": ".caja-tarjeta-etiqueta >> nth=0",
+    "filtros": "form:has(select[name=tipo])",
+    "tabla": "[data-caja-fila] >> nth=0"
+   },
+   "leer": [
+    "main"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-caja-fila]:has-text('Proveedor Prueba Manual') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 2000
+  },
+  {
+   "accion": "js",
+   "codigo": "document.querySelectorAll('body *').forEach(e=>{ const t=[...e.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(''); if(t.includes('admin') && t.length<60) e.style.filter='blur(5px)'; })"
+  },
+  {
+   "accion": "captura",
+   "nombre": "caj_02_detalle",
+   "medir": {
+    "fila": "[data-caja-fila]:has-text('Proveedor Prueba Manual') >> nth=0"
+   },
+   "leer": [
+    "main"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/caja?tipo=SALIDA",
+   "ms": 2500
+  },
+  {
+   "accion": "js",
+   "codigo": "document.querySelectorAll('body *').forEach(e=>{ const t=[...e.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(''); if(t.includes('admin') && t.length<60) e.style.filter='blur(5px)'; })"
+  },
+  {
+   "accion": "captura",
+   "nombre": "caj_03_salidas",
+   "medir": {
+    "tipo": "select[name=tipo]",
+    "categoria": "select[name=categoria]"
+   },
+   "leer": [
+    "main"
+   ]
+  }
+ ]
+}

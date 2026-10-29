@@ -1,0 +1,307 @@
+{
+  "revision": "75901337489dbe3c61bf5e95357ea365790ab565",
+  "pages": [
+    {
+      "slug": "index",
+      "title": "Arquitectura de EcoLact",
+      "captures": [
+        "kmp-configuracion"
+      ]
+    },
+    {
+      "slug": "backend",
+      "title": "Clean Architecture en Laravel",
+      "captures": [
+        "backend-caso-uso",
+        "backend-repositorio"
+      ]
+    },
+    {
+      "slug": "mobile",
+      "title": "Arquitectura móvil: KMP y MVVM",
+      "captures": [
+        "mvvm-viewmodel",
+        "mvvm-vista"
+      ]
+    },
+    {
+      "slug": "offline-first",
+      "title": "Arquitectura offline-first",
+      "captures": [
+        "offline-local-first",
+        "offline-repository"
+      ]
+    },
+    {
+      "slug": "sincronizacion",
+      "title": "Sincronización de datos",
+      "captures": [
+        "sync-manager",
+        "sync-queue"
+      ]
+    },
+    {
+      "slug": "dominio",
+      "title": "Entidades y reglas de negocio",
+      "captures": [
+        "dominio-entrega"
+      ]
+    },
+    {
+      "slug": "base-datos",
+      "title": "Persistencia y bases de datos",
+      "captures": [
+        "bd-sqldelight"
+      ]
+    },
+    {
+      "slug": "api",
+      "title": "Comunicación mediante API REST",
+      "captures": [
+        "api-ktor",
+        "api-rutas"
+      ]
+    },
+    {
+      "slug": "seguridad",
+      "title": "Autenticación y seguridad",
+      "captures": [
+        "seguridad-sanctum",
+        "seguridad-roles"
+      ]
+    },
+    {
+      "slug": "integracion",
+      "title": "Integración Web, Móvil y Backend",
+      "captures": [
+        "integracion-controller"
+      ]
+    }
+  ],
+  "diagrams": [
+    "contenedores",
+    "backend-ejecucion",
+    "backend-dependencias",
+    "mobile-mvvm",
+    "offline-senal",
+    "sync-secuencia",
+    "sync-estados",
+    "dominio-acopio",
+    "dominio-produccion",
+    "persistencia",
+    "api-recorrido",
+    "seguridad-login",
+    "integracion-completa"
+  ],
+  "captures": [
+    {
+      "file": "backend-caso-uso.png",
+      "source": "EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php",
+      "title": "Un caso de uso para registrar la entrega",
+      "description": "La operación recibe sus dependencias mediante contratos y coordina las reglas de acopio.",
+      "demonstrates": "La aplicación conoce los contratos del negocio; no necesita construir un modelo Eloquent para expresar la operación.",
+      "start": 55,
+      "end": 63
+    },
+    {
+      "file": "backend-repositorio.png",
+      "source": "EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentEntregaRepository.php",
+      "title": "Adaptador de persistencia Eloquent",
+      "description": "El repositorio convierte una entidad de dominio en datos persistibles y devuelve una entidad.",
+      "demonstrates": "EloquentEntregaRepository implementa EntregaRepository. La tecnología de persistencia queda en el adaptador.",
+      "start": 11,
+      "end": 20
+    },
+    {
+      "file": "mvvm-viewmodel.png",
+      "source": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarViewModel.kt",
+      "title": "Estado y eventos del registro",
+      "description": "El ViewModel valida los litros, evita un doble guardado y captura la hora del evento antes de delegar.",
+      "demonstrates": "onGuardar coordina el evento de la interfaz y publica su resultado mediante StateFlow.",
+      "start": 133,
+      "end": 156
+    },
+    {
+      "file": "mvvm-vista.png",
+      "source": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt",
+      "title": "Compose observa el estado",
+      "description": "La vista decide qué etapa mostrar a partir del estado emitido por el ViewModel.",
+      "demonstrates": "collectAsState conecta el estado observable con la pantalla de escaneo, formulario y resultado.",
+      "start": 70,
+      "end": 87
+    },
+    {
+      "file": "kmp-configuracion.png",
+      "source": "EcoLactMobile/shared/build.gradle.kts",
+      "title": "Configuración del módulo compartido",
+      "description": "Gradle declara los destinos Android e iOS y organiza dependencias compartidas y específicas.",
+      "demonstrates": "La configuración habilita Kotlin Multiplatform; declarar un destino no acredita pruebas funcionales en ese dispositivo.",
+      "start": 12,
+      "end": 44
+    },
+    {
+      "file": "offline-local-first.png",
+      "source": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/LocalFirstViewModel.kt",
+      "title": "Implementación del enfoque Local-First",
+      "description": "La pantalla observa una fuente local y conserva los datos existentes cuando la red falla.",
+      "demonstrates": "combine prioriza la copia disponible y distingue carga, datos y error. La red actualiza esa copia; no reemplaza la pantalla por un error si ya hay información.",
+      "start": 39,
+      "end": 50
+    },
+    {
+      "file": "offline-repository.png",
+      "source": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+      "title": "Guardar una entrega sin señal",
+      "description": "El repositorio elige entre enviar y conservar una operación pendiente con la misma clave local.",
+      "demonstrates": "Sin conexión se llama a encolarEntrega; un fallo de red también puede conservar la operación, sujeto a la autorización local de asistencia.",
+      "start": 251,
+      "end": 274
+    },
+    {
+      "file": "sync-manager.png",
+      "source": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+      "title": "Despacho y resultado de la sincronización",
+      "description": "El motor recorre las operaciones pendientes bajo un bloqueo y usa un manejador según su tipo.",
+      "demonstrates": "El resultado del envío cambia la fila a SYNCED, NEEDS_REVIEW o PENDING. MAX_INTENTOS_TRANSITORIOS limita los intentos.",
+      "start": 66,
+      "end": 91
+    },
+    {
+      "file": "sync-queue.png",
+      "source": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncQueueRepository.kt",
+      "title": "Cola persistida y reenvíos",
+      "description": "El repositorio encapsula las consultas SQLDelight y conserva la clave de una operación al reintentar.",
+      "demonstrates": "enqueueWithId guarda tipo, payload y fechas; los métodos de transición actualizan el estado de la operación.",
+      "start": 27,
+      "end": 48
+    },
+    {
+      "file": "dominio-entrega.png",
+      "source": "EcoLactWeb/app/Domain/Entrega/Entrega.php",
+      "title": "La entidad protege sus invariantes",
+      "description": "Entrega expresa litros, actor, proveedor, fecha y estado como conceptos del negocio.",
+      "demonstrates": "Su constructor impide litros no positivos y un método de identificación vacío, sin depender de HTTP o Eloquent.",
+      "start": 14,
+      "end": 37
+    },
+    {
+      "file": "bd-sqldelight.png",
+      "source": "EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq",
+      "title": "Esquema y operaciones SQL de la cola",
+      "description": "La tabla local guarda el payload, el estado, el identificador del servidor y el contador de intentos.",
+      "demonstrates": "Los pendientes son registros SQLite durables; no una lista mantenida solo en memoria.",
+      "start": 1,
+      "end": 21
+    },
+    {
+      "file": "api-ktor.png",
+      "source": "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+      "title": "Cliente HTTP compartido",
+      "description": "La fábrica configura el motor de plataforma, JSON y la cabecera de la sesión actual.",
+      "demonstrates": "Ktor concentra configuración de transporte. La autorización Bearer se añade desde SessionManager.",
+      "start": 15,
+      "end": 35
+    },
+    {
+      "file": "api-rutas.png",
+      "source": "EcoLactWeb/routes/api.php",
+      "title": "Rutas versionadas por rol",
+      "description": "La API agrupa endpoints del acopiador y protege sus escrituras con la comprobación de asistencia.",
+      "demonstrates": "El registro de entregas existe dentro del prefijo v1, bajo autenticación y restricciones de rol.",
+      "start": 144,
+      "end": 162
+    },
+    {
+      "file": "seguridad-sanctum.png",
+      "source": "EcoLactWeb/app/Http/Controllers/Api/AuthController.php",
+      "title": "Inicio de sesión y emisión de token",
+      "description": "El controlador comprueba las credenciales y el acceso antes de crear el token personal de Sanctum.",
+      "demonstrates": "Hash::check, la comprobación de acceso y createToken forman parte del login real. La captura debe mostrar código, nunca valores de sesión.",
+      "start": 33,
+      "end": 52
+    },
+    {
+      "file": "seguridad-roles.png",
+      "source": "EcoLactWeb/app/Http/Middleware/RoleMiddleware.php",
+      "title": "Autorización por nombre de rol",
+      "description": "El middleware decide si el usuario autenticado pertenece a uno de los roles permitidos.",
+      "demonstrates": "Una identidad válida no basta para acceder a cualquier área: se exige el rol autorizado y se responde 403 cuando falta.",
+      "start": 17,
+      "end": 29
+    },
+    {
+      "file": "integracion-controller.png",
+      "source": "EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+      "title": "La API reutiliza RegistrarEntrega",
+      "description": "El controlador transforma la solicitud validada en una llamada al caso de uso compartido con la web.",
+      "demonstrates": "Gate autoriza la acción, el actor se obtiene de la sesión y RegistrarEntrega ejecuta las reglas centrales.",
+      "start": 94,
+      "end": 111
+    }
+  ],
+  "sources": [
+    "EcoLactMobile/shared/build.gradle.kts",
+    "EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt",
+    "EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.android.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/cache/CacheRepository.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiResponseHandling.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncManager.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/SyncQueueRepository.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/LocalFirstViewModel.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/ScreenModel.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorApi.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSync.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorSyncHandler.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarViewModel.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadRepository.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/calidad/CalidadSyncHandler.kt",
+    "EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/ventas/VentasRepository.kt",
+    "EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/CacheEntry.sq",
+    "EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Entrega.sq",
+    "EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq",
+    "EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq",
+    "EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.ios.kt",
+    "EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt",
+    "EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php",
+    "EcoLactWeb/app/Application/Pago/RegistrarAsistenciaQr.php",
+    "EcoLactWeb/app/Application/Shared/TransactionManager.php",
+    "EcoLactWeb/app/Domain/Calidad/AnalisisCalidad.php",
+    "EcoLactWeb/app/Domain/Entrega/Entrega.php",
+    "EcoLactWeb/app/Domain/Entrega/EntregaRepository.php",
+    "EcoLactWeb/app/Domain/Pago/LiquidacionDetalle.php",
+    "EcoLactWeb/app/Domain/Pago/PagoProveedor.php",
+    "EcoLactWeb/app/Domain/Pago/ValorizacionEntrega.php",
+    "EcoLactWeb/app/Domain/Produccion/LoteProduccionInsumo.php",
+    "EcoLactWeb/app/Domain/Produccion/ProduccionDetalle.php",
+    "EcoLactWeb/app/Domain/Produccion/Receta.php",
+    "EcoLactWeb/app/Domain/Produccion/RecetaDetalle.php",
+    "EcoLactWeb/app/Http/Controllers/Api/Acopiador/Concerns/SerializaEntregasAcopiador.php",
+    "EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php",
+    "EcoLactWeb/app/Http/Controllers/Api/AuthController.php",
+    "EcoLactWeb/app/Http/Controllers/Web/Acopiador/EntregaController.php",
+    "EcoLactWeb/app/Http/Middleware/EnsureUserIsActive.php",
+    "EcoLactWeb/app/Http/Middleware/IdempotenciaApi.php",
+    "EcoLactWeb/app/Http/Middleware/RequiereAsistencia.php",
+    "EcoLactWeb/app/Http/Middleware/RoleMiddleware.php",
+    "EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaMovilRequest.php",
+    "EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaRequest.php",
+    "EcoLactWeb/app/Http/Support/SesionWeb.php",
+    "EcoLactWeb/app/Infrastructure/Persistence/LaravelTransactionManager.php",
+    "EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentEntregaRepository.php",
+    "EcoLactWeb/app/Policies/EntregaPolicy.php",
+    "EcoLactWeb/app/Providers/AppServiceProvider.php",
+    "EcoLactWeb/bootstrap/app.php",
+    "EcoLactWeb/config/database.php",
+    "EcoLactWeb/database/migrations/2026_09_19_090008_alter_entregas_add_recorrido_y_token.php",
+    "EcoLactWeb/database/migrations/2026_09_21_100009_drop_lote_produccion_entregas_table.php",
+    "EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql",
+    "EcoLactWeb/routes/api.php",
+    "EcoLactWeb/routes/web.php"
+  ]
+}

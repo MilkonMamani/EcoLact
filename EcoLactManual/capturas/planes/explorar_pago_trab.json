@@ -1,0 +1,3 @@
+{"salida": "evidencias/exploracion", "conservar_texto": "Prueba Manual", "pasos": [
+ {"accion": "ir", "url": "/admin/pagos/trabajadores", "ms": 3000},
+ {"accion": "captura", "nombre": "x_pago_trab", "leer": ["main"]}]}

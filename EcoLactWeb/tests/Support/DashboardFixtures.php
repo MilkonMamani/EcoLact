@@ -11,11 +11,19 @@ use App\Infrastructure\Persistence\Models\VentaProductoModel;
 
 require_once __DIR__.'/EcoLactFixtures.php';
 
+/** Hora del negocio (America/Lima) expresada como se guarda en las columnas DATETIME (zona de la app). */
+function dashboard_utc(string $fechaLocal): string
+{
+    return (new DateTimeImmutable($fechaLocal, new DateTimeZone(config('app.zona_horaria_negocio'))))
+        ->setTimezone(new DateTimeZone(config('app.timezone')))
+        ->format('Y-m-d H:i:s');
+}
+
 function dashboard_entrega(string $fecha, float $litros = 30, ?string $resultado = null): EntregaModel
 {
     $zona = fixture_zona();
     $acopiador = fixture_acopiador($zona);
-    $entrega = fixture_entrega(fixture_proveedor($zona), $acopiador, $litros, new DateTimeImmutable($fecha));
+    $entrega = fixture_entrega(fixture_proveedor($zona), $acopiador, $litros, new DateTimeImmutable(dashboard_utc($fecha)));
 
     if ($resultado !== null) {
         fixture_analisis_confirmado($entrega, $resultado, $acopiador->user_id);
@@ -29,7 +37,7 @@ function dashboard_lote(string $codigo, string $fecha, string $estado = 'EN_PROC
 {
     $lote = LoteProduccionModel::create([
         'codigo' => $codigo,
-        'fecha_hora_inicio' => $fecha,
+        'fecha_hora_inicio' => dashboard_utc($fecha),
         'estado' => $estado,
         'registrado_por_user_id' => fixture_usuario('ADMINISTRADOR')->id,
     ]);
@@ -52,7 +60,7 @@ function dashboard_comunicado(string $titulo, string $fecha, string $estado = 'P
         'contenido' => 'Información de la operación.',
         'tipo' => 'AVISO',
         'alcance' => 'GENERAL',
-        'fecha_publicacion' => $fecha,
+        'fecha_publicacion' => dashboard_utc($fecha),
         'creado_por_user_id' => fixture_usuario('ADMINISTRADOR')->id,
         'estado' => $estado,
     ]);
@@ -71,12 +79,12 @@ function dashboard_venta(string $fecha, string $importe, string $formaPago = 'CO
         'importe_total' => $importe,
         'forma_pago' => $formaPago,
         'estado' => $estado,
-        'fecha' => $fecha,
+        'fecha' => dashboard_utc($fecha),
         'registrado_por_user_id' => fixture_usuario('VENTAS')->id,
     ]);
 }
 
-/** Obligación semanal de proveedor (jueves a miércoles); su pago es el jueves siguiente. */
+/** Obligación semanal de proveedor (jueves a miércoles); su pago se programa el miércoles de cierre. */
 function dashboard_obligacion_proveedor(string $inicioSemana, string $monto, string $estado = 'PENDIENTE'): ObligacionPagoModel
 {
     $proveedor = fixture_proveedor(fixture_zona());

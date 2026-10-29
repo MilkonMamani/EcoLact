@@ -1,0 +1,291 @@
+{
+  "id": "INS",
+  "tipo": "modulo",
+  "titulo": "Insumos y compras",
+  "registro": "evidencias/originales/insumos/insumos_1.registro.json",
+  "introduccion": "Insumos reúne los materiales que usa la planta (cuajo, envases, etc.). El flujo es: crear la ficha del insumo (stock 0), definir cómo se compra (presentación), registrar las compras, que suben el stock y generan un egreso en Caja, y ajustar el stock por merma, pérdida o conteo físico.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Inventario › Insumos"
+    ],
+    [
+      "Depende de",
+      "Ningún otro módulo."
+    ],
+    [
+      "Habilita",
+      "Recetas y producción (consumo de insumos) y egresos en Caja."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Crear un insumo no suma stock: empieza en 0.",
+        "Definir una presentación no suma stock: solo fija la conversión a la unidad base.",
+        "El stock sube solo al confirmar una compra.",
+        "Todo se controla en la unidad base; «Stock bajo» aparece al llegar al mínimo."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "ins_01_listado",
+    "pie": "Pantalla Insumos (panel de un insumo real difuminado).",
+    "elementos": [
+      [
+        "«Nuevo insumo»",
+        "Crea la ficha."
+      ],
+      [
+        "«Registrar compra» / «Leer boleta»",
+        "Abren la compra manual o la lectura de una boleta por foto."
+      ],
+      [
+        "«Ajustar stock»",
+        "Corrige el stock por merma, pérdida, corrección o inventario físico."
+      ],
+      [
+        "Filtros",
+        "Buscador, «Tipo» y «Nivel de stock» (Normal, Bajo el mínimo, Sin stock)."
+      ],
+      [
+        "Tabla y panel",
+        "Stock actual, mínimo, estado, última compra y acciones; el panel muestra información general, presentaciones y últimos movimientos."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-INS-001",
+      "titulo": "Registrar un insumo",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Crear la ficha de un insumo.",
+      "acceso": "Inventario › Insumos › «Nuevo insumo»",
+      "requisitos": [
+        "Nombre, tipo y unidad base del insumo."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el formulario",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Insumos» y haz clic en «Nuevo insumo».",
+          "captura": "ins_01_listado",
+          "objetivo": "nuevo",
+          "pie": "Botón «Nuevo insumo»."
+        },
+        {
+          "titulo": "Completar la ficha",
+          "instruccion": "Escribe el «Nombre del insumo», elige el «Tipo» (Materia prima, Insumo, Envase u Otro) y la «Unidad base» (L, ml, kg, g o unidades).",
+          "captura": "ins_02_nuevo",
+          "objetivo": "unidad",
+          "pie": "Unidad base del insumo."
+        },
+        {
+          "titulo": "Indicar el stock mínimo",
+          "instruccion": "Escribe el «Stock mínimo» en la unidad base y, si lo necesitas, una descripción.",
+          "captura": "ins_02_nuevo",
+          "objetivo": "minimo",
+          "pie": "Stock mínimo de ejemplo: 500 ml."
+        },
+        {
+          "titulo": "Crear",
+          "instruccion": "Haz clic en «Crear insumo».",
+          "captura": "ins_02_nuevo",
+          "objetivo": "crear",
+          "pie": "Botón «Crear insumo»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el panel del insumo.",
+          "captura": "ins_03_creado",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            1300
+          ],
+          "pie": "«Insumo … creado con stock 0. Ahora agrega cómo se compra (presentación) para poder registrar sus compras.»"
+        }
+      ],
+      "resultado": "El insumo queda activo con stock 0 y estado «Sin stock»."
+    },
+    {
+      "codigo": "ADM-INS-002",
+      "titulo": "Definir la presentación de compra",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Indicar cómo se compra el insumo y su equivalencia en la unidad base.",
+      "acceso": "Panel del insumo › «Agregar presentación»",
+      "requisitos": [
+        "Insumo registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Agregar la presentación",
+          "instruccion": "En «Presentaciones de compra», haz clic en «Agregar presentación».",
+          "captura": "ins_03_creado",
+          "objetivo": "agregar_presentacion",
+          "pie": "Botón «Agregar presentación»."
+        },
+        {
+          "titulo": "Indicar nombre y contenido",
+          "instruccion": "Escribe el «Nombre de la presentación» (Saco, Balde, Bolsa…) y la «Cantidad que contiene» con su unidad.",
+          "captura": "ins_04_presentacion",
+          "objetivo": "cantidad",
+          "pie": "Cantidad y unidad de la presentación."
+        },
+        {
+          "titulo": "Revisar la equivalencia",
+          "instruccion": "Comprueba la «Equivalencia en unidad base» y haz clic en «Guardar presentación».",
+          "captura": "ins_04_presentacion",
+          "objetivo": "equivalencia",
+          "pie": "Equivalencia: 1 botella = 1 L = 1,000 ml."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y la presentación en el panel.",
+          "captura": "ins_05_presentacion_guardada",
+          "objetivo": "seccion",
+          "pie": "Presentación «Botella 1 L»; mensaje «Presentación agregada. Botella 1 L = 1,000 ml.»"
+        }
+      ],
+      "resultado": "El insumo ya puede comprarse con esa presentación. El stock no cambia."
+    },
+    {
+      "codigo": "ADM-INS-003",
+      "titulo": "Registrar una compra de insumos",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Ingresar al stock lo comprado y registrar el gasto.",
+      "acceso": "Inventario › Insumos › «Registrar compra» (o ícono de compra de la fila)",
+      "requisitos": [
+        "Insumo con al menos una presentación."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir la compra",
+          "instruccion": "Haz clic en el ícono «Registrar compra» de la fila del insumo (o en «Registrar compra» de la parte superior).",
+          "registro": "evidencias/originales/insumos/insumos_2_compra.registro.json",
+          "captura": "ins_10_antes_compra",
+          "objetivo": "registrar_compra",
+          "pie": "Ícono «Registrar compra» de la fila."
+        },
+        {
+          "titulo": "Completar las líneas",
+          "instruccion": "En cada línea elige el «Insumo», la «Presentación», la «Cantidad» y el «Precio unit.». Usa «Agregar otro insumo» para más líneas.",
+          "registro": "evidencias/originales/insumos/insumos_2_compra.registro.json",
+          "captura": "ins_11_compra_datos",
+          "objetivo": "lineas",
+          "pie": "Línea de compra: 2 botellas × S/ 4.50; entra al stock +2,000 ml."
+        },
+        {
+          "titulo": "Revisar el impacto en stock",
+          "instruccion": "Comprueba el «Impacto en stock»: stock actual, compra y stock resultante.",
+          "registro": "evidencias/originales/insumos/insumos_2_compra.registro.json",
+          "captura": "ins_11_compra_datos",
+          "objetivo": "impacto",
+          "pie": "Impacto en stock: 0 ml → 2,000 ml."
+        },
+        {
+          "titulo": "Completar los datos de la compra",
+          "instruccion": "Escribe «Proveedor o tienda», «N.º de boleta / comprobante» y la «Fecha»; el «Precio total» es opcional si indicaste precios unitarios. Puedes adjuntar la imagen de la boleta.",
+          "registro": "evidencias/originales/insumos/insumos_2_compra.registro.json",
+          "captura": "ins_11_compra_datos",
+          "objetivo": "cabecera",
+          "pie": "Datos de la compra."
+        },
+        {
+          "titulo": "Confirmar",
+          "instruccion": "Haz clic en «Confirmar compra».",
+          "registro": "evidencias/originales/insumos/insumos_2_compra.registro.json",
+          "captura": "ins_11_compra_datos",
+          "objetivo": "confirmar",
+          "pie": "Botón «Confirmar compra»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el nuevo stock y el movimiento de compra.",
+          "registro": "evidencias/originales/insumos/insumos_3_ajuste.registro.json",
+          "captura": "ins_12_compra_registrada",
+          "objetivo": "movimientos",
+          "pie": "Movimiento «Compra · Boleta B000-0001 · +2,000 ml»; el stock pasa a 2,000 ml."
+        }
+      ],
+      "resultado": "El stock aumenta y la compra se registra como egreso en Caja. Según el sistema, el mensaje es «Compra #N registrada. El stock de los insumos ya fue actualizado.» (no quedó en la captura).",
+      "validaciones": [
+        [
+          "Líneas",
+          "Cada línea necesita insumo, presentación y cantidad.",
+          "«Completa insumo, cantidad y presentación de cada línea, o quita las que no correspondan.»"
+        ],
+        [
+          "Fecha",
+          "No posterior a hoy.",
+          "El calendario no permite fechas futuras."
+        ],
+        [
+          "Imagen",
+          "jpg, png o webp (opcional).",
+          "—"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-INS-004",
+      "titulo": "Leer una boleta de compra (OCR)",
+      "estado": "Pendiente de comprobar",
+      "objetivo": "Proponer la compra a partir de la foto de una boleta.",
+      "acceso": "Inventario › Insumos › «Leer boleta»",
+      "requisitos": [
+        "Foto legible de la boleta."
+      ],
+      "pasos": [
+        {
+          "titulo": "Leer la boleta",
+          "instruccion": "Haz clic en «Leer boleta», usa «Tomar foto» o «Seleccionar imagen» y revisa las líneas propuestas antes de «Confirmar compra»."
+        }
+      ],
+      "resultado": "La lectura solo propone datos; el stock cambia al confirmar. No se verificó con una boleta real."
+    },
+    {
+      "codigo": "ADM-INS-005",
+      "titulo": "Ajustar el stock de un insumo",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Corregir el stock por merma, pérdida, error o conteo físico.",
+      "acceso": "Inventario › Insumos › ícono «Ajustar stock»",
+      "requisitos": [
+        "Insumo registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el ajuste",
+          "instruccion": "Haz clic en el ícono «Ajustar stock» de la fila del insumo.",
+          "registro": "evidencias/originales/insumos/insumos_2_compra.registro.json",
+          "captura": "ins_10_antes_compra",
+          "objetivo": "ajustar",
+          "pie": "Ícono «Ajustar stock»."
+        },
+        {
+          "titulo": "Elegir el motivo y la cantidad",
+          "instruccion": "Elige el «Motivo» (Merma, Pérdida, Corrección o Inventario físico), escribe la cantidad y revisa el «Stock resultante».",
+          "registro": "evidencias/originales/insumos/insumos_3_ajuste.registro.json",
+          "captura": "ins_13_ajuste",
+          "objetivo": "cantidad",
+          "pie": "Cantidad a restar: 100 ml; stock resultante 1,900 ml."
+        },
+        {
+          "titulo": "Registrar",
+          "instruccion": "Haz clic en «Registrar ajuste».",
+          "registro": "evidencias/originales/insumos/insumos_3_ajuste.registro.json",
+          "captura": "ins_13_ajuste",
+          "objetivo": "registrar",
+          "pie": "Botón «Registrar ajuste»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el movimiento de ajuste.",
+          "registro": "evidencias/originales/insumos/insumos_3_ajuste.registro.json",
+          "captura": "ins_14_ajustado",
+          "objetivo": "movimientos",
+          "pie": "Movimiento «Ajuste (salida) · Merma · −100 ml»; mensaje «Ajuste de stock registrado.»"
+        }
+      ],
+      "resultado": "El stock queda corregido y el ajuste figura en «Últimos movimientos»."
+    }
+  ]
+}

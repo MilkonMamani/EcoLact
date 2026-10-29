@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Produccion;
 
-use App\Http\Controllers\Web\Admin\CompraInsumoController;
+use App\Http\Support\ComprobantesCompra;
 use App\Http\Support\FechaEventoMovil;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Storage;
@@ -64,7 +64,7 @@ class CompraInsumosRequest extends FormRequest
                     return;
                 }
 
-                $patron = '#^'.preg_quote(CompraInsumoController::CARPETA_BOLETAS, '#').'/boleta-[a-z0-9]{24}\.(jpg|jpeg|png|webp)$#';
+                $patron = '#^'.preg_quote(ComprobantesCompra::CARPETA_BOLETAS_APP, '#').'/boleta-[a-z0-9]{24}\.(jpg|jpeg|png|webp)$#';
 
                 if (! is_string($ruta) || ! preg_match($patron, $ruta) || ! Storage::disk('public')->exists($ruta)) {
                     $validator->errors()->add('imagen_boleta', 'La foto de la boleta no es válida. Vuelve a escanearla.');

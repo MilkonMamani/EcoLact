@@ -1,0 +1,128 @@
+{
+  "plan": "acopio_1.json",
+  "fecha": "2026-10-28T11:09:07",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "aco_01_listado",
+      "archivo": "evidencias/originales/acopio/aco_01_listado.png",
+      "url": "/admin/entregas",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          257,
+          239,
+          297
+        ],
+        "registrar": [
+          1237,
+          48,
+          1408,
+          88
+        ],
+        "buscar": [
+          331,
+          148,
+          1392,
+          192
+        ],
+        "filtros": [
+          284,
+          146,
+          1408,
+          272
+        ]
+      },
+      "textos_visibles": [
+        "Acopio\n\nRegistro y seguimiento de entregas de leche.\n\nRegistrar entrega\nBuscar proveedor, DNI o código de entrega\nFecha\nTodas\nHoy\nAyer\nEsta semana\nSemana anterior\nEste mes\nPersonalizado\nZona\nTodas\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nAcopiador\nTodos\nAcopiador Prueba Manual\nEstado\nTodos\nPendiente de análisis\nAnalizada\nFiltrar\nLimpiar\n\nNo hay entregas registradas\n\nLas entregas registradas por los acopiadores aparecerán aquí."
+      ],
+      "hora": "2026-10-28T11:09:11"
+    },
+    {
+      "nombre": "aco_02_dni",
+      "archivo": "evidencias/originales/acopio/aco_02_dni.png",
+      "url": "/admin/entregas",
+      "descripcion": "",
+      "objetivos": {
+        "dni": [
+          520,
+          285,
+          920,
+          327
+        ],
+        "resultados": [
+          520,
+          259,
+          920,
+          327
+        ]
+      },
+      "textos_visibles": [
+        "Registrar entrega\nDNI del proveedor *\nProveedor Prueba Manual99000005\nFaon\nLitros a registrar *\nFecha y hora (opcional)\nObservación\nCancelar\nRegistrar entrega"
+      ],
+      "hora": "2026-10-28T11:09:15"
+    },
+    {
+      "nombre": "aco_03_datos",
+      "archivo": "evidencias/originales/acopio/aco_03_datos.png",
+      "url": "/admin/entregas",
+      "descripcion": "",
+      "objetivos": {
+        "proveedor": [
+          520,
+          292,
+          920,
+          378
+        ],
+        "litros": [
+          520,
+          420,
+          920,
+          462
+        ],
+        "fecha": [
+          520,
+          504,
+          920,
+          546
+        ],
+        "registrar": [
+          775,
+          696,
+          920,
+          732
+        ]
+      },
+      "textos_visibles": [
+        "Registrar entrega\nDNI del proveedor *\n\nPROVEEDOR ENCONTRADO\n\nProveedor Prueba Manual\n\nZona: Faon\n\nLitros a registrar *\nFecha y hora (opcional)\nObservación\nCancelar\nRegistrar entrega"
+      ],
+      "hora": "2026-10-28T11:09:17"
+    },
+    {
+      "nombre": "aco_04_registrada",
+      "archivo": "evidencias/originales/acopio/aco_04_registrada.png",
+      "url": "/admin/entregas",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "fila": [
+          284,
+          384,
+          1408,
+          441
+        ]
+      },
+      "textos_visibles": [
+        "Entrega registrada correctamente.",
+        "28/10/2026 16:09\t\nProveedor Prueba Manual\nDNI: 99000005\n\tFaon\t—\t50.00 L\tDNI\t\nPendiente de análisis"
+      ],
+      "hora": "2026-10-28T11:09:21"
+    }
+  ]
+}

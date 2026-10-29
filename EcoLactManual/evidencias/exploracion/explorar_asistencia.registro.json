@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_asistencia.json",
+  "fecha": "2026-10-28T11:33:45",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_asistencia",
+      "archivo": "evidencias/exploracion/x_asistencia.png",
+      "url": "/admin/asistencia",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Dashboard\n›\nAsistencia\nAsistencia de hoy\n\nRegistra y consulta la asistencia diaria del personal.\n\nMiércoles, 28 de octubre de 2026\n\nCerrada a las 07:00 a. m.\n3\ntrabajadores\n0\npresentes\n3\nfaltas\n0\npendientes\nBuscar trabajador\nRol\nTodos\nAcopiador\nAnalista de calidad\nEncargado de planta\nPersonal de ventas\nFecha\nFiltrar\nTRABAJADOR\tROL\tDNI\tASISTENCIA\tHORA\tORIGEN\t\nACCIONES\n\n\nAQ\nAbel Quispe\n\tEncargado de planta\t77766657\t\nFalta\n\t—\t\nAutomático\t\n\n\nMT\nMaria Ttito\n\tAnalista de calidad\t97865415\t\nFalta\n\t—\t\nAutomático\t\n\n\nOT\nOscar Tello\n\tPersonal de ventas\t77777721\t\nFalta\n\t—\t\nAutomático\t\n\nMostrando 1 a 3 de 3 trabajadores\n\n«\n‹\n1\n›\n»"
+      ],
+      "hora": "2026-10-28T11:33:49"
+    }
+  ],
+  "dialogos": []
+}

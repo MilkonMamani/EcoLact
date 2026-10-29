@@ -1,0 +1,1 @@
+{"salida": "evidencias/exploracion", "conservar_texto": "Prueba Manual", "pasos": [{"accion": "ir", "url": "/admin/asistencia", "ms": 2500}, {"accion": "captura", "nombre": "x_asistencia", "leer": ["main"]}]}

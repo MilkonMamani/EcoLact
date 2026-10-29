@@ -1,0 +1,26 @@
+{
+ "descripcion": "Asistencia: consulta (nombres reales difuminados) y apertura de la ventana de QR sin escanear.",
+ "salida": "evidencias/originales/asistencia",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/asistencia",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "asi_01_pantalla",
+   "medir": {
+    "menu": "#ecolact-sidebar a[href$='/admin/asistencia']",
+    "cerrada": "[data-asistencia-cerrada]",
+    "resumen": ".asistencia-dato >> nth=0",
+    "filtros": "[data-asistencia-filtros]",
+    "tabla": "[data-asistencia-tabla]"
+   },
+   "leer": [
+    "main"
+   ]
+  }
+ ]
+}

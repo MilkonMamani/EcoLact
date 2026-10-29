@@ -1,0 +1,73 @@
+{
+  "plan": "insumos_2_compra.json",
+  "fecha": "2026-10-28T11:54:24",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ins_10_antes_compra",
+      "archivo": "evidencias/originales/insumos/ins_10_antes_compra.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          621,
+          992,
+          675
+        ],
+        "registrar_compra": [
+          911,
+          632,
+          943,
+          664
+        ],
+        "ajustar": [
+          948,
+          632,
+          980,
+          664
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:54:30"
+    },
+    {
+      "nombre": "ins_11_compra_datos",
+      "archivo": "evidencias/originales/insumos/ins_11_compra_datos.png",
+      "url": "/admin/insumos?insumo=2",
+      "descripcion": "",
+      "objetivos": {
+        "lineas": [
+          360,
+          136,
+          1080,
+          340
+        ],
+        "impacto": [
+          360,
+          360,
+          1080,
+          463
+        ],
+        "cabecera": [
+          377,
+          554,
+          712,
+          596
+        ],
+        "confirmar": [
+          928,
+          912,
+          1080,
+          948
+        ]
+      },
+      "textos_visibles": [
+        "INSUMO\nSeleccionar insumo\nInsumo Prueba Manual\nPRESENTACIÓN\nSeleccionar presentación\nBotella 1 L\nCANTIDAD\nPRECIO UNIT. S/\nEquivalencia por unidad\nBotella 1 L = 1,000 ml\nEntra al stock\n2 × 1,000 = +2,000 ml\nSubtotal\nS/ 9.00",
+        "IMPACTO EN STOCK\nINSUMO\nSTOCK ACTUAL\nCOMPRA\nSTOCK RESULTANTE\n\nInsumo Prueba Manual\n\n0 ml\n\n+2,000 ml\n\n2,000 ml",
+        ""
+      ],
+      "hora": "2026-10-28T11:54:36"
+    }
+  ]
+}

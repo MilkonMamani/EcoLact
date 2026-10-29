@@ -18,10 +18,10 @@ use DateTimeImmutable;
  * backend) y el calendario día a día del mes resuelto. Nunca recalcula el
  * dinero: los montos vienen tal cual del snapshot de la obligación.
  *
- * Antes de leer cierra los días ya cerrados (07:00) de ESTE trabajador
+ * Antes de leer cierra los días ya cerrados (23:59) de ESTE trabajador
  * (MarcarFaltasAutomaticas::paraTrabajador, idempotente), así un día pasado
  * nunca se ve "Pendiente" aunque el scheduler no haya corrido: Pendiente
- * (SIN_REGISTRO) solo existe para hoy antes de las 07:00.
+ * (SIN_REGISTRO) solo existe para hoy antes de las 23:59.
  */
 final class ObtenerControlPeriodoTrabajador
 {

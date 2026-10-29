@@ -6,11 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Un contrato HTTP y JSON entre móvil y servidor. Arquitectura verificada en las fuentes de EcoLact.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
+      
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/arquitectura/api/">
       
       
         <link rel="prev" href="../base-datos/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>API REST - Informe EcoLact</title>
+        <title>Comunicación mediante API REST - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api" class="md-skip">
+        <a href="#comunicacion-mediante-api-rest" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              API REST
+              Comunicación mediante API REST
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -937,6 +993,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1024,7 +1084,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1052,7 +1112,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1108,7 +1224,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1138,6 +1254,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API REST
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1154,6 +1288,108 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#recorrido-de-una-solicitud-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recorrido de una solicitud API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#organizacion-y-transporte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organización y transporte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejemplo-real-de-contrato-registrar-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplo real de contrato: registrar entrega
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-que-la-app-puede-interpretar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores que la app puede interpretar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cliente-http-compartido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cliente HTTP compartido
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rutas-versionadas-por-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rutas versionadas por rol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1174,7 +1410,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1438,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1580,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1608,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1927,97 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#recorrido-de-una-solicitud-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recorrido de una solicitud API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#organizacion-y-transporte" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organización y transporte
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejemplo-real-de-contrato-registrar-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplo real de contrato: registrar entrega
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-que-la-app-puede-interpretar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores que la app puede interpretar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cliente-http-compartido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cliente HTTP compartido
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rutas-versionadas-por-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rutas versionadas por rol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2032,170 @@
                   
 
 
+
+<div class="ec-arquitectura">
+<div class="ec-arch-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 7H5a2 2 0 0 0-2 2v8h2v-4h2v4h2V9a2 2 0 0 0-2-2m0 4H5V9h2m7-2h-4v10h2v-4h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2m0 4h-2V9h2m6 0v6h1v2h-4v-2h1V9h-1V7h4v2Z"/></svg></span> 08 · Comunicación mediante API REST</p>
+</div>
+<div class="ec-arch-content">
+<p><span class="ec-arch-kicker">EcoLact / Arquitectura de software</span></p>
+<h1 id="comunicacion-mediante-api-rest">Comunicación mediante API REST</h1>
+<p class="ec-arch-subtitle">Un contrato HTTP y JSON entre móvil y servidor</p>
+<p>La app usa Ktor para comunicarse con rutas versionadas de Laravel. Los endpoints adaptan las solicitudes al modelo del backend y devuelven datos o errores; no exponen acceso directo a la base de datos.</p>
+<div class="ec-arch-tech"><span>/api/v1</span><span>HTTP + JSON</span><span>Ktor Client</span><span>Roles</span></div>
+<h2 id="recorrido-de-una-solicitud-api">Recorrido de una solicitud API</h2>
+<p>La cadena muestra responsabilidades. Los middleware adicionales, como asistencia o idempotencia, dependen del endpoint. Las rutas <code>v1</code> de <code>routes/api.php</code> se montan bajo <code>/api</code> desde la configuración de Laravel.</p>
+<div class="ec-arch-diagram">
+<p><img alt="Recorrido de una solicitud API" src="../../assets/diagrams/arquitectura/api-recorrido.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/api-recorrido.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/api-recorrido.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  A[Aplicación KMP] --&gt; K[Ktor Client]
+  K --&gt; API[API REST: /api/v1]
+  API --&gt; M[Middleware: sesión, estado y rol]
+  M --&gt; R[Form Request y autorización Gate]
+  R --&gt; C[Controller]
+  C --&gt; U[Use Case]
+  U --&gt; RE[Contrato Repository]
+  RE --&gt; E[Adaptador Eloquent]
+  E --&gt; DB[(Persistencia central)]
+  C -. respuesta JSON y estado HTTP .-&gt; K
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+</code></pre></div>
+</details>
+</div>
+<h2 id="organizacion-y-transporte">Organización y transporte</h2>
+<p>Existen grupos <code>admin</code>, <code>acopiador</code>, <code>calidad</code>, <code>planta</code>, <code>ventas</code> y <code>proveedor</code>, con restricciones de rol y estado de cuenta. Login está disponible antes de la autenticación; logout y me están bajo <code>auth:sanctum</code>. La existencia de un endpoint no demuestra una pantalla móvil equivalente.</p>
+<p><code>HttpClientFactory</code> configura el motor específico de plataforma, serialización JSON, URL base y Bearer desde SessionManager. Usa <code>expectSuccess = false</code>: las funciones de lectura de respuesta interpretan explícitamente el estado HTTP. Muchas respuestas se envuelven en <code>data</code>; otras operaciones devuelven solo <code>message</code>, por lo que existen <code>toEnvelopeData()</code> y <code>requireSuccess()</code>.</p>
+<h2 id="ejemplo-real-de-contrato-registrar-entrega">Ejemplo real de contrato: registrar entrega</h2>
+<p><strong>Endpoint implementado:</strong> <code>POST /api/v1/acopiador/entregas</code>. El siguiente ejemplo es ilustrativo: el DNI, la clave y el token son valores de ejemplo, no datos ni credenciales reales.</p>
+<div class="highlight"><pre><span></span><code><span class="err">POST /api/v1/acopiador/entregas</span>
+<span class="err">Authorization: Bearer TOKEN_DE_SESION</span>
+<span class="err">Content-Type: application/json</span>
+<span class="err">Accept: application/json</span>
+<span class="err">Idempotency-Key: ejemplo-operacion-local-001</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;metodo_identificacion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DNI&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;identificador&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345678&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;litros&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">12.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fecha_hora_evento&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-10-28T06:20:00-05:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;observacion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ejemplo documental&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>El identificador debe corresponder a un proveedor real y habilitado en una ejecución efectiva. El actor no se envía como <code>acopiador_user_id</code>: se obtiene del usuario autenticado. <code>StoreEntregaMovilRequest</code> toma la clave desde la cabecera y admite la hora del evento; la validación impone formato y límites antes del caso de uso.</p>
+<p>Al aceptar, el controlador devuelve <strong>201</strong> con una entrega serializada dentro de <code>data</code>, que incluye su identificador, litros, estado y fechas. <code>fecha_hora</code> representa el evento de campo; <code>fecha_registro</code>, su llegada al servidor. El ejemplo no se ejecutó contra el sistema.</p>
+<h2 id="errores-que-la-app-puede-interpretar">Errores que la app puede interpretar</h2>
+<div class="ec-arch-table">
+<table>
+<thead>
+<tr>
+<th>HTTP</th>
+<th>Interpretación en el cliente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>401</td>
+<td>No autorizado: clase Unauthorized</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Prohibido; puede incluir el código ASISTENCIA_REQUERIDA</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Recurso no encontrado</td>
+</tr>
+<tr>
+<td>409</td>
+<td>Conflicto</td>
+</tr>
+<tr>
+<td>422</td>
+<td>Validación, con mensaje y errores por campo cuando existen</td>
+</tr>
+<tr>
+<td>5xx</td>
+<td>Error de servidor</td>
+</tr>
+<tr>
+<td>Otros no exitosos</td>
+<td>Error Unknown según el adaptador</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>La API de entregas convierte DomainException e InvalidArgumentException a 422. No se generaliza ese mapeo a todas las rutas: el manejador de sincronización de cada funcionalidad determina qué resultado va a revisión o a reintento. Versionar y centralizar el transporte reduce acoplamiento, pero no elimina la necesidad de mantener compatibles los contratos JSON.</p>
+<h2 id="evidencias-de-implementacion">Evidencias de implementación</h2>
+<p>Las referencias identifican código revisado. El área de imagen está preparada para la captura manual del archivo indicado; el marcador visual no constituye una captura de la implementación.</p>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="cliente-http-compartido">Cliente HTTP compartido</h3>
+<p>La fábrica configura el motor de plataforma, JSON y la cabecera de la sesión actual.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/api-ktor.png"><img alt="Captura de código: Cliente HTTP compartido" src="../../assets/images/arquitectura/codigo/api-ktor.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> Ktor concentra configuración de transporte. La autorización Bearer se añade desde SessionManager.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>api-ktor.png</code> · <a href="../../assets/images/arquitectura/codigo/api-ktor.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt#L15-L35">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/HttpClientFactory.kt</a></p>
+<p>Fragmento sugerido para la captura: líneas 15–35 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="rutas-versionadas-por-rol">Rutas versionadas por rol</h3>
+<p>La API agrupa endpoints del acopiador y protege sus escrituras con la comprobación de asistencia.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/api-rutas.png"><img alt="Captura de código: Rutas versionadas por rol" src="../../assets/images/arquitectura/codigo/api-rutas.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> El registro de entregas existe dentro del prefijo v1, bajo autenticación y restricciones de rol.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>api-rutas.png</code> · <a href="../../assets/images/arquitectura/codigo/api-rutas.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php#L144-L162">EcoLactWeb/routes/api.php</a></p>
+<p>Fragmento sugerido para la captura: líneas 144–162 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<details class="ec-arch-sources">
+<summary>Fuentes adicionales y alcance de la revisión</summary>
+<p>Revisión estática del repositorio local: 28 de octubre de 2026. Enlaces a la revisión <code>75901337489d</code>; la existencia de cada archivo y los fragmentos sugeridos se comprobaron localmente. No se ejecutaron servicios de negocio ni se verificó un despliegue.</p>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/routes/api.php">EcoLactWeb/routes/api.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/bootstrap/app.php">EcoLactWeb/bootstrap/app.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaMovilRequest.php">EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaMovilRequest.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php">EcoLactWeb/app/Http/Controllers/Api/Acopiador/EntregaController.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/Acopiador/Concerns/SerializaEntregasAcopiador.php">EcoLactWeb/app/Http/Controllers/Api/Acopiador/Concerns/SerializaEntregasAcopiador.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorApi.kt">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorApi.kt</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiResponseHandling.kt">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/network/ApiResponseHandling.kt</a></li>
+</ul>
+</details>
+<div class="ec-arch-links">
+<p><a href="../base-datos/">← Persistencia y bases de datos</a></p>
+<p><a href="../">Vista general</a></p>
+<p><a href="../seguridad/">Autenticación y seguridad →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="api">api</h1>
-
-
-
-
-
-
 
 
 

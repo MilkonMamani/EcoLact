@@ -1,0 +1,1 @@
+{"salida": "evidencias/exploracion", "pasos": [{"accion": "ir", "url": "/admin/compradores", "ms": 2500}, {"accion": "captura", "nombre": "x_compradores", "leer": ["body"]}]}

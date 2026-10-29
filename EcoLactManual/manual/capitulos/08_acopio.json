@@ -1,0 +1,296 @@
+{
+  "id": "ACO",
+  "tipo": "modulo",
+  "titulo": "Acopio: entregas de leche",
+  "registro": "evidencias/originales/acopio/acopio_1.registro.json",
+  "introduccion": "El módulo Acopio reúne todas las entregas de leche de todas las zonas. Normalmente las registran los acopiadores; el Administrador puede consultarlas, registrar una entrega desde el panel, corregir los litros y editar los datos de una entrega mientras está pendiente de análisis.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Operación › Acopio"
+    ],
+    [
+      "Depende de",
+      "Proveedores activos."
+    ],
+    [
+      "Habilita",
+      "Análisis de calidad y pago semanal a proveedores."
+    ],
+    [
+      "Estados de una entrega",
+      "«Pendiente de análisis» y «Analizada»."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Solo se editan entregas en estado «Pendiente de análisis».",
+        "Toda edición pide un motivo y queda registrada.",
+        "El sistema guarda quién registró la entrega y cuándo."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "aco_01_listado",
+    "pie": "Pantalla Acopio.",
+    "elementos": [
+      [
+        "«Registrar entrega»",
+        "Abre el registro de una entrega desde el Administrador."
+      ],
+      [
+        "Buscador",
+        "Busca por proveedor, DNI o código de entrega."
+      ],
+      [
+        "Filtros",
+        "«Fecha» (Hoy, Ayer, Esta semana, Semana anterior, Este mes, Personalizado), «Zona», «Acopiador» y «Estado»."
+      ],
+      [
+        "Tabla",
+        "Fecha y hora, proveedor, zona, acopiador, litros, identificación, estado y acción «Ver entrega»."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-ACO-001",
+      "titulo": "Registrar una entrega desde el Administrador",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Registrar los litros entregados por un proveedor.",
+      "acceso": "Operación › Acopio › «Registrar entrega»",
+      "requisitos": [
+        "Proveedor activo con zona asignada.",
+        "DNI del proveedor."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Acopio",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Acopio».",
+          "captura": "aco_01_listado",
+          "objetivo": "menu",
+          "pie": "Opción «Acopio»."
+        },
+        {
+          "titulo": "Abrir el registro",
+          "instruccion": "Haz clic en «Registrar entrega».",
+          "captura": "aco_01_listado",
+          "objetivo": "registrar",
+          "pie": "Botón «Registrar entrega»."
+        },
+        {
+          "titulo": "Buscar al proveedor por DNI",
+          "instruccion": "Escribe el «DNI del proveedor» y elige al proveedor en la lista que aparece.",
+          "captura": "aco_02_dni",
+          "objetivo": "resultados",
+          "pie": "Resultado de la búsqueda por DNI."
+        },
+        {
+          "titulo": "Revisar el proveedor encontrado",
+          "instruccion": "Comprueba el nombre y la zona en «Proveedor encontrado».",
+          "captura": "aco_03_datos",
+          "objetivo": "proveedor",
+          "pie": "«Proveedor encontrado» con su zona."
+        },
+        {
+          "titulo": "Indicar los litros",
+          "instruccion": "Escribe los «Litros a registrar». La «Fecha y hora» es opcional (si se deja vacía se usa la actual) y puedes añadir una «Observación».",
+          "captura": "aco_03_datos",
+          "objetivo": "litros",
+          "pie": "Litros de la entrega."
+        },
+        {
+          "titulo": "Registrar",
+          "instruccion": "Haz clic en «Registrar entrega».",
+          "captura": "aco_03_datos",
+          "objetivo": "registrar",
+          "pie": "Botón «Registrar entrega» del formulario."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y la nueva fila.",
+          "captura": "aco_04_registrada",
+          "objetivo": "fila",
+          "pie": "Entrega registrada, en estado «Pendiente de análisis».",
+          "resultado": "Aparece «Entrega registrada correctamente.»"
+        }
+      ],
+      "resultado": "La entrega queda «Pendiente de análisis». Cuando se registra desde el Administrador, la columna «Acopiador» queda vacía («—»).",
+      "validaciones": [
+        [
+          "DNI del proveedor",
+          "Obligatorio; 8 dígitos.",
+          "El buscador solo acepta un DNI registrado."
+        ],
+        [
+          "Litros a registrar",
+          "Obligatorio; mayor que 0.",
+          "El navegador no permite valores vacíos o menores a 0.01."
+        ],
+        [
+          "Fecha y hora",
+          "Opcional.",
+          "—"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ACO-002",
+      "titulo": "Consultar el detalle de una entrega",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Ver todos los datos de una entrega y el estado de su flujo.",
+      "acceso": "Operación › Acopio › ícono «Ver entrega»",
+      "requisitos": [
+        "Entrega registrada."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el detalle",
+          "instruccion": "En la fila de la entrega, haz clic en el ícono «Ver entrega».",
+          "registro": "evidencias/originales/acopio/acopio_4_detalle.registro.json",
+          "captura": "aco_05_detalle",
+          "objetivo": "titulo",
+          "pie": "Ventana «Ver entrega #1» (usuario registrador difuminado).",
+          "resultado": "Se muestran la información de la entrega, el resumen del registro, el estado del flujo (entrega registrada → análisis de calidad) y el análisis asociado, si existe."
+        }
+      ],
+      "resultado": "Puedes revisar la entrega sin modificarla."
+    },
+    {
+      "codigo": "ADM-ACO-003",
+      "titulo": "Corregir los litros de una entrega",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Corregir rápidamente la cantidad de litros.",
+      "acceso": "Ventana «Ver entrega» › «Editar»",
+      "requisitos": [
+        "Entrega «Pendiente de análisis»."
+      ],
+      "pasos": [
+        {
+          "titulo": "Activar la edición",
+          "instruccion": "En «Ver entrega», haz clic en «Editar».",
+          "registro": "evidencias/originales/acopio/acopio_4_detalle.registro.json",
+          "captura": "aco_05_detalle",
+          "objetivo": "editar_litros",
+          "pie": "Botón «Editar» de la ventana de detalle."
+        },
+        {
+          "titulo": "Escribir los litros correctos",
+          "instruccion": "Corrige el valor de «Litros entregados» y haz clic en «Guardar cambios».",
+          "registro": "evidencias/originales/acopio/acopio_4_detalle.registro.json",
+          "captura": "aco_06_corregir",
+          "objetivo": "litros",
+          "pie": "Campo de litros en modo edición."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el aviso y los litros en la tabla.",
+          "registro": "evidencias/originales/acopio/acopio_4_detalle.registro.json",
+          "captura": "aco_07_corregida",
+          "objetivo": "aviso",
+          "pie": "Aviso «Litros actualizados correctamente.»",
+          "resultado": "La tabla muestra los nuevos litros."
+        }
+      ],
+      "resultado": "La entrega conserva su estado con los litros corregidos.",
+      "validaciones": [
+        [
+          "Litros",
+          "Obligatorio; mayor que 0; máximo 2 decimales.",
+          "«Ingresa la cantidad de litros.» / «Los litros deben ser mayores a 0.» / «Los litros admiten como máximo 2 decimales.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ACO-004",
+      "titulo": "Editar una entrega con motivo",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Corregir los datos de una entrega dejando constancia del motivo.",
+      "acceso": "Detalle de la entrega (página «Entrega #N») › «Editar»",
+      "requisitos": [
+        "Entrega «Pendiente de análisis»."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir la edición",
+          "instruccion": "En la página de la entrega, haz clic en «Editar».",
+          "registro": "evidencias/originales/acopio/acopio_3_edicion.registro.json",
+          "captura": "aco_08_show",
+          "objetivo": "editar",
+          "pie": "Página «Entrega #1» con el botón «Editar» (solo visible si está pendiente de análisis)."
+        },
+        {
+          "titulo": "Modificar los datos",
+          "instruccion": "Cambia los campos necesarios (por ejemplo «Litros»).",
+          "registro": "evidencias/originales/acopio/acopio_3_edicion.registro.json",
+          "captura": "aco_09_editar",
+          "objetivo": "litros",
+          "pie": "Ventana «Editar entrega»."
+        },
+        {
+          "titulo": "Escribir el motivo",
+          "instruccion": "Escribe el «Motivo de modificación» (obligatorio).",
+          "registro": "evidencias/originales/acopio/acopio_3_edicion.registro.json",
+          "captura": "aco_09_editar",
+          "objetivo": "motivo",
+          "pie": "Campo «Motivo de modificación»."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar cambios».",
+          "registro": "evidencias/originales/acopio/acopio_3_edicion.registro.json",
+          "captura": "aco_09_editar",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar cambios»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y los datos actualizados.",
+          "registro": "evidencias/originales/acopio/acopio_3_edicion.registro.json",
+          "captura": "aco_10_editada",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            760
+          ],
+          "pie": "Mensaje «Entrega actualizada correctamente.»"
+        }
+      ],
+      "resultado": "La entrega muestra los nuevos datos. La ventana de edición usa identificadores numéricos para proveedor, zona y acopiador: cámbielos solo si conoce el identificador correcto.",
+      "validaciones": [
+        [
+          "Motivo de modificación",
+          "Obligatorio; máx. 255.",
+          "El navegador no permite enviarlo vacío."
+        ],
+        [
+          "Litros",
+          "Mayor que 0.",
+          "—"
+        ],
+        [
+          "Proveedor / zona / acopiador",
+          "Deben existir.",
+          "Mensaje bajo el campo."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ACO-005",
+      "titulo": "Anular una entrega",
+      "estado": "No disponible en la interfaz",
+      "objetivo": "Anular una entrega registrada por error.",
+      "acceso": "—",
+      "requisitos": [
+        "—"
+      ],
+      "pasos": [
+        {
+          "titulo": "Situación observada",
+          "instruccion": "El sistema tiene implementada la anulación (con motivo obligatorio y descuento de la leche del inventario), pero ninguna pantalla del Administrador muestra un botón para ejecutarla."
+        }
+      ],
+      "resultado": "No se puede anular una entrega desde el panel del Administrador. Mientras no se habilite, corrija los datos con ADM-ACO-003 o ADM-ACO-004."
+    }
+  ]
+}

@@ -12,6 +12,8 @@
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/desarrollo/backend/">
+      
       
         <link rel="prev" href="../repositorio/">
       
@@ -27,7 +29,7 @@
     
     
       
-        <title>Backend - Informe EcoLact</title>
+        <title>Backend Laravel 13 - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#backend" class="md-skip">
+        <a href="#backend-laravel-13" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Backend
+              Backend Laravel 13
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -935,6 +991,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1019,7 +1079,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1047,7 +1107,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1103,7 +1219,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1159,7 +1275,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1187,7 +1303,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1336,6 +1452,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar backend
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1343,7 +1477,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1352,6 +1486,152 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#paso-1-instalar-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1. Instalar dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-del-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias del backend
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-2-crear-el-entorno-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2. Crear el entorno local
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-3-preparar-la-conexion-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3. Preparar la conexión MySQL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-4-aplicar-migraciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4. Aplicar migraciones
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-5-cargar-datos-iniciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5. Cargar datos iniciales
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-6-iniciar-laravel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6. Iniciar Laravel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-7-ejecutar-vite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 7. Ejecutar Vite
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comandos-de-referencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comandos de referencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes-y-comprobaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes y comprobaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Errores frecuentes y comprobaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#servidores-de-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Servidores de desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1372,7 +1652,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1971,141 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#paso-1-instalar-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1. Instalar dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependencias-del-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependencias del backend
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-2-crear-el-entorno-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2. Crear el entorno local
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-3-preparar-la-conexion-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3. Preparar la conexión MySQL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-4-aplicar-migraciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4. Aplicar migraciones
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-5-cargar-datos-iniciales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5. Cargar datos iniciales
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-6-iniciar-laravel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6. Iniciar Laravel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-7-ejecutar-vite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 7. Ejecutar Vite
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comandos-de-referencia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comandos de referencia
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errores-frecuentes-y-comprobaciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errores frecuentes y comprobaciones
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Errores frecuentes y comprobaciones">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#servidores-de-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Servidores de desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2120,276 @@
                   
 
 
+
+<div class="ec-desarrollo">
+<div class="ec-dev-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 1h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1m0 8h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1m0 8h16a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1M9 5h1V3H9zm0 8h1v-2H9zm0 8h1v-2H9zM5 3v2h2V3zm0 8v2h2v-2zm0 8v2h2v-2z"/></svg></span> 3. Configurar y ejecutar backend</p>
+</div>
+<div class="ec-dev-content">
+<p><span class="ec-dev-kicker">EcoLact / Guía de desarrollo</span></p>
+<h1 id="backend-laravel-13">Backend Laravel 13</h1>
+<p>El backend atiende la interfaz web y la API móvil. El procedimiento parte de una copia nueva y una base de desarrollo: instala bibliotecas, configura el entorno y levanta los procesos necesarios.</p>
+<div class="ec-dev-step">
+<h3 id="paso-1-instalar-dependencias">Paso 1. Instalar dependencias</h3>
+<p>Desde la raíz de EcoLact, entra al proyecto PHP. Composer resuelve el autoload y las bibliotecas que necesita Laravel.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="nb">cd </span><span class="n">EcoLactWeb</span>
+<span class="n">composer</span> <span class="n">install</span>
+<span class="n">composer</span> <span class="n">check-platform-reqs</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> cd cambia el directorio; install usa composer.lock cuando existe. La comprobación contrasta PHP y extensiones con los paquetes instalados.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Se crea vendor/ y los requisitos de plataforma se cumplen.</p>
+<p><strong>Comprobación:</strong> Comprueba vendor/autoload.php y revisa que Composer no indique extensiones o versiones incompatibles.</p>
+</div>
+</div>
+<div class="ec-dev-capture">
+<h3 id="dependencias-del-backend">Dependencias del backend</h3>
+<p><a href="../../assets/images/desarrollo/backend-dependencias.png"><img alt="Dependencias del backend: espacio reservado para una captura real" src="../../assets/images/desarrollo/backend-dependencias.png" /></a></p>
+<p><strong>Archivo:</strong> <code>backend-dependencias.png</code></p>
+<p><strong>Qué debe mostrar:</strong> La finalización de composer install y la comprobación de requisitos PHP.</p>
+<p><strong>Herramienta:</strong> PowerShell.</p>
+<div class="ec-dev-meta">
+<p>Reemplaza el PNG en <code>docs/assets/images/desarrollo/</code> con el mismo nombre y vuelve a generar el sitio. No es necesario editar esta página. Mientras se conserva el marcador, no constituye evidencia de ejecución.</p>
+</div>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-2-crear-el-entorno-local">Paso 2. Crear el entorno local</h3>
+<p>La plantilla contiene nombres y valores de ejemplo. Cópiala <strong>solo si .env no existe</strong>; si ya existe, revisa la configuración propia sin sobrescribirla. Genera la clave únicamente para una instalación nueva.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="p">(</span><span class="o">-not</span> <span class="p">(</span><span class="nb">Test-Path</span> <span class="p">.</span><span class="n">env</span><span class="p">))</span> <span class="p">{</span> <span class="nb">Copy-Item</span> <span class="p">.</span><span class="n">env</span><span class="p">.</span><span class="n">example</span> <span class="p">.</span><span class="n">env</span> <span class="p">}</span>
+<span class="c"># Solo en una instalación nueva, sin APP_KEY configurada:</span>
+<span class="n">php</span> <span class="n">artisan</span> <span class="n">key</span><span class="p">:</span><span class="n">generate</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> La copia prepara las variables locales; key:generate establece la clave criptográfica usada por Laravel. No es la contraseña de MySQL ni un token de Sanctum.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Existe .env y APP_KEY tiene un valor generado localmente.</p>
+<p><strong>Comprobación:</strong> Comprueba su presencia en el editor sin mostrarla en capturas. No regeneres una clave de un entorno en uso: puede invalidar información cifrada.</p>
+</div>
+</div>
+<div class="ec-dev-result">
+<p><code>.env</code> está ignorado por Git en EcoLactWeb. Configura credenciales propias y no lo compartas; la guía solo muestra valores ficticios. Verifica también <code>APP_ENV=local</code> y usa <code>APP_DEBUG=true</code> exclusivamente en desarrollo.</p>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-3-preparar-la-conexion-mysql">Paso 3. Preparar la conexión MySQL</h3>
+<p>Inicia MySQL y crea una base vacía de desarrollo siguiendo <a href="../base-datos/">Base de datos</a>. Después ajusta estas variables en .env; sustituye los valores ficticios.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code>DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ecolactv1
+DB_USERNAME=usuario_local
+DB_PASSWORD=valor_privado
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> DB_CONNECTION selecciona el motor; host, puerto y nombre identifican el servicio y el esquema. Usuario y contraseña pertenecen a tu instalación.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Laravel apunta a la base ecolactv1 del entorno elegido.</p>
+<p><strong>Comprobación:</strong> Confirma en el cliente MySQL el servidor y esquema seleccionados antes de migrar. Si había configuración cacheada, ejecuta php artisan config:clear.</p>
+</div>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-4-aplicar-migraciones">Paso 4. Aplicar migraciones</h3>
+<p>Con la conexión confirmada, crea o actualiza la estructura versionada. Estas órdenes se ejecutan desde EcoLactWeb.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">artisan</span> <span class="n">config</span><span class="p">:</span><span class="nb">clear</span>
+<span class="n">php</span> <span class="n">artisan</span> <span class="n">migrate</span>
+<span class="n">php</span> <span class="n">artisan</span> <span class="n">migrate</span><span class="p">:</span><span class="n">status</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> config:clear descarta configuración cacheada; migrate aplica migraciones pendientes y status lista su estado.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Las migraciones de esta revisión figuran aplicadas.</p>
+<p><strong>Comprobación:</strong> Revisa migrate:status y las tablas en MySQL. Si hay un fallo, identifica la migración y causa antes de repetir; no borres la base para ocultarlo.</p>
+</div>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-5-cargar-datos-iniciales">Paso 5. Cargar datos iniciales</h3>
+<p>Revisa DatabaseSeeder y configura ECOLACT_ADMIN_USERNAME y ECOLACT_ADMIN_PASSWORD con valores locales propios antes de continuar. Los seeders no representan una carga completa de datos operativos.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">artisan</span> <span class="n">db</span><span class="p">:</span><span class="n">seed</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> Invoca los siete seeders registrados: roles, administrador, parámetros de calidad, precio de leche, reglas de pago, zonas y delimitaciones iniciales.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Los catálogos y el usuario inicial están disponibles.</p>
+<p><strong>Comprobación:</strong> Consulta las tablas de catálogo y prueba el acceso con tus credenciales. Revisa el comportamiento de actualización descrito en <a href="../base-datos/">Base de datos</a>.</p>
+</div>
+</div>
+<div class="ec-dev-result warning">
+<p><strong>Reejecutar seeders modifica datos.</strong> AdminUserSeeder usa updateOrInsert y vuelve a escribir la contraseña del usuario elegido; también activa el cambio obligatorio de contraseña. No ejecutes db:seed indiscriminadamente en una base compartida.</p>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-6-iniciar-laravel">Paso 6. Iniciar Laravel</h3>
+<p>Abre una terminal en EcoLactWeb y mantenla activa. El servidor de desarrollo atiende rutas web y API.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">artisan</span> <span class="n">serve</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> Inicia el servidor local; normalmente anuncia http://127.0.0.1:8000. Usa siempre la dirección realmente mostrada.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> La web responde en el navegador y la terminal permanece ejecutándose.</p>
+<p><strong>Comprobación:</strong> Abre la dirección anunciada. Si solicita recursos frontend o la página aparece sin estilos, completa el paso de Vite.</p>
+</div>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-7-ejecutar-vite">Paso 7. Ejecutar Vite</h3>
+<p>En otra terminal ubicada en EcoLactWeb, instala las dependencias JavaScript y arranca el servidor de recursos.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">npm</span> <span class="n">install</span>
+<span class="n">npm</span> <span class="n">run</span> <span class="n">dev</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> install prepara node_modules; dev ejecuta vite según package.json. Vite sirve CSS/JavaScript y recarga cambios; Laravel sigue atendiendo la aplicación.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Ambos procesos permanecen activos y la web carga sus recursos.</p>
+<p><strong>Comprobación:</strong> Recarga la web y comprueba en las herramientas del navegador que CSS y JavaScript no fallan. La terminal de Vite anuncia su propio puerto.</p>
+</div>
+</div>
+<div class="ec-dev-diagram">
+<p><img alt="Laravel y Vite durante el desarrollo" src="../../assets/diagrams/desarrollo/servidores.svg" /></p>
+<p><a href="../../assets/diagrams/desarrollo/servidores.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/desarrollo/servidores.mmd">Fuente Mermaid</a></p>
+</div>
+<h2 id="comandos-de-referencia">Comandos de referencia</h2>
+<div class="ec-dev-command-table">
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>¿Para qué sirve?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cd EcoLactWeb</code></td>
+<td>Entrar al proyecto PHP desde la raíz.</td>
+</tr>
+<tr>
+<td><code>composer install</code></td>
+<td>Instalar las dependencias PHP bloqueadas.</td>
+</tr>
+<tr>
+<td><code>Copy-Item .env.example .env</code></td>
+<td>Crear la configuración inicial, solo si .env no existe.</td>
+</tr>
+<tr>
+<td><code>php artisan key:generate</code></td>
+<td>Generar APP_KEY en una instalación nueva.</td>
+</tr>
+<tr>
+<td><code>php artisan migrate</code></td>
+<td>Aplicar cambios de estructura pendientes.</td>
+</tr>
+<tr>
+<td><code>php artisan db:seed</code></td>
+<td>Ejecutar los seeders registrados y sus actualizaciones.</td>
+</tr>
+<tr>
+<td><code>php artisan serve</code></td>
+<td>Atender la aplicación en desarrollo.</td>
+</tr>
+<tr>
+<td><code>npm install</code></td>
+<td>Instalar dependencias frontend.</td>
+</tr>
+<tr>
+<td><code>npm run dev</code></td>
+<td>Iniciar Vite y su recarga de recursos.</td>
+</tr>
+<tr>
+<td><code>npm run build</code></td>
+<td>Generar los recursos compilados, sin dejar Vite activo.</td>
+</tr>
+<tr>
+<td><code>composer run dev</code></td>
+<td>Alternativa definida en composer.json: coordina servidor, queue:listen y Vite. No usar simultáneamente con los procesos ya iniciados.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ec-dev-result">
+<p>El script <code>composer run setup</code> existe, pero encadena generación de clave y migraciones con <code>--force</code>. Para la primera configuración se documentan los pasos separados, de modo que puedas revisar el entorno antes de modificarlo.</p>
+</div>
+<h2 id="errores-frecuentes-y-comprobaciones">Errores frecuentes y comprobaciones</h2>
+<div class="ec-dev-command-table">
+<table>
+<thead>
+<tr>
+<th>Situación</th>
+<th>Qué comprobar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Composer no reconocido</td>
+<td>Revisa instalación y PATH; abre otra terminal y ejecuta composer --version.</td>
+</tr>
+<tr>
+<td>Base no disponible</td>
+<td>Comprueba servicio, host, puerto, usuario y existencia del esquema; no confundir MySQL con el servidor web.</td>
+</tr>
+<tr>
+<td>Falta .env</td>
+<td>Crea la copia inicial y APP_KEY. Si ya existe, no lo reemplaces para resolver otro error.</td>
+</tr>
+<tr>
+<td>Recursos frontend faltantes</td>
+<td>Ejecuta npm install y npm run dev desde EcoLactWeb, o genera npm run build.</td>
+</tr>
+<tr>
+<td>Puerto ocupado</td>
+<td>Identifica el proceso o usa php artisan serve --port=8001. Actualiza la URL móvil para ese puerto.</td>
+</tr>
+<tr>
+<td>PHP incompatible o extensiones ausentes</td>
+<td>Revisa el PHP de la terminal y composer check-platform-reqs. La conexión MySQL necesita pdo_mysql; el preprocesado OCR usa GD.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ec-dev-capture">
+<h3 id="servidores-de-desarrollo">Servidores de desarrollo</h3>
+<p><a href="../../assets/images/desarrollo/backend-servidor.png"><img alt="Servidores de desarrollo: espacio reservado para una captura real" src="../../assets/images/desarrollo/backend-servidor.png" /></a></p>
+<p><strong>Archivo:</strong> <code>backend-servidor.png</code></p>
+<p><strong>Qué debe mostrar:</strong> Laravel y Vite ejecutándose en terminales separadas y sus direcciones locales.</p>
+<p><strong>Herramienta:</strong> Terminales de VS Code.</p>
+<div class="ec-dev-meta">
+<p>Reemplaza el PNG en <code>docs/assets/images/desarrollo/</code> con el mismo nombre y vuelve a generar el sitio. No es necesario editar esta página. Mientras se conserva el marcador, no constituye evidencia de ejecución.</p>
+</div>
+</div>
+<div class="ec-dev-sources">
+<details>
+<summary>Fuentes verificables del repositorio</summary>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json">EcoLactWeb/composer.json</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.lock">EcoLactWeb/composer.lock</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/package.json">EcoLactWeb/package.json</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example">EcoLactWeb/.env.example</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore">EcoLactWeb/.gitignore</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php">EcoLactWeb/config/database.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php">EcoLactWeb/database/seeders/DatabaseSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php">EcoLactWeb/database/seeders/AdminUserSeeder.php</a></li>
+</ul>
+<p>Revisión de referencia: <code>75901337489d</code>. Los procedimientos se contrastaron con estas fuentes; los comandos de instalación, migración y compilación del producto no se ejecutaron para elaborar esta guía.</p>
+</details>
+</div>
+<div class="ec-dev-nav">
+<p><a href="../repositorio/">← Organización del proyecto</a></p>
+<p><a href="../mobile/">Aplicación móvil con Kotlin Multiplatform →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="backend">backend</h1>
-
-
-
-
-
-
 
 
 

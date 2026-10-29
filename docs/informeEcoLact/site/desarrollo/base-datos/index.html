@@ -12,6 +12,8 @@
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/desarrollo/base-datos/">
+      
       
         <link rel="prev" href="../mobile/">
       
@@ -27,7 +29,7 @@
     
     
       
-        <title>Base de datos y seeders - Informe EcoLact</title>
+        <title>Configuración de MySQL - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#base-datos" class="md-skip">
+        <a href="#configuracion-de-mysql" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Base de datos y seeders
+              Configuración de MySQL
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -935,6 +991,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1019,7 +1079,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1047,7 +1107,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1103,7 +1219,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1159,7 +1275,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1187,7 +1303,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1334,7 +1450,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1362,7 +1478,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1392,6 +1508,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base de datos y seeders
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1408,6 +1542,136 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#paso-1-preparar-el-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1. Preparar el servicio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso 1. Preparar el servicio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-crear-la-base-de-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2. Crear la base de desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-configurar-laravel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3. Configurar Laravel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-aplicar-la-estructura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4. Aplicar la estructura
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-cargar-los-seeders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5. Cargar los seeders
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-crea-o-modifica-cada-seeder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué crea o modifica cada seeder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Qué crea o modifica cada seeder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-verificar-la-conexion-y-estructura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6. Verificar la conexión y estructura
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base-de-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base de desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estado-de-las-migraciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estado de las migraciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1691,6 +1955,125 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#paso-1-preparar-el-servicio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 1. Preparar el servicio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paso 1. Preparar el servicio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-crear-la-base-de-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 2. Crear la base de desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-configurar-laravel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 3. Configurar Laravel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-aplicar-la-estructura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 4. Aplicar la estructura
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-5-cargar-los-seeders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 5. Cargar los seeders
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-crea-o-modifica-cada-seeder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué crea o modifica cada seeder
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Qué crea o modifica cada seeder">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-6-verificar-la-conexion-y-estructura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso 6. Verificar la conexión y estructura
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base-de-desarrollo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Base de desarrollo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#estado-de-las-migraciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estado de las migraciones
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2088,199 @@
                   
 
 
+
+<div class="ec-desarrollo">
+<div class="ec-dev-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4-3.58 4-8 4-8-1.79-8-4m8.08 11H12c-4.42 0-8-1.79-8-4v3c0 2.21 3.58 4 8 4h.29a7.4 7.4 0 0 1-.29-2c0-.34.03-.67.08-1M20 12.08V9c0 2.21-3.58 4-8 4s-8-1.79-8-4v3c0 2.21 3.58 4 8 4h.69c1.13-2.37 3.53-4 6.31-4 .34 0 .67.03 1 .08m3.8 8.32c.1 0 .1.1 0 .2l-1 1.7c-.1.1-.2.1-.3.1l-1.2-.4c-.3.2-.5.3-.8.5l-.2 1.3c0 .1-.1.2-.2.2h-2c-.1 0-.2-.1-.3-.2l-.2-1.3c-.3-.1-.6-.3-.8-.5l-1.2.5c-.1 0-.2 0-.3-.1l-1-1.7c-.1-.1 0-.2.1-.3l1.1-.8v-1l-1.1-.8c-.1-.1-.1-.2-.1-.3l1-1.7c.1-.1.2-.1.3-.1l1.2.5c.3-.2.5-.3.8-.5l.2-1.3c0-.1.1-.2.3-.2h2c.1 0 .2.1.2.2l.2 1.3c.3.1.6.3.9.5l1.2-.5c.1 0 .3 0 .3.1l1 1.7c.1.1 0 .2-.1.3l-1.1.8v1zM20.5 19c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5 1.5.7 1.5 1.5 1.5 1.5-.7 1.5-1.5"/></svg></span> 5. Base de datos y seeders</p>
+</div>
+<div class="ec-dev-content">
+<p><span class="ec-dev-kicker">EcoLact / Guía de desarrollo</span></p>
+<h1 id="configuracion-de-mysql">Configuración de MySQL</h1>
+<p>MySQL conserva los registros centrales utilizados por Laravel. Preparar una base local identificable permite aplicar la estructura versionada y revisar los catálogos sin intervenir sobre información operativa real.</p>
+<h2 id="paso-1-preparar-el-servicio">Paso 1. Preparar el servicio</h2>
+<p>Inicia MySQL mediante el gestor de tu instalación y abre un cliente como MySQL Workbench. Comprueba el servidor, puerto y usuario que vas a utilizar. PHP necesita pdo_mysql para establecer la conexión; el cliente gráfico por sí solo no demuestra que PHP pueda conectarse. No se fija una versión de MySQL que el repositorio no declara.</p>
+<div class="ec-dev-step">
+<h3 id="paso-2-crear-la-base-de-desarrollo">Paso 2. Crear la base de desarrollo</h3>
+<p>La plantilla <code>.env.example</code> conserva DB_DATABASE=ecolactv1. Ejecuta el siguiente SQL en tu servidor local de desarrollo, con una cuenta autorizada. Si ese nombre ya contiene datos, utiliza otra base y actualiza DB_DATABASE.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">ecolactv1</span>
+<span class="w">  </span><span class="nb">CHARACTER</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">utf8mb4</span>
+<span class="w">  </span><span class="k">COLLATE</span><span class="w"> </span><span class="n">utf8mb4_unicode_ci</span><span class="p">;</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> Crea el esquema si no existe; no crea un usuario ni concede permisos. Charset y collation coinciden con los valores predeterminados de la conexión MySQL del proyecto.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Existe el esquema destinado a esta copia.</p>
+<p><strong>Comprobación:</strong> Selecciona el esquema en el cliente. IF NOT EXISTS no valida que una base existente esté vacía ni que corresponda a desarrollo.</p>
+</div>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-3-configurar-laravel">Paso 3. Configurar Laravel</h3>
+<p>En EcoLactWeb/.env establece estos valores como plantilla; usuario_local y valor_privado son marcadores, no credenciales funcionales.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code>DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=ecolactv1
+DB_USERNAME=usuario_local
+DB_PASSWORD=valor_privado
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> Selecciona MySQL y localiza la base y la cuenta con acceso. config/database.php puede usar SQLite si no se declara DB_CONNECTION; esta guía elige MySQL explícitamente.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> La aplicación tiene la conexión del entorno correcto.</p>
+<p><strong>Comprobación:</strong> Comprueba la correspondencia con el cliente MySQL y ejecuta php artisan config:clear desde EcoLactWeb.</p>
+</div>
+</div>
+<div class="ec-dev-diagram">
+<p><img alt="Aplicación Laravel, conexión y esquema" src="../../assets/diagrams/desarrollo/mysql.svg" /></p>
+<p><a href="../../assets/diagrams/desarrollo/mysql.svg">Ampliar diagrama</a> · <a href="../../assets/diagrams/desarrollo/mysql.mmd">Fuente Mermaid</a></p>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-4-aplicar-la-estructura">Paso 4. Aplicar la estructura</h3>
+<p>Las migraciones son la referencia versionada para construir y evolucionar las tablas. Revisa el entorno antes de ejecutar.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">artisan</span> <span class="n">migrate</span>
+<span class="n">php</span> <span class="n">artisan</span> <span class="n">migrate</span><span class="p">:</span><span class="n">status</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> migrate aplica archivos pendientes de database/migrations; status muestra cuáles quedaron ejecutados.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> El esquema contiene las tablas previstas por esta revisión.</p>
+<p><strong>Comprobación:</strong> Revisa el estado de todas las migraciones y el listado de tablas. Hay archivos que agregan columnas, índices o transforman estructuras: no importes además un SQL histórico como segundo procedimiento normal.</p>
+</div>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-5-cargar-los-seeders">Paso 5. Cargar los seeders</h3>
+<p>Define primero ECOLACT_ADMIN_USERNAME y ECOLACT_ADMIN_PASSWORD con datos propios. Revisa los siete seeders que llama DatabaseSeeder.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">artisan</span> <span class="n">db</span><span class="p">:</span><span class="n">seed</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> Inserta o actualiza los datos iniciales según cada implementación; no crea una demostración completa de todos los módulos.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Roles, administrador, parámetros, precio inicial, reglas de pago y zonas quedan disponibles.</p>
+<p><strong>Comprobación:</strong> Consulta los catálogos y verifica el acceso inicial. Las delimitaciones referenciales deben revisarse por el administrador.</p>
+</div>
+</div>
+<h2 id="que-crea-o-modifica-cada-seeder">Qué crea o modifica cada seeder</h2>
+<div class="ec-dev-command-table">
+<table>
+<thead>
+<tr>
+<th>Seeder</th>
+<th>Comportamiento observado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RoleSeeder</td>
+<td>Seis roles. updateOrInsert actualiza indicadores de remuneración y control de asistencia.</td>
+</tr>
+<tr>
+<td>AdminUserSeeder</td>
+<td>Crea o actualiza el usuario de ECOLACT_ADMIN_USERNAME; vuelve a escribir el hash de la contraseña, lo activa y exige cambio de contraseña.</td>
+</tr>
+<tr>
+<td>ParametroCalidadSeeder</td>
+<td>Siete parámetros: densidad, grasa, proteína, lactosa, pH, agua añadida y temperatura. Actualiza su descripción, unidad y estado.</td>
+</tr>
+<tr>
+<td>PrecioLecheSeeder</td>
+<td>Precio inicial de 1.70 por litro, vigente desde 2020-01-01, asociado al administrador configurado. Si no lo encuentra, no lo crea.</td>
+</tr>
+<tr>
+<td>ReglaPagoCalidadSeeder</td>
+<td>Reglas monetarias para ACEPTADA, OBSERVADA y RECHAZADA. La regla observada tiene ajuste -0.10.</td>
+</tr>
+<tr>
+<td>ZonaSeeder</td>
+<td>Collana 1, Collana 2, Faon y Yasin. Evita duplicar nombres equivalentes y completa colores faltantes.</td>
+</tr>
+<tr>
+<td>ZonaDelimitacionSeeder</td>
+<td>Añade polígonos operativos referenciales alrededor de Huata solo si falta geometría. No son límites oficiales; conserva delimitaciones editadas.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ec-dev-result warning">
+<p><strong>No confundir repetibilidad con ausencia de cambios.</strong> Varios seeders usan updateOrInsert: repetirlos puede sobrescribir valores editados y restablecer la contraseña del administrador. Las delimitaciones iniciales requieren validación operativa.</p>
+</div>
+<div class="ec-dev-step">
+<h3 id="paso-6-verificar-la-conexion-y-estructura">Paso 6. Verificar la conexión y estructura</h3>
+<p>En el cliente MySQL, abre la misma base que configuraste en Laravel.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">USE</span><span class="w"> </span><span class="n">ecolactv1</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">DATABASE</span><span class="p">();</span>
+<span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">nombre</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">roles</span><span class="p">;</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">nombre</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">zonas</span><span class="p">;</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> Las consultas identifican el esquema, enumeran las tablas y revisan catálogos sin mostrar datos personales.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> Aparecen las tablas migradas y los roles y zonas sembrados.</p>
+<p><strong>Comprobación:</strong> Compara con php artisan migrate:status: el cliente MySQL y Artisan deben observar la misma base. No basta con que Workbench conecte a otro servidor.</p>
+</div>
+</div>
+<div class="ec-dev-result warning">
+<p><code>migrate:fresh --seed</code> <strong>elimina las tablas existentes</strong> y vuelve a crear y sembrar la base. No forma parte del procedimiento normal. Solo tiene sentido en un entorno de pruebas desechable cuya pérdida de datos se haya aceptado.</p>
+</div>
+<div class="ec-dev-capture">
+<h3 id="base-de-desarrollo">Base de desarrollo</h3>
+<p><a href="../../assets/images/desarrollo/mysql-base-datos.png"><img alt="Base de desarrollo: espacio reservado para una captura real" src="../../assets/images/desarrollo/mysql-base-datos.png" /></a></p>
+<p><strong>Archivo:</strong> <code>mysql-base-datos.png</code></p>
+<p><strong>Qué debe mostrar:</strong> El esquema ecolactv1 y su listado de tablas, sin registros personales.</p>
+<p><strong>Herramienta:</strong> MySQL Workbench o cliente MySQL.</p>
+<div class="ec-dev-meta">
+<p>Reemplaza el PNG en <code>docs/assets/images/desarrollo/</code> con el mismo nombre y vuelve a generar el sitio. No es necesario editar esta página. Mientras se conserva el marcador, no constituye evidencia de ejecución.</p>
+</div>
+</div>
+<div class="ec-dev-capture">
+<h3 id="estado-de-las-migraciones">Estado de las migraciones</h3>
+<p><a href="../../assets/images/desarrollo/mysql-migraciones.png"><img alt="Estado de las migraciones: espacio reservado para una captura real" src="../../assets/images/desarrollo/mysql-migraciones.png" /></a></p>
+<p><strong>Archivo:</strong> <code>mysql-migraciones.png</code></p>
+<p><strong>Qué debe mostrar:</strong> La finalización de migrate y el listado migrate:status.</p>
+<p><strong>Herramienta:</strong> PowerShell.</p>
+<div class="ec-dev-meta">
+<p>Reemplaza el PNG en <code>docs/assets/images/desarrollo/</code> con el mismo nombre y vuelve a generar el sitio. No es necesario editar esta página. Mientras se conserva el marcador, no constituye evidencia de ejecución.</p>
+</div>
+</div>
+<div class="ec-dev-sources">
+<details>
+<summary>Fuentes verificables del repositorio</summary>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.env.example">EcoLactWeb/.env.example</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php">EcoLactWeb/config/database.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/tree/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/migrations">EcoLactWeb/database/migrations</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/DatabaseSeeder.php">EcoLactWeb/database/seeders/DatabaseSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/RoleSeeder.php">EcoLactWeb/database/seeders/RoleSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/AdminUserSeeder.php">EcoLactWeb/database/seeders/AdminUserSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ParametroCalidadSeeder.php">EcoLactWeb/database/seeders/ParametroCalidadSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/PrecioLecheSeeder.php">EcoLactWeb/database/seeders/PrecioLecheSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ReglaPagoCalidadSeeder.php">EcoLactWeb/database/seeders/ReglaPagoCalidadSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaSeeder.php">EcoLactWeb/database/seeders/ZonaSeeder.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/database/seeders/ZonaDelimitacionSeeder.php">EcoLactWeb/database/seeders/ZonaDelimitacionSeeder.php</a></li>
+</ul>
+<p>Revisión de referencia: <code>75901337489d</code>. Los procedimientos se contrastaron con estas fuentes; los comandos de instalación, migración y compilación del producto no se ejecutaron para elaborar esta guía.</p>
+</details>
+</div>
+<div class="ec-dev-nav">
+<p><a href="../mobile/">← Aplicación móvil con Kotlin Multiplatform</a></p>
+<p><a href="../configuracion/">Configuración del proyecto →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="base-datos">base-datos</h1>
-
-
-
-
-
-
 
 
 

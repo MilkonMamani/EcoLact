@@ -195,7 +195,7 @@ function iniciarCorreccion(pagina) {
 
     window.abrirModalCorreccionAsistencia = abrirModalCorreccion;
 
-    // Menú de acciones (⋮) de cada fila. Antes de las 07:00: "Editar asistencia" (con jornada) o
+    // Menú de acciones (⋮) de cada fila. Antes de las 23:59: "Editar asistencia" (con jornada) o
     // "Registrar asistencia" (sin jornada), acciones reales del backend. Desde el cierre: solo
     // "Ver detalle" (el backend también rechaza cualquier registro o corrección).
     pagina.addEventListener('click', (event) => {

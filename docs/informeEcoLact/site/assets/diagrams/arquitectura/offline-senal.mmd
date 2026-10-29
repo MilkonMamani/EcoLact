@@ -1,0 +1,18 @@
+flowchart TB
+  U[Usuario abre una consulta] --> L{¿Hay copia local?}
+  L -->|Sí| V[Mostrar datos y fecha de actualización]
+  L -->|No| N{¿Hay conexión?}
+  N -->|No| E[Informar ausencia de datos locales]
+  N -->|Sí| API[Consultar API]
+  V --> C{¿Hay conexión?}
+  C -->|Sí| API
+  API --> S[Guardar respuesta en SQLite]
+  S --> O[La fuente observable actualiza la vista]
+  C -->|No| KEEP[Conservar la información disponible]
+  W[Usuario registra una operación] --> P{¿Admite cola y permiso local?}
+  P -->|Sí, sin red| Q[Guardar PENDING en SQLite]
+  Q --> R[Enviar al recuperar conexión]
+  P -->|No| A[Solicitar conexión o resolver autorización]
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#d7a052,color:#754c0c;
+  class L,N,C,P decision;

@@ -11,9 +11,10 @@ use InvalidArgumentException;
 /**
  * Define cuánto y cómo se paga, con vigencia histórica. Un proveedor cobra
  * por litros (el precio sale SIEMPRE de precios_leche, por eso monto_base es
- * nulo); el personal cobra un sueldo fijo mensual POR TRABAJADOR (userId), con
- * el rol real del trabajador. Las configuraciones por rol (userId nulo) son
- * historial del modelo anterior y ya no se usan para calcular sueldos.
+ * nulo); el personal cobra un sueldo fijo mensual POR ROL (userId nulo): todos
+ * los trabajadores del rol heredan el sueldo vigente. Las filas con userId son
+ * historial del modelo por trabajador (oct. 2026): las obligaciones ya
+ * generadas siguen apuntando a ellas, pero ya no se usan para calcular sueldos.
  */
 final class ConfiguracionPago
 {
@@ -66,7 +67,7 @@ final class ConfiguracionPago
         return $this->rolId;
     }
 
-    /** Trabajador dueño del sueldo (null: proveedor o configuración histórica por rol). */
+    /** Trabajador de una fila histórica del modelo por trabajador (null: proveedor o sueldo del rol). */
     public function userId(): ?int
     {
         return $this->userId;

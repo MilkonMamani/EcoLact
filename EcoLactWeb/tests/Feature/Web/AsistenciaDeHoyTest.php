@@ -184,3 +184,15 @@ it('Asistencia aparece arriba en el menú, junto a Inicio', function () {
         ->assertSeeInOrder(['Dashboard', 'Inicio', 'Asistencia', 'Operación', 'Acopio', 'Proveedores', 'Zonas', 'Personal', 'Trabajadores'])
         ->assertDontSee('Control de asistencia');
 });
+
+it('con la asistencia abierta, el pendiente tiene un botón Registrar visible en su fila; ya cerrada, no', function () {
+    ['admin' => $admin] = asistencia_escenario();
+
+    $this->actingAs($admin)->get(route('admin.asistencia.index'))
+        ->assertSee('class="fichas-btn is-primary is-sm" data-asistencia-registrar>Registrar</button>', false);
+
+    $this->travelTo('2026-09-20 12:30:00');
+
+    $this->actingAs($admin)->get(route('admin.asistencia.index'))
+        ->assertDontSee('data-asistencia-registrar', false);
+});

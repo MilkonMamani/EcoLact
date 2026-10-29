@@ -1,0 +1,121 @@
+{
+  "plan": "zonas_2_gestion.json",
+  "fecha": "2026-10-28",
+  "nota": "Registro reconstruido con las medidas impresas por capturar.py; el plan se detuvo en zon_32 por el defecto del editor de delimitación.",
+  "capturas": [
+    {
+      "nombre": "zon_20_antes_editar",
+      "archivo": "evidencias/originales/zonas/zon_20_antes_editar.png",
+      "objetivos": {
+        "editar": [
+          1753,
+          224,
+          1827,
+          252
+        ]
+      },
+      "textos_visibles": []
+    },
+    {
+      "nombre": "zon_21_modal_editar",
+      "archivo": "evidencias/originales/zonas/zon_21_modal_editar.png",
+      "objetivos": {
+        "nombre": [
+          760,
+          400,
+          1160,
+          442
+        ],
+        "descripcion": [
+          760,
+          484,
+          1160,
+          562
+        ],
+        "editar_delimitacion": [
+          999,
+          600,
+          1145,
+          628
+        ],
+        "guardar": [
+          1017,
+          710,
+          1160,
+          746
+        ]
+      },
+      "textos_visibles": []
+    },
+    {
+      "nombre": "zon_22_descripcion_editada",
+      "archivo": "evidencias/originales/zonas/zon_22_descripcion_editada.png",
+      "objetivos": {
+        "descripcion": [
+          760,
+          484,
+          1160,
+          562
+        ],
+        "guardar": [
+          1017,
+          710,
+          1160,
+          746
+        ]
+      },
+      "textos_visibles": []
+    },
+    {
+      "nombre": "zon_23_editada",
+      "archivo": "evidencias/originales/zonas/zon_23_editada.png",
+      "objetivos": {
+        "mensaje": [
+          286,
+          24,
+          1886,
+          70
+        ],
+        "descripcion_panel": [
+          1459,
+          334,
+          1865,
+          483
+        ]
+      },
+      "textos_visibles": []
+    },
+    {
+      "nombre": "zon_30_antes_delimitar",
+      "archivo": "evidencias/originales/zonas/zon_30_antes_delimitar.png",
+      "objetivos": {
+        "dibujar_atajo": [
+          1711,
+          721,
+          1865,
+          749
+        ]
+      },
+      "textos_visibles": []
+    },
+    {
+      "nombre": "zon_31_editor",
+      "archivo": "evidencias/originales/zonas/zon_31_editor.png",
+      "objetivos": {
+        "dibujar": [
+          487,
+          378,
+          654,
+          410
+        ],
+        "mapa": [
+          487,
+          429,
+          1433,
+          973
+        ]
+      },
+      "textos_visibles": []
+    }
+  ]
+}

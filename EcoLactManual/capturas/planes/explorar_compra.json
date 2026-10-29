@@ -1,0 +1,3 @@
+{"salida": "evidencias/exploracion", "conservar_texto": "Prueba Manual", "pasos": [
+ {"accion": "ir", "url": "/admin/insumos", "ms": 2500},
+ {"accion": "captura", "nombre": "x_tras_compra", "leer": ["[data-fichas-fila]:has-text('Insumo Prueba Manual')"]}]}

@@ -1,0 +1,549 @@
+{
+  "id": "ZON",
+  "tipo": "modulo",
+  "titulo": "Zonas de acopio y rutas",
+  "registro": "evidencias/originales/zonas/zonas_1_consulta_crear.registro.json",
+  "introduccion": "Las zonas organizan el territorio de acopio. Cada zona agrupa rutas, proveedores y acopiadores, y se muestra en el mapa con su delimitación y color. Es el primer módulo que debe configurar: los acopiadores necesitan una zona y los proveedores se asignan a una zona y ruta.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Operación › Zonas"
+    ],
+    [
+      "Depende de",
+      "Ningún otro módulo."
+    ],
+    [
+      "Habilita",
+      "Alta de acopiadores (requieren zona), asignación de proveedores a zona y ruta, y gestión de rutas y recorridos."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Una zona nueva nace siempre **Activa**.",
+        "No se puede desactivar una zona con acopiadores o proveedores activos.",
+        "Solo se puede eliminar una zona sin rutas, proveedores, acopiadores ni historial; en otro caso, desactívela."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "zon_01_pantalla",
+    "pie": "Pantalla Zonas: mapa general a la izquierda y panel de la zona seleccionada a la derecha.",
+    "elementos": [
+      [
+        "«Nueva zona»",
+        "Abre el formulario para registrar una zona."
+      ],
+      [
+        "Aviso «Proveedores sin zona»",
+        "Indica cuántos proveedores activos faltan asignar; «Ver proveedores» los lista en el panel derecho."
+      ],
+      [
+        "Buscador de proveedores",
+        "Busca un proveedor por nombre o DNI y enfoca su ubicación en el mapa."
+      ],
+      [
+        "Mapa de zonas y leyenda",
+        "Muestra cada zona con su color y número de proveedores. Un clic en la zona, su etiqueta o su nombre en la leyenda la selecciona. «pendiente» indica una zona sin delimitación."
+      ],
+      [
+        "Panel de la zona",
+        "Datos de la zona seleccionada en las pestañas «Resumen», «Proveedores» y «Acopiadores»."
+      ],
+      [
+        "«Editar» y menú «⋮»",
+        "Editan la zona y permiten «Desactivar»/«Activar» y «Eliminar»."
+      ],
+      [
+        "Sección «Rutas»",
+        "Lista las rutas de la zona; «Nueva ruta» crea una y «Gestionar ruta» abre su detalle."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-ZON-001",
+      "titulo": "Consultar las zonas y su información",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Ver las zonas en el mapa y consultar los proveedores y acopiadores de una zona.",
+      "acceso": "Operación › Zonas",
+      "requisitos": [
+        "Sesión iniciada como Administrador."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Zonas",
+          "instruccion": "En el menú lateral, haz clic en «Zonas».",
+          "captura": "zon_00_dashboard_menu",
+          "objetivo": "menu_zonas",
+          "pie": "Opción «Zonas» del menú lateral.",
+          "resultado": "Se abre la pantalla Zonas con el mapa general y el panel de la primera zona."
+        },
+        {
+          "titulo": "Seleccionar una zona",
+          "instruccion": "Haz clic en el nombre de la zona en la leyenda del mapa (también puedes hacer clic en su área o su etiqueta).",
+          "captura": "zon_02_leyenda_faon",
+          "objetivo": "leyenda_faon",
+          "pie": "Selección de la zona «Faon» en la leyenda.",
+          "resultado": "El panel derecho muestra la zona elegida."
+        },
+        {
+          "titulo": "Revisar el resumen",
+          "instruccion": "En la pestaña «Resumen», revisa el estado, la descripción y los contadores de proveedores, acopiadores y litros de la semana.",
+          "captura": "zon_03_panel_faon",
+          "objetivo": "resumen",
+          "pie": "Contadores del resumen de la zona."
+        },
+        {
+          "titulo": "Ver los proveedores de la zona",
+          "instruccion": "Haz clic en la pestaña «Proveedores».",
+          "captura": "zon_03_panel_faon",
+          "objetivo": "tab_proveedores",
+          "pie": "Pestaña «Proveedores» del panel."
+        },
+        {
+          "titulo": "Revisar la lista de proveedores",
+          "instruccion": "Consulta el nombre, DNI, teléfono y última entrega de cada proveedor. Usa el buscador de la pestaña para filtrar.",
+          "captura": "zon_04_tab_proveedores",
+          "objetivo": "tabla",
+          "pie": "Lista de proveedores de la zona (datos personales difuminados)."
+        },
+        {
+          "titulo": "Ver los acopiadores de la zona",
+          "instruccion": "Haz clic en la pestaña «Acopiadores».",
+          "captura": "zon_04_tab_proveedores",
+          "objetivo": "tab_acopiadores",
+          "pie": "Pestaña «Acopiadores».",
+          "resultado": "Se muestran los acopiadores asignados o el aviso «Esta zona no tiene acopiadores asignados.»"
+        }
+      ],
+      "resultado": "Puedes ver, para cualquier zona, su estado, rutas, proveedores y acopiadores sin modificar datos."
+    },
+    {
+      "codigo": "ADM-ZON-002",
+      "titulo": "Registrar una nueva zona",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Crear una zona de acopio.",
+      "acceso": "Operación › Zonas › «Nueva zona»",
+      "requisitos": [
+        "Sesión iniciada como Administrador.",
+        "Nombre de la zona que no exista en el sistema."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el formulario",
+          "instruccion": "Haz clic en «Nueva zona».",
+          "captura": "zon_10_antes_nueva",
+          "objetivo": "nueva_zona",
+          "pie": "Botón «Nueva zona».",
+          "resultado": "Se abre la ventana «Nueva zona»."
+        },
+        {
+          "titulo": "Escribir el nombre",
+          "instruccion": "Escribe el nombre de la zona en el campo «Nombre» (obligatorio).",
+          "captura": "zon_12_nombre",
+          "objetivo": "nombre",
+          "pie": "Campo «Nombre» con el dato de ejemplo."
+        },
+        {
+          "titulo": "Escribir la descripción",
+          "instruccion": "Si lo necesitas, escribe una descripción breve en «Descripción» (opcional).",
+          "captura": "zon_13_descripcion",
+          "objetivo": "descripcion",
+          "pie": "Campo «Descripción»."
+        },
+        {
+          "titulo": "Crear la zona",
+          "instruccion": "Haz clic en «Crear zona».",
+          "captura": "zon_13_descripcion",
+          "objetivo": "crear",
+          "pie": "Botón «Crear zona»."
+        },
+        {
+          "titulo": "Comprobar el registro",
+          "instruccion": "Verifica el mensaje de confirmación en la parte superior.",
+          "captura": "zon_14_resultado",
+          "objetivo": "mensaje",
+          "pie": "Mensaje «Zona registrada correctamente.»",
+          "resultado": "El panel muestra la nueva zona como «Activa» y la leyenda la incluye con la marca «pendiente» (aún sin delimitación).",
+          "limitar_x": [
+            284,
+            760
+          ]
+        }
+      ],
+      "resultado": "La zona queda registrada, activa y seleccionada. Continúe con «Crear una ruta en la zona» (ADM-ZON-005).",
+      "validaciones": [
+        [
+          "Nombre",
+          "Obligatorio; máximo 100 caracteres.",
+          "El navegador no permite enviar el formulario con el campo vacío."
+        ],
+        [
+          "Nombre",
+          "No puede repetir el nombre de otra zona.",
+          "«Ya existe una zona con ese nombre.»"
+        ],
+        [
+          "Nombre",
+          "No puede ser equivalente a otra zona (por ejemplo «Collana1» frente a «Collana 1»).",
+          "«Ya existe una zona equivalente con el nombre …»"
+        ],
+        [
+          "Descripción",
+          "Opcional.",
+          "—"
+        ]
+      ],
+      "figuras_validacion": [
+        {
+          "captura": "zon_15_duplicado",
+          "objetivo": "error_campo",
+          "pie": "Validación de nombre duplicado: el formulario vuelve a abrirse con el mensaje bajo el campo."
+        }
+      ],
+      "errores": [
+        [
+          "Aparece «Ya existe una zona con ese nombre.»",
+          "Usa otro nombre o busca la zona existente en la leyenda."
+        ],
+        [
+          "La zona aparece como «pendiente» en la leyenda",
+          "Es normal: todavía no tiene delimitación en el mapa (ver ADM-ZON-004)."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ZON-003",
+      "titulo": "Editar los datos de una zona",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Cambiar el nombre o la descripción de una zona.",
+      "acceso": "Operación › Zonas › panel de la zona › «Editar»",
+      "requisitos": [
+        "Zona registrada."
+      ],
+      "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+      "pasos": [
+        {
+          "titulo": "Seleccionar la zona",
+          "instruccion": "Selecciona la zona en la leyenda o en el mapa (ver ADM-ZON-001, paso 2)."
+        },
+        {
+          "titulo": "Abrir la edición",
+          "instruccion": "En «Información de la zona», haz clic en «Editar».",
+          "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+          "captura": "zon_20_antes_editar",
+          "objetivo": "editar",
+          "pie": "Botón «Editar» del panel de la zona.",
+          "resultado": "Se abre la ventana «Editar zona»."
+        },
+        {
+          "titulo": "Modificar los datos",
+          "instruccion": "Corrige el «Nombre» o la «Descripción».",
+          "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+          "captura": "zon_22_descripcion_editada",
+          "objetivo": "descripcion",
+          "pie": "Descripción modificada en «Editar zona»."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar cambios».",
+          "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+          "captura": "zon_22_descripcion_editada",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar cambios»."
+        },
+        {
+          "titulo": "Comprobar el cambio",
+          "instruccion": "Verifica el mensaje de confirmación y los datos del panel.",
+          "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+          "captura": "zon_23_editada",
+          "objetivo": "mensaje",
+          "pie": "Mensaje «Zona actualizada correctamente.»",
+          "resultado": "La zona conserva su estado y el panel muestra los datos actualizados.",
+          "limitar_x": [
+            286,
+            760
+          ]
+        }
+      ],
+      "resultado": "La zona conserva su estado y muestra los datos corregidos. El estado no se cambia aquí, sino desde el menú «⋮» (ADM-ZON-006).",
+      "validaciones": [
+        [
+          "Nombre",
+          "Obligatorio; máximo 100 caracteres; distinto de las demás zonas.",
+          "«Ya existe otra zona con ese nombre.»"
+        ],
+        [
+          "Nombre",
+          "No equivalente a otra zona.",
+          "«Ya existe una zona equivalente con el nombre …»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ZON-004",
+      "titulo": "Dibujar la delimitación de la zona en el mapa",
+      "estado": "No verificado — defecto detectado en zonas sin delimitación",
+      "objetivo": "Trazar en el mapa el contorno operativo de la zona y elegir su color.",
+      "acceso": "Panel de la zona › «Dibujar delimitación» (o «Editar» › «Editar delimitación»)",
+      "requisitos": [
+        "Zona registrada.",
+        "Conexión a internet (Google Maps)."
+      ],
+      "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+      "pasos": [
+        {
+          "titulo": "Abrir el editor de delimitación",
+          "instruccion": "En «Delimitación y ubicaciones», haz clic en «Dibujar delimitación».",
+          "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+          "captura": "zon_30_antes_delimitar",
+          "objetivo": "dibujar_atajo",
+          "pie": "Acceso «Dibujar delimitación» del panel.",
+          "resultado": "Se abre «Editar zona» con la sección «Delimitación operativa» y su mapa."
+        },
+        {
+          "titulo": "Activar el modo dibujo",
+          "instruccion": "Haz clic en «Dibujar delimitación» de la barra del editor.",
+          "registro": "evidencias/originales/zonas/zonas_2_gestion.registro.json",
+          "captura": "zon_31_editor",
+          "objetivo": "dibujar",
+          "pie": "Botón «Dibujar delimitación» del editor. La leyenda del mapa principal se superpone a la ventana.",
+          "nota": "**Defecto detectado (28/10/2026):** en una zona que aún no tiene delimitación, el editor no entra en modo dibujo y el navegador registra un error de JavaScript. En zonas que ya tienen delimitación el editor sí funciona. Los pasos siguientes se describen según el sistema y quedan **pendientes de comprobar**."
+        },
+        {
+          "titulo": "Marcar los puntos del contorno",
+          "instruccion": "Haz clic en el mapa, punto por punto, siguiendo el contorno (mínimo 3 puntos). Usa «Deshacer punto» para corregir."
+        },
+        {
+          "titulo": "Cerrar el contorno",
+          "instruccion": "Haz clic en el primer punto o en «Finalizar delimitación». Elige el color en «Color en el mapa»."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar» del editor o en «Guardar cambios»."
+        }
+      ],
+      "resultado": "Pendiente de comprobar: la zona debería mostrarse en el mapa general con su contorno y color, sin la marca «pendiente».",
+      "validaciones": [
+        [
+          "Delimitación",
+          "Al menos 3 puntos distintos.",
+          "«La delimitación necesita al menos 3 puntos distintos.»"
+        ],
+        [
+          "Delimitación",
+          "Los lados no pueden cruzarse.",
+          "«La delimitación no es válida: sus lados se cruzan entre sí.»"
+        ],
+        [
+          "Delimitación",
+          "Los puntos no pueden estar en línea recta.",
+          "«Los puntos de la delimitación no pueden estar todos en línea recta.»"
+        ],
+        [
+          "Color en el mapa",
+          "Formato #RRGGBB.",
+          "«El color del mapa debe tener el formato #RRGGBB.»"
+        ]
+      ],
+      "errores": [
+        [
+          "El editor no responde al hacer clic en «Dibujar delimitación» en una zona nueva",
+          "Defecto del sistema pendiente de corrección por el equipo de desarrollo. Reporte el caso."
+        ],
+        [
+          "La leyenda del mapa tapa parte de la barra del editor",
+          "Haga clic en la parte visible del botón o amplíe la ventana del navegador."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ZON-005",
+      "titulo": "Crear una ruta en la zona",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Registrar una ruta de recolección dentro de una zona.",
+      "acceso": "Panel de la zona › sección «Rutas» › «Nueva ruta»",
+      "requisitos": [
+        "Zona registrada y seleccionada."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el formulario",
+          "instruccion": "En la sección «Rutas», haz clic en «Nueva ruta».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_40_antes_ruta",
+          "objetivo": "nueva_ruta",
+          "pie": "Botón «Nueva ruta».",
+          "resultado": "Se abre la ventana «Nueva ruta»."
+        },
+        {
+          "titulo": "Completar los datos",
+          "instruccion": "Escribe el «Nombre de la ruta» (obligatorio) y, si lo necesitas, una «Descripción».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_42_ruta_datos",
+          "objetivo": "nombre",
+          "pie": "Campo «Nombre de la ruta»."
+        },
+        {
+          "titulo": "Crear la ruta",
+          "instruccion": "Haz clic en «Crear ruta».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_42_ruta_datos",
+          "objetivo": "crear",
+          "pie": "Botón «Crear ruta»."
+        },
+        {
+          "titulo": "Comprobar la ruta",
+          "instruccion": "Verifica el mensaje y la nueva ruta en la sección «Rutas».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_43_ruta_creada",
+          "objetivo": "rutas",
+          "pie": "Ruta creada con su enlace «Gestionar ruta».",
+          "resultado": "Aparece «Ruta creada correctamente.» y la sección indica «1 ruta activa»."
+        }
+      ],
+      "resultado": "La ruta queda activa en la zona. Use «Gestionar ruta» para agregar proveedores y abrir recorridos (capítulo de Rutas).",
+      "validaciones": [
+        [
+          "Nombre de la ruta",
+          "Obligatorio; máximo 100 caracteres.",
+          "El navegador no permite enviar el campo vacío."
+        ],
+        [
+          "Nombre de la ruta",
+          "No puede repetirse dentro de la misma zona.",
+          "«Ya existe una ruta llamada \"…\" en esta zona.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ZON-006",
+      "titulo": "Desactivar o activar una zona",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Dejar una zona fuera de operación sin borrarla, o volver a habilitarla.",
+      "acceso": "Panel de la zona › menú «⋮» (Más acciones)",
+      "requisitos": [
+        "Para desactivar: la zona no debe tener acopiadores ni proveedores activos."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el menú de acciones",
+          "instruccion": "En «Información de la zona», haz clic en «⋮».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_50_menu_cerrado",
+          "objetivo": "menu",
+          "pie": "Menú «⋮» (Más acciones) de la zona."
+        },
+        {
+          "titulo": "Desactivar",
+          "instruccion": "Haz clic en «Desactivar».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_51_menu_desactivar",
+          "objetivo": "desactivar",
+          "pie": "Opción «Desactivar»."
+        },
+        {
+          "titulo": "Comprobar el estado",
+          "instruccion": "Verifica el mensaje y la etiqueta de estado del panel.",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_52_desactivada",
+          "objetivo": "estado",
+          "pie": "Zona marcada «Inactiva» en el panel.",
+          "resultado": "Aparece el mensaje «Zona desactivada correctamente.» y la zona figura como «Inactiva»."
+        },
+        {
+          "titulo": "Activar de nuevo (si corresponde)",
+          "instruccion": "Abre otra vez «⋮» y haz clic en «Activar».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_53_menu_activar",
+          "objetivo": "activar",
+          "pie": "Opción «Activar» de una zona inactiva.",
+          "resultado": "Aparece «Zona activada correctamente.» y la zona vuelve a «Activa»."
+        }
+      ],
+      "resultado": "La zona cambia de estado sin perder sus rutas ni su historial.",
+      "validaciones": [
+        [
+          "Desactivar",
+          "La zona no debe tener acopiadores ni proveedores activos.",
+          "«No se puede desactivar la zona: todavía tiene acopiadores o proveedores activos asignados.»"
+        ]
+      ],
+      "errores": [
+        [
+          "No se puede desactivar por acopiadores o proveedores activos",
+          "Reasigna primero sus proveedores y acopiadores a otra zona (el panel lo recuerda con una nota)."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ZON-007",
+      "titulo": "Eliminar una zona",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Borrar definitivamente una zona creada por error.",
+      "acceso": "Panel de la zona › menú «⋮» › «Eliminar»",
+      "requisitos": [
+        "La zona no debe tener rutas, proveedores, acopiadores ni historial asociados."
+      ],
+      "pasos": [
+        {
+          "titulo": "Seleccionar la zona",
+          "instruccion": "Selecciona en la leyenda la zona que deseas eliminar y abre su menú «⋮»."
+        },
+        {
+          "titulo": "Elegir Eliminar",
+          "instruccion": "Haz clic en «Eliminar».",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_62_eliminar_vacia",
+          "objetivo": "eliminar",
+          "pie": "Opción «Eliminar» en el menú de la zona «Zona Prueba Eliminar»."
+        },
+        {
+          "titulo": "Confirmar",
+          "instruccion": "En el cuadro de confirmación del navegador, lee el aviso y haz clic en «Aceptar». El aviso dice: «¿Eliminar la zona …? Esta acción eliminará permanentemente la zona. Solo es posible si no tiene rutas, proveedores, acopiadores ni historial asociados.»",
+          "nota": "Este cuadro es propio del navegador y no aparece en las capturas; su texto se registró literalmente durante la prueba."
+        },
+        {
+          "titulo": "Comprobar la eliminación",
+          "instruccion": "Verifica el mensaje de confirmación y la leyenda del mapa.",
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_63_eliminada",
+          "objetivo": "mensaje",
+          "pie": "Mensaje «Zona eliminada correctamente.»; la zona ya no figura en la leyenda.",
+          "resultado": "La zona desaparece del mapa y de la leyenda.",
+          "limitar_x": [
+            286,
+            760
+          ]
+        }
+      ],
+      "resultado": "La zona se elimina de forma permanente.",
+      "validaciones": [
+        [
+          "Dependencias",
+          "Sin rutas, proveedores, acopiadores ni historial.",
+          "«No se puede eliminar la zona … porque tiene N ruta(s). Puedes marcarla como inactiva en su lugar.»"
+        ]
+      ],
+      "figuras_validacion": [
+        {
+          "registro": "evidencias/originales/zonas/zonas_3_ruta_estado_eliminar.registro.json",
+          "captura": "zon_61_eliminar_bloqueado",
+          "objetivo": "mensaje",
+          "pie": "Eliminación rechazada para una zona que tiene una ruta.",
+          "limitar_x": [
+            286,
+            1120
+          ]
+        }
+      ],
+      "errores": [
+        [
+          "La zona tiene rutas, proveedores o historial",
+          "No la elimines: desactívala (ADM-ZON-006)."
+        ]
+      ]
+    }
+  ]
+}

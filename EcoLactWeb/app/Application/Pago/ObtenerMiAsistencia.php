@@ -37,7 +37,7 @@ final class ObtenerMiAsistencia
                 'dni' => null,
                 'qr_token' => null,
                 'controla_asistencia' => false,
-                'hora_cierre' => VentanaAsistencia::HORA_CIERRE,
+                'hora_cierre' => VentanaAsistencia::horaCierre(),
                 'abierta_hoy' => false,
                 'hoy' => $hoy->format('Y-m-d'),
                 'jornadas' => [],
@@ -58,7 +58,7 @@ final class ObtenerMiAsistencia
             'dni' => $trabajador->dni(),
             'qr_token' => $trabajador->estaActivo() ? $trabajador->qrToken() : null,
             'controla_asistencia' => $this->trabajadores->controlaAsistencia($trabajador->id()),
-            'hora_cierre' => VentanaAsistencia::HORA_CIERRE,
+            'hora_cierre' => VentanaAsistencia::horaCierre(),
             'abierta_hoy' => $this->ventana->estaAbierta($hoy),
             'hoy' => $hoy->format('Y-m-d'),
             'jornadas' => array_map(static fn (JornadaPersonal $j): array => [

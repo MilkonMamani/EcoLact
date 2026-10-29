@@ -1,0 +1,88 @@
+{
+ "descripcion": "Recaptura de listados de personal con filas reales difuminadas (solo lectura).",
+ "salida": "evidencias/originales/personal",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/analistas-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Prueba Manual') a.fichas-nombre"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1800
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ana_3_listado",
+   "medir": {
+    "fila": "[data-fichas-fila]:has-text('Prueba Manual')",
+    "switch": "[data-fichas-fila]:has-text('Prueba Manual') [role=switch]",
+    "panel": "[data-fichas-panel]",
+    "menu": "#ecolact-sidebar a[href$='/admin/analistas-calidad']"
+   },
+   "leer": [
+    "main h1",
+    "[data-fichas-panel] .fichas-tabs"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/encargados-planta",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Prueba Manual') a.fichas-nombre"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1800
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3enc_3_listado",
+   "medir": {
+    "fila": "[data-fichas-fila]:has-text('Prueba Manual')",
+    "switch": "[data-fichas-fila]:has-text('Prueba Manual') [role=switch]",
+    "panel": "[data-fichas-panel]",
+    "menu": "#ecolact-sidebar a[href$='/admin/encargados-planta']"
+   },
+   "leer": [
+    "main h1",
+    "[data-fichas-panel] .fichas-tabs"
+   ]
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/personal-ventas",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-fila]:has-text('Prueba Manual') a.fichas-nombre"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1800
+  },
+  {
+   "accion": "captura",
+   "nombre": "per_3ven_3_listado",
+   "medir": {
+    "fila": "[data-fichas-fila]:has-text('Prueba Manual')",
+    "switch": "[data-fichas-fila]:has-text('Prueba Manual') [role=switch]",
+    "panel": "[data-fichas-panel]",
+    "menu": "#ecolact-sidebar a[href$='/admin/personal-ventas']"
+   },
+   "leer": [
+    "main h1",
+    "[data-fichas-panel] .fichas-tabs"
+   ]
+  }
+ ]
+}

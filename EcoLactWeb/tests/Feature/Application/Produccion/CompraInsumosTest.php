@@ -172,6 +172,11 @@ it('si falla un movimiento a mitad de la compra se deshace todo (rollback)', fun
         {
             return $this->real->listar();
         }
+
+        public function ultimoMovimientoPorInsumo(): array
+        {
+            return $this->real->ultimoMovimientoPorInsumo();
+        }
     });
 
     expect(fn () => app(RegistrarCompraInsumos::class)->execute([

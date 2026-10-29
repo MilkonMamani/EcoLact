@@ -1,0 +1,151 @@
+{
+  "id": "REC",
+  "tipo": "modulo",
+  "titulo": "Recetas",
+  "registro": "evidencias/originales/recetas/recetas_1.registro.json",
+  "introduccion": "Una receta define un producto (categoría, nombre y presentación) y su fórmula: qué insumos, incluida la leche, y en qué cantidad se necesitan para producir una unidad. Crear la receta crea también el producto, con stock 0.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Producción › Recetas"
+    ],
+    [
+      "Depende de",
+      "Insumos registrados (capítulo 12); la leche aparece como insumo."
+    ],
+    [
+      "Habilita",
+      "Producción (capítulo 14) y Productos (capítulo 15)."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Cada producto muestra una sola receta vigente.",
+        "Guardar o editar una receta no descuenta inventario: los insumos se consumen al iniciar una producción.",
+        "Al editar, los datos del producto quedan fijos; solo cambia la fórmula."
+      ]
+    ]
+  ],
+  "procedimientos": [
+    {
+      "codigo": "ADM-REC-001",
+      "titulo": "Registrar una receta",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Crear un producto y su fórmula de producción.",
+      "acceso": "Producción › Recetas › «Nueva receta»",
+      "requisitos": [
+        "Insumos registrados."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el formulario",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Recetas» y haz clic en «Nueva receta».",
+          "captura": "rec_01_listado",
+          "objetivo": "nueva",
+          "pie": "Botón «Nueva receta»."
+        },
+        {
+          "titulo": "Definir el producto",
+          "instruccion": "Elige la «Categoría» (o «+ Nueva categoría»), escribe el «Nombre», la «Presentación» y su «Unidad de presentación». La descripción y la imagen son opcionales.",
+          "captura": "rec_02_producto",
+          "objetivo": "nombre",
+          "pie": "Información del producto con datos ficticios."
+        },
+        {
+          "titulo": "Configurar las cantidades",
+          "instruccion": "En «Fórmula de producción», elige cada insumo, su cantidad y unidad para producir una unidad. Usa «Agregar ingrediente» para más filas.",
+          "captura": "rec_03_formula",
+          "objetivo": "ingredientes",
+          "pie": "Fórmula: 1 L de leche y 50 ml del insumo por unidad."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar receta».",
+          "captura": "rec_03_formula",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar receta»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y la nueva fila.",
+          "captura": "rec_04_guardada",
+          "objetivo": "fila",
+          "pie": "Receta activa con 2 ingredientes.",
+          "resultado": "Aparece «Receta guardada. Su producto queda con stock 0 y no se descontaron insumos: se consumen al iniciar una producción.»"
+        }
+      ],
+      "resultado": "El producto y su receta quedan activos."
+    },
+    {
+      "codigo": "ADM-REC-002",
+      "titulo": "Consultar una receta",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Ver la fórmula de un producto.",
+      "acceso": "Producción › Recetas › ícono «Ver receta»",
+      "requisitos": [
+        "Receta registrada."
+      ],
+      "pasos": [
+        {
+          "titulo": "Ver la receta",
+          "instruccion": "Haz clic en el ícono «Ver receta» (ojo) de la fila.",
+          "captura": "rec_05_ver",
+          "objetivo": "detalle",
+          "pie": "Detalle: presentación, descripción y fórmula para producir 1 unidad."
+        }
+      ],
+      "resultado": "Se despliega la fórmula con cada ingrediente y su cantidad."
+    },
+    {
+      "codigo": "ADM-REC-003",
+      "titulo": "Editar la composición de una receta",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Cambiar ingredientes o cantidades de la fórmula.",
+      "acceso": "Producción › Recetas › ícono «Editar receta»",
+      "requisitos": [
+        "Receta registrada."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir la edición",
+          "instruccion": "Haz clic en el ícono «Editar receta» (lápiz).",
+          "captura": "rec_05_ver",
+          "objetivo": "editar",
+          "pie": "Ícono «Editar receta»."
+        },
+        {
+          "titulo": "Modificar la fórmula",
+          "instruccion": "Cambia las cantidades o los ingredientes. Los datos del producto se muestran fijos.",
+          "captura": "rec_06_editar",
+          "objetivo": "ingredientes",
+          "pie": "«Editar receta»: cantidad del insumo cambiada a 60 ml."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar receta».",
+          "captura": "rec_06_editar",
+          "objetivo": "guardar",
+          "pie": "Botón de guardado."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje.",
+          "captura": "rec_07_editada",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            900
+          ],
+          "pie": "Mensaje «Receta actualizada. Guardar cambios no descuenta inventario.»"
+        }
+      ],
+      "resultado": "La receta vigente usa la nueva fórmula en las próximas producciones.",
+      "errores": [
+        [
+          "Se necesita retirar una receta",
+          "Usa el menú «⋮» de la fila: «Desactivar receta» (y «Activar receta» para reactivarla). No se verificó en esta edición."
+        ]
+      ]
+    }
+  ]
+}

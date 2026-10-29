@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "index",
+    "title": "Flujos de EcoLact"
+  },
+  {
+    "slug": "acopio",
+    "title": "Flujo de acopio de leche"
+  },
+  {
+    "slug": "calidad",
+    "title": "Flujo de control de calidad"
+  },
+  {
+    "slug": "liquidacion-pagos",
+    "title": "Valorización, liquidación y pagos"
+  },
+  {
+    "slug": "consulta-proveedor",
+    "title": "Consulta del proveedor"
+  },
+  {
+    "slug": "produccion",
+    "title": "Flujo de producción"
+  },
+  {
+    "slug": "insumos",
+    "title": "Flujo de insumos y compras"
+  },
+  {
+    "slug": "ventas-caja",
+    "title": "Flujo de ventas y compradores"
+  },
+  {
+    "slug": "finanzas",
+    "title": "Flujo de caja y finanzas"
+  },
+  {
+    "slug": "personal-asistencia",
+    "title": "Asistencia y personal"
+  },
+  {
+    "slug": "integracion",
+    "title": "Integración móvil y web"
+  }
+]

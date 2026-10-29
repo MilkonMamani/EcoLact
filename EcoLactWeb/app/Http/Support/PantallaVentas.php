@@ -66,7 +66,7 @@ final class PantallaVentas
             'tab' => $tab,
             'filtro' => $filtro,
             'datos' => $this->ventasListado->obtener($filtro),
-            'catalogo' => $this->catalogo->execute(),
+            'catalogo' => $this->catalogoPos(),
             'compradores' => array_map(fn (Comprador $c): array => self::comprador($c), $this->compradores->execute()),
             'proveedores' => array_values(array_map(
                 fn (Proveedor $p): array => ['id' => $p->id(), 'nombre' => $p->nombreCompleto(), 'documento' => $p->dni()],
@@ -106,6 +106,7 @@ final class PantallaVentas
                 registradoPorUserId: $request->user()->id,
                 proveedorId: $datos['proveedor_id'],
                 compradorId: $datos['comprador_id'],
+                precioEsperado: $request->filled('precio_mostrado') ? (float) $request->validated('precio_mostrado') : null,
             );
         } catch (DomainException|InvalidArgumentException $e) {
             return redirect()->route($portal.'.ventas.index')->withInput()->with('venta_error', $e->getMessage());
@@ -223,6 +224,28 @@ final class PantallaVentas
     }
 
     /** "Queso Paria · 1 kg" (nombre completo en productos sin presentación). */
+    /**
+     * Catálogo vendible con lo que el POS necesita para pintarlo: nombre sin la
+     * presentación, la presentación aparte y si la unidad de venta solo admite
+     * cantidades enteras. Precios y stock son los de ObtenerCatalogoVenta.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function catalogoPos(): array
+    {
+        return array_map(function (array $item): array {
+            $producto = $this->productos->buscarPorId($item['id']);
+            $unidad = $producto?->unidadMedida() ?? 'unidad';
+
+            return $item + [
+                'nombreBase' => $producto?->presentacion() !== null ? $producto->nombreBase() : $item['nombre'],
+                'presentacion' => $producto?->presentacion(),
+                'unidad' => mb_strtolower($unidad),
+                'entero' => in_array(mb_strtolower(trim($unidad)), ['unidad', 'unidades', 'und', 'u'], true),
+            ];
+        }, $this->catalogo->execute());
+    }
+
     private function producto(int $productoId): string
     {
         return $this->productos->buscarPorId($productoId)?->etiqueta() ?? '—';

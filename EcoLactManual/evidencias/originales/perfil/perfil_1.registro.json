@@ -1,0 +1,35 @@
+{
+  "plan": "perfil_1.json",
+  "fecha": "2026-10-28T12:11:13",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "per_50_menu_perfil",
+      "archivo": "evidencias/originales/perfil/per_50_menu_perfil.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {
+        "mi_perfil": [
+          18,
+          725,
+          233,
+          765
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T12:11:17"
+    },
+    {
+      "nombre": "per_51_perfil",
+      "archivo": "evidencias/originales/perfil/per_51_perfil.png",
+      "url": "/admin/mi-perfil",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "admin\n\nMi perfil\n\nAdministrador\nUSUARIO\nadmin\nROL\nAdministrador\nASISTENCIA\n\nNo marca asistencia: cobra sueldo fijo mensual, sin faltas ni descuentos por asistencia.\n\nRESUMEN DEL MES\n\nNo hay registro de nómina para este mes."
+      ],
+      "hora": "2026-10-28T12:11:24"
+    }
+  ],
+  "dialogos": []
+}

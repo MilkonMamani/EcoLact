@@ -31,7 +31,7 @@ final class LimpiadorDatosProduccion
 {
     /** Tablas que quedan completamente vacías (sirve además para reiniciar sus contadores). */
     private const TABLAS_VACIADAS = [
-        'produccion_detalles', 'lote_produccion_insumos', 'lotes_produccion',
+        'produccion_detalles', 'lote_produccion_insumos', 'lotes_produccion', 'planificaciones_produccion',
         'receta_detalles', 'recetas', 'producto_movimientos', 'producto_precios', 'productos',
     ];
 
@@ -130,6 +130,7 @@ final class LimpiadorDatosProduccion
 
             // 3. Lotes, recetas y productos (en el orden que piden las FK).
             $eliminados['Lotes de producción'] = DB::table('lotes_produccion')->delete();
+            $eliminados['Planificaciones de producción'] = DB::table('planificaciones_produccion')->delete();
             $eliminados['Detalles de receta'] = DB::table('receta_detalles')->delete();
             $eliminados['Recetas'] = DB::table('recetas')->delete();
             $eliminados['Productos terminados'] = DB::table('productos')->delete();
@@ -300,7 +301,7 @@ final class LimpiadorDatosProduccion
     {
         $fallos = [];
 
-        foreach (['recetas', 'receta_detalles', 'lotes_produccion', 'produccion_detalles', 'lote_produccion_insumos', 'productos', 'producto_movimientos'] as $tabla) {
+        foreach (['recetas', 'receta_detalles', 'lotes_produccion', 'planificaciones_produccion', 'produccion_detalles', 'lote_produccion_insumos', 'productos', 'producto_movimientos'] as $tabla) {
             if (DB::table($tabla)->count() !== 0) {
                 $fallos[] = "{$tabla} no quedó vacía";
             }

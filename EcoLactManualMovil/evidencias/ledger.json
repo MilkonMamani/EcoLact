@@ -1,0 +1,1681 @@
+{
+  "documento": "Registro de evidencias — Manual de Usuario EcoLact Móvil",
+  "criterio": "Capturas auténticas de la aplicación (28/10/2026) extraídas del manual anterior; DNI, teléfonos, usuarios y QR pixelados (scripts/privacidad.py). Marcas ubicadas sobre el texto real de cada control (OCR).",
+  "generado": "2026-10-29",
+  "evidencias": [
+    {
+      "procedimiento": "MOB-GEN-001",
+      "captura": "p52_x213",
+      "original": "evidencias/originales/general/p52_x213.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-001_p52_x213.png",
+      "marcas": [
+        [
+          1,
+          [
+            55,
+            880,
+            857,
+            1022
+          ]
+        ],
+        [
+          2,
+          [
+            55,
+            1086,
+            857,
+            1226
+          ]
+        ],
+        [
+          3,
+          [
+            47,
+            1223,
+            864,
+            1350
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-GEN-002",
+      "captura": "p53_x210",
+      "original": "evidencias/originales/general/p53_x210.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-002_p53_x210.png",
+      "marcas": [
+        [
+          1,
+          [
+            18,
+            160,
+            125,
+            285
+          ]
+        ],
+        [
+          2,
+          [
+            760,
+            160,
+            900,
+            285
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            1907,
+            882,
+            2008
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-GEN-002",
+      "captura": "p53_x215",
+      "original": "evidencias/originales/general/p53_x215.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-002_p53_x215.png",
+      "marcas": [
+        [
+          4,
+          [
+            30,
+            285,
+            882,
+            1064
+          ]
+        ],
+        [
+          5,
+          [
+            30,
+            1879,
+            882,
+            1969
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-GEN-003",
+      "captura": "p08_x95",
+      "original": "evidencias/originales/general/p08_x95.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-003_p08_x95.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-GEN-003",
+      "captura": "p08_x94",
+      "original": "evidencias/originales/general/p08_x94.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-003_p08_x94.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-GEN-004",
+      "captura": "p56_x223",
+      "original": "evidencias/originales/general/p56_x223.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-004_p56_x223.png",
+      "marcas": [
+        [
+          1,
+          [
+            224,
+            939,
+            377,
+            988
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-GEN-005",
+      "captura": "p50_x205",
+      "original": "evidencias/originales/general/p50_x205.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-005_p50_x205.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            313,
+            882,
+            460
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-GEN-005",
+      "captura": "p60_x235",
+      "original": "evidencias/originales/general/p60_x235.png",
+      "anotada": "evidencias/anotadas/general/MOB-GEN-005_p60_x235.png",
+      "marcas": [
+        [
+          2,
+          [
+            30,
+            1192,
+            882,
+            1282
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-001",
+      "captura": "p06_x90",
+      "original": "evidencias/originales/planta/p06_x90.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-001_p06_x90.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-002",
+      "captura": "p07_x92",
+      "original": "evidencias/originales/planta/p07_x92.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-002_p07_x92.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-003",
+      "captura": "p09_x97",
+      "original": "evidencias/originales/planta/p09_x97.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-003_p09_x97.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-003",
+      "captura": "p09_x98",
+      "original": "evidencias/originales/planta/p09_x98.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-003_p09_x98.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-004",
+      "captura": "p10_x101",
+      "original": "evidencias/originales/planta/p10_x101.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-004_p10_x101.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-005",
+      "captura": "p10_x100",
+      "original": "evidencias/originales/planta/p10_x100.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-005_p10_x100.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-006",
+      "captura": "p11_x103",
+      "original": "evidencias/originales/planta/p11_x103.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-006_p11_x103.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-007",
+      "captura": "p12_x105",
+      "original": "evidencias/originales/planta/p12_x105.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-007_p12_x105.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-008",
+      "captura": "p13_x107",
+      "original": "evidencias/originales/planta/p13_x107.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-008_p13_x107.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-009",
+      "captura": "p14_x110",
+      "original": "evidencias/originales/planta/p14_x110.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-009_p14_x110.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-009",
+      "captura": "p14_x109",
+      "original": "evidencias/originales/planta/p14_x109.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-009_p14_x109.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-010",
+      "captura": "p15_x112",
+      "original": "evidencias/originales/planta/p15_x112.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-010_p15_x112.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-010",
+      "captura": "p15_x113",
+      "original": "evidencias/originales/planta/p15_x113.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-010_p15_x113.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-011",
+      "captura": "p16_x116",
+      "original": "evidencias/originales/planta/p16_x116.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-011_p16_x116.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-011",
+      "captura": "p16_x115",
+      "original": "evidencias/originales/planta/p16_x115.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-011_p16_x115.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PLA-012",
+      "captura": "p17_x118",
+      "original": "evidencias/originales/planta/p17_x118.png",
+      "anotada": "evidencias/anotadas/planta/MOB-PLA-012_p17_x118.png",
+      "marcas": "incrustadas en la captura original",
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-001",
+      "captura": "p19_x125",
+      "original": "evidencias/originales/ventas/p19_x125.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-001_p19_x125.png",
+      "marcas": [
+        [
+          1,
+          [
+            36,
+            480,
+            876,
+            830
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            841,
+            882,
+            1169
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            1211,
+            882,
+            1747
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            1918,
+            882,
+            1998
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-002",
+      "captura": "p22_x137",
+      "original": "evidencias/originales/ventas/p22_x137.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-002_p22_x137.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            316,
+            882,
+            406
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            472,
+            882,
+            627
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            664,
+            882,
+            1039
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-003",
+      "captura": "p23_x139",
+      "original": "evidencias/originales/ventas/p23_x139.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-003_p23_x139.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            318,
+            882,
+            408
+          ]
+        ],
+        [
+          2,
+          [
+            36,
+            600,
+            876,
+            760
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            445,
+            882,
+            573
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-004",
+      "captura": "p24_x141",
+      "original": "evidencias/originales/ventas/p24_x141.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-004_p24_x141.png",
+      "marcas": [
+        [
+          2,
+          [
+            30,
+            470,
+            882,
+            588
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            639,
+            882,
+            757
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            801,
+            882,
+            950
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-004",
+      "captura": "p25_x143",
+      "original": "evidencias/originales/ventas/p25_x143.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-004_p25_x143.png",
+      "marcas": [
+        [
+          5,
+          [
+            36,
+            740,
+            876,
+            890
+          ]
+        ],
+        [
+          6,
+          [
+            30,
+            953,
+            882,
+            1250
+          ]
+        ],
+        [
+          7,
+          [
+            30,
+            1326,
+            882,
+            1453
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-004",
+      "captura": "p26_x145",
+      "original": "evidencias/originales/ventas/p26_x145.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-004_p26_x145.png",
+      "marcas": [
+        [
+          8,
+          [
+            36,
+            1215,
+            876,
+            1630
+          ]
+        ],
+        [
+          9,
+          [
+            30,
+            1704,
+            882,
+            1774
+          ]
+        ],
+        [
+          10,
+          [
+            30,
+            1820,
+            882,
+            1947
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-005",
+      "captura": "p27_x147",
+      "original": "evidencias/originales/ventas/p27_x147.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-005_p27_x147.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            379,
+            882,
+            469
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            526,
+            882,
+            606
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            727,
+            882,
+            836
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-007",
+      "captura": "p28_x149",
+      "original": "evidencias/originales/ventas/p28_x149.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-007_p28_x149.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            620,
+            882,
+            903
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            958,
+            882,
+            1048
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-VEN-007",
+      "captura": "p29_x151",
+      "original": "evidencias/originales/ventas/p29_x151.png",
+      "anotada": "evidencias/anotadas/ventas/MOB-VEN-007_p29_x151.png",
+      "marcas": [
+        [
+          3,
+          [
+            150,
+            600,
+            762,
+            1385
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            1497,
+            882,
+            1612
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-001",
+      "captura": "p30_x156",
+      "original": "evidencias/originales/calidad/p30_x156.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-001_p30_x156.png",
+      "marcas": [
+        [
+          1,
+          [
+            36,
+            450,
+            876,
+            600
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            809,
+            882,
+            1021
+          ]
+        ],
+        [
+          3,
+          [
+            655,
+            868,
+            852,
+            982
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            1917,
+            882,
+            1998
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-003",
+      "captura": "p31_x162",
+      "original": "evidencias/originales/calidad/p31_x162.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-003_p31_x162.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            473,
+            882,
+            601
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            736,
+            882,
+            826
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-003",
+      "captura": "p33_x167",
+      "original": "evidencias/originales/calidad/p33_x167.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-003_p33_x167.png",
+      "marcas": [
+        [
+          3,
+          [
+            350,
+            1040,
+            590,
+            1255
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-003",
+      "captura": "p32_x165",
+      "original": "evidencias/originales/calidad/p32_x165.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-003_p32_x165.png",
+      "marcas": [
+        [
+          4,
+          [
+            30,
+            892,
+            882,
+            982
+          ]
+        ],
+        [
+          5,
+          [
+            30,
+            1021,
+            882,
+            1198
+          ]
+        ],
+        [
+          6,
+          [
+            30,
+            1251,
+            882,
+            1379
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-003",
+      "captura": "p34_x169",
+      "original": "evidencias/originales/calidad/p34_x169.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-003_p34_x169.png",
+      "marcas": [
+        [
+          7,
+          [
+            36,
+            430,
+            876,
+            565
+          ]
+        ],
+        [
+          8,
+          [
+            30,
+            638,
+            882,
+            728
+          ]
+        ],
+        [
+          9,
+          [
+            30,
+            777,
+            882,
+            904
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-003",
+      "captura": "p35_x171",
+      "original": "evidencias/originales/calidad/p35_x171.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-003_p35_x171.png",
+      "marcas": [
+        [
+          10,
+          [
+            30,
+            393,
+            882,
+            695
+          ]
+        ],
+        [
+          11,
+          [
+            30,
+            737,
+            882,
+            864
+          ]
+        ],
+        [
+          12,
+          [
+            30,
+            944,
+            882,
+            1034
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-003",
+      "captura": "p36_x173",
+      "original": "evidencias/originales/calidad/p36_x173.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-003_p36_x173.png",
+      "marcas": [
+        [
+          13,
+          [
+            30,
+            570,
+            882,
+            697
+          ]
+        ],
+        [
+          14,
+          [
+            30,
+            738,
+            882,
+            828
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-004",
+      "captura": "p37_x175",
+      "original": "evidencias/originales/calidad/p37_x175.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-004_p37_x175.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            455,
+            882,
+            1193
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            1234,
+            882,
+            1362
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            1398,
+            882,
+            1488
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-007",
+      "captura": "p38_x177",
+      "original": "evidencias/originales/calidad/p38_x177.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-007_p38_x177.png",
+      "marcas": [
+        [
+          1,
+          [
+            36,
+            300,
+            760,
+            430
+          ]
+        ],
+        [
+          2,
+          [
+            36,
+            480,
+            760,
+            730
+          ]
+        ],
+        [
+          3,
+          [
+            36,
+            770,
+            876,
+            900
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            1000,
+            882,
+            1080
+          ]
+        ],
+        [
+          5,
+          [
+            30,
+            1115,
+            882,
+            1243
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-008",
+      "captura": "p39_x180",
+      "original": "evidencias/originales/calidad/p39_x180.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-008_p39_x180.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            276,
+            882,
+            320
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            379,
+            882,
+            504
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-CAL-008",
+      "captura": "p39_x179",
+      "original": "evidencias/originales/calidad/p39_x179.png",
+      "anotada": "evidencias/anotadas/calidad/MOB-CAL-008_p39_x179.png",
+      "marcas": [
+        [
+          3,
+          [
+            30,
+            650,
+            882,
+            841
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            901,
+            882,
+            991
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-001",
+      "captura": "p43_x184",
+      "original": "evidencias/originales/proveedor/p43_x184.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-001_p43_x184.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            467,
+            882,
+            1127
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            1170,
+            882,
+            1579
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-002",
+      "captura": "p42_x188",
+      "original": "evidencias/originales/proveedor/p42_x188.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-002_p42_x188.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            293,
+            882,
+            657
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            684,
+            882,
+            949
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            969,
+            882,
+            1227
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            1258,
+            882,
+            1511
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-003",
+      "captura": "p44_x191",
+      "original": "evidencias/originales/proveedor/p44_x191.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-003_p44_x191.png",
+      "marcas": [
+        [
+          1,
+          [
+            51,
+            388,
+            202,
+            454
+          ]
+        ],
+        [
+          2,
+          [
+            290,
+            387,
+            423,
+            454
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            512,
+            882,
+            645
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-003",
+      "captura": "p45_x193",
+      "original": "evidencias/originales/proveedor/p45_x193.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-003_p45_x193.png",
+      "marcas": [
+        [
+          4,
+          [
+            30,
+            311,
+            882,
+            940
+          ]
+        ],
+        [
+          5,
+          [
+            30,
+            1303,
+            882,
+            1393
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-004",
+      "captura": "p46_x195",
+      "original": "evidencias/originales/proveedor/p46_x195.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-004_p46_x195.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            306,
+            882,
+            453
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-004",
+      "captura": "p48_x200",
+      "original": "evidencias/originales/proveedor/p48_x200.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-004_p48_x200.png",
+      "marcas": [
+        [
+          2,
+          [
+            30,
+            312,
+            882,
+            723
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            845,
+            882,
+            1481
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-005",
+      "captura": "p47_x197",
+      "original": "evidencias/originales/proveedor/p47_x197.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-005_p47_x197.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            290,
+            882,
+            350
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-006",
+      "captura": "p48_x199",
+      "original": "evidencias/originales/proveedor/p48_x199.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-006_p48_x199.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            305,
+            882,
+            431
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-007",
+      "captura": "p49_x203",
+      "original": "evidencias/originales/proveedor/p49_x203.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-007_p49_x203.png",
+      "marcas": [
+        [
+          2,
+          [
+            30,
+            460,
+            882,
+            710
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            749,
+            882,
+            797
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-008",
+      "captura": "p50_x205",
+      "original": "evidencias/originales/proveedor/p50_x205.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-008_p50_x205.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            313,
+            882,
+            460
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-PRV-008",
+      "captura": "p50_x206",
+      "original": "evidencias/originales/proveedor/p50_x206.png",
+      "anotada": "evidencias/anotadas/proveedor/MOB-PRV-008_p50_x206.png",
+      "marcas": [
+        [
+          2,
+          [
+            30,
+            553,
+            882,
+            1074
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-001",
+      "captura": "p51_x210",
+      "original": "evidencias/originales/acopiador/p51_x210.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-001_p51_x210.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            558,
+            882,
+            730
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            770,
+            882,
+            897
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            912,
+            882,
+            1179
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-002",
+      "captura": "p54_x218",
+      "original": "evidencias/originales/acopiador/p54_x218.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-002_p54_x218.png",
+      "marcas": [
+        [
+          1,
+          [
+            250,
+            640,
+            670,
+            1200
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            1783,
+            882,
+            1883
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-002",
+      "captura": "p54_x217",
+      "original": "evidencias/originales/acopiador/p54_x217.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-002_p54_x217.png",
+      "marcas": [
+        [
+          3,
+          [
+            36,
+            1690,
+            876,
+            1815
+          ]
+        ],
+        [
+          4,
+          [
+            455,
+            1830,
+            880,
+            1965
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-002",
+      "captura": "p55_x221",
+      "original": "evidencias/originales/acopiador/p55_x221.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-002_p55_x221.png",
+      "marcas": [
+        [
+          5,
+          [
+            674,
+            355,
+            842,
+            435
+          ]
+        ],
+        [
+          6,
+          [
+            30,
+            506,
+            882,
+            716
+          ]
+        ],
+        [
+          7,
+          [
+            36,
+            845,
+            876,
+            1040
+          ]
+        ],
+        [
+          8,
+          [
+            30,
+            1063,
+            882,
+            1190
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-002",
+      "captura": "p55_x220",
+      "original": "evidencias/originales/acopiador/p55_x220.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-002_p55_x220.png",
+      "marcas": [
+        [
+          9,
+          [
+            30,
+            1065,
+            882,
+            1192
+          ]
+        ],
+        [
+          10,
+          [
+            30,
+            1233,
+            882,
+            1323
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-003",
+      "captura": "p56_x220",
+      "original": "evidencias/originales/acopiador/p56_x220.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-003_p56_x220.png",
+      "marcas": [
+        [
+          1,
+          [
+            223,
+            903,
+            414,
+            951
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-003",
+      "captura": "p56_x223",
+      "original": "evidencias/originales/acopiador/p56_x223.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-003_p56_x223.png",
+      "marcas": [
+        [
+          2,
+          [
+            224,
+            939,
+            377,
+            988
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-004",
+      "captura": "p57_x226",
+      "original": "evidencias/originales/acopiador/p57_x226.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-004_p57_x226.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            405,
+            882,
+            495
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            552,
+            882,
+            632
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            745,
+            882,
+            861
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-004",
+      "captura": "p57_x225",
+      "original": "evidencias/originales/acopiador/p57_x225.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-004_p57_x225.png",
+      "marcas": [
+        [
+          4,
+          [
+            30,
+            958,
+            882,
+            1244
+          ]
+        ],
+        [
+          5,
+          [
+            30,
+            1276,
+            882,
+            1477
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-006",
+      "captura": "p58_x229",
+      "original": "evidencias/originales/acopiador/p58_x229.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-006_p58_x229.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            405,
+            882,
+            495
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            614,
+            882,
+            766
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-006",
+      "captura": "p58_x228",
+      "original": "evidencias/originales/acopiador/p58_x228.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-006_p58_x228.png",
+      "marcas": [
+        [
+          3,
+          [
+            30,
+            831,
+            882,
+            959
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            1000,
+            882,
+            1090
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-007",
+      "captura": "p59_x231",
+      "original": "evidencias/originales/acopiador/p59_x231.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-007_p59_x231.png",
+      "marcas": [
+        [
+          1,
+          [
+            30,
+            501,
+            882,
+            581
+          ]
+        ],
+        [
+          2,
+          [
+            30,
+            696,
+            882,
+            808
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-007",
+      "captura": "p59_x232",
+      "original": "evidencias/originales/acopiador/p59_x232.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-007_p59_x232.png",
+      "marcas": [
+        [
+          3,
+          [
+            30,
+            312,
+            882,
+            392
+          ]
+        ],
+        [
+          4,
+          [
+            30,
+            442,
+            882,
+            567
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-008",
+      "captura": "p60_x236",
+      "original": "evidencias/originales/acopiador/p60_x236.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-008_p60_x236.png",
+      "marcas": [
+        [
+          1,
+          [
+            115,
+            740,
+            797,
+            1390
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    },
+    {
+      "procedimiento": "MOB-ACO-008",
+      "captura": "p60_x235",
+      "original": "evidencias/originales/acopiador/p60_x235.png",
+      "anotada": "evidencias/anotadas/acopiador/MOB-ACO-008_p60_x235.png",
+      "marcas": [
+        [
+          2,
+          [
+            30,
+            615,
+            882,
+            1132
+          ]
+        ],
+        [
+          3,
+          [
+            30,
+            1192,
+            882,
+            1282
+          ]
+        ]
+      ],
+      "fuente": "Manual_Movil_Actual.pdf (captura de la aplicación del 28/10/2026)"
+    }
+  ]
+}

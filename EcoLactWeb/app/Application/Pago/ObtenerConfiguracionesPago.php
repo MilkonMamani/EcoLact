@@ -2,7 +2,7 @@
 
 namespace App\Application\Pago;
 
-use App\Application\Pago\Contracts\SueldosTrabajadoresQuery;
+use App\Application\Pago\Contracts\SueldosPorRolQuery;
 use App\Domain\Pago\ConfiguracionPago;
 use App\Domain\Pago\ConfiguracionPagoRepository;
 use App\Domain\Pago\PrecioLeche;
@@ -16,7 +16,8 @@ use DateTimeImmutable;
  * Datos de Configuración de pagos, en sus dos pestañas. Solo valores base: nada
  * de asistencia, entregas ni pagos (eso es Pagos).
  *
- * - trabajadores: cada trabajador real con su sueldo (SueldosTrabajadoresQuery).
+ * - trabajadores: el sueldo base de cada rol laboral, con su personal y el resumen
+ *   para los indicadores (SueldosPorRolQuery).
  * - proveedor: la configuración GENERAL de pago a proveedores, vigente (o la
  *   próxima programada), con el precio base vigente, el descuento por litro de
  *   la calidad OBSERVADA y los precios anteriores (historial).
@@ -24,7 +25,7 @@ use DateTimeImmutable;
 final class ObtenerConfiguracionesPago
 {
     public function __construct(
-        private readonly SueldosTrabajadoresQuery $sueldos,
+        private readonly SueldosPorRolQuery $sueldos,
         private readonly ConfiguracionPagoRepository $configuraciones,
         private readonly PrecioLecheRepository $preciosLeche,
         private readonly ReglaPagoCalidadRepository $reglasPagoCalidad,
@@ -32,7 +33,7 @@ final class ObtenerConfiguracionesPago
 
     /**
      * @return array{
-     *     trabajadores: list<array<string, mixed>>,
+     *     trabajadores: array{roles: list<array<string, mixed>>, resumen: array{roles: int, configurados: int, pendientes: int}},
      *     proveedor: array{configuracion: ConfiguracionPago|null, estado: string, precioBase: float|null, observada: array{tipo: string, valor: float}|null, preciosAnteriores: PrecioLeche[]}
      * }
      */

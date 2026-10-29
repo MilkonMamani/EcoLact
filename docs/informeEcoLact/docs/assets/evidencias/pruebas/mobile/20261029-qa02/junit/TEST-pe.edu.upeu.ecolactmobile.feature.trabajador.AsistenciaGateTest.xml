@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:56.025Z" hostname="LAPTOP-CUGSMQ13" time="0.07">
+  <properties/>
+  <testcase name="al_registrar_el_administrador_la_asistencia_la_app_se_habilita_sola" classname="pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest" time="0.026"/>
+  <testcase name="caso12_si_el_servidor_rechaza_por_asistencia_la_operacion_queda_para_revision_con_mensaje_claro" classname="pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest" time="0.012"/>
+  <testcase name="caso9_sin_asistencia_confirmada_no_se_encola_nada" classname="pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest" time="0.007"/>
+  <testcase name="la_regla_local_exige_confirmacion_del_servidor_con_la_fecha_de_hoy" classname="pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest" time="0.005"/>
+  <testcase name="caso10_la_asistencia_de_ayer_no_habilita_hoy" classname="pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest" time="0.01"/>
+  <testcase name="caso8_asistencia_confirmada_hoy_permite_registrar_sin_conexion" classname="pe.edu.upeu.ecolactmobile.feature.trabajador.AsistenciaGateTest" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -60,6 +60,18 @@ class EloquentLoteProduccionRepository implements LoteProduccionRepository
     /**
      * @return LoteProduccion[]
      */
+    public function listarPorPlanificacion(int $planificacionProduccionId): array
+    {
+        return LoteProduccionModel::where('planificacion_produccion_id', $planificacionProduccionId)
+            ->orderBy('id')
+            ->get()
+            ->map(fn (LoteProduccionModel $model): LoteProduccion => $this->toEntity($model))
+            ->all();
+    }
+
+    /**
+     * @return LoteProduccion[]
+     */
     public function listar(): array
     {
         return LoteProduccionModel::orderByDesc('fecha_hora_inicio')
@@ -79,6 +91,7 @@ class EloquentLoteProduccionRepository implements LoteProduccionRepository
             registradoPorUserId: $model->registrado_por_user_id,
             observacion: $model->observacion,
             observacionCierre: $model->observacion_cierre,
+            planificacionProduccionId: $model->planificacion_produccion_id,
         );
     }
 
@@ -95,6 +108,7 @@ class EloquentLoteProduccionRepository implements LoteProduccionRepository
             'registrado_por_user_id' => $lote->registradoPorUserId(),
             'observacion' => $lote->observacion(),
             'observacion_cierre' => $lote->observacionCierre(),
+            'planificacion_produccion_id' => $lote->planificacionProduccionId(),
         ];
     }
 }

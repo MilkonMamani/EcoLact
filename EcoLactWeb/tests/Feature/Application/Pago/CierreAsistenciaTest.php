@@ -156,7 +156,7 @@ it('desde las 07:00 el backend rechaza registrar o corregir, aunque la petición
 
     $this->actingAs($admin)
         ->post(route('admin.trabajadores.jornadas.store', $persona->id), ['fecha' => '2026-09-27'])
-        ->assertSessionHasErrors(['jornada' => 'La asistencia de hoy ya se cerró a las 07:00 a. m.: solo se puede consultar.']);
+        ->assertSessionHasErrors(['jornada' => 'La asistencia de hoy ya se cerró a las 07:00: solo se puede consultar.']);
 
     $this->actingAs($admin)
         ->post(route('admin.trabajadores.jornadas.corregir', [$persona->id, '2026-09-26']), ['estado' => 'FALTA', 'motivo' => 'Intento tardío'])
@@ -181,7 +181,7 @@ it('el QR registra presente antes de las 07:00 y se bloquea desde las 07:00', fu
 
     $this->actingAs($admin)->postJson(route('api.admin.asistencia.qr'), ['qr_token' => cierre_identidad($yanil)->qr_token])
         ->assertStatus(422)
-        ->assertJsonPath('message', 'La asistencia de hoy ya se cerró a las 07:00 a. m.: solo se puede consultar.');
+        ->assertJsonPath('message', 'La asistencia de hoy ya se cerró a las 07:00: solo se puede consultar.');
 
     expect(cierre_fechas($yanil, 'PRESENTE'))->toBe([]);
 });

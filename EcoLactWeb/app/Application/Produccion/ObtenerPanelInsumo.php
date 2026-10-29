@@ -16,8 +16,11 @@ use DomainException;
 /**
  * Panel derecho de un insumo en la pantalla Insumos: datos y stock, sus
  * presentaciones de compra y los últimos movimientos con su origen legible
- * ("Compra · Boleta B001-203", "Producción LOT-00015", "Entrega #12") y su
- * clase (compra, ajuste, consumo, acopio u otro) para distinguirlos a simple vista.
+ * ("Compra · Boleta B001-203", "Producción LOT-00015") y su clase (compra,
+ * ajuste, consumo u otro) para distinguirlos a simple vista. Los movimientos de
+ * leche originados por una entrega no se listan: ya se consultan en Acopio.
+ * `unidad_bloqueos` explica por qué ya no se puede corregir su unidad base
+ * (vacío si todavía se puede: insumo recién creado y sin historial).
  *
  * @phpstan-type MovimientoPanel array{fecha: \DateTimeImmutable, entrada: bool, cantidad: float, clase: string, motivo: string, referencia: ?string, compra_id: ?int}
  */
@@ -31,17 +34,21 @@ final class ObtenerPanelInsumo
         private readonly InsumoMovimientoRepository $movimientos,
         private readonly CompraInsumoRepository $compras,
         private readonly LoteProduccionRepository $lotes,
+        private readonly EvaluarCambioUnidadBase $evaluarCambioUnidad,
     ) {}
 
     /**
-     * @return array{insumo: Insumo, presentaciones: list<PresentacionInsumo>, movimientos: list<MovimientoPanel>}
+     * @return array{insumo: Insumo, presentaciones: list<PresentacionInsumo>, movimientos: list<MovimientoPanel>, unidad_bloqueos: list<string>}
      */
     public function execute(int $insumoId): array
     {
         $insumo = $this->insumos->buscarPorId($insumoId)
             ?? throw new DomainException('El insumo indicado no existe.');
 
-        $movimientos = array_slice($this->movimientos->listarPorInsumo($insumoId), 0, self::MOVIMIENTOS);
+        $movimientos = array_slice(array_values(array_filter(
+            $this->movimientos->listarPorInsumo($insumoId),
+            fn (InsumoMovimiento $movimiento): bool => $movimiento->origenTipo() !== InsumoMovimiento::ORIGEN_ENTREGA,
+        )), 0, self::MOVIMIENTOS);
 
         $compraIds = [];
         $loteIds = [];
@@ -65,6 +72,7 @@ final class ObtenerPanelInsumo
 
         return [
             'insumo' => $insumo,
+            'unidad_bloqueos' => $this->evaluarCambioUnidad->motivos($insumo),
             'presentaciones' => $insumo->esLeche() ? [] : $this->presentaciones->listarPorInsumo($insumoId),
             'movimientos' => array_map(function (InsumoMovimiento $movimiento) use ($compras, $codigosLote): array {
                 $compra = $movimiento->origenTipo() === InsumoMovimiento::ORIGEN_COMPRA_INSUMO

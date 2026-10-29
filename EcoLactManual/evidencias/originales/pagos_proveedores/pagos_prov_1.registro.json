@@ -1,0 +1,168 @@
+{
+  "plan": "pagos_prov_1.json",
+  "fecha": "2026-10-28T11:29:00",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ppv_01_pantalla",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_01_pantalla.png",
+      "url": "/admin/pagos/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "semana": [
+          284,
+          261,
+          467,
+          301
+        ],
+        "total": [
+          649,
+          164,
+          746,
+          185
+        ],
+        "fila": [
+          285,
+          412,
+          1011,
+          488
+        ]
+      },
+      "textos_visibles": [
+        "Pagos\n›\nPago a proveedores\nPago semanal a proveedores\n\nRevisa las liquidaciones semanales y confirma los pagos correspondientes.\n\nPendientes\n1 proveedor\nLitros pagables\n48 L\nTotal pendiente\nS/ 57.60\nBuscar proveedor por nombre, DNI o zona\nSemana\nTodas las semanas\nSemana 44\nZona\nTodas las zonas\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nEstado\nTodos los estados\nPendientes\nPagados\nFiltrar\nLimpiar\n\nLiquidaciones semanales\n\nRevisar seleccionados (\n0\n)\n\tPROVEEDOR\tZONA\tLITROS\tPRECIO/L\tCALIDAD SEMANAL\tCOMPRAS\tTOTAL\tESTADO\n\t\nProveedor Prueba Manual\nSemana 44\n\tFaon\t48 L\t\nS/ 1.20\n\tSin análisis\t—\tS/ 57.60\t\nPendiente\n\nMostrando 1 de 1 proveedores\n\nComprobante de pago\n\nVista previa del comprobante del proveedor seleccionado.\n\nSelecciona un proveedor\n\nHaz clic en una fila para revisar su liquidación y comprobante."
+      ],
+      "hora": "2026-10-28T11:29:04"
+    },
+    {
+      "nombre": "ppv_02_comprobante",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_02_comprobante.png",
+      "url": "/admin/pagos/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          412,
+          1011,
+          488
+        ],
+        "panel": [
+          1028,
+          213,
+          1408,
+          907
+        ]
+      },
+      "textos_visibles": [
+        "Pagos\n›\nPago a proveedores\nPago semanal a proveedores\n\nRevisa las liquidaciones semanales y confirma los pagos correspondientes.\n\nPendientes\n1 proveedor\nLitros pagables\n48 L\nTotal pendiente\nS/ 57.60\nBuscar proveedor por nombre, DNI o zona\nSemana\nTodas las semanas\nSemana 44\nZona\nTodas las zonas\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nEstado\nTodos los estados\nPendientes\nPagados\nFiltrar\nLimpiar\n\nLiquidaciones semanales\n\nRevisar seleccionados (\n0\n)\n\tPROVEEDOR\tZONA\tLITROS\tPRECIO/L\tCALIDAD SEMANAL\tCOMPRAS\tTOTAL\tESTADO\n\t\nProveedor Prueba Manual\nSemana 44\n\tFaon\t48 L\t\nS/ 1.20\n\tSin análisis\t—\tS/ 57.60\t\nPendiente\n\nMostrando 1 de 1 proveedores\n\nComprobante de pago\n\nVista previa del comprobante del proveedor seleccionado.\n\nEcoLact\nGestión integral\nCOMPROBANTE DE PAGO\n\nN.º PRV-2026-44-0001\n\nPROVEEDOR\nProveedor Prueba Manual\nDNI\n99000005\nZONA\nFaon\nCÓDIGO\nPRV-509\nSEMANA\n44\nPERIODO SEMANAL\n22/10/2026 – 28/10/2026\nFECHA DE EMISIÓN\n28/10/2026\nESTADO\nPendiente\nDETALLE DE PAGO\nLitros de la semana\n48 L\nPrecio base\nS/ 1.20 / L\nResultado semanal\nSin análisis\nAjuste calidad\nS/ 0.00 / L\nPrecio aplicado\nS/ 1.20 / L\nImporte por leche\nS/ 57.60\nImporte por leche\nS/ 57.60\nCompras descontadas\nS/ 0.00\nTOTAL A PAGAR\nS/ 57.60\n\nForma de pago: Efectivo\n\nFirma del proveedor\n\nProveedor Prueba Manual · DNI 99000005\n\nFirma autorizada\n\nEcoLact\n\nImprimir comprobante\nRegistrar pago"
+      ],
+      "hora": "2026-10-28T11:29:08"
+    },
+    {
+      "nombre": "ppv_03_seleccion",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_03_seleccion.png",
+      "url": "/admin/pagos/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "check": [
+          301,
+          439,
+          317,
+          455
+        ],
+        "revisar": [
+          745,
+          326,
+          953,
+          359
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T11:29:10"
+    },
+    {
+      "nombre": "ppv_04_vista_previa",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_04_vista_previa.png",
+      "url": "/admin/pagos/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "imprimir": [
+          1134,
+          44,
+          1266,
+          88
+        ],
+        "hoja": [
+          0,
+          0,
+          1440,
+          900
+        ]
+      },
+      "textos_visibles": [
+        "Vista previa de impresión\n\nSe generará 1 hoja por cada proveedor seleccionado.\n\nCancelar\nImprimir\n\nPÁGINAS · 1\n\nEcoLact\nGestión integral\nCOMPROBANTE DE PAGO\n\nN.º PRV-2026-44-0001\n\nPROVEEDOR\nProveedor Prueba Manual\nDNI\n99000005\nZONA\nFaon\nCÓDIGO\nPRV-509\nSEMANA\n44\nPERIODO SEMANAL\n22/10/2026 – 28/10/2026\nFECHA DE EMISIÓN\n28/10/2026\nESTADO\nPendiente\nDETALLE DE PAGO\nLitros de la semana\n48 L\nPrecio base\nS/ 1.20 / L\nResultado semanal\nSin análisis\nAjuste calidad\nS/ 0.00 / L\nPrecio aplicado\nS/ 1.20 / L\nImporte por leche\nS/ 57.60\nImporte por leche\nS/ 57.60\nCompras descontadas\nS/ 0.00\nTOTAL A PAGAR\nS/ 57.60\n\nForma de pago: Efectivo\n\nFirma del proveedor\n\nProveedor Prueba Manual · DNI 99000005\n\nFirma autorizada\n\nEcoLact\n\nProveedor Prueba Manual\nPRV-509\nPágina 1\n\nProveedor Prueba Manual · PRV-509\n\n1 / 1\n100%\nEcoLact\nGestión integral\nCOMPROBANTE DE PAGO\n\nN.º PRV-2026-44-0001\n\nPROVEEDOR\nProveedor Prueba Manual\nDNI\n99000005\nZONA\nFaon\nCÓDIGO\nPRV-509\nSEMANA\n44\nPERIODO SEMANAL\n22/10/2026 – 28/10/2026\nFECHA DE EMISIÓN\n28/10/2026\nESTADO\nPendiente\nDETALLE DE PAGO\nLitros de la semana\n48 L\nPrecio base\nS/ 1.20 / L\nResultado semanal\nSin análisis\nAjuste calidad\nS/ 0.00 / L\nPrecio aplicado\nS/ 1.20 / L\nImporte por leche\nS/ 57.60\nImporte por leche\nS/ 57.60\nCompras descontadas\nS/ 0.00\nTOTAL A PAGAR\nS/ 57.60\n\nForma de pago: Efectivo\n\nFirma del proveedor\n\nProveedor Prueba Manual · DNI 99000005\n\nFirma autorizada\n\nEcoLact"
+      ],
+      "hora": "2026-10-28T11:29:14"
+    },
+    {
+      "nombre": "ppv_05_confirmar",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_05_confirmar.png",
+      "url": "/admin/pagos/proveedores",
+      "descripcion": "",
+      "objetivos": {
+        "confirmar": [
+          1075,
+          819,
+          1316,
+          859
+        ],
+        "volver": [
+          961,
+          819,
+          1065,
+          859
+        ]
+      },
+      "textos_visibles": [
+        "¿Se imprimieron los comprobantes y se entregó el efectivo? Al confirmar, 1 proveedor pasarán a Pagado por S/ 57.60. Esta acción no se puede deshacer.\n\nTodavía no\nConfirmar pago en efectivo"
+      ],
+      "hora": "2026-10-28T11:29:17"
+    },
+    {
+      "nombre": "ppv_06_pagado",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_06_pagado.png",
+      "url": "/admin/pagos/proveedores?semana=2026-10-22&estado=todos",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "fila": [
+          285,
+          458,
+          1011,
+          534
+        ]
+      },
+      "textos_visibles": [
+        "Se marcaron como pagados en efectivo 1 proveedor por S/ 57.60 (lote PP-20261028-162918-9E01).",
+        "Proveedor Prueba Manual\nSemana 44\n\tFaon\t48 L\t\nS/ 1.20\n\tSin análisis\t—\tS/ 57.60\t\nPagado"
+      ],
+      "hora": "2026-10-28T11:29:23"
+    },
+    {
+      "nombre": "ppv_07_comprobante_impreso",
+      "archivo": "evidencias/originales/pagos_proveedores/ppv_07_comprobante_impreso.png",
+      "url": "/admin/pagos/proveedores/comprobante/1",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "← Volver a Pagar a proveedores\nImprimir\nEcoLact\nGestión integral\nCOMPROBANTE DE PAGO\n\nN.º PRV-2026-44-0001\n\nPROVEEDOR\nProveedor Prueba Manual\nDNI\n99000005\nZONA\nFaon\nCÓDIGO\nPRV-509\nSEMANA\n44\nPERIODO SEMANAL\n22/10/2026 – 28/10/2026\nFECHA DE EMISIÓN\n28/10/2026\nESTADO\nPagado\n\nPagado el 28/10/2026 16:29 · Registrado por admin\n\nDETALLE DE PAGO\nLitros de la semana\n48 L\nPrecio base\nS/ 1.20 / L\nResultado semanal\nSin análisis\nAjuste calidad\nS/ 0.00 / L\nPrecio aplicado\nS/ 1.20 / L\nImporte por leche\nS/ 57.60\nImporte por leche\nS/ 57.60\nCompras descontadas\nS/ 0.00\nTOTAL A PAGAR\nS/ 57.60\n\nForma de pago: Efectivo\n\nFirma del proveedor\n\nProveedor Prueba Manual · DNI 99000005\n\nFirma autorizada\n\nEcoLact"
+      ],
+      "hora": "2026-10-28T11:29:26"
+    }
+  ],
+  "dialogos": []
+}

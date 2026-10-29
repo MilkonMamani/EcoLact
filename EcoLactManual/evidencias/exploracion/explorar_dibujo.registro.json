@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_dibujo.json",
+  "fecha": "2026-10-28T10:17:46",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_dibujo",
+      "archivo": "evidencias/exploracion/x_dibujo.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Dibujar delimitación\nEditar vértices\nDeshacer punto\nBorrar delimitación\nGuardar\n\nCollana 1\nCollana 2\nFaon\nYasin\nMapa\nSatélite\nCombinaciones de teclas\nDatos del mapa ©2026 Google\nCondiciones\nInformar un error en el mapa\nColor en el mapa\nLas demás zonas se muestran como referencia y no se pueden editar aquí.\n\nDelimitación operativa referencial de acopio: no es un límite político ni catastral."
+      ],
+      "hora": "2026-10-28T10:18:04"
+    }
+  ],
+  "dialogos": []
+}

@@ -107,6 +107,19 @@ final class Insumo
         return $this->stockMinimo > 0.0 && $this->stockActual <= $this->stockMinimo;
     }
 
+    /**
+     * Estado de existencias que ve la persona: SIN_STOCK (0), BAJO (llegó al
+     * mínimo configurado) o DISPONIBLE. Sin mínimo configurado nunca es BAJO.
+     */
+    public function nivelStock(): string
+    {
+        return match (true) {
+            $this->stockActual <= 0.0 => 'SIN_STOCK',
+            $this->estaBajoMinimo() => 'BAJO',
+            default => 'DISPONIBLE',
+        };
+    }
+
     public function conStock(float $nuevoStock): self
     {
         return new self(

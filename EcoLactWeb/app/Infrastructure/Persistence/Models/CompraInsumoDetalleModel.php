@@ -11,13 +11,17 @@ class CompraInsumoDetalleModel extends Model
 
     protected $fillable = [
         'compra_insumo_id',
+        'tratamiento',
+        'descripcion',
         'insumo_id',
         'presentacion_insumo_id',
         'presentacion_nombre',
         'presentacion_cantidad',
         'presentacion_unidad',
         'cantidad_presentaciones',
+        'unidad',
         'precio_unitario',
+        'subtotal',
         'cantidad_base',
         'unidad_base',
         'insumo_movimiento_id',
@@ -27,6 +31,7 @@ class CompraInsumoDetalleModel extends Model
         'presentacion_cantidad' => 'decimal:4',
         'cantidad_presentaciones' => 'decimal:2',
         'precio_unitario' => 'decimal:2',
+        'subtotal' => 'decimal:2',
         'cantidad_base' => 'decimal:4',
     ];
 

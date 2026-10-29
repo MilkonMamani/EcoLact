@@ -1,0 +1,214 @@
+{
+  "plan": "calidad_1_parametros.json",
+  "fecha": "2026-10-28T11:01:35",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "par_01_listado",
+      "archivo": "evidencias/originales/parametros/par_01_listado.png",
+      "url": "/admin/parametros-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          599,
+          239,
+          639
+        ],
+        "nuevo": [
+          765,
+          48,
+          936,
+          88
+        ],
+        "tabla": [
+          285,
+          196,
+          935,
+          708
+        ],
+        "panel": [
+          960,
+          48,
+          1408,
+          289
+        ]
+      },
+      "textos_visibles": [
+        "Agua añadida\n\nPorcentaje de agua agregada a la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\nDensidad\n\nMide la densidad de la leche.\n\n\tg/mL\t\nActivo\n\tSin configurar\t26/10/2026\nGrasa\n\nContenido de grasa de la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\nLactosa\n\nContenido de lactosa de la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\npH\n\nMide la acidez o alcalinidad de la leche.\n\n\tpH\t\nActivo\n\tSin configurar\t26/10/2026\nProteína\n\nContenido de proteína de la leche.\n\n\t%\t\nActivo\n\tSin configurar\t26/10/2026\nTemperatura\n\nTemperatura de la leche al recibirla.\n\n\t°C\t\nActivo\n\tSin configurar\t26/10/2026",
+        "Selecciona un parámetro\n\nHaz clic en una fila para ver su información y su regla de evaluación."
+      ],
+      "hora": "2026-10-28T11:01:40"
+    },
+    {
+      "nombre": "par_02_modal",
+      "archivo": "evidencias/originales/parametros/par_02_modal.png",
+      "url": "/admin/parametros-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "nombre": [
+          380,
+          312,
+          710,
+          354
+        ],
+        "codigo": [
+          730,
+          312,
+          1060,
+          354
+        ],
+        "unidad": [
+          380,
+          433,
+          710,
+          475
+        ],
+        "estado": [
+          730,
+          433,
+          1060,
+          475
+        ],
+        "guardar": [
+          903,
+          622,
+          1060,
+          658
+        ]
+      },
+      "textos_visibles": [
+        "Nuevo parámetro de calidad\n\nDefine el parámetro y la unidad de medida.\n\nNombre *\nCódigo *\n\nSe genera a partir del nombre. Solo mayúsculas, números y _. No se podrá cambiar después.\n\nUnidad *\nEstado *\nSelecciona una opción\nActivo\nInactivo\nDescripción\nCancelar\nGuardar parámetro"
+      ],
+      "hora": "2026-10-28T11:01:43"
+    },
+    {
+      "nombre": "par_03_registrado",
+      "archivo": "evidencias/originales/parametros/par_03_registrado.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "panel": [
+          960,
+          94,
+          1408,
+          794
+        ],
+        "configurar": [
+          1112,
+          714,
+          1256,
+          746
+        ]
+      },
+      "textos_visibles": [
+        "Parámetro de calidad registrado correctamente.",
+        "Prueba Manual\nInactivo\n\n%\n\nInformación general\n\nQué se mide: nombre, unidad, estado y descripción.\n\nCódigo\nPRUEBA_MANUAL\nNombre\nPrueba Manual\nUnidad\n%\nEstado\nInactivo\nÚltima actualización\n28/10/2026\nDescripción\nParámetro ficticio del manual.\nEditar parámetro\nRegla de evaluación\n\nCuál es el rango aceptado para el valor medido.\n\nSin configurar\n\nEste parámetro todavía no tiene un rango de evaluación definido.\n\nConfigurar regla"
+      ],
+      "hora": "2026-10-28T11:01:47"
+    },
+    {
+      "nombre": "par_04_regla",
+      "archivo": "evidencias/originales/parametros/par_04_regla.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "minimo": [
+          380,
+          312,
+          710,
+          354
+        ],
+        "maximo": [
+          730,
+          312,
+          1060,
+          354
+        ],
+        "resultado": [
+          380,
+          396,
+          1060,
+          438
+        ],
+        "inicio": [
+          380,
+          480,
+          710,
+          522
+        ],
+        "guardar": [
+          939,
+          646,
+          1060,
+          682
+        ]
+      },
+      "textos_visibles": [
+        "Configurar regla de calidad\n\nPrueba Manual · %\n\nValor mínimo\nValor máximo\nResultado si incumple *\nSelecciona una opción\nAceptada\nObservada\nRechazada\nFecha inicio *\nFecha fin\nEstado *\nSelecciona una opción\nActivo\nInactivo\nCancelar\nGuardar regla"
+      ],
+      "hora": "2026-10-28T11:01:50"
+    },
+    {
+      "nombre": "par_05_regla_guardada",
+      "archivo": "evidencias/originales/parametros/par_05_regla_guardada.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "regla": [
+          981,
+          531,
+          1387,
+          758
+        ]
+      },
+      "textos_visibles": [
+        "Regla de calidad registrada correctamente.",
+        "Regla de evaluación\n\nCuál es el rango aceptado para el valor medido.\n\nRango aceptado\n1 – 5 %\nSi incumple\nRechazada\nVigencia\n28/10/2026 – Sin fecha fin\nEstado\nActiva\nEditar regla"
+      ],
+      "hora": "2026-10-28T11:01:53"
+    },
+    {
+      "nombre": "par_06_editar",
+      "archivo": "evidencias/originales/parametros/par_06_editar.png",
+      "url": "/admin/parametros-calidad?parametro=8",
+      "descripcion": "",
+      "objetivos": {
+        "codigo_bloqueado": [
+          730,
+          312,
+          1060,
+          354
+        ],
+        "descripcion": [
+          380,
+          517,
+          1060,
+          575
+        ],
+        "guardar": [
+          917,
+          622,
+          1060,
+          658
+        ]
+      },
+      "textos_visibles": [
+        "Editar parámetro de calidad\n\nPrueba Manual · Código: PRUEBA_MANUAL\n\nNombre *\nCódigo\n\nEl código es el identificador interno del parámetro y no se modifica.\n\nUnidad *\nEstado *\nSelecciona una opción\nActivo\nInactivo\nDescripción\nCancelar\nGuardar cambios"
+      ],
+      "hora": "2026-10-28T11:01:55"
+    }
+  ]
+}

@@ -64,34 +64,6 @@ class EloquentConfiguracionPagoRepository implements ConfiguracionPagoRepository
         return ConfiguracionPagoModel::whereKey($configuracionId)->whereHas('obligaciones')->exists();
     }
 
-    public function buscarVigenteDeTrabajador(int $userId, DateTimeImmutable $fecha): ?ConfiguracionPago
-    {
-        return $this->vigenteEn($this->deTrabajador($userId), $fecha);
-    }
-
-    public function listarSolapadasDeTrabajador(int $userId, DateTimeImmutable $desde, ?DateTimeImmutable $hasta, ?int $excluirId = null): array
-    {
-        return $this->solapadas($this->deTrabajador($userId), $desde, $hasta, $excluirId);
-    }
-
-    public function listarHistorialDeTrabajador(int $userId): array
-    {
-        return $this->historial($this->deTrabajador($userId));
-    }
-
-    public function listarVigentesDeTrabajadores(DateTimeImmutable $fecha): array
-    {
-        return $this->vigentes(
-            ConfiguracionPagoModel::query()
-                ->where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value)
-                ->whereNotNull('user_id'),
-            $fecha,
-        )
-            ->get()
-            ->map(fn (ConfiguracionPagoModel $model): ConfiguracionPago => $this->toEntity($model))
-            ->all();
-    }
-
     private function vigenteEn(Builder $clave, DateTimeImmutable $fecha): ?ConfiguracionPago
     {
         $model = $this->vigentes($clave, $fecha)->orderByDesc('fecha_inicio')->first();
@@ -116,6 +88,7 @@ class EloquentConfiguracionPagoRepository implements ConfiguracionPagoRepository
     {
         return $clave
             ->where('estado', 'ACTIVO')
+            ->lockForUpdate()
             ->when($excluirId !== null, fn (Builder $query) => $query->where('id', '<>', $excluirId))
             ->when($hasta !== null, fn (Builder $query) => $query->whereDate('fecha_inicio', '<=', $hasta->format('Y-m-d')))
             ->where(fn (Builder $query) => $query->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', $desde->format('Y-m-d')))
@@ -138,7 +111,7 @@ class EloquentConfiguracionPagoRepository implements ConfiguracionPagoRepository
             ->all();
     }
 
-    /** Proveedor, o configuración histórica por rol: nunca el sueldo de un trabajador. */
+    /** Proveedor, o sueldo de un rol: nunca una fila individual (historial) de un trabajador. */
     private function clave(TipoBeneficiarioPago $tipo, ?int $rolId): Builder
     {
         return ConfiguracionPagoModel::query()
@@ -149,13 +122,6 @@ class EloquentConfiguracionPagoRepository implements ConfiguracionPagoRepository
                 fn (Builder $query) => $query->whereNull('rol_id'),
                 fn (Builder $query) => $query->where('rol_id', $rolId),
             );
-    }
-
-    private function deTrabajador(int $userId): Builder
-    {
-        return ConfiguracionPagoModel::query()
-            ->where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value)
-            ->where('user_id', $userId);
     }
 
     private function toEntity(ConfiguracionPagoModel $model): ConfiguracionPago

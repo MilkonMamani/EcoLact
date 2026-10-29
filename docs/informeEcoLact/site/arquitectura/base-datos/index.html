@@ -6,11 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Base central y copia local con responsabilidades distintas. Arquitectura verificada en las fuentes de EcoLact.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
+      
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/arquitectura/base-datos/">
       
       
         <link rel="prev" href="../dominio/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Base de datos - Informe EcoLact</title>
+        <title>Persistencia y bases de datos - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#base-datos" class="md-skip">
+        <a href="#persistencia-y-bases-de-datos" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Base de datos
+              Persistencia y bases de datos
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -937,6 +993,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1024,7 +1084,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1052,7 +1112,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1110,6 +1226,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Persistencia y bases de datos
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1117,7 +1251,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1126,6 +1260,119 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mysql-servidor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MySQL · Servidor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sqlite-sqldelight-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite / SQLDelight · Móvil
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-viajan-y-se-conservan-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo viajan y se conservan los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-se-almacena-localmente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué se almacena localmente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consistencia-y-responsabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consistencia y responsabilidades
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#por-que-dos-persistencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por qué dos persistencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#esquema-y-operaciones-sql-de-la-cola" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Esquema y operaciones SQL de la cola
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1174,7 +1421,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1449,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1591,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1619,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1938,108 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mysql-servidor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MySQL · Servidor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sqlite-sqldelight-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQLite / SQLDelight · Móvil
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-viajan-y-se-conservan-los-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo viajan y se conservan los datos
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-se-almacena-localmente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué se almacena localmente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consistencia-y-responsabilidades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consistencia y responsabilidades
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#por-que-dos-persistencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por qué dos persistencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#esquema-y-operaciones-sql-de-la-cola" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Esquema y operaciones SQL de la cola
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2054,146 @@
                   
 
 
+
+<div class="ec-arquitectura">
+<div class="ec-arch-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4"/></svg></span> 07 · Persistencia y bases de datos</p>
+</div>
+<div class="ec-arch-content">
+<p><span class="ec-arch-kicker">EcoLact / Arquitectura de software</span></p>
+<h1 id="persistencia-y-bases-de-datos">Persistencia y bases de datos</h1>
+<p class="ec-arch-subtitle">Base central y copia local con responsabilidades distintas</p>
+<p>El servidor conserva las operaciones aceptadas del negocio; el teléfono conserva datos útiles para trabajar y operaciones que aún debe enviar. Esta separación responde a necesidades distintas y no implica dos bases de datos idénticas.</p>
+<div class="ec-arch-tech"><span>MySQL previsto</span><span>SQLite móvil</span><span>SQLDelight</span><span>Transacciones</span></div>
+<div class="ec-arch-grid">
+<div class="ec-arch-card blue">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4"/></svg></span></p>
+<h3 id="mysql-servidor">MySQL · Servidor</h3>
+<p>Modelo central previsto: registros y relaciones de negocio, operaciones confirmadas y consultas administrativas. Laravel accede mediante repositorios y consultas de infraestructura.</p>
+</div>
+<div class="ec-arch-card green">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 19H7V5h10m0-4H7c-1.11 0-2 .89-2 2v18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2"/></svg></span></p>
+<h3 id="sqlite-sqldelight-movil">SQLite / SQLDelight · Móvil</h3>
+<p>Caché y datos descargados, sesión local, borradores y operaciones pendientes con sus estados. Los drivers abren <code>ecolact.db</code> en el dispositivo.</p>
+</div>
+</div>
+<h2 id="como-viajan-y-se-conservan-los-datos">Cómo viajan y se conservan los datos</h2>
+<p>Los tres bloques SQLite representan responsabilidades dentro de la base local, no tres servidores. La copia se actualiza mediante respuestas API; no existe una flecha de replicación SQL directa entre bases.</p>
+<div class="ec-arch-diagram">
+<p><img alt="Cómo viajan y se conservan los datos" src="../../assets/diagrams/arquitectura/persistencia.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/persistencia.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/persistencia.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  UI[Compose: consultas y eventos] --&gt; R[Repositorios móviles]
+  R --&gt; CACHE[(SQLite: copias y caché)]
+  R --&gt; QUEUE[(SQLite: sync_queue)]
+  SES[SessionManager] --&gt; SESSION[(SQLite: session)]
+  QUEUE --&gt; S[SyncManager y Ktor]
+  S --&gt; API[API Laravel: validación]
+  API --&gt; U[Casos de uso y repositorios Eloquent]
+  U --&gt; CENTRAL[(Base central: MySQL previsto)]
+  CENTRAL --&gt; JSON[Respuesta JSON de consultas]
+  JSON --&gt; CACHE
+  CACHE -. Flow observable .-&gt; UI
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+</code></pre></div>
+</details>
+</div>
+<h2 id="que-se-almacena-localmente">Qué se almacena localmente</h2>
+<div class="ec-arch-table">
+<table>
+<thead>
+<tr>
+<th>Recurso SQLDelight</th>
+<th>Contenido y función</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CacheEntry.sq</code></td>
+<td>Respuesta JSON por clave y fecha <code>cached_at</code></td>
+</tr>
+<tr>
+<td><code>Entrega.sq</code>, <code>Proveedor.sq</code> y otros esquemas</td>
+<td>Datos locales de entidades para consulta; su uso concreto depende del repositorio de cada funcionalidad</td>
+</tr>
+<tr>
+<td><code>SyncQueue.sq</code></td>
+<td>Clave local, tipo, payload, estado, fechas, server_id, error y attempt_count</td>
+</tr>
+<tr>
+<td><code>Session.sq</code></td>
+<td>Token y datos mínimos de la sesión restaurable</td>
+</tr>
+<tr>
+<td>Esquemas de borradores de calidad y compras</td>
+<td>Trabajo local aún no confirmado</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>SQLDelight genera la API de consultas a partir de archivos <code>.sq</code>. La aplicación define <code>EcoLactDatabase</code> en Gradle y usa drivers diferentes por plataforma: AndroidSqliteDriver y NativeSqliteDriver. No se trata de un ORM Eloquent ejecutándose en el teléfono.</p>
+<h2 id="consistencia-y-responsabilidades">Consistencia y responsabilidades</h2>
+<p>Una operación guardada en la cola es durable localmente, pero todavía no forma parte del registro central confirmado. Su identificador local y <code>server_id</code> cumplen funciones distintas. La caché puede estar desactualizada; una copia de una respuesta no sustituye a las reglas del servidor ni reserva definitivamente stock.</p>
+<p>En Laravel, los repositorios transforman entidades y modelos. Las transacciones agrupan efectos relacionados, como entrega e ingreso de leche. Índices únicos apoyan restricciones como el token de entrega y la única selección de análisis por entrega. Las migraciones describen la evolución del modelo; un SQL de referencia anterior no sustituye revisar esa evolución.</p>
+<div class="ec-arch-note warning">
+<p><strong>Configuración comprobada, despliegue no inspeccionado.</strong> Existe una conexión <code>mysql</code> y el archivo <code>EcoLact_BD_v1_MySQL.sql</code>; el valor por defecto de <code>DB_CONNECTION</code> en el código es <code>sqlite</code>. No se afirma qué motor está usando una instalación concreta. No se ejecutaron migraciones ni se leyeron archivos <code>.env</code>.</p>
+</div>
+<h2 id="por-que-dos-persistencias">Por qué dos persistencias</h2>
+<p>La base central permite reunir y relacionar operaciones de varios usuarios. SQLite evita perder disponibilidad local al desaparecer la señal. Separarlas evita exigir a un teléfono toda la información administrativa y permite que el servidor mantenga la decisión final sobre los registros aceptados. El coste es gestionar antigüedad de caché, pendientes, rechazos y actualizaciones de esquemas.</p>
+<h2 id="evidencias-de-implementacion">Evidencias de implementación</h2>
+<p>Las referencias identifican código revisado. El área de imagen está preparada para la captura manual del archivo indicado; el marcador visual no constituye una captura de la implementación.</p>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="esquema-y-operaciones-sql-de-la-cola">Esquema y operaciones SQL de la cola</h3>
+<p>La tabla local guarda el payload, el estado, el identificador del servidor y el contador de intentos.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/bd-sqldelight.png"><img alt="Captura de código: Esquema y operaciones SQL de la cola" src="../../assets/images/arquitectura/codigo/bd-sqldelight.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> Los pendientes son registros SQLite durables; no una lista mantenida solo en memoria.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>bd-sqldelight.png</code> · <a href="../../assets/images/arquitectura/codigo/bd-sqldelight.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq#L1-L21">EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/SyncQueue.sq</a></p>
+<p>Fragmento sugerido para la captura: líneas 1–21 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<details class="ec-arch-sources">
+<summary>Fuentes adicionales y alcance de la revisión</summary>
+<p>Revisión estática del repositorio local: 28 de octubre de 2026. Enlaces a la revisión <code>75901337489d</code>; la existencia de cada archivo y los fragmentos sugeridos se comprobaron localmente. No se ejecutaron servicios de negocio ni se verificó un despliegue.</p>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/config/database.php">EcoLactWeb/config/database.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql">EcoLactWeb/docs/database/EcoLact_BD_v1_MySQL.sql</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/CacheEntry.sq">EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/CacheEntry.sq</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Entrega.sq">EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Entrega.sq</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq">EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts">EcoLactMobile/shared/build.gradle.kts</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt">EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.ios.kt">EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.ios.kt</a></li>
+</ul>
+</details>
+<div class="ec-arch-links">
+<p><a href="../dominio/">← Entidades y reglas de negocio</a></p>
+<p><a href="../">Vista general</a></p>
+<p><a href="../api/">Comunicación mediante API REST →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="base-datos">base-datos</h1>
-
-
-
-
-
-
 
 
 

@@ -19,6 +19,17 @@ class EloquentInsumoMovimientoRepository implements InsumoMovimientoRepository
     /**
      * @return InsumoMovimiento[]
      */
+    public function ultimoMovimientoPorInsumo(): array
+    {
+        return InsumoMovimientoModel::query()
+            ->groupBy('insumo_id')
+            ->selectRaw('insumo_id, MAX(fecha) as fecha')
+            ->toBase()
+            ->get()
+            ->mapWithKeys(fn (object $fila): array => [(int) $fila->insumo_id => new DateTimeImmutable((string) $fila->fecha)])
+            ->all();
+    }
+
     public function listarPorInsumo(int $insumoId): array
     {
         return InsumoMovimientoModel::where('insumo_id', $insumoId)

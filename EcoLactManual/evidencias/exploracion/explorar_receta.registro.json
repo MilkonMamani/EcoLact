@@ -1,0 +1,20 @@
+{
+  "plan": "explorar_receta.json",
+  "fecha": "2026-10-28T11:56:57",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_receta",
+      "archivo": "evidencias/exploracion/x_receta.png",
+      "url": "/admin/recetas",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Nueva receta\n\nDefine el producto y su fórmula de producción.\n\nINFORMACIÓN DEL PRODUCTO\nCategoría *\nElija la categoría\nQuesos\nYogures\nMantequillas\n+ Nueva categoría\nNombre *\nPresentación *\nUnidad de presentación *\nElija la unidad\nLitros (L)\nMililitros (ml)\nKilogramos (kg)\nGramos (g)\nUnidades\nDescripción\n\nImagen del producto\n\nSeleccionar imagen\n\nJPG, PNG o WEBP · máximo 2 MB\n\nFÓRMULA DE PRODUCCIÓN\n\nCompleta el producto y la presentación para definir la fórmula.\n\nDefine los insumos necesarios para producir una unidad.\n\nINSUMO\nCANTIDAD\nUNIDAD\nOBSERVACIÓN\nACCIÓN\nElija un insumo\nLeche\nInsumo Prueba Manual\n—\nElija un insumo\nLeche\nInsumo Prueba Manual\n—\n\nAgregar ingrediente\n\n¿No encuentras un insumo?\nCréalo desde Inventario > Insumos.\n\nGuardar una receta no descuenta inventario. Los insumos se consumen al iniciar una producción.\n\nCancelar\nGuardar receta",
+        "Producción\n›\nRecetas\nRecetas\n\nDefine cómo se fabrica cada producto.\n\nNueva receta\n\nNo hay recetas registradas.\n\nCrea una receta para definir cómo se fabrica un producto.\n\nNueva receta\nNueva receta\n\nDefine el producto y su fórmula de producción.\n\nINFORMACIÓN DEL PRODUCTO\nCategoría *\nElija la categoría\nQuesos\nYogures\nMantequillas\n+ Nueva categoría\nNombre *\nPresentación *\nUnidad de presentación *\nElija la unidad\nLitros (L)\nMililitros (ml)\nKilogramos (kg)\nGramos (g)\nUnidades\nDescripción\n\nImagen del producto\n\nSeleccionar imagen\n\nJPG, PNG o WEBP · máximo 2 MB\n\nFÓRMULA DE PRODUCCIÓN\n\nCompleta el producto y la presentación para definir la fórmula.\n\nDefine los insumos necesarios para producir una unidad.\n\nINSUMO\nCANTIDAD\nUNIDAD\nOBSERVACIÓN\nACCIÓN\nElija un insumo\nLeche\nInsumo Prueba Manual\n—\nElija un insumo\nLeche\nInsumo Prueba Manual\n—\n\nAgregar ingrediente\n\n¿No encuentras un insumo?\nCréalo desde Inventario > Insumos.\n\nGuardar una receta no descuenta inventario. Los insumos se consumen al iniciar una producción.\n\nCancelar\nGuardar receta"
+      ],
+      "hora": "2026-10-28T11:57:06"
+    }
+  ],
+  "dialogos": []
+}

@@ -6,11 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Reglas de negocio detrás de contratos. Arquitectura verificada en las fuentes de EcoLact.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
+      
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/arquitectura/backend/">
       
       
         <link rel="prev" href="../">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Backend Laravel - Informe EcoLact</title>
+        <title>Clean Architecture en Laravel - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#backend" class="md-skip">
+        <a href="#clean-architecture-en-laravel" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Backend Laravel
+              Clean Architecture en Laravel
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -937,6 +993,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1026,6 +1086,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend y Clean Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1033,7 +1111,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1042,6 +1120,152 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Presentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aplicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aplicación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dominio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dominio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infraestructura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infraestructura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recorrido-de-una-solicitud-de-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recorrido de una solicitud de entrega
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inversion-de-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inversión de dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registrarentrega-como-ejemplo-verificable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RegistrarEntrega como ejemplo verificable
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-problema-resuelve-la-separacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué problema resuelve la separación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#un-caso-de-uso-para-registrar-la-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Un caso de uso para registrar la entrega
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adaptador-de-persistencia-eloquent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adaptador de persistencia Eloquent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1062,7 +1286,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1118,7 +1398,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1454,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1482,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1624,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1652,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1971,141 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#presentacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Presentación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#aplicacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aplicación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dominio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dominio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#infraestructura" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infraestructura
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recorrido-de-una-solicitud-de-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recorrido de una solicitud de entrega
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inversion-de-dependencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inversión de dependencias
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registrarentrega-como-ejemplo-verificable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RegistrarEntrega como ejemplo verificable
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-problema-resuelve-la-separacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué problema resuelve la separación
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#un-caso-de-uso-para-registrar-la-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Un caso de uso para registrar la entrega
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adaptador-de-persistencia-eloquent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adaptador de persistencia Eloquent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2120,156 @@
                   
 
 
+
+<div class="ec-arquitectura">
+<div class="ec-arch-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0 3 7l1.63 1.27L12 14l7.36-5.73L21 7zm7.37 10.73L12 16.47l-7.38-5.73L3 12l9 7 9-7zm0 5L12 21.47l-7.38-5.73L3 17l9 7 9-7z"/></svg></span> 02 · Clean Architecture en Laravel</p>
+</div>
+<div class="ec-arch-content">
+<p><span class="ec-arch-kicker">EcoLact / Arquitectura de software</span></p>
+<h1 id="clean-architecture-en-laravel">Clean Architecture en Laravel</h1>
+<p class="ec-arch-subtitle">Reglas de negocio detrás de contratos</p>
+<p>La organización de EcoLact aplica principios de Clean Architecture: el código que coordina una entrega depende de entidades y contratos, mientras Eloquent resuelve la persistencia. La frontera es útil para compartir operaciones entre web y móvil sin repetir sus reglas.</p>
+<div class="ec-arch-tech"><span>Presentación</span><span>Application</span><span>Domain</span><span>Infrastructure</span></div>
+<div class="ec-arch-layers">
+<div class="ec-arch-card blue">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.36 14c.08-.66.14-1.32.14-2s-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2m-5.15 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56M14.34 14H9.66c-.1-.66-.16-1.32-.16-2s.06-1.35.16-2h4.68c.09.65.16 1.32.16 2s-.07 1.34-.16 2M12 19.96c-.83-1.2-1.5-2.53-1.91-3.96h3.82c-.41 1.43-1.08 2.76-1.91 3.96M8 8H5.08A7.92 7.92 0 0 1 9.4 4.44C8.8 5.55 8.35 6.75 8 8m-2.92 8H8c.35 1.25.8 2.45 1.4 3.56A8 8 0 0 1 5.08 16m-.82-2C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2s.06 1.34.14 2M12 4.03c.83 1.2 1.5 2.54 1.91 3.97h-3.82c.41-1.43 1.08-2.77 1.91-3.97M18.92 8h-2.95a15.7 15.7 0 0 0-1.38-3.56c1.84.63 3.37 1.9 4.33 3.56M12 2C6.47 2 2 6.5 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2"/></svg></span></p>
+<h3 id="presentacion">Presentación</h3>
+<p>Controladores, Form Requests, rutas y serialización. Interpretan HTTP, autorizan la acción y preparan HTML o JSON.</p>
+</div>
+<div class="ec-arch-card green">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4m0 2a2 2 0 0 0-2 2 2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2m-2 12c-.25 0-.46-.18-.5-.42l-.37-2.65c-.63-.25-1.17-.59-1.69-.99l-2.49 1.01c-.22.08-.49 0-.61-.22l-2-3.46a.493.493 0 0 1 .12-.64l2.11-1.66L4.5 12l.07-1-2.11-1.63a.493.493 0 0 1-.12-.64l2-3.46c.12-.22.39-.31.61-.22l2.49 1c.52-.39 1.06-.73 1.69-.98l.37-2.65c.04-.24.25-.42.5-.42h4c.25 0 .46.18.5.42l.37 2.65c.63.25 1.17.59 1.69.98l2.49-1c.22-.09.49 0 .61.22l2 3.46c.13.22.07.49-.12.64L19.43 11l.07 1-.07 1 2.11 1.63c.19.15.25.42.12.64l-2 3.46c-.12.22-.39.31-.61.22l-2.49-1c-.52.39-1.06.73-1.69.98l-.37 2.65c-.04.24-.25.42-.5.42zm1.25-18-.37 2.61c-1.2.25-2.26.89-3.03 1.78L5.44 7.35l-.75 1.3L6.8 10.2a5.55 5.55 0 0 0 0 3.6l-2.12 1.56.75 1.3 2.43-1.04c.77.88 1.82 1.52 3.01 1.76l.37 2.62h1.52l.37-2.61c1.19-.25 2.24-.89 3.01-1.77l2.43 1.04.75-1.3-2.12-1.55c.4-1.17.4-2.44 0-3.61l2.11-1.55-.75-1.3-2.41 1.04a5.42 5.42 0 0 0-3.03-1.77L12.75 4z"/></svg></span></p>
+<h3 id="aplicacion">Aplicación</h3>
+<p>Los casos de uso coordinan permisos de negocio, entidades, transacciones y operaciones relacionadas.</p>
+</div>
+<div class="ec-arch-card purple">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A.99.99 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88zM12 4.15 6.04 7.5 12 10.85l5.96-3.35zM5 15.91l6 3.38v-6.71L5 9.21zm14 0v-6.7l-6 3.37v6.71z"/></svg></span></p>
+<h3 id="dominio">Dominio</h3>
+<p>Entidades, enumeraciones y contratos representan el negocio, sus estados y restricciones.</p>
+</div>
+<div class="ec-arch-card orange">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4"/></svg></span></p>
+<h3 id="infraestructura">Infraestructura</h3>
+<p>Modelos y repositorios Eloquent, adaptación de datos y transacciones Laravel implementan los contratos.</p>
+</div>
+</div>
+<h2 id="recorrido-de-una-solicitud-de-entrega">Recorrido de una solicitud de entrega</h2>
+<p><strong>Estas flechas representan llamadas y resultados durante la ejecución.</strong> RegistrarEntrega valida proveedor, acopiador y alcance de la operación. Su transacción incluye entrega, ingreso de leche, sincronización del pago pendiente y notificación.</p>
+<div class="ec-arch-diagram">
+<p><img alt="Recorrido de una solicitud de entrega" src="../../assets/diagrams/arquitectura/backend-ejecucion.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/backend-ejecucion.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/backend-ejecucion.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  H[Solicitud Web o API] --&gt; R[Form Request: validar formato]
+  R --&gt; C[Controller: Gate y actor autenticado]
+  C --&gt; U[RegistrarEntrega: reglas y coordinación]
+  U --&gt; D[Entidad Entrega: invariantes]
+  U --&gt; T[TransactionManager: unidad transaccional]
+  T --&gt; E[EloquentEntregaRepository: persistir]
+  E --&gt; DB[(Base central)]
+  T --&gt; I[Ingreso de leche, pendiente y notificación]
+  DB --&gt; O[Entidad resultante]
+  O --&gt; S[Controller: respuesta HTML o JSON]
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+</code></pre></div>
+</details>
+</div>
+<h2 id="inversion-de-dependencias">Inversión de dependencias</h2>
+<p><strong>Aquí las flechas representan dependencias del código, no el orden temporal.</strong> La infraestructura implementa el contrato definido hacia el núcleo. En ejecución el caso de uso recibe el adaptador concreto mediante la vinculación de AppServiceProvider.</p>
+<div class="ec-arch-diagram">
+<p><img alt="Inversión de dependencias" src="../../assets/diagrams/arquitectura/backend-dependencias.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/backend-dependencias.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/backend-dependencias.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  C[Controlador HTTP] --&gt;|usa| U[Application: RegistrarEntrega]
+  U --&gt;|depende del contrato| I[Domain: EntregaRepository]
+  U --&gt;|crea y utiliza| D[Domain: Entrega]
+  E[Infrastructure: EloquentEntregaRepository] --&gt;|implementa| I
+  E --&gt;|adapta| D
+  E --&gt; M[Modelo Eloquent]
+  P[AppServiceProvider] -. vincula contrato e implementación .-&gt; I
+  P -. registra adaptador .-&gt; E
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+</code></pre></div>
+</details>
+</div>
+<h2 id="registrarentrega-como-ejemplo-verificable">RegistrarEntrega como ejemplo verificable</h2>
+<ol>
+<li>El controlador obtiene el actor desde la sesión, valida la entrada y autoriza la acción con Gate.</li>
+<li>El caso de uso busca al proveedor por QR o DNI, comprueba estados y aplica las reglas de zona o el contexto del recorrido.</li>
+<li>La entidad impide una entrega con litros no positivos. El caso de uso no confía solo en el formulario.</li>
+<li>Los repositorios guardan los datos a través de sus contratos. <code>LaravelTransactionManager</code> adapta el contrato de transacción a <code>DB::transaction</code>.</li>
+<li>El controlador web redirige al historial; el de API serializa la entidad en JSON. La operación de negocio es compartida.</li>
+</ol>
+<h2 id="que-problema-resuelve-la-separacion">Qué problema resuelve la separación</h2>
+<p>Cambiar una respuesta JSON no exige reescribir las reglas de acopio. Una prueba puede sustituir un contrato por un doble, y la persistencia puede evolucionar sin obligar al caso de uso a crear modelos Eloquent. Son ventajas de diseño; esta revisión no ejecuta pruebas de negocio ni demuestra independencia absoluta de todo el framework.</p>
+<div class="ec-arch-note warning">
+<p><strong>Una aplicación de principios, no una pureza absoluta.</strong> RegistrarEntrega utiliza el helper <code>now()</code> de Laravel. Otros casos de uso, como RegistrarAsistenciaQr, importan excepciones de Illuminate. Además, algunas consultas de presentación usan modelos directamente. Por ello se describe una separación pragmática de responsabilidades, no un núcleo completamente ajeno al framework.</p>
+</div>
+<h2 id="evidencias-de-implementacion">Evidencias de implementación</h2>
+<p>Las referencias identifican código revisado. El área de imagen está preparada para la captura manual del archivo indicado; el marcador visual no constituye una captura de la implementación.</p>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="un-caso-de-uso-para-registrar-la-entrega">Un caso de uso para registrar la entrega</h3>
+<p>La operación recibe sus dependencias mediante contratos y coordina las reglas de acopio.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/backend-caso-uso.png"><img alt="Captura de código: Un caso de uso para registrar la entrega" src="../../assets/images/arquitectura/codigo/backend-caso-uso.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> La aplicación conoce los contratos del negocio; no necesita construir un modelo Eloquent para expresar la operación.</p>
+<div class="ec-arch-file"></div>
+</div>
+</section>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="adaptador-de-persistencia-eloquent">Adaptador de persistencia Eloquent</h3>
+<p>El repositorio convierte una entidad de dominio en datos persistibles y devuelve una entidad.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/backend-repositorio.png"><img alt="Captura de código: Adaptador de persistencia Eloquent" src="../../assets/images/arquitectura/codigo/backend-repositorio.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> EloquentEntregaRepository implementa EntregaRepository. La tecnología de persistencia queda en el adaptador.</p>
+<div class="ec-arch-file"></div>
+</div>
+</section>
+<details class="ec-arch-sources">
+<summary>Fuentes adicionales y alcance de la revisión</summary>
+<p>Revisión estática del repositorio local: 28 de octubre de 2026. Enlaces a la revisión <code>75901337489d</code>; la existencia de cada archivo y los fragmentos sugeridos se comprobaron localmente. No se ejecutaron servicios de negocio ni se verificó un despliegue.</p>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Domain/Entrega/EntregaRepository.php">EcoLactWeb/app/Domain/Entrega/EntregaRepository.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Providers/AppServiceProvider.php">EcoLactWeb/app/Providers/AppServiceProvider.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Shared/TransactionManager.php">EcoLactWeb/app/Application/Shared/TransactionManager.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Infrastructure/Persistence/LaravelTransactionManager.php">EcoLactWeb/app/Infrastructure/Persistence/LaravelTransactionManager.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaRequest.php">EcoLactWeb/app/Http/Requests/Entrega/StoreEntregaRequest.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Application/Pago/RegistrarAsistenciaQr.php">EcoLactWeb/app/Application/Pago/RegistrarAsistenciaQr.php</a></li>
+</ul>
+</details>
+<div class="ec-arch-links">
+<p><a href="../">← Arquitectura de EcoLact</a></p>
+<p><a href="../">Vista general</a></p>
+<p><a href="../mobile/">Arquitectura móvil: KMP y MVVM →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="backend">backend</h1>
-
-
-
-
-
-
 
 
 

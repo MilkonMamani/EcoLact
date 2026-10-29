@@ -1,0 +1,22 @@
+flowchart TB
+  A([Inicio · Planta]) --> B[Consultar leche e insumos disponibles]
+  B --> C[Seleccionar productos y cantidades]
+  C --> D[Obtener recetas y calcular requerimientos]
+  D --> E{¿Recetas válidas y stock suficiente?}
+  E -->|No| F[Impedir inicio y mostrar faltantes]
+  F --> C
+  E -->|Sí| G[Iniciar lote EN_PROCESO]
+  G --> H[Descontar leche e insumos]
+  H --> I[Elaborar productos]
+  I --> J[Registrar cantidades reales y merma]
+  J --> K{¿Datos de todos los productos válidos?}
+  K -->|No| J
+  K -->|Sí| L[Finalizar lote]
+  L --> M[Ingresar productos realmente obtenidos]
+  M --> N[Estado FINALIZADO]
+  N --> Z([Fin · Stock disponible para ventas])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class E,K decision;
+  class A,Z terminal;

@@ -2,10 +2,18 @@
 site_name: "Informe EcoLact"
 site_description: "Documentación técnica del sistema EcoLact"
 site_author: "Equipo CodeCraft"
-
+site_url: https://MilkonMamani.github.io/EcoLact/
 
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/sistema.css
+  - stylesheets/actores.css
+  - stylesheets/modulos.css
+  - stylesheets/reglas-negocio.css
+  - stylesheets/flujos.css
+  - stylesheets/arquitectura.css
+  - stylesheets/desarrollo.css
+  - stylesheets/pruebas.css
 
 theme:
   name: material
@@ -56,28 +64,32 @@ nav:
       - Vista general: flujos/index.md
       - Acopio de leche: flujos/acopio.md
       - Control de calidad: flujos/calidad.md
+      - Valorización y pagos: flujos/liquidacion-pagos.md
+      - Consulta del proveedor: flujos/consulta-proveedor.md
       - Producción: flujos/produccion.md
       - Insumos y compras: flujos/insumos.md
-      - Ventas y caja: flujos/ventas-caja.md
-      - Liquidación y pagos: flujos/liquidacion-pagos.md
-      - Flujo financiero: flujos/finanzas.md
+      - Ventas y compradores: flujos/ventas-caja.md
+      - Caja y finanzas: flujos/finanzas.md
+      - Asistencia y personal: flujos/personal-asistencia.md
       - Integración móvil y web: flujos/integracion.md
 
   - Arquitectura:
       - Vista general: arquitectura/index.md
-      - Backend Laravel: arquitectura/backend.md
-      - Aplicación móvil: arquitectura/mobile.md
+      - Backend y Clean Architecture: arquitectura/backend.md
+      - KMP y MVVM: arquitectura/mobile.md
+      - Arquitectura Offline-first: arquitectura/offline-first.md
+      - Sincronización de datos: arquitectura/sincronizacion.md
       - Modelo de dominio: arquitectura/dominio.md
-      - Base de datos: arquitectura/base-datos.md
+      - Persistencia y bases de datos: arquitectura/base-datos.md
       - API REST: arquitectura/api.md
-      - Seguridad: arquitectura/seguridad.md
-      - Integración: arquitectura/integracion.md
+      - Autenticación y seguridad: arquitectura/seguridad.md
+      - Integración Web y Móvil: arquitectura/integracion.md
 
   - Desarrollo:
       - Empezar: desarrollo/index.md
       - Estructura del repositorio: desarrollo/repositorio.md
-      - Backend: desarrollo/backend.md
-      - App móvil: desarrollo/mobile.md
+      - Configurar backend: desarrollo/backend.md
+      - Configurar aplicación móvil: desarrollo/mobile.md
       - Base de datos y seeders: desarrollo/base-datos.md
       - Variables de entorno: desarrollo/configuracion.md
       - Git y convenciones: desarrollo/git.md

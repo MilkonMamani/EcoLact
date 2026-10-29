@@ -1,0 +1,353 @@
+{
+  "id": "PER",
+  "tipo": "modulo",
+  "titulo": "Personal: trabajadores y acopiadores",
+  "registro": "evidencias/originales/personal/personal_1_acopiador.registro.json",
+  "introduccion": "El Administrador registra las cuentas del personal: acopiadores, analistas de calidad, encargados de planta y personal de ventas. Todos se dan de alta desde «Nuevo trabajador» y se administran desde su listado, con el mismo diseño de tabla y panel lateral. Este capítulo documenta el ciclo completo con un acopiador; los demás tipos siguen el mismo patrón, salvo que no piden zona.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Personal › Trabajadores › Nuevo trabajador · Acopiadores · Analistas de calidad · Encargados de planta · Personal de ventas"
+    ],
+    [
+      "Depende de",
+      "Zonas activas (solo para acopiadores)."
+    ],
+    [
+      "Habilita",
+      "Apertura de recorridos (acopiadores), asistencia y pago de sueldos."
+    ],
+    [
+      "Reglas principales",
+      [
+        "El DNI identifica al trabajador y no se edita después del alta.",
+        "El acopiador siempre pertenece a una zona; su historial de zonas se conserva.",
+        "No hay eliminación: el trabajador se desactiva y se reactiva."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "per_11_panel",
+    "pie": "Listado de acopiadores con el panel del acopiador seleccionado.",
+    "elementos": [
+      [
+        "«Nuevo acopiador»",
+        "Abre el alta desde el propio listado."
+      ],
+      [
+        "Buscador y filtros",
+        "Buscan por nombre, apellido, DNI o teléfono y filtran por «Estado» y «Zona» con «Filtrar» / «Limpiar»."
+      ],
+      [
+        "Tabla",
+        "Nombre, DNI, teléfono, zona, entregas y el interruptor de «Estado»."
+      ],
+      [
+        "Panel del acopiador",
+        "Pestañas «Resumen», «Entregas», «Zona», «Asistencia» y «Pagos»."
+      ],
+      [
+        "«Editar» (Información personal)",
+        "Corrige nombres, apellidos y teléfono."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-PER-001",
+      "titulo": "Registrar un acopiador (Nuevo trabajador)",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Crear la cuenta de un acopiador asignado a una zona.",
+      "acceso": "Personal › Trabajadores › Nuevo trabajador",
+      "requisitos": [
+        "Al menos una zona activa.",
+        "DNI de 8 dígitos no registrado y un nombre de usuario libre."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Nuevo trabajador",
+          "instruccion": "En el menú, despliega «Trabajadores» y haz clic en «Nuevo trabajador».",
+          "captura": "per_01_menu_nuevo",
+          "objetivo": "nuevo_trabajador",
+          "pie": "Opción «Nuevo trabajador»."
+        },
+        {
+          "titulo": "Elegir el tipo",
+          "instruccion": "Selecciona la tarjeta «Acopiador».",
+          "captura": "per_02_tipos",
+          "objetivo": "tipo_acopiador",
+          "pie": "Tarjeta «Acopiador» entre los cuatro tipos de trabajador.",
+          "resultado": "El formulario muestra el campo «Zona», exclusivo del acopiador."
+        },
+        {
+          "titulo": "Completar la información personal",
+          "instruccion": "Escribe «Nombres», «Apellidos» y «DNI» (8 dígitos). El «Teléfono» es opcional.",
+          "captura": "per_03_info_personal",
+          "objetivo": "dni",
+          "pie": "Campos de «Información personal» con datos ficticios."
+        },
+        {
+          "titulo": "Asignar la zona",
+          "instruccion": "Elige la zona del acopiador en «Zona».",
+          "captura": "per_04_zona",
+          "objetivo": "zona",
+          "pie": "Lista «Zona»."
+        },
+        {
+          "titulo": "Crear la cuenta de acceso",
+          "instruccion": "Escribe el «Usuario» y una «Contraseña» de al menos 8 caracteres. Entrégalas al trabajador de forma segura.",
+          "captura": "per_05_cuenta",
+          "objetivo": "usuario",
+          "pie": "Sección «Cuenta de acceso» (contraseña difuminada)."
+        },
+        {
+          "titulo": "Registrar",
+          "instruccion": "Haz clic en «Registrar trabajador».",
+          "captura": "per_05b_formulario_completo",
+          "objetivo": "registrar",
+          "pie": "Botón «Registrar trabajador».",
+          "registro": "evidencias/originales/personal/personal_1b_boton_registrar.registro.json"
+        },
+        {
+          "titulo": "Comprobar el registro",
+          "instruccion": "Verifica el mensaje de confirmación.",
+          "captura": "per_06_registrado",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            760
+          ],
+          "pie": "Mensaje «Acopiador registrado correctamente.»"
+        }
+      ],
+      "resultado": "El acopiador queda «Activo», en la zona elegida y con su cuenta lista para ingresar. Aparece en Personal › Acopiadores.",
+      "validaciones": [
+        [
+          "DNI",
+          "Obligatorio; exactamente 8 dígitos.",
+          "«El DNI debe contener exactamente 8 dígitos.»"
+        ],
+        [
+          "DNI",
+          "No repetido entre acopiadores.",
+          "«Ya existe un acopiador registrado con ese DNI.»"
+        ],
+        [
+          "Nombres / Apellidos",
+          "Obligatorios (máx. 100 / 150 caracteres).",
+          "El navegador no permite enviar campos vacíos."
+        ],
+        [
+          "Zona",
+          "Obligatoria; debe existir y estar activa.",
+          "«La zona seleccionada no existe.»"
+        ],
+        [
+          "Usuario",
+          "Obligatorio y único.",
+          "«Ese nombre de usuario ya está en uso.»"
+        ],
+        [
+          "Contraseña",
+          "Mínimo 8 caracteres.",
+          "«La contraseña debe tener al menos 8 caracteres.»"
+        ]
+      ],
+      "figuras_validacion": [
+        {
+          "captura": "per_07_dni_duplicado",
+          "objetivo": "error",
+          "limitar_x": [
+            284,
+            760
+          ],
+          "pie": "Alta rechazada por DNI repetido; el mensaje se repite bajo el campo «DNI»."
+        }
+      ],
+      "errores": [
+        [
+          "«Ya existe un acopiador registrado con ese DNI.»",
+          "Busca al acopiador en el listado; si está inactivo, reactívalo (ADM-PER-004)."
+        ],
+        [
+          "La zona no aparece en la lista",
+          "Verifica en Zonas que esté activa."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PER-002",
+      "titulo": "Consultar y editar un acopiador",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar la ficha de un acopiador y corregir sus datos personales.",
+      "acceso": "Personal › Trabajadores › Acopiadores",
+      "requisitos": [
+        "Acopiador registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Ubicar al acopiador",
+          "instruccion": "Usa el buscador o los filtros y haz clic en el nombre del acopiador.",
+          "captura": "per_10_listado",
+          "objetivo": "fila",
+          "pie": "Fila del acopiador en el listado.",
+          "resultado": "Se abre su panel a la derecha."
+        },
+        {
+          "titulo": "Abrir la edición",
+          "instruccion": "En «Información personal», haz clic en «Editar».",
+          "captura": "per_11_panel",
+          "objetivo": "editar",
+          "pie": "Botón «Editar» de la información personal."
+        },
+        {
+          "titulo": "Corregir y guardar",
+          "instruccion": "Modifica nombres, apellidos o teléfono y haz clic en «Guardar cambios». El DNI no se edita.",
+          "captura": "per_12_editar",
+          "objetivo": "guardar",
+          "pie": "Ventana «Editar información personal»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje de confirmación.",
+          "captura": "per_13_actualizado",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            760
+          ],
+          "pie": "Mensaje «Acopiador actualizado correctamente.»"
+        }
+      ],
+      "resultado": "La ficha muestra los datos corregidos.",
+      "validaciones": [
+        [
+          "DNI",
+          "No editable.",
+          "«El DNI es el identificador del acopiador y no se edita.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PER-003",
+      "titulo": "Cambiar la zona de un acopiador",
+      "estado": "Verificado parcialmente",
+      "objetivo": "Trasladar un acopiador a otra zona conservando el historial.",
+      "acceso": "Panel del acopiador › pestaña «Zona» › «Editar»",
+      "requisitos": [
+        "Acopiador activo.",
+        "Zona destino activa."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir la pestaña Zona",
+          "instruccion": "En el panel, haz clic en la pestaña «Zona».",
+          "captura": "per_14_tab_zona",
+          "objetivo": "tab_zona",
+          "pie": "Pestaña «Zona» con la zona actual y el historial de zonas."
+        },
+        {
+          "titulo": "Editar la zona",
+          "instruccion": "Haz clic en «Editar» junto a «Zona actual».",
+          "captura": "per_14_tab_zona",
+          "objetivo": "editar_zona",
+          "pie": "Botón «Editar» de la zona actual."
+        },
+        {
+          "titulo": "Elegir la nueva zona y guardar",
+          "instruccion": "Selecciona la «Zona», escribe el «Motivo del cambio» y haz clic en «Guardar zona».",
+          "captura": "per_15_modal_zona",
+          "objetivo": "zona",
+          "pie": "Ventana «Editar zona» del acopiador.",
+          "nota": "Según la ventana, «El tramo actual se cierra hoy y se abre uno nuevo en el historial de zonas.» El guardado no se ejecutó en la prueba para no mover al acopiador a una zona real: pendiente de comprobar."
+        }
+      ],
+      "resultado": "Pendiente de comprobar: la pestaña «Zona» debería mostrar la nueva zona y un nuevo tramo en «Historial de zonas».",
+      "validaciones": [
+        [
+          "Zona",
+          "Debe existir y estar activa.",
+          "«La zona indicada no existe o no está activa.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PER-004",
+      "titulo": "Desactivar y reactivar un acopiador",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Retirar a un acopiador de la operación sin perder su historial, o reincorporarlo.",
+      "acceso": "Personal › Trabajadores › Acopiadores › interruptor «Estado»",
+      "requisitos": [
+        "Acopiador registrado."
+      ],
+      "pasos": [
+        {
+          "titulo": "Pulsar el interruptor",
+          "instruccion": "En la fila del acopiador activo, haz clic en el interruptor de «Estado».",
+          "captura": "per_20_antes_desactivar",
+          "objetivo": "switch",
+          "pie": "Interruptor de estado (verde = activo)."
+        },
+        {
+          "titulo": "Confirmar la desactivación",
+          "instruccion": "Lee el aviso y haz clic en «Sí, desactivar».",
+          "captura": "per_21_modal_desactivar",
+          "objetivo": "confirmar",
+          "pie": "Ventana «Desactivar acopiador»: «El acopiador dejará de estar disponible para registrar nuevas entregas. Su historial se conservará.»"
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el interruptor en rojo, la etiqueta «Inactivo» del panel y el aviso inferior.",
+          "captura": "per_22_desactivado",
+          "objetivo": "switch",
+          "pie": "Acopiador inactivo; aviso «Acopiador desactivado correctamente.» en la esquina inferior."
+        },
+        {
+          "titulo": "Reactivar",
+          "instruccion": "Pulsa de nuevo el interruptor, elige la «Zona» a la que se reincorpora y haz clic en «Reactivar».",
+          "captura": "per_23_modal_reactivar",
+          "objetivo": "confirmar",
+          "pie": "Ventana «Reactivar acopiador» con la zona de reincorporación.",
+          "resultado": "El interruptor vuelve a verde y el acopiador queda activo en la zona elegida."
+        }
+      ],
+      "resultado": "El acopiador cambia de estado; su historial de entregas y zonas se conserva.",
+      "validaciones": [
+        [
+          "Reactivar",
+          "La zona es obligatoria y debe estar activa.",
+          "«Selecciona la zona a la que se reincorpora.»"
+        ],
+        [
+          "Desactivar",
+          "Solo un acopiador activo.",
+          "«El acopiador ya se encuentra inactivo.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PER-005",
+      "titulo": "Registrar analistas, encargados de planta y personal de ventas",
+      "estado": "Pendiente de comprobar",
+      "objetivo": "Crear cuentas del resto del personal.",
+      "acceso": "Personal › Trabajadores › Nuevo trabajador",
+      "requisitos": [
+        "DNI de 8 dígitos y usuario libre."
+      ],
+      "pasos": [
+        {
+          "titulo": "Elegir el tipo",
+          "instruccion": "En «Nuevo trabajador», selecciona «Analista de calidad», «Encargado de planta» o «Personal de ventas».",
+          "captura": "per_02_tipos",
+          "objetivo": "tipos",
+          "pie": "Tarjetas de tipo de trabajador."
+        },
+        {
+          "titulo": "Completar y registrar",
+          "instruccion": "Completa «Información personal» y «Cuenta de acceso» como en ADM-PER-001 (sin zona) y haz clic en «Registrar trabajador»."
+        }
+      ],
+      "resultado": "Pendiente de comprobar en la interfaz para cada tipo. Su consulta, edición y cambio de estado se hacen desde su listado, igual que en ADM-PER-002 y ADM-PER-004."
+    }
+  ]
+}

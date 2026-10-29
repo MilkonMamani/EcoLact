@@ -1,0 +1,77 @@
+{
+ "descripcion": "Acopio: consulta y corrección de litros (46→48 L) de la entrega FICTICIA #1, usuario difuminado.",
+ "salida": "evidencias/originales/acopio",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/entregas",
+   "ms": 2500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-acopio-fila]:has-text('Prueba Manual') [data-entrega-ver]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 2000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_05_detalle",
+   "medir": {
+    "ver": "[data-acopio-fila]:has-text('Prueba Manual') [data-entrega-ver]",
+    "editar_litros": "[data-litros-editar]",
+    "titulo": ".acopio-detalle-titulo"
+   },
+   "leer": [
+    "#modal-ver-entrega [data-entrega-detalle-contenido]"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-litros-editar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 600
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-litros-input]",
+   "texto": "48"
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_06_corregir",
+   "medir": {
+    "litros": "[data-litros-input]",
+    "guardar": "[data-litros-guardar]"
+   }
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-litros-guardar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 2000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_07_corregida",
+   "medir": {
+    "aviso": "[data-litros-aviso]",
+    "litros_fila": "[data-acopio-fila]:has-text('Prueba Manual') .acopio-litros"
+   },
+   "leer": [
+    "[data-litros-aviso]",
+    "#modal-ver-entrega [data-entrega-detalle-contenido]",
+    "[data-acopio-fila]:has-text('Prueba Manual')"
+   ]
+  }
+ ],
+ "difuminar_textos": [
+  "admin"
+ ]
+}

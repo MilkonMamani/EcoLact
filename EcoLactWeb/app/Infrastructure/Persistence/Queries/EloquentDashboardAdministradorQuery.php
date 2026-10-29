@@ -5,23 +5,20 @@ namespace App\Infrastructure\Persistence\Queries;
 use App\Application\Dashboard\Contracts\DashboardAdministradorQuery;
 use App\Application\Dashboard\DashboardAdministradorData;
 use App\Application\Dashboard\DashboardPeriodo;
+use App\Application\Dashboard\ObtenerResumenFinanciero;
 use App\Domain\Produccion\Insumo;
 use App\Domain\Produccion\LoteProduccion;
 use App\Domain\Shared\Enums\EstadoAnalisis;
 use App\Domain\Shared\Enums\EstadoEntrega;
 use App\Domain\Shared\Enums\EstadoJornada;
-use App\Domain\Shared\Enums\EstadoObligacionPago;
-use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use App\Infrastructure\Persistence\Models\ComunicadoModel;
 use App\Infrastructure\Persistence\Models\EntregaModel;
 use App\Infrastructure\Persistence\Models\InsumoModel;
 use App\Infrastructure\Persistence\Models\JornadaPersonalModel;
 use App\Infrastructure\Persistence\Models\LoteProduccionModel;
-use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use App\Infrastructure\Persistence\Models\ProductoModel;
 use App\Infrastructure\Persistence\Models\TrabajadorModel;
 use App\Infrastructure\Persistence\Models\VentaProductoModel;
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
@@ -39,6 +36,10 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
 
     private const COMUNICADOS_VISIBLES = 3;
 
+    public function __construct(
+        private readonly ObtenerResumenFinanciero $finanzas,
+    ) {}
+
     public function obtener(DashboardPeriodo $periodo): DashboardAdministradorData
     {
         $produccion = $this->produccion($periodo);
@@ -51,7 +52,7 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
             acopio: $this->acopio($periodo),
             produccion: $produccion,
             ventas: $this->ventas($periodo),
-            pagos: $this->pagos($periodo),
+            finanzas: $this->finanzas->execute($periodo),
             acopioPorIntervalo: $this->acopioPorIntervalo($periodo),
             acopioPorZona: $this->acopioPorZona($periodo),
             porAtender: [
@@ -71,7 +72,8 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
     private function entregasValidas(DashboardPeriodo $periodo): Builder
     {
         return EntregaModel::query()->from('entregas as e')->toBase()
-            ->whereBetween('e.fecha_hora', $periodo->limitesSql())
+            ->where('e.fecha_hora', '>=', $periodo->limitesSql()[0])
+            ->where('e.fecha_hora', '<', $periodo->limitesSql()[1])
             ->where('e.estado', '<>', EstadoEntrega::ANULADA->value);
     }
 
@@ -98,7 +100,7 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
     private function produccion(DashboardPeriodo $periodo): array
     {
         $porEstado = LoteProduccionModel::query()->toBase()
-            ->whereBetween('fecha_hora_inicio', $periodo->limitesSql())
+            ->where('fecha_hora_inicio', '>=', $periodo->limitesSql()[0])->where('fecha_hora_inicio', '<', $periodo->limitesSql()[1])
             ->select('estado')->selectRaw('COUNT(*) as cantidad')
             ->groupBy('estado')->orderBy('estado')
             ->pluck('cantidad', 'estado')
@@ -117,7 +119,7 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
     private function ventas(DashboardPeriodo $periodo): array
     {
         $fila = VentaProductoModel::query()->toBase()
-            ->whereBetween('fecha', $periodo->limitesSql())
+            ->where('fecha', '>=', $periodo->limitesSql()[0])->where('fecha', '<', $periodo->limitesSql()[1])
             ->where('estado', '<>', 'ANULADA')
             ->selectRaw('COALESCE(SUM(importe_total), 0) as importe, COUNT(*) as ventas')
             ->selectRaw("COALESCE(SUM(CASE WHEN forma_pago = 'CONTADO' THEN importe_total ELSE 0 END), 0) as contado")
@@ -133,68 +135,6 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
     }
 
     /**
-     * Obligaciones PENDIENTES (nunca EN_CURSO ni PAGADAS) cuya fecha de pago
-     * programada cae en el período, con monto_calculado como importe final:
-     *
-     * - Proveedores: su fecha es el jueves siguiente a su semana (la columna
-     *   fecha_pago_programada queda nula para ellos); DashboardPeriodo
-     *   traduce el período al rango de periodo_inicio equivalente.
-     * - Trabajadores: fecha_pago_programada (día 1 del mes siguiente). Las
-     *   que no la tienen se informan aparte, sin asignarlas a ningún día.
-     *
-     * @return array{total: float, obligaciones: int, proveedores: array{importe: float, obligaciones: int, semana: ?string}, trabajadores: array{importe: float, obligaciones: int, mes: ?string}, sinFecha: array{importe: float, obligaciones: int}, atrasados: array{importe: float, obligaciones: int}}
-     */
-    private function pagos(DashboardPeriodo $periodo): array
-    {
-        [$desde, $hasta] = $periodo->limitesFecha();
-        $semanas = $periodo->inicioSemanasProveedorPagaderas();
-
-        $proveedores = $semanas === null
-            ? ['importe' => 0.0, 'obligaciones' => 0]
-            : $this->sumaPendientes($this->pendientes(TipoBeneficiarioPago::PROVEEDOR)
-                ->whereDate('periodo_inicio', '>=', $semanas[0])
-                ->whereDate('periodo_inicio', '<=', $semanas[1]));
-        $trabajadores = $this->sumaPendientes($this->pendientes(TipoBeneficiarioPago::PERSONAL)
-            ->whereDate('fecha_pago_programada', '>=', $desde)
-            ->whereDate('fecha_pago_programada', '<=', $hasta));
-        $sinFecha = $this->sumaPendientes($this->pendientes(TipoBeneficiarioPago::PERSONAL)->whereNull('fecha_pago_programada'));
-        $atrasados = $this->sumaPendientes(ObligacionPagoModel::query()->toBase()
-            ->where('estado', EstadoObligacionPago::PENDIENTE->value)
-            ->where(function (Builder $query) use ($periodo, $desde): void {
-                $query->where(fn (Builder $proveedor) => $proveedor
-                    ->where('tipo_beneficiario', TipoBeneficiarioPago::PROVEEDOR->value)
-                    ->whereDate('periodo_inicio', '<', $periodo->inicioSemanaProveedorVigente()))
-                    ->orWhere(fn (Builder $personal) => $personal
-                        ->where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value)
-                        ->whereDate('fecha_pago_programada', '<', $desde));
-            }));
-
-        return [
-            'total' => round($proveedores['importe'] + $trabajadores['importe'], 2),
-            'obligaciones' => $proveedores['obligaciones'] + $trabajadores['obligaciones'],
-            'proveedores' => $proveedores + ['semana' => $periodo->semanaProveedorUnica()],
-            'trabajadores' => $trabajadores + ['mes' => $periodo->mesTrabajadoUnico()],
-            'sinFecha' => $sinFecha,
-            'atrasados' => $atrasados,
-        ];
-    }
-
-    private function pendientes(TipoBeneficiarioPago $tipo): Builder
-    {
-        return ObligacionPagoModel::query()->toBase()
-            ->where('tipo_beneficiario', $tipo->value)
-            ->where('estado', EstadoObligacionPago::PENDIENTE->value);
-    }
-
-    /** @return array{importe: float, obligaciones: int} */
-    private function sumaPendientes(Builder $consulta): array
-    {
-        $fila = $consulta->selectRaw('COALESCE(SUM(monto_calculado), 0) as importe, COUNT(*) as obligaciones')->first();
-
-        return ['importe' => round((float) $fila->importe, 2), 'obligaciones' => (int) $fila->obligaciones];
-    }
-
-    /**
      * Un intervalo por hora (un día) o por día (semana/mes). Los intervalos
      * futuros llevan null (no "cero"): todavía no pueden tener entregas.
      *
@@ -202,20 +142,14 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
      */
     private function acopioPorIntervalo(DashboardPeriodo $periodo): array
     {
-        if ($periodo->porHoras()) {
-            $totales = [];
+        // Se agrupa en PHP por hora/día del negocio: DATE() en SQL agruparía por el día UTC.
+        $formato = $periodo->porHoras() ? 'H' : 'Y-m-d';
+        $totales = [];
 
-            foreach ($this->entregasValidas($periodo)->select('e.fecha_hora', 'e.litros')->get() as $entrega) {
-                $hora = CarbonImmutable::parse($entrega->fecha_hora, config('app.timezone'))->format('H');
-                $totales[$hora]['litros'] = ($totales[$hora]['litros'] ?? 0.0) + (float) $entrega->litros;
-                $totales[$hora]['entregas'] = ($totales[$hora]['entregas'] ?? 0) + 1;
-            }
-        } else {
-            $totales = $this->entregasValidas($periodo)
-                ->selectRaw('DATE(e.fecha_hora) as dia, SUM(e.litros) as litros, COUNT(*) as entregas')
-                ->groupByRaw('DATE(e.fecha_hora)')->get()
-                ->mapWithKeys(fn (object $dia): array => [(string) $dia->dia => ['litros' => (float) $dia->litros, 'entregas' => (int) $dia->entregas]])
-                ->all();
+        foreach ($this->entregasValidas($periodo)->select('e.fecha_hora', 'e.litros')->get() as $entrega) {
+            $clave = DashboardPeriodo::momentoLocal($entrega->fecha_hora)->format($formato);
+            $totales[$clave]['litros'] = ($totales[$clave]['litros'] ?? 0.0) + (float) $entrega->litros;
+            $totales[$clave]['entregas'] = ($totales[$clave]['entregas'] ?? 0) + 1;
         }
 
         return array_map(function (array $intervalo) use ($totales): array {
@@ -310,7 +244,7 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
     private function lotesRecientes(DashboardPeriodo $periodo): array
     {
         $lotes = LoteProduccionModel::query()->toBase()
-            ->whereBetween('fecha_hora_inicio', $periodo->limitesSql())
+            ->where('fecha_hora_inicio', '>=', $periodo->limitesSql()[0])->where('fecha_hora_inicio', '<', $periodo->limitesSql()[1])
             ->select('id', 'codigo', 'estado', 'fecha_hora_inicio')
             ->orderByDesc('fecha_hora_inicio')->orderByDesc('id')
             ->limit(self::LOTES_VISIBLES)->get();
@@ -399,8 +333,8 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
     {
         $publicados = ComunicadoModel::query()->from('comunicados as c')->toBase()
             ->where('c.estado', 'PUBLICADO')
-            ->where('c.fecha_publicacion', '<=', $periodo->ahora()->toDateTimeString())
-            ->whereBetween('c.fecha_publicacion', $periodo->limitesSql());
+            ->where('c.fecha_publicacion', '<=', $periodo->ahora()->setTimezone(config('app.timezone'))->toDateTimeString())
+            ->where('c.fecha_publicacion', '>=', $periodo->limitesSql()[0])->where('c.fecha_publicacion', '<', $periodo->limitesSql()[1]);
 
         return [
             'publicados' => (clone $publicados)->count(),
@@ -419,6 +353,6 @@ final class EloquentDashboardAdministradorQuery implements DashboardAdministrado
 
     private function fecha(string $fecha): string
     {
-        return CarbonImmutable::parse($fecha, config('app.timezone'))->format('d/m/Y H:i');
+        return DashboardPeriodo::momentoLocal($fecha)->format('d/m/Y H:i');
     }
 }

@@ -6,11 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Identidad, permisos y contexto de cada operación. Arquitectura verificada en las fuentes de EcoLact.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
+      
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/arquitectura/seguridad/">
       
       
         <link rel="prev" href="../api/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Seguridad - Informe EcoLact</title>
+        <title>Autenticación y seguridad - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#seguridad" class="md-skip">
+        <a href="#autenticacion-y-seguridad" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Seguridad
+              Autenticación y seguridad
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -937,6 +993,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1024,7 +1084,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1052,7 +1112,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1108,7 +1224,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1166,6 +1282,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación y seguridad
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1173,7 +1307,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1182,6 +1316,136 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#secuencia-de-autenticacion-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secuencia de autenticación móvil
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Secuencia de autenticación móvil">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autenticacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autorización
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controles-implementados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controles implementados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-se-guarda-la-sesion-movil-actualmente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo se guarda la sesión móvil actualmente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cierre-de-sesion-y-limites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cierre de sesión y límites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inicio-de-sesion-y-emision-de-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicio de sesión y emisión de token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autorizacion-por-nombre-de-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autorización por nombre de rol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1202,7 +1466,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1608,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1636,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1955,125 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#secuencia-de-autenticacion-movil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secuencia de autenticación móvil
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Secuencia de autenticación móvil">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autenticacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autenticación
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autorizacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autorización
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#controles-implementados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Controles implementados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#como-se-guarda-la-sesion-movil-actualmente" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo se guarda la sesión móvil actualmente
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cierre-de-sesion-y-limites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cierre de sesión y límites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#inicio-de-sesion-y-emision-de-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicio de sesión y emisión de token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#autorizacion-por-nombre-de-rol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autorización por nombre de rol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2088,141 @@
                   
 
 
+
+<div class="ec-arquitectura">
+<div class="ec-arch-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7m0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3"/></svg></span> 09 · Autenticación y seguridad</p>
+</div>
+<div class="ec-arch-content">
+<p><span class="ec-arch-kicker">EcoLact / Arquitectura de software</span></p>
+<h1 id="autenticacion-y-seguridad">Autenticación y seguridad</h1>
+<p class="ec-arch-subtitle">Identidad, permisos y contexto de cada operación</p>
+<p>Autenticar responde quién realiza la petición; autorizar determina si esa persona puede ejecutar la acción sobre ese recurso. EcoLact aplica ambos controles y añade restricciones de estado de cuenta y asistencia en las rutas correspondientes.</p>
+<div class="ec-arch-tech"><span>Sanctum</span><span>Bearer</span><span>Middleware</span><span>Policies</span></div>
+<h2 id="secuencia-de-autenticacion-movil">Secuencia de autenticación móvil</h2>
+<p>La secuencia representa el cliente móvil con token personal. La web Laravel utiliza su sesión web; no se supone que todo acceso Blade use el mismo token Bearer del teléfono.</p>
+<div class="ec-arch-diagram">
+<p><img alt="Secuencia de autenticación móvil" src="../../assets/diagrams/arquitectura/seguridad-login.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/seguridad-login.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/seguridad-login.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>sequenceDiagram
+  actor U as Usuario
+  participant A as App / Ktor
+  participant B as Laravel / Sanctum
+  participant D as Base central
+  participant L as SQLite local
+  U-&gt;&gt;A: Introducir credenciales
+  A-&gt;&gt;B: POST /api/v1/login
+  B-&gt;&gt;B: Límite de intentos y Hash::check
+  B-&gt;&gt;B: Verificar acceso de la cuenta
+  alt Acceso válido
+    B-&gt;&gt;D: Crear token personal
+    B--&gt;&gt;A: data: token y usuario
+    A-&gt;&gt;L: SessionManager.save
+    A-&gt;&gt;B: Solicitud con Authorization Bearer
+    B-&gt;&gt;B: auth:sanctum, rol, estado y Policy
+    B--&gt;&gt;A: Resultado o rechazo
+  else Credenciales o acceso inválidos
+    B--&gt;&gt;A: Error de validación o acceso
+  end
+  U-&gt;&gt;A: Cerrar sesión
+  A-&gt;&gt;B: POST /api/v1/logout
+  B-&gt;&gt;D: Eliminar token actual si la petición llega autorizada
+  A-&gt;&gt;L: Limpiar sesión local incluso si falla la red
+</code></pre></div>
+</details>
+</div>
+<div class="ec-arch-grid">
+<div class="ec-arch-card blue">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.1 12.5 1.4 1.41-6.53 6.59L12.5 17l1.4-1.41 2.07 2.08zM10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11zm1-13a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4"/></svg></span></p>
+<h3 id="autenticacion">Autenticación</h3>
+<p>Login verifica username y contraseña con Hash::check; Sanctum identifica al portador del token en rutas protegidas.</p>
+</div>
+<div class="ec-arch-card purple">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 4a3 3 0 0 1 3 3 3 3 0 0 1-3 3 3 3 0 0 1-3-3 3 3 0 0 1 3-3m5.13 12A9.7 9.7 0 0 1 12 20.92 9.7 9.7 0 0 1 6.87 17c-.34-.5-.63-1-.87-1.53 0-1.65 2.71-3 6-3s6 1.32 6 3c-.24.53-.53 1.03-.87 1.53"/></svg></span></p>
+<h3 id="autorizacion">Autorización</h3>
+<p>RoleMiddleware compara nombres de rol; Gate y Policies verifican el alcance de las acciones sobre los recursos.</p>
+</div>
+</div>
+<h2 id="controles-implementados">Controles implementados</h2>
+<p>El login aplica un límite de intentos por combinación de usuario e IP, consulta el usuario y valida la contraseña. <code>SesionWeb::errorAcceso</code> verifica que exista un rol válido y que la cuenta pueda acceder. Solo después se actualiza el último acceso y se crea un token Sanctum.</p>
+<p><code>auth:sanctum</code> protege los grupos autenticados. <code>RoleMiddleware</code> devuelve 401 sin identidad y 403 si no tiene un rol permitido. <code>EntregaPolicy</code>, por ejemplo, restringe al proveedor a sus entregas y al acopiador a su zona; Calidad tiene lectura de cualquier zona. El caso de uso conserva las reglas definitivas del negocio.</p>
+<p><strong>El estado de cuenta no se resume en “inactivo = sin acceso”.</strong> <code>EnsureUserIsActive</code> admite GET/HEAD para cuentas de trabajador o proveedor en modo de solo consulta y rechaza escrituras. Otras cuentas no operativas pierden acceso; el middleware puede revocar el token usado o cerrar la sesión web. Además, las rutas operativas protegidas comprueban asistencia.</p>
+<h2 id="como-se-guarda-la-sesion-movil-actualmente">Cómo se guarda la sesión móvil actualmente</h2>
+<p><code>SessionManager</code> conserva el token y datos de usuario en la tabla SQLDelight <code>session</code> y publica un StateFlow en memoria. <code>restore()</code> recupera esa fila al iniciar la app; <code>HttpClientFactory</code> toma <code>currentToken()</code> para construir la cabecera Bearer.</p>
+<p>La columna del token es <code>TEXT</code>. En los drivers y en SessionManager revisados <strong>no se implementa cifrado explícito del token ni integración con Keychain o Keystore</strong>. No se atribuyen al proyecto esas protecciones ni una renovación automática de token que no se haya comprobado. La existencia de un token local tampoco demuestra que siga autorizado en el servidor.</p>
+<h2 id="cierre-de-sesion-y-limites">Cierre de sesión y límites</h2>
+<p>El logout API elimina <code>currentAccessToken()</code>. La app intenta el logout remoto y luego limpia su sesión local incluso si la petición falla. Por eso <strong>cerrar sesión sin red no confirma la revocación remota</strong>. Tampoco implica borrar toda la caché o la cola: <code>SessionManager.clear()</code> elimina la fila de sesión, no todas las tablas.</p>
+<p>Sanctum resuelve identidad por token; no sustituye Policies, reglas de negocio ni validación de entradas. La configuración de HTTPS y las protecciones del despliegue no se verificaron en esta revisión. Los ejemplos y marcadores de la documentación no contienen secretos ni credenciales reales.</p>
+<h2 id="evidencias-de-implementacion">Evidencias de implementación</h2>
+<p>Las referencias identifican código revisado. El área de imagen está preparada para la captura manual del archivo indicado; el marcador visual no constituye una captura de la implementación.</p>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="inicio-de-sesion-y-emision-de-token">Inicio de sesión y emisión de token</h3>
+<p>El controlador comprueba las credenciales y el acceso antes de crear el token personal de Sanctum.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/seguridad-sanctum.png"><img alt="Captura de código: Inicio de sesión y emisión de token" src="../../assets/images/arquitectura/codigo/seguridad-sanctum.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> Hash::check, la comprobación de acceso y createToken forman parte del login real. La captura debe mostrar código, nunca valores de sesión.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>seguridad-sanctum.png</code> · <a href="../../assets/images/arquitectura/codigo/seguridad-sanctum.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Controllers/Api/AuthController.php#L33-L52">EcoLactWeb/app/Http/Controllers/Api/AuthController.php</a></p>
+<p>Fragmento sugerido para la captura: líneas 33–52 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="autorizacion-por-nombre-de-rol">Autorización por nombre de rol</h3>
+<p>El middleware decide si el usuario autenticado pertenece a uno de los roles permitidos.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/seguridad-roles.png"><img alt="Captura de código: Autorización por nombre de rol" src="../../assets/images/arquitectura/codigo/seguridad-roles.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> Una identidad válida no basta para acceder a cualquier área: se exige el rol autorizado y se responde 403 cuando falta.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>seguridad-roles.png</code> · <a href="../../assets/images/arquitectura/codigo/seguridad-roles.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RoleMiddleware.php#L17-L29">EcoLactWeb/app/Http/Middleware/RoleMiddleware.php</a></p>
+<p>Fragmento sugerido para la captura: líneas 17–29 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<details class="ec-arch-sources">
+<summary>Fuentes adicionales y alcance de la revisión</summary>
+<p>Revisión estática del repositorio local: 28 de octubre de 2026. Enlaces a la revisión <code>75901337489d</code>; la existencia de cada archivo y los fragmentos sugeridos se comprobaron localmente. No se ejecutaron servicios de negocio ni se verificó un despliegue.</p>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/EnsureUserIsActive.php">EcoLactWeb/app/Http/Middleware/EnsureUserIsActive.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Support/SesionWeb.php">EcoLactWeb/app/Http/Support/SesionWeb.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Policies/EntregaPolicy.php">EcoLactWeb/app/Policies/EntregaPolicy.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/app/Http/Middleware/RequiereAsistencia.php">EcoLactWeb/app/Http/Middleware/RequiereAsistencia.php</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/session/SessionManager.kt</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq">EcoLactMobile/shared/src/commonMain/sqldelight/pe/edu/upeu/ecolactmobile/core/database/Session.sq</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/auth/AuthRepository.kt</a></li>
+</ul>
+</details>
+<div class="ec-arch-links">
+<p><a href="../api/">← Comunicación mediante API REST</a></p>
+<p><a href="../">Vista general</a></p>
+<p><a href="../integracion/">Integración Web, Móvil y Backend →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="seguridad">seguridad</h1>
-
-
-
-
-
-
 
 
 

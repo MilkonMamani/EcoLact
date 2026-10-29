@@ -1,0 +1,28 @@
+{
+  "plan": "explorar_zonas.json",
+  "fecha": "2026-10-28T10:09:47",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_dashboard",
+      "archivo": "evidencias/exploracion/x_dashboard.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:09:55"
+    },
+    {
+      "nombre": "x_zonas",
+      "archivo": "evidencias/exploracion/x_zonas.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Operación\n›\nZonas\nZonas\n\nAdministra las zonas de acopio, ubica a sus proveedores en el mapa y consulta sus acopiadores.\n\nNueva zona\n\nProveedores sin zona 480 proveedores pendientes de asignación.\n\nVer proveedores\nBuscar proveedor por nombre o DNI\nMapa de zonas\nDelimitación operativa referencial\n\nCargando mapa...\n\nLEYENDA\nCollana 1\nCollana 2\nFaon\nYasin\nProveedor\nActiva\nCollana 1\n\nSin descripción\n\nResumen\nProveedores\nAcopiadores\nInformación de la zona\nEditar\nNombre\nCollana 1\nEstado\nActiva\nDescripción\nSin descripción\nCreada el\n26/10/2026\nPROVEEDORES\n0\nACOPIADORES\n0\nLITROS (SEMANA)\n0 L\nRutas\nNueva ruta\n\nEsta zona todavía no tiene rutas.\n\nDelimitación y ubicaciones\nEditar delimitación\n\nEsta zona aún no tiene proveedores."
+      ],
+      "hora": "2026-10-28T10:10:01"
+    }
+  ],
+  "dialogos": []
+}

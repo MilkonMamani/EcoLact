@@ -1,0 +1,46 @@
+{
+  "descripcion": "Zonas: consulta (solo lectura) y alta de una zona ficticia con su validación de duplicado. Autorizado por el usuario el 28/10/2026 (BD de prueba).",
+  "salida": "evidencias/originales/zonas",
+  "difuminar": [".fichas-mini-tabla tbody td:nth-child(1)", ".fichas-mini-tabla tbody td:nth-child(2)", ".fichas-mini-tabla tbody td:nth-child(3)", ".zonas-buscador-resultados"],
+  "pasos": [
+    {"accion": "ir", "url": "/admin/dashboard"},
+    {"accion": "captura", "nombre": "zon_00_dashboard_menu", "medir": {"menu_zonas": "#ecolact-sidebar a[href$='/admin/zonas']"}},
+
+    {"accion": "ir", "url": "/admin/zonas", "ms": 6000},
+    {"accion": "captura", "nombre": "zon_01_pantalla",
+     "medir": {"nueva_zona": "button[data-modal-open='modal-nueva-zona']", "aviso_sin_zona": ".zonas-sin-zona", "buscador": "[data-zonas-buscador]", "mapa": ".zonas-mapa-general-marco", "leyenda": ".zonas-leyenda", "panel": "[data-fichas-panel]", "pestanas": "[data-fichas-panel] .fichas-tabs", "editar": "[data-fichas-panel] button.fichas-editar[data-modal-open^='modal-editar-zona']", "nueva_ruta": "[data-fichas-panel] button[data-modal-open^='modal-nueva-ruta']", "menu_acciones": "[data-fichas-panel] details.asistencia-acciones summary"},
+     "leer": ["[data-fichas-panel] .fichas-panel-nombre"]},
+
+    {"accion": "captura", "nombre": "zon_02_leyenda_faon", "medir": {"leyenda_faon": ".zonas-leyenda button:has-text('Faon')"}},
+    {"accion": "clic", "selector": ".zonas-leyenda button:has-text('Faon')"},
+    {"accion": "esperar", "ms": 2500},
+    {"accion": "captura", "nombre": "zon_03_panel_faon", "medir": {"panel_nombre": "[data-fichas-panel] .fichas-panel-nombre", "resumen": "[data-fichas-panel] .fichas-resumen", "tab_proveedores": "[data-fichas-panel] [data-fichas-tab='proveedores']"}, "leer": ["[data-fichas-panel] .fichas-panel-nombre"]},
+    {"accion": "clic", "selector": "[data-fichas-panel] [data-fichas-tab='proveedores']"},
+    {"accion": "esperar", "ms": 800},
+    {"accion": "captura", "nombre": "zon_04_tab_proveedores", "medir": {"tabla": "[data-fichas-panel] #ficha-panel-proveedores", "tab_acopiadores": "[data-fichas-panel] [data-fichas-tab='acopiadores']"}},
+    {"accion": "clic", "selector": "[data-fichas-panel] [data-fichas-tab='acopiadores']"},
+    {"accion": "esperar", "ms": 800},
+    {"accion": "captura", "nombre": "zon_05_tab_acopiadores", "medir": {"contenido": "[data-fichas-panel] #ficha-panel-acopiadores"}},
+
+    {"accion": "ir", "url": "/admin/zonas", "ms": 6000},
+    {"accion": "captura", "nombre": "zon_10_antes_nueva", "medir": {"nueva_zona": "button[data-modal-open='modal-nueva-zona']"}},
+    {"accion": "clic", "selector": "button[data-modal-open='modal-nueva-zona']"},
+    {"accion": "esperar", "selector": "#modal-nueva-zona-nombre"},
+    {"accion": "captura", "nombre": "zon_11_modal_vacio", "medir": {"modal": "#modal-nueva-zona [data-modal-panel]", "nombre": "#modal-nueva-zona-nombre", "descripcion": "#modal-nueva-zona-descripcion", "crear": "#modal-nueva-zona button[type=submit]", "cancelar": "#modal-nueva-zona button[data-modal-close]:has-text('Cancelar')"}},
+    {"accion": "escribir", "selector": "#modal-nueva-zona-nombre", "texto": "Zona Prueba Manual"},
+    {"accion": "captura", "nombre": "zon_12_nombre", "medir": {"nombre": "#modal-nueva-zona-nombre"}},
+    {"accion": "escribir", "selector": "#modal-nueva-zona-descripcion", "texto": "Zona ficticia creada para el manual de usuario."},
+    {"accion": "captura", "nombre": "zon_13_descripcion", "medir": {"descripcion": "#modal-nueva-zona-descripcion", "crear": "#modal-nueva-zona button[type=submit]"}},
+    {"accion": "clic", "selector": "#modal-nueva-zona button[type=submit]"},
+    {"accion": "esperar", "selector": "[role=alert]:has-text('Zona registrada')"},
+    {"accion": "esperar", "ms": 4000},
+    {"accion": "captura", "nombre": "zon_14_resultado", "medir": {"mensaje": "[role=alert]:has-text('Zona registrada')", "panel_nombre": "[data-fichas-panel] .fichas-panel-nombre", "leyenda_nueva": ".zonas-leyenda button:has-text('Zona Prueba Manual')"}, "leer": ["[role=alert]:has-text('Zona registrada')", "[data-fichas-panel] .fichas-panel-head"]},
+
+    {"accion": "clic", "selector": "button[data-modal-open='modal-nueva-zona']"},
+    {"accion": "esperar", "selector": "#modal-nueva-zona-nombre"},
+    {"accion": "escribir", "selector": "#modal-nueva-zona-nombre", "texto": "Zona Prueba Manual"},
+    {"accion": "clic", "selector": "#modal-nueva-zona button[type=submit]"},
+    {"accion": "esperar", "ms": 3500},
+    {"accion": "captura", "nombre": "zon_15_duplicado", "medir": {"error_campo": "#modal-nueva-zona-nombre"}, "leer": ["#modal-nueva-zona [data-modal-panel]", "[role=alert]"]}
+  ]
+}

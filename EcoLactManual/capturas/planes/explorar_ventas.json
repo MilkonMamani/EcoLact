@@ -1,0 +1,1 @@
+{"descripcion": "Ventas (verificación): historial tras la venta ficticia.", "salida": "evidencias/exploracion", "conservar_texto": "Prueba Manual", "difuminar_textos": ["admin"], "pasos": [{"accion": "ir", "url": "/admin/ventas?tab=historial", "ms": 2500}, {"accion": "captura", "nombre": "x_ventas_hist", "leer": ["#vpos-panel-historial"]}]}

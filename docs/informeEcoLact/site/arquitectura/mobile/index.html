@@ -6,17 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Interfaz reactiva y lógica compartida. Arquitectura verificada en las fuentes de EcoLact.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/arquitectura/mobile/">
+      
       
         <link rel="prev" href="../backend/">
       
       
-        <link rel="next" href="../dominio/">
+        <link rel="next" href="../offline-first/">
       
       
         
@@ -27,7 +29,7 @@
     
     
       
-        <title>Aplicación móvil - Informe EcoLact</title>
+        <title>Arquitectura móvil: KMP y MVVM - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#mobile" class="md-skip">
+        <a href="#arquitectura-movil-kmp-y-mvvm" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Aplicación móvil
+              Arquitectura móvil: KMP y MVVM
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -937,6 +993,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1024,7 +1084,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1054,6 +1114,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1061,7 +1139,7 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
   
 
     
@@ -1071,6 +1149,214 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mvvm-aplicado-al-registro-de-una-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MVVM aplicado al registro de una entrega
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MVVM aplicado al registro de una entrega">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vista" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vista
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viewmodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ViewModel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fuentes-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fuentes de datos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-ocurre-al-pulsar-guardar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué ocurre al pulsar Guardar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#codigo-comun-y-codigo-especifico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Código común y código específico
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#justificacion-tecnica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Justificación técnica
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estado-y-eventos-del-registro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estado y eventos del registro
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compose-observa-el-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compose observa el estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1118,7 +1404,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1174,7 +1460,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1202,7 +1488,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1344,7 +1630,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1372,7 +1658,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1691,6 +1977,147 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#mvvm-aplicado-al-registro-de-una-entrega" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MVVM aplicado al registro de una entrega
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MVVM aplicado al registro de una entrega">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vista" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Vista
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viewmodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ViewModel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Repository
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fuentes-de-datos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fuentes de datos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#que-ocurre-al-pulsar-guardar" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué ocurre al pulsar Guardar
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#codigo-comun-y-codigo-especifico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Código común y código específico
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#justificacion-tecnica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Justificación técnica
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-de-implementacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias de implementación
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias de implementación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estado-y-eventos-del-registro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Estado y eventos del registro
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compose-observa-el-estado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compose observa el estado
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +2132,163 @@
                   
 
 
+
+<div class="ec-arquitectura">
+<div class="ec-arch-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 17h-4v-7h4m1-2h-6a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1M4 6h18V4H4a2 2 0 0 0-2 2v11H0v3h14v-3H4z"/></svg></span> 03 · Arquitectura móvil: KMP y MVVM</p>
+</div>
+<div class="ec-arch-content">
+<p><span class="ec-arch-kicker">EcoLact / Arquitectura de software</span></p>
+<h1 id="arquitectura-movil-kmp-y-mvvm">Arquitectura móvil: KMP y MVVM</h1>
+<p class="ec-arch-subtitle">Interfaz reactiva y lógica compartida</p>
+<p>El módulo shared reúne la lógica común de la app: pantallas Compose, estado, repositorios, transporte y persistencia. Las piezas que necesitan funciones del sistema operativo se implementan en source sets específicos.</p>
+<div class="ec-arch-tech"><span>Kotlin Multiplatform</span><span>Compose</span><span>StateFlow</span><span>Repository</span></div>
+<h2 id="mvvm-aplicado-al-registro-de-una-entrega">MVVM aplicado al registro de una entrega</h2>
+<p>El diagrama separa presentación y acceso a datos. El repositorio coordina la copia local y la API; no debe interpretarse como que toda escritura se guarda localmente antes de intentar la red.</p>
+<div class="ec-arch-diagram">
+<p><img alt="MVVM aplicado al registro de una entrega" src="../../assets/diagrams/arquitectura/mobile-mvvm.svg" /></p>
+<div class="ec-arch-controls">
+<p><a href="../../assets/diagrams/arquitectura/mobile-mvvm.svg">Ampliar diagrama</a>
+<a href="../../assets/diagrams/arquitectura/mobile-mvvm.mmd">Fuente Mermaid</a></p>
+</div>
+<details>
+<summary>Consultar la fuente editable</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  V[Vista Compose: RegistrarScreen] --&gt;|eventos de usuario| VM[RegistrarViewModel: estado y eventos]
+  VM --&gt;|onGuardar| R[AcopiadorRepository]
+  VM -. StateFlow y collectAsState .-&gt; V
+  R --&gt; L[CacheRepository y SyncQueueRepository]
+  L --&gt; DB[(SQLite mediante SQLDelight)]
+  R --&gt; API[AcopiadorApi]
+  API --&gt; K[Ktor Client]
+  K --&gt; B[API REST Laravel]
+  DB -. cambios observables .-&gt; R
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+</code></pre></div>
+</details>
+</div>
+<div class="ec-arch-grid">
+<div class="ec-arch-card blue">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 16H3V4h18m0-2H3c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h7v2H8v2h8v-2h-2v-2h7a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2"/></svg></span></p>
+<h3 id="vista">Vista</h3>
+<p><code>AcopiadorRegistrarScreen</code> observa <code>state</code> con <code>collectAsState()</code> y muestra ESCANEAR, FORMULARIO o RESULTADO.</p>
+</div>
+<div class="ec-arch-card purple">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21 9-4-4v3h-7v2h7v3M7 11l-4 4 4 4v-3h7v-2H7z"/></svg></span></p>
+<h3 id="viewmodel">ViewModel</h3>
+<p><code>RegistrarViewModel</code> recibe eventos, valida los litros, captura una sola vez la hora del acopio y publica el resultado.</p>
+</div>
+<div class="ec-arch-card green">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14c-3.36 0-4.46 1.35-4.82 2.24C9.25 16.7 10 17.76 10 19a3 3 0 0 1-3 3 3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V7.83A2.99 2.99 0 0 1 4 5a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83v5.29c.88-.65 2.16-1.12 4-1.12 2.67 0 3.56-1.34 3.85-2.23A3.01 3.01 0 0 1 14 7a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.34-.88 2.5-2.09 2.86C17.65 11.29 16.68 14 13 14m-6 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M7 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m10 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span></p>
+<h3 id="repository">Repository</h3>
+<p><code>AcopiadorRepository</code> identifica proveedores, combina consultas locales con pendientes y decide enviar o encolar.</p>
+</div>
+<div class="ec-arch-card orange">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4m0 5v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4"/></svg></span></p>
+<h3 id="fuentes-de-datos">Fuentes de datos</h3>
+<p>SQLDelight conserva caché y cola; Ktor envía solicitudes y traduce respuestas del backend.</p>
+</div>
+</div>
+<h2 id="que-ocurre-al-pulsar-guardar">Qué ocurre al pulsar Guardar</h2>
+<p>La vista delega en <code>onGuardar()</code>. El ViewModel valida que los litros sean positivos y evita otro envío mientras está guardando. Captura la hora real y llama al repositorio. Una entrega confirmada permite actualizar consultas; una guardada sin red se muestra como pendiente; un rechazo informa el motivo sin presentarlo como éxito.</p>
+<p>Este recorrido constituye una implementación MVVM por responsabilidades. <strong>El ejemplo hereda de <code>ScreenModel</code>, no de <code>androidx.lifecycle.ViewModel</code>.</strong> La clase propia crea un scope y lo cancela en <code>onDispose</code>; <code>rememberScreenModel</code> vincula su vida a la composición. No se atribuyen aquí <code>viewModelScope</code>, Hilt o Koin: <code>AppContainer</code> realiza la composición manual de dependencias.</p>
+<h2 id="codigo-comun-y-codigo-especifico">Código común y código específico</h2>
+<div class="ec-arch-table">
+<table>
+<thead>
+<tr>
+<th>Ubicación</th>
+<th>Responsabilidad comprobada</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>shared/src/commonMain</code></td>
+<td>Compose, ViewModel/ScreenModel, repositorios, modelos, Ktor y contratos de plataforma</td>
+</tr>
+<tr>
+<td><code>shared/src/androidMain</code></td>
+<td>Motor OkHttp, AndroidSqliteDriver y observación de redes Android</td>
+</tr>
+<tr>
+<td><code>shared/src/iosMain</code></td>
+<td>Motor Darwin, NativeSqliteDriver y adaptaciones iOS</td>
+</tr>
+<tr>
+<td><code>shared/build.gradle.kts</code></td>
+<td>Destinos Android, iosArm64 e iosSimulatorArm64; dependencias y base EcoLactDatabase</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="ec-arch-note warning">
+<p><strong>Portabilidad configurada no equivale a validación en iOS.</strong> <code>ConnectivityObserver.ios.kt</code> está marcado como pendiente y devuelve siempre <code>true</code>. No ofrece todavía detección real de señal. Esta documentación no afirma que las funciones hayan sido compiladas ni probadas en iOS.</p>
+</div>
+<h2 id="justificacion-tecnica">Justificación técnica</h2>
+<p>KMP reduce la duplicación de estado, reglas de presentación y acceso a datos entre plataformas. Compose separa la descripción de pantalla de sus eventos. El intercambio por StateFlow permite actualizar la interfaz después de sincronizar sin reconstruir manualmente toda la navegación. Las adaptaciones por plataforma permiten usar motores HTTP y SQLite adecuados a cada sistema.</p>
+<h2 id="evidencias-de-implementacion">Evidencias de implementación</h2>
+<p>Las referencias identifican código revisado. El área de imagen está preparada para la captura manual del archivo indicado; el marcador visual no constituye una captura de la implementación.</p>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="estado-y-eventos-del-registro">Estado y eventos del registro</h3>
+<p>El ViewModel valida los litros, evita un doble guardado y captura la hora del evento antes de delegar.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/mvvm-viewmodel.png"><img alt="Captura de código: Estado y eventos del registro" src="../../assets/images/arquitectura/codigo/mvvm-viewmodel.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> onGuardar coordina el evento de la interfaz y publica su resultado mediante StateFlow.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>mvvm-viewmodel.png</code> · <a href="../../assets/images/arquitectura/codigo/mvvm-viewmodel.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarViewModel.kt#L133-L156">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarViewModel.kt</a></p>
+<p>Fragmento sugerido para la captura: líneas 133–156 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<section class="ec-arch-evidence">
+<div class="ec-arch-evidence-body">
+<h3 id="compose-observa-el-estado">Compose observa el estado</h3>
+<p>La vista decide qué etapa mostrar a partir del estado emitido por el ViewModel.</p>
+</div>
+<div class="ec-arch-evidence-image">
+<p><a href="../../assets/images/arquitectura/codigo/mvvm-vista.png"><img alt="Captura de código: Compose observa el estado" src="../../assets/images/arquitectura/codigo/mvvm-vista.png" /></a></p>
+</div>
+<div class="ec-arch-evidence-body">
+<p><strong>Qué demuestra.</strong> collectAsState conecta el estado observable con la pantalla de escaneo, formulario y resultado.</p>
+<div class="ec-arch-file">
+<p>Archivo de imagen: <code>mvvm-vista.png</code> · <a href="../../assets/images/arquitectura/codigo/mvvm-vista.png">Abrir imagen</a></p>
+<p><strong>Ubicación en GitHub:</strong> <a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt#L70-L87">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/screens/RegistrarScreen.kt</a></p>
+<p>Fragmento sugerido para la captura: líneas 70–87 de la revisión documentada.</p>
+</div>
+</div>
+</section>
+<details class="ec-arch-sources">
+<summary>Fuentes adicionales y alcance de la revisión</summary>
+<p>Revisión estática del repositorio local: 28 de octubre de 2026. Enlaces a la revisión <code>75901337489d</code>; la existencia de cada archivo y los fragmentos sugeridos se comprobaron localmente. No se ejecutaron servicios de negocio ni se verificó un despliegue.</p>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/build.gradle.kts">EcoLactMobile/shared/build.gradle.kts</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/ScreenModel.kt">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/ui/state/ScreenModel.kt</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/di/AppContainer.kt</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt">EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/feature/acopiador/AcopiadorRepository.kt</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt">EcoLactMobile/shared/src/iosMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.ios.kt</a></li>
+</ul>
+</details>
+<div class="ec-arch-links">
+<p><a href="../backend/">← Clean Architecture en Laravel</a></p>
+<p><a href="../">Vista general</a></p>
+<p><a href="../offline-first/">Arquitectura offline-first →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="mobile">mobile</h1>
-
-
-
-
-
-
 
 
 

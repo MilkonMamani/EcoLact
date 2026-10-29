@@ -1,0 +1,10 @@
+{
+  "salida": "evidencias/exploracion",
+  "pasos": [
+    {"accion": "ir", "url": "/admin/dashboard"},
+    {"accion": "captura", "nombre": "x_dashboard"},
+    {"accion": "ir", "url": "/admin/zonas"},
+    {"accion": "esperar", "ms": 2500},
+    {"accion": "captura", "nombre": "x_zonas", "leer": ["main"]}
+  ]
+}

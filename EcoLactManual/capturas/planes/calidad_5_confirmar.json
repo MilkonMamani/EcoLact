@@ -1,0 +1,12 @@
+{"descripcion": "Calidad: confirmación del análisis ficticio de la entrega #1 tras configurar reglas vigentes (autorizado).", "salida": "evidencias/originales/calidad", "conservar_texto": "Prueba Manual", "difuminar_textos": ["admin"],
+ "pasos": [
+  {"accion": "ir", "url": "/admin/entregas/1/analisis-calidad", "ms": 2500},
+  {"accion": "captura", "nombre": "cal_10_antes_confirmar", "pagina_completa": true, "medir": {"confirmar": "form[data-confirm] button[type=submit]"}},
+  {"accion": "dialogos", "aceptar": true},
+  {"accion": "clic", "selector": "form[data-confirm] button[type=submit]"},
+  {"accion": "esperar", "ms": 3500},
+  {"accion": "js", "codigo": "document.querySelectorAll('body *').forEach(e=>{ const t=[...e.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(''); if(t.includes('admin') && t.length<60) e.style.filter='blur(5px)'; })"},
+  {"accion": "captura", "nombre": "cal_11_confirmado", "pagina_completa": true, "medir": {"mensaje": "[role=alert]"}, "leer": ["[role=alert]", "main"]},
+  {"accion": "ir", "url": "/admin/analisis-calidad", "ms": 2500},
+  {"accion": "captura", "nombre": "cal_12_listado_confirmado", "medir": {"fila": "[data-acopio-fila]:has-text('Prueba Manual')"}, "leer": ["[data-acopio-fila]:has-text('Prueba Manual')"]}
+ ]}

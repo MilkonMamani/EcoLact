@@ -104,6 +104,7 @@ body.caja-page { background: #fff; }
 .caja-categoria-icono.is-proveedor { background: #eef4fb; color: #3b6fa3; }
 .caja-categoria-icono.is-insumos { background: #fdf6e9; color: #a06a12; }
 .caja-categoria-icono.is-trabajador { background: #f3f0fa; color: #6750a4; }
+.caja-categoria-icono.is-saldo_inicial { background: var(--caja-entrada-soft); color: var(--caja-entrada); }
 .caja-categoria-icono.is-grande { width: 3rem; height: 3rem; border-radius: .8rem; }
 
 .caja-vacio { padding: 2.5rem 1rem; color: var(--fichas-muted); font-size: .875rem; text-align: center; }

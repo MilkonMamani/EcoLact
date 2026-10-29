@@ -6,11 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Documentación técnica del sistema EcoLact">
+        <meta name="description" content="Visión completa del proceso en EcoLact: actores, decisiones y resultados verificados en el repositorio.">
       
       
         <meta name="author" content="Equipo CodeCraft">
       
+      
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/flujos/">
       
       
         <link rel="prev" href="../sistema/alcance/">
@@ -27,7 +29,7 @@
     
     
       
-        <title>Vista general - Informe EcoLact</title>
+        <title>Flujos de EcoLact - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#index" class="md-skip">
+        <a href="#flujos-de-ecolact" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Vista general
+              Flujos de EcoLact
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -641,6 +637,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -761,6 +761,62 @@
   
   
     <li class="md-nav__item">
+      <a href="liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="produccion/" class="md-nav__link">
         
   
@@ -824,35 +880,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -880,7 +908,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -940,6 +996,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1024,7 +1084,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1052,7 +1112,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1108,7 +1224,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1164,7 +1280,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1192,7 +1308,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1334,7 +1450,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1362,7 +1478,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1681,6 +1797,47 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#asi-funciona-el-proceso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Así funciona el proceso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paso-a-paso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paso a paso
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explorar-los-procesos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explorar los procesos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1695,17 +1852,130 @@
                   
 
 
+
+<div class="ec-flujos">
+<div class="ec-flow-banner">01 · Vista general de flujos</div>
+<div class="ec-flow-content">
+<div class="ec-flow-hero">
+<div>
+<p><span class="ec-flow-kicker">EcoLact / Flujos de negocio</span></p>
+<h1 id="flujos-de-ecolact">Flujos de EcoLact</h1>
+<p class="ec-flow-subtitle">Visión completa del proceso</p>
+<p>Desde la entrega de leche hasta la venta de productos: cada operación conecta personas, inventario e información de pago. Explora los diez procesos para entender qué ocurre, quién participa y qué se registra.</p>
+</div>
+<figure>
+<p><img alt="Visión completa del proceso: Flujos de EcoLact" height="800" src="../assets/images/flujos/portada-flujos.webp" width="1200" /></p>
+<figcaption>Recurso visual del proyecto. Ilustración del proceso.</figcaption>
+</figure>
+</div>
+<div class="ec-flow-actors">
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 4a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m7 8a.26.26 0 0 0-.26.21l-.19 1.32c-.3.13-.59.29-.85.47l-1.24-.5c-.11 0-.24 0-.31.13l-1 1.73c-.06.11-.04.24.06.32l1.06.82a4.2 4.2 0 0 0 0 1l-1.06.82a.26.26 0 0 0-.06.32l1 1.73c.06.13.19.13.31.13l1.24-.5c.26.18.54.35.85.47l.19 1.32c.02.12.12.21.26.21h2c.11 0 .22-.09.24-.21l.19-1.32c.3-.13.57-.29.84-.47l1.23.5c.13 0 .26 0 .33-.13l1-1.73a.26.26 0 0 0-.06-.32l-1.07-.82c.02-.17.04-.33.04-.5s-.01-.33-.04-.5l1.06-.82a.26.26 0 0 0 .06-.32l-1-1.73c-.06-.13-.19-.13-.32-.13l-1.23.5c-.27-.18-.54-.35-.85-.47l-.19-1.32A.236.236 0 0 0 19 12zm-7 2c-4.42 0-8 1.79-8 4v2h9.68a7 7 0 0 1-.68-3 7 7 0 0 1 .64-2.91c-.53-.06-1.08-.09-1.64-.09m8 1.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5c-.84 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5"/></svg></span></p>
+<p><strong>Administración</strong></p>
+<p>Configura proveedores,acopiadores, rutas, precios y reglas.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 4a2 2 0 0 0-2 2v11h2a3 3 0 0 0 3 3 3 3 0 0 0 3-3h6a3 3 0 0 0 3 3 3 3 0 0 0 3-3h2v-5l-3-4h-3V4m-7 2 4 4-4 4v-3H4V9h6m7 .5h2.5l1.97 2.5H17M6 15.5A1.5 1.5 0 0 1 7.5 17 1.5 1.5 0 0 1 6 18.5 1.5 1.5 0 0 1 4.5 17 1.5 1.5 0 0 1 6 15.5m12 0a1.5 1.5 0 0 1 1.5 1.5 1.5 1.5 0 0 1-1.5 1.5 1.5 1.5 0 0 1-1.5-1.5 1.5 1.5 0 0 1 1.5-1.5"/></svg></span></p>
+<p><strong>Operación</strong></p>
+<p>Acopio, calidad, planta y ventas registran su trabajo.</p>
+</div>
+<div class="ec-flow-card">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m21.1 12.5 1.4 1.41-6.53 6.59L12.5 17l1.4-1.41 2.07 2.08zM10 17l3 3H3v-2c0-2.21 3.58-4 8-4l1.89.11zm1-13a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4"/></svg></span></p>
+<p><strong>Proveedor</strong></p>
+<p>Entrega leche y consulta sus resultados y pagos.</p>
+</div>
+</div>
+<h2 id="asi-funciona-el-proceso">Así funciona el proceso</h2>
+<div class="ec-flow-diagram">
+<p><img alt="Diagrama de Flujos de EcoLact: decisiones, actividades y resultados" src="../assets/diagrams/flujos/index.svg" /></p>
+<p><a href="../assets/diagrams/flujos/index.svg">Ampliar diagrama</a> · <a href="../assets/diagrams/flujos/index.mmd">Descargar fuente Mermaid</a></p>
+<details>
+<summary>Ver la fuente editable del diagrama</summary>
+<div class="highlight"><pre><span></span><code>flowchart TB
+  A([Inicio · Administrador]) --&gt; B[Proveedores, zonas y rutas]
+  B --&gt; C[Acopiador · Recorrido y entrega]
+  C --&gt; D[Ingreso de leche al inventario]
+  C --&gt; E[Pago semanal pendiente]
+  C -. Muestreo opcional .-&gt; F[Calidad · Análisis confirmado]
+  F --&gt; E
+  D --&gt; G[Planta · Producción con insumos]
+  H[Compra de insumos] --&gt; G
+  G --&gt; I[Ventas · Productos terminados]
+  I --&gt; J{Forma de pago}
+  J --&gt;|Contado| K[Caja · Entrada]
+  J --&gt;|Planilla| E
+  E --&gt; L[Administración · Pago al proveedor]
+  L --&gt; M[Caja · Salida]
+  H --&gt;|Con importe positivo| M
+  N[Pago a trabajadores] --&gt; M
+  C --&gt; O[Proveedor · Historial y consultas]
+  F --&gt; O
+  L --&gt; O
+  O --&gt; P([Fin · Información disponible])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class J decision;
+  class A,P terminal;
+</code></pre></div>
+</details>
+</div>
+<h2 id="paso-a-paso">Paso a paso</h2>
+<div class="ec-flow-steps">
+<ol>
+<li>Preparar los datos del negocio: personas, zonas, rutas, recetas, precios y reglas vigentes.</li>
+<li>Registrar el acopio. Una entrega genera inventario y activa el cálculo del pendiente cuando existe configuración suficiente.</li>
+<li>Seleccionar muestras de calidad cuando corresponda. Su resultado confirmado puede recalcular el pago aún pendiente.</li>
+<li>Transformar leche e insumos, vender productos y registrar los movimientos de dinero asociados.</li>
+<li>Consultar el historial desde los portales web y las pantallas móviles implementadas.</li>
+</ol>
+</div>
+<div class="ec-flow-info">
+<p><strong>Tres recorridos relacionados.</strong> El inventario sigue las cantidades físicas; el pago sigue la semana del proveedor; la caja sigue el dinero efectivamente registrado. No todos avanzan al mismo tiempo.</p>
+</div>
+<h2 id="explorar-los-procesos">Explorar los procesos</h2>
+<div class="ec-flow-grid">
+<p><a class="ec-flow-card" href="acopio/"><strong>02 · Flujo de acopio de leche</strong><span>De la ruta al registro de la entrega →</span></a></p>
+<p><a class="ec-flow-card" href="calidad/"><strong>03 · Flujo de control de calidad</strong><span>Muestreo, revisión y confirmación →</span></a></p>
+<p><a class="ec-flow-card" href="liquidacion-pagos/"><strong>04 · Valorización, liquidación y pagos</strong><span>De los litros al pago semanal →</span></a></p>
+<p><a class="ec-flow-card" href="consulta-proveedor/"><strong>05 · Consulta del proveedor</strong><span>Su información, en un solo recorrido →</span></a></p>
+<p><a class="ec-flow-card" href="produccion/"><strong>06 · Flujo de producción</strong><span>De la materia prima al producto terminado →</span></a></p>
+<p><a class="ec-flow-card" href="insumos/"><strong>07 · Flujo de insumos y compras</strong><span>Revisar antes de ingresar al almacén →</span></a></p>
+<p><a class="ec-flow-card" href="ventas-caja/"><strong>08 · Flujo de ventas y compradores</strong><span>Vender con stock y tarifa vigentes →</span></a></p>
+<p><a class="ec-flow-card" href="finanzas/"><strong>09 · Flujo de caja y finanzas</strong><span>Cada movimiento tiene una operación de origen →</span></a></p>
+<p><a class="ec-flow-card" href="personal-asistencia/"><strong>10 · Asistencia y personal</strong><span>De la marcación al pago del trabajador →</span></a></p>
+<p><a class="ec-flow-card" href="integracion/"><strong>11 · Integración móvil y web</strong><span>Una operación local no es aún una confirmación →</span></a></p>
+</div>
+<div class="ec-flow-result">
+<p><strong>Resultado del proceso</strong></p>
+<p>Entregas, análisis, lotes, ventas y pagos conservan sus referencias. La calidad no es una barrera obligatoria entre el acopio y la producción.</p>
+</div>
+<details class="ec-flow-evidence">
+<summary>Trazabilidad con el código revisado</summary>
+<p>Revisión documental: 28 de octubre de 2026. Las rutas siguientes identifican las fuentes locales; no implican haber ejecutado el sistema de negocio.</p>
+<ul>
+<li><code>EcoLactWeb/app/Application/Acopio/RegistrarEntrega.php</code></li>
+<li><code>EcoLactWeb/app/Application/Calidad/FinalizarAnalisisCalidad.php</code></li>
+<li><code>EcoLactWeb/app/Application/Pago/SincronizarPagosProveedor.php</code></li>
+<li><code>EcoLactWeb/app/Application/Caja/RegistrarMovimientoCaja.php</code></li>
+<li><code>EcoLactWeb/routes/web.php</code> y <code>EcoLactWeb/routes/api.php</code></li>
+</ul>
+</details>
+<div class="ec-flow-links">
+<p><a href="acopio/">Flujo de acopio de leche →</a></p>
+<p><a href="finanzas/">Flujo de caja y finanzas →</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="index">index</h1>
-
-
-
-
-
-
 
 
 

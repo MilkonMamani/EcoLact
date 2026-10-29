@@ -61,7 +61,7 @@ final class PagoTrabajadorController extends Controller
         Gate::authorize('viewAny', ObligacionPagoModel::class);
 
         $this->generarObligaciones->execute(DateTimeImmutable::createFromInterface(now()));
-        // Cierra los días de asistencia ya vencidos (07:00) antes de mostrar faltas y acumulados.
+        // Cierra los días de asistencia ya vencidos (23:59) antes de mostrar faltas y acumulados.
         $this->marcarFaltas->execute();
 
         $periodo = $request->string('periodo')->toString() ?: now()->format('Y-m');

@@ -1,0 +1,154 @@
+{
+  "id": "CAJ",
+  "tipo": "modulo",
+  "titulo": "Caja",
+  "registro": "evidencias/originales/caja/caja_1.registro.json",
+  "introduccion": "Caja muestra el dinero que entra y sale de EcoLact. Es de solo lectura: los movimientos se generan automáticamente desde Ventas (ingresos), Pagar a proveedores, Pagar a trabajadores y Compras de insumos (egresos). Desde Caja no se registran ni se editan movimientos.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Finanzas › Caja"
+    ],
+    [
+      "Depende de",
+      "Ventas, pagos y compras de insumos."
+    ],
+    [
+      "Reglas principales",
+      [
+        "Saldo disponible = entradas menos salidas registradas.",
+        "Cada movimiento indica: «Generado automáticamente desde … No se edita desde Caja.»",
+        "No existe un registro manual de movimientos."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "caj_01_pantalla",
+    "pie": "Pantalla Caja con los movimientos ficticios de la verificación.",
+    "elementos": [
+      [
+        "Saldo disponible",
+        "Entradas menos salidas; el ícono del ojo oculta o muestra el monto."
+      ],
+      [
+        "Tarjetas del día",
+        "Ingresos de hoy, salidas de hoy y movimientos de hoy."
+      ],
+      [
+        "Filtros",
+        "Buscador, rango «Desde – Hasta», «Tipo» (Entradas / Salidas) y «Categoría» (Ventas, Proveedores, Trabajadores, Insumos)."
+      ],
+      [
+        "Últimos movimientos",
+        "Fecha y hora, movimiento y concepto, referencia, tipo, monto y acción."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-CAJ-001",
+      "titulo": "Consultar el saldo y los movimientos",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Conocer el saldo y los ingresos y egresos.",
+      "acceso": "Finanzas › Caja",
+      "requisitos": [
+        "Ninguno."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Caja",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Caja».",
+          "captura": "caj_01_pantalla",
+          "objetivo": "menu",
+          "pie": "Opción «Caja»."
+        },
+        {
+          "titulo": "Revisar el saldo",
+          "instruccion": "Consulta el «Saldo disponible». Usa el ícono del ojo para ocultarlo si hay otras personas.",
+          "captura": "caj_01_pantalla",
+          "objetivo": "saldo",
+          "pie": "Saldo disponible (en el ejemplo, negativo porque solo hay movimientos ficticios)."
+        },
+        {
+          "titulo": "Revisar los totales del día",
+          "instruccion": "Consulta «Ingresos de hoy», «Salidas de hoy» y «Movimientos de hoy».",
+          "captura": "caj_01_pantalla",
+          "objetivo": "tarjetas",
+          "pie": "Tarjetas del día."
+        },
+        {
+          "titulo": "Revisar los movimientos",
+          "instruccion": "Consulta la tabla «Últimos movimientos»: ventas (entradas), compras de insumos y pagos (salidas).",
+          "captura": "caj_01_pantalla",
+          "objetivo": "tabla",
+          "pie": "Movimiento más reciente de la tabla."
+        }
+      ],
+      "resultado": "Puedes seguir el dinero de ventas, insumos, proveedores y trabajadores en un solo lugar."
+    },
+    {
+      "codigo": "ADM-CAJ-002",
+      "titulo": "Filtrar ingresos y egresos",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Ver solo un tipo o categoría de movimientos.",
+      "acceso": "Finanzas › Caja › filtros",
+      "requisitos": [
+        "Ninguno."
+      ],
+      "pasos": [
+        {
+          "titulo": "Elegir el tipo",
+          "instruccion": "En «Tipo», elige «Entradas» o «Salidas».",
+          "captura": "caj_03_salidas",
+          "objetivo": "tipo",
+          "pie": "Filtro «Tipo»: Salidas (compra de insumos y pago a proveedor)."
+        },
+        {
+          "titulo": "Elegir la categoría",
+          "instruccion": "En «Categoría», elige Ventas, Proveedores, Trabajadores o Insumos; ajusta el rango de fechas si lo necesitas.",
+          "captura": "caj_03_salidas",
+          "objetivo": "categoria",
+          "pie": "Filtro «Categoría»."
+        }
+      ],
+      "resultado": "La tabla muestra solo los movimientos que cumplen los filtros; «Limpiar» los quita."
+    },
+    {
+      "codigo": "ADM-CAJ-003",
+      "titulo": "Ver el detalle de un movimiento",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar el origen de un ingreso o egreso.",
+      "acceso": "Finanzas › Caja › fila del movimiento",
+      "requisitos": [
+        "Movimientos registrados."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el detalle",
+          "instruccion": "Haz clic en la fila del movimiento.",
+          "captura": "caj_02_detalle",
+          "objetivo": "fila",
+          "pie": "Detalle del pago a proveedor: tipo, categoría, semana, proveedor, referencia, lote, método y fecha (usuario difuminado)."
+        }
+      ],
+      "resultado": "El panel «Detalle del movimiento» muestra su origen y la nota «Generado automáticamente desde Pagos. No se edita desde Caja.»"
+    },
+    {
+      "codigo": "ADM-CAJ-004",
+      "titulo": "Registrar movimientos manuales",
+      "estado": "No disponible en la interfaz",
+      "objetivo": "Aclarar una operación que no existe.",
+      "acceso": "—",
+      "requisitos": [
+        "—"
+      ],
+      "pasos": [
+        {
+          "titulo": "Situación observada",
+          "instruccion": "Caja no tiene botón para registrar movimientos. Los ingresos y egresos solo se generan al registrar ventas, pagos y compras de insumos."
+        }
+      ],
+      "resultado": "Para corregir un movimiento, corrija la operación de origen en su módulo."
+    }
+  ]
+}

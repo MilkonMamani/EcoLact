@@ -1,0 +1,10 @@
+{"descripcion": "Mi perfil (solo lectura), usuario difuminado.", "salida": "evidencias/originales/perfil", "difuminar_textos": ["admin"],
+ "pasos": [
+  {"accion": "ir", "url": "/admin/dashboard", "ms": 2000},
+  {"accion": "clic", "selector": ".ecolact-sidebar-account summary"},
+  {"accion": "esperar", "ms": 600},
+  {"accion": "captura", "nombre": "per_50_menu_perfil", "medir": {"mi_perfil": ".ecolact-sidebar-menu a"}},
+  {"accion": "ir", "url": "/admin/mi-perfil", "ms": 2500},
+  {"accion": "js", "codigo": "document.querySelectorAll('body *').forEach(e=>{ const t=[...e.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join(''); if(t.includes('admin') && t.length<60) e.style.filter='blur(5px)'; })"},
+  {"accion": "captura", "nombre": "per_51_perfil", "pagina_completa": true, "leer": ["main"]}
+ ]}

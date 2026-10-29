@@ -1,0 +1,309 @@
+{
+ "descripcion": "Reglas de evaluación de referencia para los 7 parámetros activos (autorizado por el usuario el 28/10/2026, BD de prueba).",
+ "salida": "evidencias/originales/parametros",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-filas] tr:has-text('Porcentaje de agua') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-panel] button[data-modal-open^='modal-regla-']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_maximo]",
+   "texto": "0"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "[data-modal].is-open select[name=resultado_incumplimiento]",
+   "etiqueta": "Rechazada"
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal].is-open button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Regla de calidad registrada')"
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-filas] tr:has-text('Mide la densidad') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-panel] button[data-modal-open^='modal-regla-']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_minimo]",
+   "texto": "1.028"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_maximo]",
+   "texto": "1.034"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "[data-modal].is-open select[name=resultado_incumplimiento]",
+   "etiqueta": "Observada"
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal].is-open button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Regla de calidad registrada')"
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-filas] tr:has-text('Contenido de grasa') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-panel] button[data-modal-open^='modal-regla-']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_minimo]",
+   "texto": "3.0"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "[data-modal].is-open select[name=resultado_incumplimiento]",
+   "etiqueta": "Observada"
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal].is-open button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Regla de calidad registrada')"
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-filas] tr:has-text('Contenido de lactosa') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-panel] button[data-modal-open^='modal-regla-']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_minimo]",
+   "texto": "4.2"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_maximo]",
+   "texto": "5.0"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "[data-modal].is-open select[name=resultado_incumplimiento]",
+   "etiqueta": "Observada"
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal].is-open button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Regla de calidad registrada')"
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-filas] tr:has-text('acidez o alcalinidad') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-panel] button[data-modal-open^='modal-regla-']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_minimo]",
+   "texto": "6.5"
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_maximo]",
+   "texto": "6.8"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "[data-modal].is-open select[name=resultado_incumplimiento]",
+   "etiqueta": "Rechazada"
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal].is-open button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Regla de calidad registrada')"
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-filas] tr:has-text('Contenido de proteína') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-panel] button[data-modal-open^='modal-regla-']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_minimo]",
+   "texto": "2.9"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "[data-modal].is-open select[name=resultado_incumplimiento]",
+   "etiqueta": "Observada"
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal].is-open button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Regla de calidad registrada')"
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2000
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-filas] tr:has-text('Temperatura de la leche') >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1500
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-fichas-panel] button[data-modal-open^='modal-regla-']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "[data-modal].is-open input[name=valor_maximo]",
+   "texto": "10"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "[data-modal].is-open select[name=resultado_incumplimiento]",
+   "etiqueta": "Observada"
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal].is-open button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "selector": "[role=alert]:has-text('Regla de calidad registrada')"
+  },
+  {
+   "accion": "ir",
+   "url": "/admin/parametros-calidad",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "par_20_reglas_configuradas",
+   "medir": {
+    "tabla": "[data-fichas-filas]"
+   },
+   "leer": [
+    "[data-fichas-filas]"
+   ]
+  }
+ ]
+}

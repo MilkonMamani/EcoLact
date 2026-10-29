@@ -53,3 +53,25 @@ it('un PROVEEDOR no puede ver el listado general de ventas', function () {
 
     app(VentaProductoController::class)->index(crear_request_autenticado());
 })->throws(AuthorizationException::class);
+
+it('la pantalla Nueva venta pinta el catálogo con presentación, stock, unidad entera y las dos formas de pago', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $producto = vpc_crearProducto();
+    $agotado = vpc_crearProducto();
+
+    app(RegistrarProductoPrecio::class)->execute($producto->id, 'PUBLICO', 20.0, $admin->id);
+    app(RegistrarProductoPrecio::class)->execute($agotado->id, 'PUBLICO', 15.0, $admin->id);
+    fixture_ingreso_producto($producto->id, 10.0, $admin->id);
+
+    $respuesta = $this->actingAs($admin)->get(route('admin.ventas.index'))->assertOk();
+
+    $catalogo = collect($respuesta->viewData('catalogo'))->keyBy('id');
+    expect($catalogo[$producto->id])->toMatchArray(['stock' => 10.0, 'publico' => 20.0, 'entero' => true, 'presentacion' => null]);
+    expect($catalogo[$agotado->id]['stock'])->toBe(0.0);
+
+    $respuesta
+        ->assertSee('El cobro se registra como ingreso en Caja.')
+        ->assertSee('El importe se descontará de la liquidación correspondiente del proveedor.')
+        ->assertSee('Sin stock')
+        ->assertSee('data-vpos-stepper', false);
+});

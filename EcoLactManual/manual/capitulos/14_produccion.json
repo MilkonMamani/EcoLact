@@ -1,0 +1,181 @@
+{
+  "id": "PRD",
+  "tipo": "modulo",
+  "titulo": "Producción",
+  "registro": "evidencias/originales/produccion/produccion_1.registro.json",
+  "introduccion": "Producción registra los lotes: se elige el producto y la cantidad, EcoLact calcula la leche y los insumos necesarios según la receta, se inicia el lote (descontando insumos) y, al finalizar, se registra lo obtenido, que pasa al stock de productos.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Producción › Producción"
+    ],
+    [
+      "Depende de",
+      "Recetas activas (capítulo 13), leche acopiada (capítulo 8) e insumos con stock (capítulo 12)."
+    ],
+    [
+      "Habilita",
+      "Stock de productos terminados (capítulo 15) y ventas."
+    ],
+    [
+      "Estados del lote",
+      "«En proceso» y «Finalizado»."
+    ],
+    [
+      "Reglas principales",
+      [
+        "La leche disponible ingresa automáticamente desde Acopio.",
+        "Al iniciar se descuentan los insumos; el producto se suma al stock al finalizar.",
+        "Un lote finalizado no se puede modificar."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "pro_05_historial_final",
+    "pie": "Pantalla Producción con el lote finalizado.",
+    "elementos": [
+      [
+        "Indicadores",
+        "Lotes en proceso, leche disponible y lotes finalizados."
+      ],
+      [
+        "«Nueva producción»",
+        "Abre el cálculo e inicio de un lote."
+      ],
+      [
+        "Filtros",
+        "Código de lote, «Periodo» y «Estado»."
+      ],
+      [
+        "Tabla",
+        "Código, productos, inicio, leche utilizada, resultado, estado y acción."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-PRD-001",
+      "titulo": "Iniciar un lote de producción",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Planificar e iniciar la fabricación de un producto.",
+      "acceso": "Producción › Producción › «Nueva producción»",
+      "requisitos": [
+        "Receta activa del producto.",
+        "Leche e insumos suficientes."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Nueva producción",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Producción» y haz clic en «Nueva producción».",
+          "captura": "pro_01_historial",
+          "objetivo": "nueva",
+          "pie": "Botón «Nueva producción»; la tarjeta «Leche disponible» muestra 48 L."
+        },
+        {
+          "titulo": "Elegir producto y cantidad",
+          "instruccion": "Selecciona el «Producto» y escribe la «Cantidad a producir».",
+          "captura": "pro_02_requerimientos",
+          "objetivo": "cantidad",
+          "pie": "Producto y cantidad (2 unidades)."
+        },
+        {
+          "titulo": "Revisar los requerimientos",
+          "instruccion": "Comprueba la tabla «Requerimientos de producción»: necesario, disponible y estado de cada insumo.",
+          "captura": "pro_02_requerimientos",
+          "objetivo": "recursos",
+          "pie": "Leche 2 L y insumo 120 ml, ambos «Suficiente»."
+        },
+        {
+          "titulo": "Verificar el resultado del cálculo",
+          "instruccion": "Confirma el mensaje «Todos los insumos están disponibles.»",
+          "captura": "pro_02_requerimientos",
+          "objetivo": "veredicto",
+          "pie": "Veredicto del cálculo."
+        },
+        {
+          "titulo": "Iniciar",
+          "instruccion": "Haz clic en «Iniciar producción».",
+          "captura": "pro_02_requerimientos",
+          "objetivo": "iniciar",
+          "pie": "Botón «Iniciar producción» (se habilita si hay insumos suficientes)."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el lote «En proceso».",
+          "captura": "pro_03_iniciada",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            900
+          ],
+          "pie": "Mensaje «Producción LOT-00001 iniciada. Los insumos fueron descontados.»"
+        }
+      ],
+      "resultado": "El lote queda «En proceso» y los insumos consumidos se muestran en su detalle.",
+      "errores": [
+        [
+          "«Iniciar producción» no se habilita",
+          "Algún insumo no alcanza: registra una compra (ADM-INS-003) o reduce la cantidad."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-PRD-002",
+      "titulo": "Finalizar un lote y registrar lo obtenido",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Registrar la cantidad realmente obtenida y sumarla al stock.",
+      "acceso": "Detalle del lote «En proceso»",
+      "requisitos": [
+        "Lote en proceso."
+      ],
+      "pasos": [
+        {
+          "titulo": "Indicar lo obtenido",
+          "instruccion": "En «Finalizar producción», escribe la «Cantidad obtenida». El sistema calcula la merma y el impacto en inventario.",
+          "captura": "pro_03_iniciada",
+          "objetivo": "obtenido",
+          "pie": "Campo «Cantidad obtenida»."
+        },
+        {
+          "titulo": "Finalizar",
+          "instruccion": "Haz clic en «Finalizar producción».",
+          "captura": "pro_03_iniciada",
+          "objetivo": "finalizar",
+          "pie": "Botón «Finalizar producción»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el resumen del lote.",
+          "captura": "pro_04_finalizada",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            1100
+          ],
+          "pie": "«Producción LOT-00001 finalizada. Se agregaron 2 unidades al stock de Producto Prueba Manual · 1 L.»"
+        }
+      ],
+      "resultado": "El lote queda «Finalizado» (planificado, obtenido, merma y stock incorporado) y ya no se puede modificar."
+    },
+    {
+      "codigo": "ADM-PRD-003",
+      "titulo": "Consultar el historial de producción",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar los lotes realizados y su consumo.",
+      "acceso": "Producción › Producción",
+      "requisitos": [
+        "Ninguno."
+      ],
+      "pasos": [
+        {
+          "titulo": "Revisar los lotes",
+          "instruccion": "Usa los filtros y revisa la fila del lote; la acción de la fila abre su detalle con los insumos consumidos.",
+          "captura": "pro_05_historial_final",
+          "objetivo": "fila",
+          "pie": "Lote LOT-00001: 2 L de leche utilizada, 2 unidades, «Finalizado»."
+        }
+      ],
+      "resultado": "La tarjeta «Leche disponible» refleja el consumo (48 L → 46 L)."
+    }
+  ]
+}

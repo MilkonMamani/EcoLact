@@ -21,12 +21,14 @@ final readonly class LoteProduccionDetalleData
     /**
      * @param  list<Producto>  $productos
      * @param  list<InsumoUsado>  $insumosUtilizados
+     * @param  array{codigo: string, lotes: list<array{id: int, codigo: string, estado: string, producto: string, actual: bool}>}|null  $planificacion  lotes iniciados junto a este (null si se inició solo)
      */
     public function __construct(
         public LoteProduccion $lote,
         public array $productos,
         public array $insumosUtilizados,
         public float $lecheUtilizada,
+        public ?array $planificacion = null,
     ) {}
 
     public function estaEnProceso(): bool

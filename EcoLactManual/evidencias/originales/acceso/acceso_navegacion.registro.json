@@ -1,0 +1,96 @@
+{
+  "plan": "acceso_navegacion.json",
+  "fecha": "2026-10-28T10:23:20",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "acc_10_dashboard",
+      "archivo": "evidencias/originales/acceso/acc_10_dashboard.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          0,
+          88,
+          251,
+          1386
+        ],
+        "titulo": [
+          284,
+          69,
+          564,
+          101
+        ],
+        "periodo": [
+          1243,
+          93,
+          1305,
+          121
+        ],
+        "cuenta": [
+          12,
+          833,
+          239,
+          888
+        ]
+      },
+      "textos_visibles": [
+        "Analitics Dashboard"
+      ],
+      "hora": "2026-10-28T10:23:25"
+    },
+    {
+      "nombre": "acc_11_grupo_trabajadores",
+      "archivo": "evidencias/originales/acceso/acc_11_grupo_trabajadores.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {
+        "grupo": [
+          52,
+          437,
+          129,
+          456
+        ],
+        "nuevo_trabajador": [
+          43,
+          471,
+          239,
+          507
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:23:27"
+    },
+    {
+      "nombre": "acc_12_menu_cuenta",
+      "archivo": "evidencias/originales/acceso/acc_12_menu_cuenta.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {
+        "cuenta": [
+          12,
+          833,
+          239,
+          888
+        ],
+        "mi_perfil": [
+          18,
+          725,
+          233,
+          765
+        ],
+        "cerrar_sesion": [
+          18,
+          767,
+          233,
+          807
+        ]
+      },
+      "textos_visibles": [
+        "Mi perfil\nCerrar sesión"
+      ],
+      "hora": "2026-10-28T10:23:28"
+    }
+  ],
+  "dialogos": []
+}

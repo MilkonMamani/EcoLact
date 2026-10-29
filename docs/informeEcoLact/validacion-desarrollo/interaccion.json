@@ -1,0 +1,55 @@
+{
+  "results": [
+    {
+      "page": "index",
+      "status": 200,
+      "captureCount": 1,
+      "copyCorrect": true,
+      "desktopFlowInOneRow": true
+    },
+    {
+      "page": "repositorio",
+      "status": 200,
+      "captureCount": 1,
+      "copyCorrect": true,
+      "desktopFlowInOneRow": true
+    },
+    {
+      "page": "backend",
+      "status": 200,
+      "captureCount": 2,
+      "copyCorrect": true,
+      "desktopFlowInOneRow": true
+    },
+    {
+      "page": "mobile",
+      "status": 200,
+      "captureCount": 3,
+      "copyCorrect": true,
+      "desktopFlowInOneRow": true
+    },
+    {
+      "page": "base-datos",
+      "status": 200,
+      "captureCount": 2,
+      "copyCorrect": true,
+      "desktopFlowInOneRow": true
+    },
+    {
+      "page": "configuracion",
+      "status": 200,
+      "captureCount": 2,
+      "copyCorrect": true,
+      "desktopFlowInOneRow": true
+    },
+    {
+      "page": "git",
+      "status": 200,
+      "captureCount": 1,
+      "copyCorrect": true,
+      "desktopFlowInOneRow": true
+    }
+  ],
+  "totalCaptures": 12,
+  "expectedCaptures": 12
+}

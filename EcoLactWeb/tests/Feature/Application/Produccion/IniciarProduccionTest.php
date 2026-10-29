@@ -222,6 +222,11 @@ it('hace ROLLBACK completo si algo falla a mitad de la producción', function ()
         {
             return $this->real->listar();
         }
+
+        public function ultimoMovimientoPorInsumo(): array
+        {
+            return $this->real->ultimoMovimientoPorInsumo();
+        }
     });
 
     expect(fn () => app(IniciarProduccion::class)->execute([['producto_id' => $queso->id, 'cantidad' => 10]], $admin->id))

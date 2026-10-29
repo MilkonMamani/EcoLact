@@ -1,0 +1,12 @@
+flowchart TB
+  V[Vista Compose: RegistrarScreen] -->|eventos de usuario| VM[RegistrarViewModel: estado y eventos]
+  VM -->|onGuardar| R[AcopiadorRepository]
+  VM -. StateFlow y collectAsState .-> V
+  R --> L[CacheRepository y SyncQueueRepository]
+  L --> DB[(SQLite mediante SQLDelight)]
+  R --> API[AcopiadorApi]
+  API --> K[Ktor Client]
+  K --> B[API REST Laravel]
+  DB -. cambios observables .-> R
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

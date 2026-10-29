@@ -81,6 +81,9 @@ return [
 
     'zona_horaria_negocio' => env('APP_ZONA_HORARIA_NEGOCIO', 'America/Lima'),
 
+    // Hora (HH:MM, hora del negocio) en que se cierra la asistencia del día.
+    'asistencia_hora_cierre' => env('ASISTENCIA_HORA_CIERRE', '23:59'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

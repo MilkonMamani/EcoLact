@@ -1,0 +1,63 @@
+{
+  "plan": "calidad_5_confirmar.json",
+  "fecha": "2026-10-28T12:19:01",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "cal_10_antes_confirmar",
+      "archivo": "evidencias/originales/calidad/cal_10_antes_confirmar.png",
+      "url": "/admin/entregas/1/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "confirmar": [
+          322,
+          1001,
+          471,
+          1037
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T12:19:05"
+    },
+    {
+      "nombre": "cal_11_confirmado",
+      "archivo": "evidencias/originales/calidad/cal_11_confirmado.png",
+      "url": "/admin/entregas/1/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Análisis de calidad confirmado correctamente.",
+        "Análisis de calidad confirmado correctamente.\n← Calidad\nAnálisis de calidad\n\nEntrega #1 · Proveedor Prueba Manual · 48.00 L · 28/10/2026 16:09\n\nConfirmado\nAceptada\nFECHA DE ANÁLISIS\n28/10/2026 16:14\nRESULTADO\nAceptada\n\nEste análisis ya fue confirmado y es inmutable.\n\nVer detalle completo"
+      ],
+      "hora": "2026-10-28T12:19:10"
+    },
+    {
+      "nombre": "cal_12_listado_confirmado",
+      "archivo": "evidencias/originales/calidad/cal_12_listado_confirmado.png",
+      "url": "/admin/analisis-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          284,
+          432,
+          1408,
+          489
+        ]
+      },
+      "textos_visibles": [
+        "28/10/2026\n16:09\n\t\nProveedor Prueba Manual\nDNI: 99000005\n\t#1\tFaon\t48.00 L\tAceptada\t\nAnálisis confirmado\n\tadmin"
+      ],
+      "hora": "2026-10-28T12:19:14"
+    }
+  ],
+  "dialogos": [
+    "¿Confirmar análisis? Después de confirmar no podrás modificar los valores ni el resultado."
+  ]
+}

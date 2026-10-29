@@ -1,0 +1,38 @@
+{
+  "plan": "explorar_asignacion.json",
+  "fecha": "2026-10-28T10:55:41",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_asignacion",
+      "archivo": "evidencias/exploracion/x_asignacion.png",
+      "url": "/admin/zonas?zona=sin-asignar",
+      "descripcion": "",
+      "objetivos": {
+        "mapa": [
+          360,
+          218,
+          1080,
+          602
+        ],
+        "zona": [
+          360,
+          778,
+          712,
+          820
+        ],
+        "ruta": [
+          728,
+          778,
+          1080,
+          820
+        ]
+      },
+      "textos_visibles": [
+        "Asignar proveedor a zona y ruta\n\nProveedor Prueba Manual\n\nDNI: 99000005\n\nTodavía sin zona ni ruta.\n\nUBICACIÓN\nMapa\nSatélite\nCombinaciones de teclas\nDatos del mapa ©2026 Google\nCondiciones\nInformar un error en el mapa\n\nMarca en el mapa la ubicación del proveedor.\n\nZona detectada\n\nSin ubicación\n\nLatitud *\nLongitud *\nASIGNACIÓN\nZona *\nSeleccionar zona\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nRuta *\nSeleccionar ruta\nReferencia (opcional)\nCancelar\nGuardar"
+      ],
+      "hora": "2026-10-28T10:55:58"
+    }
+  ],
+  "dialogos": []
+}

@@ -1,0 +1,26 @@
+{
+  "plan": "calidad_4_reglas_referencia.json",
+  "fecha": "2026-10-28T12:18:06",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "par_20_reglas_configuradas",
+      "archivo": "evidencias/originales/parametros/par_20_reglas_configuradas.png",
+      "url": "/admin/parametros-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "tabla": [
+          285,
+          196,
+          935,
+          781
+        ]
+      },
+      "textos_visibles": [
+        "Agua añadida\n\nPorcentaje de agua agregada a la leche.\n\n\t%\t\nActivo\n\t≤ 0 %\t26/10/2026\nDensidad\n\nMide la densidad de la leche.\n\n\tg/mL\t\nActivo\n\t1.028 – 1.034\t26/10/2026\nGrasa\n\nContenido de grasa de la leche.\n\n\t%\t\nActivo\n\t≥ 3 %\t26/10/2026\nLactosa\n\nContenido de lactosa de la leche.\n\n\t%\t\nActivo\n\t4.2 – 5 %\t26/10/2026\npH\n\nMide la acidez o alcalinidad de la leche.\n\n\tpH\t\nActivo\n\t6.5 – 6.8\t26/10/2026\nProteína\n\nContenido de proteína de la leche.\n\n\t%\t\nActivo\n\t≥ 2.9 %\t26/10/2026\nPrueba Manual\n\nParámetro ficticio del manual (editado).\n\n\t%\t\nInactivo\n\tSin configurar\t28/10/2026\nTemperatura\n\nTemperatura de la leche al recibirla.\n\n\t°C\t\nActivo\n\t≤ 10 °C\t26/10/2026"
+      ],
+      "hora": "2026-10-28T12:18:48"
+    }
+  ],
+  "dialogos": []
+}

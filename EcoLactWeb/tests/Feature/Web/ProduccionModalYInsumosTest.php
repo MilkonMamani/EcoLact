@@ -78,8 +78,10 @@ it('el modal ofrece solo productos con receta activa, con su presentación e ima
     $html = $this->actingAs($admin)->get(route('admin.produccion.index'))->assertOk();
 
     $html->assertSee('Selecciona qué fabricar. EcoLact calculará automáticamente los insumos necesarios.');
-    // Un producto por lote: sin paso "Agregar"; producto y cantidad calculan directo.
-    $html->assertDontSee('Agregar otro producto');
+    // Planificación de varios productos: una fila inicial y el botón para agregar más (un lote por producto).
+    $html->assertSee('Productos a fabricar');
+    $html->assertSee('Agregar otro producto');
+    $html->assertSee('data-fila-plantilla', false);
     $html->assertSee('name="productos[0][producto_id]"', false);
     $html->assertSee('name="productos[0][cantidad]"', false);
     $html->assertSee('Leche disponible');
@@ -169,7 +171,7 @@ it('el flujo del ejemplo: 30 L, 2 quesos consumen 20 L, 10 ml y 40 g y luego se 
     expect((float) fixture_leche()->fresh()->stock_actual)->toBe(10.0);
 });
 
-it('Insumos: acciones separadas en el encabezado, guía del flujo y la leche primera con "Del sistema"', function () {
+it('Insumos: acciones separadas en el encabezado, estado de existencias y la leche primera con "Del sistema"', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     fixture_stock_leche(30.0, $admin->id);
     fixture_insumo('Azúcar', 'kg', 5.0, 0.0, $admin->id);
@@ -178,13 +180,15 @@ it('Insumos: acciones separadas en el encabezado, guía del flujo y la leche pri
 
     $html = $this->actingAs($admin)->get(route('admin.insumos.index'))->assertOk();
 
-    $html->assertSee('Materias primas, insumos y envases necesarios para producción.');
-    // Crear insumo, comprar, escanear y ajustar son acciones distintas.
-    $html->assertSeeInOrder(['Nuevo insumo', 'Registrar compra', 'Escanear boleta', 'Ajustar stock']);
-    $html->assertSeeInOrder(['Crear insumo', 'Presentaciones', 'Registrar compra', 'Ajustar stock']);
+    $html->assertSee('Administra las existencias y materiales utilizados en la producción.');
+    // Crear insumo, comprar y escanear son acciones distintas; ajustar va en cada fila y en el panel.
+    // Las compras se registran en Compras y gastos: Insumos solo enlaza con «Comprar ...».
+    $html->assertSeeInOrder(['Nuevo insumo', 'Ajustar stock de']);
+    $html->assertDontSee('Ver movimientos');
+    $html->assertDontSee('Escanear boleta');
     $html->assertSeeInOrder(['insumos', 'con stock', 'con stock bajo', 'sin stock']);
-    $html->assertSeeInOrder(['Insumo', 'Tipo', 'Unidad base', 'Stock actual', 'Stock mínimo', 'Estado', 'Última compra', 'Acciones']);
-    $html->assertSeeInOrder(['Leche', 'Del sistema', 'Materia prima', '30 L', 'Aaa primer alfabético', 'Azúcar', 'Cuajo']);
+    $html->assertSeeInOrder(['Insumo', 'Categoría', 'Unidad', 'Stock disponible', 'Stock mínimo', 'Estado', 'Acciones']);
+    $html->assertSeeInOrder(['Leche', 'Del sistema', 'Materia prima', '30 L', 'Disponible', 'Aaa primer alfabético', 'Azúcar', 'Cuajo']);
 });
 
 it('Insumos: la leche no ofrece Desactivar y un insumo normal sí', function () {
@@ -239,10 +243,15 @@ it('el modal "Nuevo insumo" tiene las secciones, campos y textos del diseño', f
 
     $html->assertSee('id="modal-nuevo-insumo"', false);
     $html->assertSeeInOrder([
-        'Nuevo insumo', 'Crea la ficha del insumo. Todavía no registra ninguna compra.', 'Ficha del insumo',
-        'Nombre del insumo', 'Ej. Cuajo', 'Tipo', 'Unidad base', 'Stock mínimo', 'Estado',
-        'Descripción (opcional)', 'Coagulante utilizado para quesos...', 'El stock empieza en 0.', 'Cancelar', 'Crear insumo',
+        'Nuevo insumo', 'Crea la ficha del insumo. Todavía no registra ninguna compra.', 'Información general',
+        'Nombre del insumo', 'Tipo', 'Descripción (opcional)',
+        '¿Cómo se mide este insumo?', 'Por peso', 'kg o g', 'Por volumen', 'L o ml', 'Por unidades', 'und',
+        'Kilogramos (kg)', 'Gramos (g)', 'Litros (L)', 'Mililitros (ml)', 'Unidades (und)',
+        'Stock mínimo', 'Estado', 'El stock empieza en 0.', 'Cancelar', 'Crear insumo',
     ]);
+    // Ninguna unidad viene elegida de antemano: la persona decide cómo se mide.
+    expect(preg_match_all('/<input[^>]*name="unidad_base"[^>]*>/', $html->getContent(), $radios))->toBeGreaterThan(0);
+    expect(array_filter($radios[0], fn (string $radio): bool => preg_match('/\schecked\b/', $radio) === 1))->toBe([]);
     $html->assertSee('data-sufijo-unidad', false);
     // Crear la ficha no es una compra: no se pide stock inicial.
     $html->assertDontSee('name="stock_inicial"', false);

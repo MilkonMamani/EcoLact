@@ -1,0 +1,27 @@
+sequenceDiagram
+  participant A as App KMP
+  participant D as SQLite
+  participant S as SyncManager
+  participant B as API Laravel
+  participant M as MySQL
+  A->>D: Guardar clave local, payload y hora (PENDING)
+  Note over A,D: Registro local todavía no confirmado
+  A->>S: Sincronizar al recuperar conectividad
+  S->>D: Consultar pendientes en orden
+  S->>D: SYNCING e incrementar intentos
+  S->>B: Handler / Ktor: entrega + Idempotency-Key
+  B->>B: Autenticar, autorizar y validar
+  alt Operación aceptada
+    B->>M: Transacción y persistencia
+    M-->>B: Confirmación
+    B-->>S: Resultado e identificador
+    S->>D: SYNCED y server_id
+    A->>B: Actualizar consultas
+    B-->>A: Información confirmada
+    A->>D: Actualizar copia local
+  else Rechazo para revisión
+    B-->>S: Validación / permiso / registro inexistente
+    S->>D: NEEDS_REVIEW y motivo
+  else Fallo transitorio
+    S->>D: PENDING o NEEDS_REVIEW al alcanzar el límite
+  end

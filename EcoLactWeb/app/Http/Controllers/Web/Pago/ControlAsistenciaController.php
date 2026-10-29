@@ -22,10 +22,10 @@ use Throwable;
  * ability "pay" de ObligacionPagoPolicy que ya protege el resto del módulo
  * de pagos/jornadas (exclusivo de ADMINISTRADOR, Gate::before).
  *
- * Hoy antes de las 07:00 (VentanaAsistencia) la pantalla es operativa
+ * Hoy antes de las 23:59 (VentanaAsistencia) la pantalla es operativa
  * (escanear QR, registrar, corregir); desde el cierre, y para cualquier fecha
  * anterior, es solo consulta. Antes de listar cierra los días ya cerrados
- * (MarcarFaltasAutomaticas, idempotente): después de las 07:00 nadie que
+ * (MarcarFaltasAutomaticas, idempotente): después de las 23:59 nadie que
  * debía asistir queda "Pendiente" aunque el scheduler todavía no haya corrido.
  */
 final class ControlAsistenciaController extends Controller
@@ -61,7 +61,7 @@ final class ControlAsistenciaController extends Controller
             'fecha' => $fecha,
             'esHoy' => $fecha->format('Y-m-d') === $hoy->format('Y-m-d'),
             'asistenciaAbierta' => $this->ventana->estaAbierta($fecha),
-            'horaCierre' => VentanaAsistencia::HORA_CIERRE,
+            'horaCierre' => VentanaAsistencia::horaCierre(),
             'fechaEtiqueta' => ucfirst(CarbonImmutable::instance($fecha)->locale('es')->translatedFormat('l, j \d\e F \d\e Y')),
             'datos' => $this->obtenerAsistencia->execute(
                 $fecha,

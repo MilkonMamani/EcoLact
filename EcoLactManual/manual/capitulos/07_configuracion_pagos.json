@@ -1,0 +1,237 @@
+{
+  "id": "CFG",
+  "tipo": "modulo",
+  "titulo": "Configuración de pagos",
+  "registro": "evidencias/originales/config_pagos/pagos_config_1.registro.json",
+  "introduccion": "Configuración de pagos define los valores con los que EcoLact calcula los pagos: el sueldo mensual de cada trabajador y el precio por litro que se paga a los proveedores, con su ajuste por calidad. Solo define reglas con vigencia: no registra pagos.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Configuración › Configuración de pagos"
+    ],
+    [
+      "Pestañas",
+      "«Trabajadores» y «Proveedores»."
+    ],
+    [
+      "Habilita",
+      "Pagar a trabajadores (sueldos) y Pagar a proveedores (pago semanal)."
+    ],
+    [
+      "Reglas principales",
+      [
+        "El valor por día del trabajador se calcula solo: sueldo mensual ÷ 30.",
+        "Una sola configuración de precio para todos los proveedores de leche.",
+        "Periodo de pago a proveedores: semanal, de jueves a miércoles; día de pago miércoles.",
+        "La semana del proveedor se paga según el peor resultado de calidad de sus entregas: Aceptada = precio normal; Observada = precio menos el descuento; Rechazada = no se paga.",
+        "Al guardar una nueva vigencia, la anterior se cierra el día previo y pasa a «Precios anteriores»; los pagos ya generados conservan su monto."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "registro": "evidencias/originales/config_pagos/pagos_config_2_proveedores.registro.json",
+    "captura": "cfg_08_precio_guardado",
+    "pie": "Pestaña «Proveedores» con el precio vigente, el ajuste por calidad y los precios anteriores.",
+    "elementos": [
+      [
+        "Pestañas",
+        "«Trabajadores» (sueldos) y «Proveedores» (precio de la leche)."
+      ],
+      [
+        "Precio base y vigencia",
+        "Precio por litro, periodicidad, día de pago y fecha de inicio."
+      ],
+      [
+        "Ajuste por calidad",
+        "Precio resultante para una semana Aceptada, Observada o Rechazada."
+      ],
+      [
+        "Precios anteriores",
+        "Historial de vigencias cerradas."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-CFG-001",
+      "titulo": "Configurar el sueldo de un trabajador",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Definir el sueldo mensual con el que se calcula el pago de un trabajador.",
+      "acceso": "Configuración › Configuración de pagos › pestaña «Trabajadores»",
+      "requisitos": [
+        "Trabajador registrado (capítulo 4)."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Configuración de pagos",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Configuración de pagos».",
+          "captura": "cfg_01_trabajadores",
+          "objetivo": "menu",
+          "pie": "Opción «Configuración de pagos»."
+        },
+        {
+          "titulo": "Seleccionar al trabajador",
+          "instruccion": "En la pestaña «Trabajadores», haz clic en el trabajador.",
+          "captura": "cfg_02_panel",
+          "objetivo": "fila",
+          "pie": "Trabajador sin sueldo («Pendiente»); otros registros difuminados."
+        },
+        {
+          "titulo": "Abrir la configuración",
+          "instruccion": "En el panel, haz clic en «Configurar sueldo» (o «Editar configuración» si ya tiene uno).",
+          "captura": "cfg_02_panel",
+          "objetivo": "configurar",
+          "pie": "Botón «Configurar sueldo»."
+        },
+        {
+          "titulo": "Indicar sueldo y vigencia",
+          "instruccion": "Escribe el «Sueldo mensual (S/)». El «Valor por día» se calcula solo. Revisa «Vigente desde».",
+          "captura": "cfg_03_modal_sueldo",
+          "objetivo": "sueldo",
+          "pie": "Sueldo mensual de ejemplo: S/ 1 200 (valor por día S/ 40.00)."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar sueldo».",
+          "captura": "cfg_03_modal_sueldo",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar sueldo»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y el sueldo en la tabla y el panel.",
+          "captura": "cfg_04_sueldo_guardado",
+          "objetivo": "sueldo",
+          "pie": "Sueldo S/ 1,200.00, valor diario S/ 40.00, estado «Activo».",
+          "resultado": "Aparece «Sueldo configurado correctamente.»"
+        }
+      ],
+      "resultado": "El trabajador queda con sueldo «Activo»; sus pagos mensuales se calculan con ese valor (capítulo de pagos a trabajadores).",
+      "validaciones": [
+        [
+          "Sueldo mensual",
+          "Obligatorio, mayor que cero, máximo dos decimales.",
+          "«Ingresa el sueldo mensual.» / «El sueldo mensual debe ser mayor que cero.» / «El sueldo mensual debe tener como máximo dos decimales.»"
+        ],
+        [
+          "Vigente desde",
+          "Obligatoria.",
+          "«Indica la fecha de inicio de la vigencia.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-CFG-002",
+      "titulo": "Configurar el precio de la leche y el ajuste por calidad",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Definir el precio por litro de los proveedores y el descuento cuando la semana resulta Observada.",
+      "acceso": "Configuración › Configuración de pagos › pestaña «Proveedores»",
+      "requisitos": [
+        "Precio acordado por la organización."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir la pestaña Proveedores",
+          "instruccion": "Haz clic en la pestaña «Proveedores».",
+          "captura": "cfg_05_proveedores",
+          "objetivo": "tab",
+          "pie": "Pestaña «Proveedores»."
+        },
+        {
+          "titulo": "Abrir el formulario",
+          "instruccion": "Haz clic en «Configurar pago a proveedores» (o «Editar configuración»).",
+          "captura": "cfg_05_proveedores",
+          "objetivo": "editar",
+          "pie": "Botón para configurar el pago a proveedores."
+        },
+        {
+          "titulo": "Indicar el precio",
+          "instruccion": "Escribe el «Precio base por litro (S/)» y revisa «Vigente desde».",
+          "registro": "evidencias/originales/config_pagos/pagos_config_2_proveedores.registro.json",
+          "captura": "cfg_07_precio",
+          "objetivo": "precio",
+          "pie": "Precio de prueba S/ 1.20 por litro."
+        },
+        {
+          "titulo": "Indicar el descuento por calidad",
+          "instruccion": "Escribe el «Descuento por litro si la semana es OBSERVADA (S/)». El formulario muestra el precio resultante.",
+          "registro": "evidencias/originales/config_pagos/pagos_config_2_proveedores.registro.json",
+          "captura": "cfg_07_precio",
+          "objetivo": "descuento",
+          "pie": "Descuento S/ 0.10: precio resultante S/ 1.10 por litro."
+        },
+        {
+          "titulo": "Guardar",
+          "instruccion": "Haz clic en «Guardar configuración».",
+          "registro": "evidencias/originales/config_pagos/pagos_config_2_proveedores.registro.json",
+          "captura": "cfg_07_precio",
+          "objetivo": "guardar",
+          "pie": "Botón «Guardar configuración»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el mensaje y los valores de «Ajuste por calidad».",
+          "registro": "evidencias/originales/config_pagos/pagos_config_2_proveedores.registro.json",
+          "captura": "cfg_08_precio_guardado",
+          "objetivo": "mensaje",
+          "limitar_x": [
+            284,
+            800
+          ],
+          "pie": "Mensaje «Configuración de proveedores guardada correctamente.»",
+          "resultado": "La pestaña muestra el precio vigente, la periodicidad semanal (jueves a miércoles), el día de pago y el ajuste por calidad."
+        }
+      ],
+      "resultado": "El pago semanal de los proveedores se calcula con el nuevo precio desde la fecha de vigencia. La configuración anterior pasa a «Precios anteriores».",
+      "validaciones": [
+        [
+          "Precio base por litro",
+          "Obligatorio, mayor que cero, hasta 4 decimales.",
+          "«Ingresa el precio base por litro.» / «El precio base por litro debe ser mayor que cero.»"
+        ],
+        [
+          "Descuento por litro",
+          "No negativo y menor que el precio base; hasta 4 decimales.",
+          "«El descuento por litro no puede ser negativo.» / «El descuento por litro debe ser menor que el precio base.»"
+        ],
+        [
+          "Vigente desde",
+          "Obligatoria.",
+          "«Indica la fecha de inicio de la vigencia.»"
+        ]
+      ],
+      "errores": [
+        [
+          "Se guardó un precio con error",
+          "Use «Editar configuración». Según el sistema: «Configuración actualizada. Los pagos ya generados conservan su monto.»"
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-CFG-003",
+      "titulo": "Periodos de liquidación y otros parámetros económicos",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Conocer qué valores de pago son fijos en el sistema.",
+      "acceso": "Configuración › Configuración de pagos › pestaña «Proveedores»",
+      "requisitos": [
+        "Ninguno."
+      ],
+      "pasos": [
+        {
+          "titulo": "Revisar periodicidad y día de pago",
+          "instruccion": "En la pestaña «Proveedores», consulta «Periodicidad» y «Día de pago».",
+          "registro": "evidencias/originales/config_pagos/pagos_config_2_proveedores.registro.json",
+          "captura": "cfg_08_precio_guardado",
+          "pie": "Periodicidad «Semanal (jueves a miércoles)» y día de pago «Miércoles».",
+          "recorte": [
+            252,
+            180,
+            1440,
+            900
+          ]
+        }
+      ],
+      "resultado": "La periodicidad semanal y el día de pago se muestran como información: la pantalla no ofrece campos para cambiarlos. No existe en el panel del Administrador una pantalla para definir periodos de liquidación distintos."
+    }
+  ]
+}

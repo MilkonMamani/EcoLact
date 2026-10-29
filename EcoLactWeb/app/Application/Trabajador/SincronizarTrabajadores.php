@@ -20,11 +20,11 @@ use DateTimeImmutable;
  * correrla muchas veces nunca duplica ni pierde histórico.
  *
  * - Alta: abre el primer periodo desde su fecha de ingreso (si ingresa hoy
- *   después del cierre de las 07:00, desde mañana).
+ *   después del cierre de las 23:59, desde mañana).
  * - Baja: cierra el periodo. Si el día de hoy ya quedó decidido (cerró a las
- *   07:00 o ya tiene jornada) cuenta como su último día; si no, termina ayer.
+ *   23:59 o ya tiene jornada) cuenta como su último día; si no, termina ayer.
  * - Reactivación: abre un periodo NUEVO desde el primer día evaluable (hoy
- *   antes de las 07:00, si no mañana). Nunca retroactivo: los días inactivos
+ *   antes de las 23:59, si no mañana). Nunca retroactivo: los días inactivos
  *   quedan fuera de todo periodo ("no correspondía").
  *
  * Los casos de uso de alta/baja/reactivación de cada ficha la llaman con

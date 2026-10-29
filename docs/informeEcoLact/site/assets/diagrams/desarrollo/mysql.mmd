@@ -1,0 +1,8 @@
+flowchart TB
+ L[Aplicación Laravel] --> C[config/database.php + variables DB_*]
+ C --> P[Conexión MySQL · PDO]
+ P --> D[(Esquema ecolactv1)]
+ M[Migraciones · estructura] --> D
+ S[Seeders · datos iniciales] --> D
+
+classDef default fill:#eaf3ff,stroke:#7ca5df,color:#103b86;

@@ -1,0 +1,204 @@
+{
+  "plan": "proveedores_2_asignacion.json",
+  "fecha": "2026-10-28T10:56:28",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "pro_10_ubicar",
+      "archivo": "evidencias/originales/proveedores/pro_10_ubicar.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "ubicar": [
+          981,
+          859,
+          1096,
+          878
+        ],
+        "editar_ubicacion": [
+          1313,
+          675,
+          1387,
+          703
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:56:35"
+    },
+    {
+      "nombre": "pro_11_modal",
+      "archivo": "evidencias/originales/proveedores/pro_11_modal.png",
+      "url": "/admin/zonas?zona=sin-asignar",
+      "descripcion": "",
+      "objetivos": {
+        "cabecera": [
+          377,
+          128,
+          1063,
+          148
+        ],
+        "mapa": [
+          360,
+          246,
+          1080,
+          630
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:56:50"
+    },
+    {
+      "nombre": "pro_12_punto",
+      "archivo": "evidencias/originales/proveedores/pro_12_punto.png",
+      "url": "/admin/zonas?zona=sin-asignar",
+      "descripcion": "",
+      "objetivos": {
+        "mapa": [
+          360,
+          246,
+          1080,
+          630
+        ],
+        "zona_detectada": [
+          360,
+          690,
+          589,
+          728
+        ],
+        "latitud": [
+          605,
+          690,
+          835,
+          732
+        ]
+      },
+      "textos_visibles": [
+        "Faon",
+        ""
+      ],
+      "hora": "2026-10-28T10:56:54"
+    },
+    {
+      "nombre": "pro_13_asignacion",
+      "archivo": "evidencias/originales/proveedores/pro_13_asignacion.png",
+      "url": "/admin/zonas?zona=sin-asignar",
+      "descripcion": "",
+      "objetivos": {
+        "zona": [
+          360,
+          806,
+          712,
+          848
+        ],
+        "ruta": [
+          728,
+          806,
+          1080,
+          848
+        ],
+        "referencia": [
+          360,
+          886,
+          1080,
+          928
+        ],
+        "guardar": [
+          995,
+          964,
+          1080,
+          1000
+        ]
+      },
+      "textos_visibles": [
+        "Asignar proveedor a zona y ruta\n\nProveedor Prueba Manual\n\nDNI: 99000005\n\nTodavía sin zona ni ruta.\n\nUBICACIÓN\nMapa\nSatélite\nCombinaciones de teclas\nDatos del mapa ©2026 Google\nCondiciones\nInformar un error en el mapa\n\nPuedes arrastrar el marcador para afinar la ubicación.\n\nZona detectada\n\nFaon\n\nLatitud *\nLongitud *\nASIGNACIÓN\nZona *\nSeleccionar zona\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nRuta *\nSeleccionar ruta\nRuta principal\nReferencia (opcional)\nCancelar\nGuardar"
+      ],
+      "hora": "2026-10-28T10:57:05"
+    },
+    {
+      "nombre": "pro_14_asignado",
+      "archivo": "evidencias/originales/proveedores/pro_14_asignado.png",
+      "url": "/admin/zonas?zona=3&proveedor=509",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ],
+        "panel": [
+          960,
+          94,
+          1408,
+          914
+        ]
+      },
+      "textos_visibles": [
+        "Asignación guardada correctamente.",
+        "Faon"
+      ],
+      "hora": "2026-10-28T10:57:17"
+    },
+    {
+      "nombre": "pro_15_panel_asignado",
+      "archivo": "evidencias/originales/proveedores/pro_15_panel_asignado.png",
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "descripcion": "",
+      "objetivos": {
+        "seccion": [
+          981,
+          657,
+          1387,
+          904
+        ],
+        "editar_ubicacion": [
+          1313,
+          675,
+          1387,
+          703
+        ],
+        "fila": [
+          285,
+          400,
+          1089,
+          452
+        ]
+      },
+      "textos_visibles": [
+        "Ubicación y zona\nEditar\nZona asignada\nFaon\nRuta de acopio\nRuta principal\nReferencia\nReferencia ficticia del manual\nLatitud\n-15.641241\nLongitud\n-69.979553\nVer en mapa"
+      ],
+      "hora": "2026-10-28T10:57:23"
+    },
+    {
+      "nombre": "pro_16_cambiar_zona",
+      "archivo": "evidencias/originales/proveedores/pro_16_cambiar_zona.png",
+      "url": "/admin/zonas?zona=3",
+      "descripcion": "",
+      "objetivos": {
+        "actual": [
+          377,
+          168,
+          1063,
+          184
+        ],
+        "mapa": [
+          360,
+          246,
+          1080,
+          630
+        ],
+        "zona": [
+          360,
+          806,
+          712,
+          848
+        ]
+      },
+      "textos_visibles": [
+        "Asignación actual: Faon · Ruta principal"
+      ],
+      "hora": "2026-10-28T10:57:33"
+    }
+  ],
+  "dialogos": []
+}

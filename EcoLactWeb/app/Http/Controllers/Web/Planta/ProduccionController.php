@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web\Planta;
 use App\Application\Produccion\CalcularRequerimientosProduccion;
 use App\Application\Produccion\Contracts\LotesProduccionListadoQuery;
 use App\Application\Produccion\FinalizarProduccion;
-use App\Application\Produccion\IniciarProduccion;
+use App\Application\Produccion\IniciarPlanificacionProduccion;
 use App\Application\Produccion\LotesProduccionFiltro;
 use App\Application\Produccion\ObtenerDetalleLoteProduccion;
 use App\Application\Produccion\ObtenerProductosProducibles;
@@ -36,7 +36,7 @@ final class ProduccionController extends Controller
         private readonly ObtenerStockLeche $obtenerStockLeche,
         private readonly ObtenerProductosProducibles $obtenerProductosProducibles,
         private readonly CalcularRequerimientosProduccion $calcularRequerimientos,
-        private readonly IniciarProduccion $iniciarProduccion,
+        private readonly IniciarPlanificacionProduccion $iniciarPlanificacion,
         private readonly FinalizarProduccion $finalizarProduccion,
     ) {}
 
@@ -98,7 +98,8 @@ final class ProduccionController extends Controller
         $datos = $request->validated();
 
         try {
-            $lote = $this->iniciarProduccion->execute(
+            // Un lote por producto, todos en la misma transacción.
+            $iniciada = $this->iniciarPlanificacion->execute(
                 lineas: $datos['productos'],
                 // El actor es siempre el usuario autenticado, nunca un valor del cliente.
                 registradoPorUserId: $request->user()->id,
@@ -108,8 +109,12 @@ final class ProduccionController extends Controller
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('planta.produccion.show', $lote->id())
-            ->with('success', "Producción {$lote->codigo()} iniciada. Los insumos fueron descontados.");
+        // Un solo lote: se abre para seguirlo. Varios: se vuelve al historial, donde aparecen todos.
+        $destino = count($iniciada->lotes) === 1
+            ? redirect()->route('planta.produccion.show', $iniciada->lotes[0]->id())
+            : redirect()->route('planta.produccion.index');
+
+        return $destino->with('success', $iniciada->mensaje());
     }
 
     public function finalizar(FinalizarProduccionRequest $request, LoteProduccionModel $lote): RedirectResponse

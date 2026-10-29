@@ -1,0 +1,43 @@
+/* Actores: sólo la cuadrícula y sus tarjetas; el marco común vive en sistema.css. */
+.ec-sistema.ec-actors .ec-actors-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 15px;
+  margin: 17px 0;
+}
+.ec-sistema.ec-actors .ec-actor-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid #e7edf6;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #183a6710;
+}
+.ec-sistema.ec-actors .ec-actor-card > img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
+}
+.ec-sistema.ec-actors .ec-actor-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  padding: 12px;
+}
+.md-typeset .ec-sistema.ec-actors .ec-actor-body h2 { margin: 0 0 5px; font-size: 16px; }
+.md-typeset .ec-sistema.ec-actors .ec-actor-body p { margin: 0 0 10px; font-size: 13px; line-height: 1.45; }
+.ec-sistema.ec-actors .ec-actor-tag { margin-top: auto; padding: 3px 8px; border-radius: 5px; color: #064c9b; background: #d6efff; font-size: 12px; line-height: 1.4; }
+.ec-sistema.ec-actors .ec-relationship p { font-size: 13px; }
+@media (min-width: 601px) and (max-width: 900px) {
+  .ec-sistema.ec-actors .ec-actors-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .ec-sistema.ec-actors .ec-actors-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+}

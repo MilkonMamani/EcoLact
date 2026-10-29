@@ -1,0 +1,10 @@
+{
+  "command": "php artisan test --colors=never tests/Feature/Application/Acopio/RegistrarEntregaTest.php \"--log-junit=C:\\CICLO VI\\EcoLact\\docs\\informeEcoLact\\docs\\assets\\evidencias\\pruebas\\backend\\20261029-qa02\\smoke.xml\"",
+  "cwd": "C:\\CICLO VI\\EcoLact\\EcoLactWeb",
+  "started": "2026-10-29T01:16:23.994391-05:00",
+  "ended": "2026-10-29T01:16:25.546317-05:00",
+  "duration_seconds": 1.552,
+  "exit_code": 0,
+  "log": "smoke.log",
+  "sha256": "fe6adad765c84da867d9bc385e87569cca65ed758887f9e44a8285f02bdf9dd3"
+}

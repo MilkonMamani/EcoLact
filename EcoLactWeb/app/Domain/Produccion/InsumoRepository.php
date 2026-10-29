@@ -38,4 +38,14 @@ interface InsumoRepository
      * @return Insumo[]
      */
     public function listar(): array;
+
+    /**
+     * Cuántos registros dependen de la UNIDAD BASE del insumo: movimientos de
+     * stock, presentaciones de compra, detalles de compra, ingredientes de
+     * receta y consumos de lotes. Con cualquiera de ellos la unidad ya no se
+     * puede cambiar sin reinterpretar cantidades guardadas.
+     *
+     * @return array{movimientos: int, presentaciones: int, compras: int, recetas: int, consumos: int}
+     */
+    public function contarDependenciasDeUnidad(int $id): array;
 }

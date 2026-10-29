@@ -2,10 +2,11 @@
 
 namespace App\Application\Pago;
 
-use App\Application\Pago\Contracts\PersonalPagableQuery;
 use App\Application\Shared\TransactionManager;
+use App\Domain\Auditoria\AuditoriaRepository;
 use App\Domain\Auth\Repositories\RoleRepository;
 use App\Domain\Auth\Repositories\UsuarioRepository;
+use App\Domain\Auth\Role;
 use App\Domain\Pago\ConfiguracionPago;
 use App\Domain\Pago\ConfiguracionPagoRepository;
 use App\Domain\Shared\Enums\PeriodicidadPago;
@@ -23,32 +24,34 @@ use InvalidArgumentException;
  *   base por litro y el descuento por calidad OBSERVADA se guardan con vigencia
  *   histórica en Precio de leche / Reglas de pago por calidad, que siguen siendo
  *   la única fuente.
- * - Personal: sueldo fijo mensual de UN trabajador activo (con ficha activa en
- *   Trabajadores, o el usuario de un rol remunerable sin ficha, como el
- *   administrador). Su rol se toma del trabajador real, nunca del formulario.
+ * - Personal: sueldo fijo mensual de un ROL remunerable (nunca PROVEEDOR). Todos
+ *   los trabajadores activos del rol, también los que se registren después,
+ *   heredan ese sueldo: no hay sueldos individuales. Queda en auditorías.
  *
- * Dos configuraciones ACTIVAS de la misma clave (el proveedor, o un mismo
- * trabajador) no pueden cruzar sus vigencias: para cambiar un valor ya vigente
- * se usa ActualizarConfiguracionPago, que abre una nueva vigencia.
+ * Dos configuraciones ACTIVAS de la misma clave (el proveedor, o un mismo rol)
+ * no pueden cruzar sus vigencias: para cambiar un valor ya vigente se usa
+ * ActualizarConfiguracionPago, que abre una nueva vigencia.
  */
 final class RegistrarConfiguracionPago
 {
+    public const ACCION_AUDITORIA = 'CONFIGURAR_SUELDO_ROL';
+
     public function __construct(
         private readonly ConfiguracionPagoRepository $configuraciones,
         private readonly RoleRepository $roles,
         private readonly UsuarioRepository $usuarios,
-        private readonly PersonalPagableQuery $personal,
         private readonly AplicarPrecioYAjustesProveedor $precioYAjustes,
+        private readonly AuditoriaRepository $auditorias,
         private readonly TransactionManager $transacciones,
     ) {}
 
     /**
-     * @param  int|null  $userId  trabajador (solo personal)
+     * @param  int|null  $rolId  rol laboral (solo personal)
      * @param  array<string, array{tipo_ajuste?: string|null, valor_ajuste?: float|string|null}>|null  $ajustes
      */
     public function execute(
         TipoBeneficiarioPago $tipo,
-        ?int $userId,
+        ?int $rolId,
         ?float $montoBase,
         bool $aplicaCalidad,
         DateTimeImmutable $fechaInicio,
@@ -61,25 +64,16 @@ final class RegistrarConfiguracionPago
             throw new DomainException('El usuario que registra la configuración no existe.');
         }
 
-        $rolId = null;
-        $trabajador = null;
+        $rol = null;
 
         if ($tipo === TipoBeneficiarioPago::PERSONAL) {
-            $trabajador = $userId !== null ? $this->personal->trabajadorActivo($userId) : null;
-
-            if ($trabajador === null) {
-                throw new DomainException('Selecciona un trabajador activo con un rol remunerable.');
-            }
-
-            $rol = $this->roles->buscarPorId($trabajador->rolId);
+            $rol = $rolId !== null ? $this->roles->buscarPorId($rolId) : null;
 
             if ($rol === null || ! $rol->esRemunerable()) {
-                throw new DomainException('El rol del trabajador no es remunerable, por lo que no puede tener sueldo.');
+                throw new DomainException('Selecciona un rol laboral remunerable: los proveedores cobran por litros entregados, no tienen sueldo.');
             }
-
-            $rolId = $rol->id();
         } else {
-            $userId = null;
+            $rolId = null;
 
             if ($precioBaseLitro === null || $precioBaseLitro <= 0.0) {
                 throw new DomainException('El precio base por litro debe ser mayor a cero.');
@@ -100,21 +94,18 @@ final class RegistrarConfiguracionPago
                 estado: 'ACTIVO',
                 observacion: $this->limpiar($observacion),
                 creadoPorUserId: $creadoPorUserId,
-                userId: $userId,
             );
         } catch (InvalidArgumentException $e) {
             throw new DomainException($e->getMessage());
         }
 
-        return $this->transacciones->run(function () use ($configuracion, $tipo, $userId, $trabajador, $precioBaseLitro, $ajustes, $creadoPorUserId): ConfiguracionPago {
-            $solapadas = $userId !== null
-                ? $this->configuraciones->listarSolapadasDeTrabajador($userId, $configuracion->fechaInicio(), null)
-                : $this->configuraciones->listarSolapadas($tipo, null, $configuracion->fechaInicio(), null);
+        return $this->transacciones->run(function () use ($configuracion, $tipo, $rol, $precioBaseLitro, $ajustes, $creadoPorUserId): ConfiguracionPago {
+            $solapadas = $this->configuraciones->listarSolapadas($tipo, $configuracion->rolId(), $configuracion->fechaInicio(), null);
 
             if ($solapadas !== []) {
                 throw new DomainException(sprintf(
                     'Ya existe una configuración de pago para %s con vigencia desde el %s. Edítala para cambiar el valor con una nueva vigencia.',
-                    $trabajador?->nombre ?? 'los proveedores',
+                    $rol !== null ? 'el rol '.$rol->etiqueta() : 'los proveedores',
                     $solapadas[0]->fechaInicio()->format('d/m/Y'),
                 ));
             }
@@ -123,8 +114,37 @@ final class RegistrarConfiguracionPago
                 $this->precioYAjustes->execute($precioBaseLitro, $configuracion->aplicaCalidad(), $ajustes, $configuracion->fechaInicio(), $creadoPorUserId);
             }
 
-            return $this->configuraciones->guardar($configuracion);
+            $guardada = $this->configuraciones->guardar($configuracion);
+
+            if ($rol !== null) {
+                $this->auditorias->registrar(
+                    userId: $creadoPorUserId,
+                    accion: self::ACCION_AUDITORIA,
+                    tablaAfectada: 'configuraciones_pago',
+                    registroId: $guardada->id(),
+                    datosAnteriores: null,
+                    datosNuevos: self::datosAuditoria($rol, $guardada),
+                    motivo: $guardada->observacion(),
+                );
+            }
+
+            return $guardada;
         });
+    }
+
+    /**
+     * Lo que queda en auditorías de un sueldo por rol.
+     *
+     * @return array{rol: string, sueldo_mensual: float|null, vigente_desde: string, vigente_hasta: string|null}
+     */
+    public static function datosAuditoria(Role $rol, ConfiguracionPago $configuracion): array
+    {
+        return [
+            'rol' => $rol->nombre(),
+            'sueldo_mensual' => $configuracion->montoBase(),
+            'vigente_desde' => $configuracion->fechaInicio()->format('Y-m-d'),
+            'vigente_hasta' => $configuracion->fechaFin()?->format('Y-m-d'),
+        ];
     }
 
     private function limpiar(?string $observacion): ?string

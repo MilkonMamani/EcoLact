@@ -1,0 +1,3703 @@
+{
+  "documento": "Registro de evidencias de EcoLact — Manual del Administrador",
+  "criterio": "Cada imagen anotada procede de una captura original medida en el DOM (capturar.py). Sin datos personales: nombres, DNI y usuario difuminados.",
+  "generado": "2026-10-28",
+  "evidencias": [
+    {
+      "procedimiento": "ADM-ACC-001",
+      "paso": 1,
+      "captura": "acc_login",
+      "original": "evidencias/originales/acceso/acc_login.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-001_P01.png",
+      "objetivo": "usuario",
+      "rectangulo": [
+        91,
+        414,
+        471,
+        468
+      ],
+      "url": "/login",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACC-001",
+      "paso": 2,
+      "captura": "acc_login",
+      "original": "evidencias/originales/acceso/acc_login.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-001_P02.png",
+      "objetivo": "clave",
+      "rectangulo": [
+        91,
+        516,
+        471,
+        570
+      ],
+      "url": "/login",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACC-001",
+      "paso": 3,
+      "captura": "acc_login",
+      "original": "evidencias/originales/acceso/acc_login.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-001_P03.png",
+      "objetivo": "ingresar",
+      "rectangulo": [
+        91,
+        641,
+        471,
+        695
+      ],
+      "url": "/login",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACC-001",
+      "paso": "!",
+      "captura": "acc_02_credenciales_incorrectas",
+      "original": "evidencias/originales/acceso/acc_02_credenciales_incorrectas.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-001_V01.png",
+      "objetivo": "error",
+      "rectangulo": [
+        107,
+        353,
+        455,
+        373
+      ],
+      "url": "/login",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACC-002",
+      "paso": 1,
+      "captura": "acc_11_grupo_trabajadores",
+      "original": "evidencias/originales/acceso/acc_11_grupo_trabajadores.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-002_P01.png",
+      "objetivo": "grupo",
+      "rectangulo": [
+        52,
+        437,
+        129,
+        456
+      ],
+      "url": "/admin/dashboard",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACC-002",
+      "paso": 2,
+      "captura": "zon_00_dashboard_menu",
+      "original": "evidencias/originales/zonas/zon_00_dashboard_menu.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-002_P02.png",
+      "objetivo": "menu_zonas",
+      "rectangulo": [
+        12,
+        341,
+        239,
+        381
+      ],
+      "url": "/admin/dashboard",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACC-003",
+      "paso": 1,
+      "captura": "acc_10_dashboard",
+      "original": "evidencias/originales/acceso/acc_10_dashboard.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-003_P01.png",
+      "objetivo": "cuenta",
+      "rectangulo": [
+        12,
+        833,
+        239,
+        888
+      ],
+      "url": "/admin/dashboard",
+      "estado": "Verificado parcialmente"
+    },
+    {
+      "procedimiento": "ADM-ACC-003",
+      "paso": 2,
+      "captura": "acc_12_menu_cuenta",
+      "original": "evidencias/originales/acceso/acc_12_menu_cuenta.png",
+      "anotada": "evidencias/anotadas/ACC/ADM-ACC-003_P02.png",
+      "objetivo": "cerrar_sesion",
+      "rectangulo": [
+        18,
+        767,
+        233,
+        807
+      ],
+      "url": "/admin/dashboard",
+      "estado": "Verificado parcialmente"
+    },
+    {
+      "procedimiento": "ADM-ZON-001",
+      "paso": 1,
+      "captura": "zon_00_dashboard_menu",
+      "original": "evidencias/originales/zonas/zon_00_dashboard_menu.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-001_P01.png",
+      "objetivo": "menu_zonas",
+      "rectangulo": [
+        12,
+        341,
+        239,
+        381
+      ],
+      "url": "/admin/dashboard",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-001",
+      "paso": 2,
+      "captura": "zon_02_leyenda_faon",
+      "original": "evidencias/originales/zonas/zon_02_leyenda_faon.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-001_P02.png",
+      "objetivo": "leyenda_faon",
+      "rectangulo": [
+        304,
+        477,
+        361,
+        500
+      ],
+      "url": "/admin/zonas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-001",
+      "paso": 3,
+      "captura": "zon_03_panel_faon",
+      "original": "evidencias/originales/zonas/zon_03_panel_faon.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-001_P03.png",
+      "objetivo": "resumen",
+      "rectangulo": [
+        981,
+        487,
+        1387,
+        570
+      ],
+      "url": "/admin/zonas?zona=3",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-001",
+      "paso": 4,
+      "captura": "zon_03_panel_faon",
+      "original": "evidencias/originales/zonas/zon_03_panel_faon.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-001_P04.png",
+      "objetivo": "tab_proveedores",
+      "rectangulo": [
+        1068,
+        163,
+        1170,
+        204
+      ],
+      "url": "/admin/zonas?zona=3",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-001",
+      "paso": 5,
+      "captura": "zon_04_tab_proveedores",
+      "original": "evidencias/originales/zonas/zon_04_tab_proveedores.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-001_P05.png",
+      "objetivo": "tabla",
+      "rectangulo": [
+        981,
+        222,
+        1387,
+        353
+      ],
+      "url": "/admin/zonas?zona=3",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-001",
+      "paso": 6,
+      "captura": "zon_04_tab_proveedores",
+      "original": "evidencias/originales/zonas/zon_04_tab_proveedores.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-001_P06.png",
+      "objetivo": "tab_acopiadores",
+      "rectangulo": [
+        1175,
+        163,
+        1277,
+        204
+      ],
+      "url": "/admin/zonas?zona=3",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-002",
+      "paso": 1,
+      "captura": "zon_10_antes_nueva",
+      "original": "evidencias/originales/zonas/zon_10_antes_nueva.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-002_P01.png",
+      "objetivo": "nueva_zona",
+      "rectangulo": [
+        284,
+        150,
+        416,
+        190
+      ],
+      "url": "/admin/zonas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-002",
+      "paso": 2,
+      "captura": "zon_12_nombre",
+      "original": "evidencias/originales/zonas/zon_12_nombre.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-002_P02.png",
+      "objetivo": "nombre",
+      "rectangulo": [
+        520,
+        357,
+        920,
+        399
+      ],
+      "url": "/admin/zonas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-002",
+      "paso": 3,
+      "captura": "zon_13_descripcion",
+      "original": "evidencias/originales/zonas/zon_13_descripcion.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-002_P03.png",
+      "objetivo": "descripcion",
+      "rectangulo": [
+        520,
+        441,
+        920,
+        519
+      ],
+      "url": "/admin/zonas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-002",
+      "paso": 4,
+      "captura": "zon_13_descripcion",
+      "original": "evidencias/originales/zonas/zon_13_descripcion.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-002_P04.png",
+      "objetivo": "crear",
+      "rectangulo": [
+        818,
+        549,
+        920,
+        585
+      ],
+      "url": "/admin/zonas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-002",
+      "paso": 5,
+      "captura": "zon_14_resultado",
+      "original": "evidencias/originales/zonas/zon_14_resultado.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-002_P05.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        760,
+        70
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-002",
+      "paso": "!",
+      "captura": "zon_15_duplicado",
+      "original": "evidencias/originales/zonas/zon_15_duplicado.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-002_V01.png",
+      "objetivo": "error_campo",
+      "rectangulo": [
+        520,
+        346,
+        920,
+        388
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-003",
+      "paso": 2,
+      "captura": "zon_20_antes_editar",
+      "original": "evidencias/originales/zonas/zon_20_antes_editar.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-003_P02.png",
+      "objetivo": "editar",
+      "rectangulo": [
+        1753,
+        224,
+        1827,
+        252
+      ],
+      "url": null,
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-003",
+      "paso": 3,
+      "captura": "zon_22_descripcion_editada",
+      "original": "evidencias/originales/zonas/zon_22_descripcion_editada.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-003_P03.png",
+      "objetivo": "descripcion",
+      "rectangulo": [
+        760,
+        484,
+        1160,
+        562
+      ],
+      "url": null,
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-003",
+      "paso": 4,
+      "captura": "zon_22_descripcion_editada",
+      "original": "evidencias/originales/zonas/zon_22_descripcion_editada.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-003_P04.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        1017,
+        710,
+        1160,
+        746
+      ],
+      "url": null,
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-003",
+      "paso": 5,
+      "captura": "zon_23_editada",
+      "original": "evidencias/originales/zonas/zon_23_editada.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-003_P05.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        286,
+        24,
+        760,
+        70
+      ],
+      "url": null,
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-004",
+      "paso": 1,
+      "captura": "zon_30_antes_delimitar",
+      "original": "evidencias/originales/zonas/zon_30_antes_delimitar.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-004_P01.png",
+      "objetivo": "dibujar_atajo",
+      "rectangulo": [
+        1711,
+        721,
+        1865,
+        749
+      ],
+      "url": null,
+      "estado": "No verificado — defecto detectado en zonas sin delimitación"
+    },
+    {
+      "procedimiento": "ADM-ZON-004",
+      "paso": 2,
+      "captura": "zon_31_editor",
+      "original": "evidencias/originales/zonas/zon_31_editor.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-004_P02.png",
+      "objetivo": "dibujar",
+      "rectangulo": [
+        487,
+        378,
+        654,
+        410
+      ],
+      "url": null,
+      "estado": "No verificado — defecto detectado en zonas sin delimitación"
+    },
+    {
+      "procedimiento": "ADM-ZON-005",
+      "paso": 1,
+      "captura": "zon_40_antes_ruta",
+      "original": "evidencias/originales/zonas/zon_40_antes_ruta.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-005_P01.png",
+      "objetivo": "nueva_ruta",
+      "rectangulo": [
+        1764,
+        576,
+        1865,
+        604
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-005",
+      "paso": 2,
+      "captura": "zon_42_ruta_datos",
+      "original": "evidencias/originales/zonas/zon_42_ruta_datos.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-005_P02.png",
+      "objetivo": "nombre",
+      "rectangulo": [
+        760,
+        464,
+        1160,
+        506
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-005",
+      "paso": 3,
+      "captura": "zon_42_ruta_datos",
+      "original": "evidencias/originales/zonas/zon_42_ruta_datos.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-005_P03.png",
+      "objetivo": "crear",
+      "rectangulo": [
+        1062,
+        646,
+        1160,
+        682
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-005",
+      "paso": 4,
+      "captura": "zon_43_ruta_creada",
+      "original": "evidencias/originales/zonas/zon_43_ruta_creada.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-005_P04.png",
+      "objetivo": "rutas",
+      "rectangulo": [
+        1459,
+        692,
+        1865,
+        730
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-006",
+      "paso": 1,
+      "captura": "zon_50_menu_cerrado",
+      "original": "evidencias/originales/zonas/zon_50_menu_cerrado.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-006_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        1833,
+        288,
+        1865,
+        320
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-006",
+      "paso": 2,
+      "captura": "zon_51_menu_desactivar",
+      "original": "evidencias/originales/zonas/zon_51_menu_desactivar.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-006_P02.png",
+      "objetivo": "desactivar",
+      "rectangulo": [
+        1655,
+        331,
+        1859,
+        367
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-006",
+      "paso": 3,
+      "captura": "zon_52_desactivada",
+      "original": "evidencias/originales/zonas/zon_52_desactivada.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-006_P03.png",
+      "objetivo": "estado",
+      "rectangulo": [
+        1439,
+        95,
+        1885,
+        228
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-006",
+      "paso": 4,
+      "captura": "zon_53_menu_activar",
+      "original": "evidencias/originales/zonas/zon_53_menu_activar.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-006_P04.png",
+      "objetivo": "activar",
+      "rectangulo": [
+        1655,
+        331,
+        1859,
+        367
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-007",
+      "paso": 2,
+      "captura": "zon_62_eliminar_vacia",
+      "original": "evidencias/originales/zonas/zon_62_eliminar_vacia.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-007_P02.png",
+      "objetivo": "eliminar",
+      "rectangulo": [
+        1655,
+        347,
+        1859,
+        383
+      ],
+      "url": "/admin/zonas?zona=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-007",
+      "paso": 4,
+      "captura": "zon_63_eliminada",
+      "original": "evidencias/originales/zonas/zon_63_eliminada.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-007_P04.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        286,
+        24,
+        760,
+        70
+      ],
+      "url": "/admin/zonas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ZON-007",
+      "paso": "!",
+      "captura": "zon_61_eliminar_bloqueado",
+      "original": "evidencias/originales/zonas/zon_61_eliminar_bloqueado.png",
+      "anotada": "evidencias/anotadas/ZON/ADM-ZON-007_V01.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        286,
+        24,
+        1120,
+        70
+      ],
+      "url": "/admin/zonas?zona=7",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": 1,
+      "captura": "per_01_menu_nuevo",
+      "original": "evidencias/originales/personal/per_01_menu_nuevo.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_P01.png",
+      "objetivo": "nuevo_trabajador",
+      "rectangulo": [
+        43,
+        471,
+        239,
+        507
+      ],
+      "url": "/admin/dashboard",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": 2,
+      "captura": "per_02_tipos",
+      "original": "evidencias/originales/personal/per_02_tipos.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_P02.png",
+      "objetivo": "tipo_acopiador",
+      "rectangulo": [
+        284,
+        227,
+        555,
+        321
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": 3,
+      "captura": "per_03_info_personal",
+      "original": "evidencias/originales/personal/per_03_info_personal.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_P03.png",
+      "objetivo": "dni",
+      "rectangulo": [
+        312,
+        550,
+        663,
+        592
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": 4,
+      "captura": "per_04_zona",
+      "original": "evidencias/originales/personal/per_04_zona.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_P04.png",
+      "objetivo": "zona",
+      "rectangulo": [
+        312,
+        637,
+        663,
+        679
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": 5,
+      "captura": "per_05_cuenta",
+      "original": "evidencias/originales/personal/per_05_cuenta.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_P05.png",
+      "objetivo": "usuario",
+      "rectangulo": [
+        312,
+        821,
+        663,
+        863
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": 6,
+      "captura": "per_05b_formulario_completo",
+      "original": "evidencias/originales/personal/per_05b_formulario_completo.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_P06.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        845,
+        905,
+        1037,
+        947
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": 7,
+      "captura": "per_06_registrado",
+      "original": "evidencias/originales/personal/per_06_registrado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_P07.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        760,
+        70
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-001",
+      "paso": "!",
+      "captura": "per_07_dni_duplicado",
+      "original": "evidencias/originales/personal/per_07_dni_duplicado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-001_V01.png",
+      "objetivo": "error",
+      "rectangulo": [
+        284,
+        24,
+        760,
+        92
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-002",
+      "paso": 1,
+      "captura": "per_10_listado",
+      "original": "evidencias/originales/personal/per_10_listado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-002_P01.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        346,
+        1085,
+        398
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-002",
+      "paso": 2,
+      "captura": "per_11_panel",
+      "original": "evidencias/originales/personal/per_11_panel.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-002_P02.png",
+      "objetivo": "editar",
+      "rectangulo": [
+        1313,
+        503,
+        1387,
+        531
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-002",
+      "paso": 3,
+      "captura": "per_12_editar",
+      "original": "evidencias/originales/personal/per_12_editar.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-002_P03.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        777,
+        560,
+        920,
+        596
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-002",
+      "paso": 4,
+      "captura": "per_13_actualizado",
+      "original": "evidencias/originales/personal/per_13_actualizado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-002_P04.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        760,
+        70
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-003",
+      "paso": 1,
+      "captura": "per_14_tab_zona",
+      "original": "evidencias/originales/personal/per_14_tab_zona.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-003_P01.png",
+      "objetivo": "tab_zona",
+      "rectangulo": [
+        1150,
+        209,
+        1205,
+        250
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado parcialmente"
+    },
+    {
+      "procedimiento": "ADM-PER-003",
+      "paso": 2,
+      "captura": "per_14_tab_zona",
+      "original": "evidencias/originales/personal/per_14_tab_zona.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-003_P02.png",
+      "objetivo": "editar_zona",
+      "rectangulo": [
+        1313,
+        268,
+        1387,
+        296
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado parcialmente"
+    },
+    {
+      "procedimiento": "ADM-PER-003",
+      "paso": 3,
+      "captura": "per_15_modal_zona",
+      "original": "evidencias/originales/personal/per_15_modal_zona.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-003_P03.png",
+      "objetivo": "zona",
+      "rectangulo": [
+        520,
+        370,
+        920,
+        412
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado parcialmente"
+    },
+    {
+      "procedimiento": "ADM-PER-004",
+      "paso": 1,
+      "captura": "per_20_antes_desactivar",
+      "original": "evidencias/originales/personal/per_20_antes_desactivar.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-004_P01.png",
+      "objetivo": "switch",
+      "rectangulo": [
+        1019,
+        405,
+        1063,
+        431
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-004",
+      "paso": 2,
+      "captura": "per_21_modal_desactivar",
+      "original": "evidencias/originales/personal/per_21_modal_desactivar.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-004_P02.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        802,
+        482,
+        920,
+        518
+      ],
+      "url": "/admin/acopiadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-004",
+      "paso": 3,
+      "captura": "per_22_desactivado",
+      "original": "evidencias/originales/personal/per_22_desactivado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-004_P03.png",
+      "objetivo": "switch",
+      "rectangulo": [
+        869,
+        405,
+        913,
+        431
+      ],
+      "url": "/admin/acopiadores?acopiador=1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-004",
+      "paso": 4,
+      "captura": "per_23_modal_reactivar",
+      "original": "evidencias/originales/personal/per_23_modal_reactivar.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-004_P04.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        827,
+        508,
+        920,
+        544
+      ],
+      "url": "/admin/acopiadores?acopiador=1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-005",
+      "paso": 1,
+      "captura": "per_3ana_1_formulario",
+      "original": "evidencias/originales/personal/per_3ana_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-005_P01.png",
+      "objetivo": "tipo",
+      "rectangulo": [
+        568,
+        226,
+        839,
+        320
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=analista",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-005",
+      "paso": 2,
+      "captura": "per_3ana_1_formulario",
+      "original": "evidencias/originales/personal/per_3ana_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-005_P02.png",
+      "objetivo": "seccion_personal",
+      "rectangulo": [
+        285,
+        346,
+        1063,
+        617
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=analista",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-005",
+      "paso": 3,
+      "captura": "per_3ana_1_formulario",
+      "original": "evidencias/originales/personal/per_3ana_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-005_P03.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        845,
+        819,
+        1037,
+        861
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=analista",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-005",
+      "paso": 4,
+      "captura": "per_3ana_2_registrado",
+      "original": "evidencias/originales/personal/per_3ana_2_registrado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-005_P04.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        800,
+        70
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=analista",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-005",
+      "paso": 5,
+      "captura": "per_3ana_3_listado",
+      "original": "evidencias/originales/personal/per_3ana_3_listado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-005_P05.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        402,
+        1085,
+        454
+      ],
+      "url": "/admin/analistas-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-006",
+      "paso": 1,
+      "captura": "per_3enc_1_formulario",
+      "original": "evidencias/originales/personal/per_3enc_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-006_P01.png",
+      "objetivo": "tipo",
+      "rectangulo": [
+        853,
+        226,
+        1124,
+        320
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=encargado-planta",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-006",
+      "paso": 2,
+      "captura": "per_3enc_1_formulario",
+      "original": "evidencias/originales/personal/per_3enc_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-006_P02.png",
+      "objetivo": "seccion_personal",
+      "rectangulo": [
+        285,
+        346,
+        1063,
+        617
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=encargado-planta",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-006",
+      "paso": 3,
+      "captura": "per_3enc_1_formulario",
+      "original": "evidencias/originales/personal/per_3enc_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-006_P03.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        845,
+        819,
+        1037,
+        861
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=encargado-planta",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-006",
+      "paso": 4,
+      "captura": "per_3enc_2_registrado",
+      "original": "evidencias/originales/personal/per_3enc_2_registrado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-006_P04.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        800,
+        70
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=encargado-planta",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-006",
+      "paso": 5,
+      "captura": "per_3enc_3_listado",
+      "original": "evidencias/originales/personal/per_3enc_3_listado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-006_P05.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        454,
+        1085,
+        506
+      ],
+      "url": "/admin/encargados-planta?encargado=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-007",
+      "paso": 1,
+      "captura": "per_3ven_1_formulario",
+      "original": "evidencias/originales/personal/per_3ven_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-007_P01.png",
+      "objetivo": "tipo",
+      "rectangulo": [
+        1137,
+        226,
+        1408,
+        320
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-007",
+      "paso": 2,
+      "captura": "per_3ven_1_formulario",
+      "original": "evidencias/originales/personal/per_3ven_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-007_P02.png",
+      "objetivo": "seccion_personal",
+      "rectangulo": [
+        285,
+        346,
+        1063,
+        617
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-007",
+      "paso": 3,
+      "captura": "per_3ven_1_formulario",
+      "original": "evidencias/originales/personal/per_3ven_1_formulario.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-007_P03.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        845,
+        819,
+        1037,
+        861
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-007",
+      "paso": 4,
+      "captura": "per_3ven_2_registrado",
+      "original": "evidencias/originales/personal/per_3ven_2_registrado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-007_P04.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        800,
+        70
+      ],
+      "url": "/admin/trabajadores/nuevo?tipo=ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PER-007",
+      "paso": 5,
+      "captura": "per_3ven_3_listado",
+      "original": "evidencias/originales/personal/per_3ven_3_listado.png",
+      "anotada": "evidencias/anotadas/PER/ADM-PER-007_P05.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        454,
+        1085,
+        506
+      ],
+      "url": "/admin/personal-ventas?personal=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-001",
+      "paso": 1,
+      "captura": "pro_01_listado",
+      "original": "evidencias/originales/proveedores/pro_01_listado.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-001_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        12,
+        299,
+        239,
+        339
+      ],
+      "url": "/admin/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-001",
+      "paso": 2,
+      "captura": "pro_01_listado",
+      "original": "evidencias/originales/proveedores/pro_01_listado.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-001_P02.png",
+      "objetivo": "nuevo",
+      "rectangulo": [
+        767,
+        48,
+        936,
+        88
+      ],
+      "url": "/admin/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-001",
+      "paso": 3,
+      "captura": "pro_02_modal",
+      "original": "evidencias/originales/proveedores/pro_02_modal.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-001_P03.png",
+      "objetivo": "dni",
+      "rectangulo": [
+        520,
+        312,
+        712,
+        354
+      ],
+      "url": "/admin/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-001",
+      "paso": 4,
+      "captura": "pro_02_modal",
+      "original": "evidencias/originales/proveedores/pro_02_modal.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-001_P04.png",
+      "objetivo": "usuario",
+      "rectangulo": [
+        520,
+        480,
+        712,
+        522
+      ],
+      "url": "/admin/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-001",
+      "paso": 5,
+      "captura": "pro_02_modal",
+      "original": "evidencias/originales/proveedores/pro_02_modal.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-001_P05.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        765,
+        594,
+        920,
+        630
+      ],
+      "url": "/admin/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-001",
+      "paso": 6,
+      "captura": "pro_03_registrado",
+      "original": "evidencias/originales/proveedores/pro_03_registrado.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-001_P06.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        760,
+        70
+      ],
+      "url": "/admin/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-001",
+      "paso": "!",
+      "captura": "pro_04_duplicado",
+      "original": "evidencias/originales/proveedores/pro_04_duplicado.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-001_V01.png",
+      "objetivo": "campo_dni",
+      "rectangulo": [
+        520,
+        293,
+        712,
+        335
+      ],
+      "url": "/admin/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-002",
+      "paso": 1,
+      "captura": "pro_05_panel",
+      "original": "evidencias/originales/proveedores/pro_05_panel.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-002_P01.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        400,
+        1107,
+        452
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-002",
+      "paso": 2,
+      "captura": "pro_20_tab_entregas",
+      "original": "evidencias/originales/proveedores/pro_20_tab_entregas.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-002_P02.png",
+      "objetivo": "tab",
+      "rectangulo": [
+        1067,
+        163,
+        1147,
+        204
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-002",
+      "paso": 3,
+      "captura": "pro_22_tab_compras",
+      "original": "evidencias/originales/proveedores/pro_22_tab_compras.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-002_P03.png",
+      "objetivo": "ver_pagos",
+      "rectangulo": [
+        1263,
+        336,
+        1372,
+        368
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-002",
+      "paso": 4,
+      "captura": "pro_07_editar",
+      "original": "evidencias/originales/proveedores/pro_07_editar.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-002_P04.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        777,
+        544,
+        920,
+        580
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-002",
+      "paso": 5,
+      "captura": "pro_08_actualizado",
+      "original": "evidencias/originales/proveedores/pro_08_actualizado.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-002_P05.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        760,
+        70
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-003",
+      "paso": 1,
+      "captura": "pro_10_ubicar",
+      "original": "evidencias/originales/proveedores/pro_10_ubicar.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-003_P01.png",
+      "objetivo": "ubicar",
+      "rectangulo": [
+        981,
+        859,
+        1096,
+        878
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-003",
+      "paso": 2,
+      "captura": "pro_12_punto",
+      "original": "evidencias/originales/proveedores/pro_12_punto.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-003_P02.png",
+      "objetivo": "mapa",
+      "rectangulo": [
+        360,
+        246,
+        1080,
+        630
+      ],
+      "url": "/admin/zonas?zona=sin-asignar",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-003",
+      "paso": 3,
+      "captura": "pro_12_punto",
+      "original": "evidencias/originales/proveedores/pro_12_punto.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-003_P03.png",
+      "objetivo": "zona_detectada",
+      "rectangulo": [
+        360,
+        690,
+        589,
+        728
+      ],
+      "url": "/admin/zonas?zona=sin-asignar",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-003",
+      "paso": 4,
+      "captura": "pro_13_asignacion",
+      "original": "evidencias/originales/proveedores/pro_13_asignacion.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-003_P04.png",
+      "objetivo": "ruta",
+      "rectangulo": [
+        728,
+        806,
+        1080,
+        848
+      ],
+      "url": "/admin/zonas?zona=sin-asignar",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-003",
+      "paso": 5,
+      "captura": "pro_13_asignacion",
+      "original": "evidencias/originales/proveedores/pro_13_asignacion.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-003_P05.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        995,
+        964,
+        1080,
+        1000
+      ],
+      "url": "/admin/zonas?zona=sin-asignar",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-003",
+      "paso": 6,
+      "captura": "pro_15_panel_asignado",
+      "original": "evidencias/originales/proveedores/pro_15_panel_asignado.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-003_P06.png",
+      "objetivo": "seccion",
+      "rectangulo": [
+        981,
+        657,
+        1387,
+        904
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-003",
+      "paso": "!",
+      "captura": "pro_16_cambiar_zona",
+      "original": "evidencias/originales/proveedores/pro_16_cambiar_zona.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-003_V01.png",
+      "objetivo": "actual",
+      "rectangulo": [
+        377,
+        168,
+        1063,
+        184
+      ],
+      "url": "/admin/zonas?zona=3",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-004",
+      "paso": 1,
+      "captura": "pro_30_antes_desactivar",
+      "original": "evidencias/originales/proveedores/pro_30_antes_desactivar.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-004_P01.png",
+      "objetivo": "switch",
+      "rectangulo": [
+        1025,
+        413,
+        1070,
+        439
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-004",
+      "paso": 2,
+      "captura": "pro_31_modal_desactivar",
+      "original": "evidencias/originales/proveedores/pro_31_modal_desactivar.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-004_P02.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        802,
+        482,
+        920,
+        518
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-004",
+      "paso": 3,
+      "captura": "pro_32_desactivado",
+      "original": "evidencias/originales/proveedores/pro_32_desactivado.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-004_P03.png",
+      "objetivo": "switch",
+      "rectangulo": [
+        871,
+        413,
+        916,
+        439
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual&proveedor=509",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRV-004",
+      "paso": 4,
+      "captura": "pro_33_modal_reactivar",
+      "original": "evidencias/originales/proveedores/pro_33_modal_reactivar.png",
+      "anotada": "evidencias/anotadas/PRV/ADM-PRV-004_P04.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        827,
+        560,
+        920,
+        596
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual&proveedor=509",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-001",
+      "paso": 1,
+      "captura": "par_01_listado",
+      "original": "evidencias/originales/parametros/par_01_listado.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-001_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        12,
+        599,
+        239,
+        639
+      ],
+      "url": "/admin/parametros-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-001",
+      "paso": 2,
+      "captura": "par_01_listado",
+      "original": "evidencias/originales/parametros/par_01_listado.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-001_P02.png",
+      "objetivo": "nuevo",
+      "rectangulo": [
+        765,
+        48,
+        936,
+        88
+      ],
+      "url": "/admin/parametros-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-001",
+      "paso": 3,
+      "captura": "par_02_modal",
+      "original": "evidencias/originales/parametros/par_02_modal.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-001_P03.png",
+      "objetivo": "codigo",
+      "rectangulo": [
+        730,
+        312,
+        1060,
+        354
+      ],
+      "url": "/admin/parametros-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-001",
+      "paso": 4,
+      "captura": "par_02_modal",
+      "original": "evidencias/originales/parametros/par_02_modal.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-001_P04.png",
+      "objetivo": "estado",
+      "rectangulo": [
+        730,
+        433,
+        1060,
+        475
+      ],
+      "url": "/admin/parametros-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-001",
+      "paso": 5,
+      "captura": "par_02_modal",
+      "original": "evidencias/originales/parametros/par_02_modal.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-001_P05.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        903,
+        622,
+        1060,
+        658
+      ],
+      "url": "/admin/parametros-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-001",
+      "paso": 6,
+      "captura": "par_03_registrado",
+      "original": "evidencias/originales/parametros/par_03_registrado.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-001_P06.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        800,
+        70
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-001",
+      "paso": "!",
+      "captura": "par_14_duplicado",
+      "original": "evidencias/originales/parametros/par_14_duplicado.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-001_V01.png",
+      "objetivo": "codigo",
+      "rectangulo": [
+        730,
+        301,
+        1060,
+        343
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-002",
+      "paso": 1,
+      "captura": "par_03_registrado",
+      "original": "evidencias/originales/parametros/par_03_registrado.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-002_P01.png",
+      "objetivo": "configurar",
+      "rectangulo": [
+        1112,
+        714,
+        1256,
+        746
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-002",
+      "paso": 2,
+      "captura": "par_04_regla",
+      "original": "evidencias/originales/parametros/par_04_regla.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-002_P02.png",
+      "objetivo": "minimo",
+      "rectangulo": [
+        380,
+        312,
+        710,
+        354
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-002",
+      "paso": 3,
+      "captura": "par_04_regla",
+      "original": "evidencias/originales/parametros/par_04_regla.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-002_P03.png",
+      "objetivo": "resultado",
+      "rectangulo": [
+        380,
+        396,
+        1060,
+        438
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-002",
+      "paso": 4,
+      "captura": "par_04_regla",
+      "original": "evidencias/originales/parametros/par_04_regla.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-002_P04.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        939,
+        646,
+        1060,
+        682
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-002",
+      "paso": 5,
+      "captura": "par_05_regla_guardada",
+      "original": "evidencias/originales/parametros/par_05_regla_guardada.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-002_P05.png",
+      "objetivo": "regla",
+      "rectangulo": [
+        981,
+        531,
+        1387,
+        758
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-003",
+      "paso": 1,
+      "captura": "par_09_antes_editar_regla",
+      "original": "evidencias/originales/parametros/par_09_antes_editar_regla.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-003_P01.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        635,
+        935,
+        709
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-003",
+      "paso": 2,
+      "captura": "par_10_regla_inactiva",
+      "original": "evidencias/originales/parametros/par_10_regla_inactiva.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-003_P02.png",
+      "objetivo": "estado",
+      "rectangulo": [
+        380,
+        564,
+        710,
+        606
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-003",
+      "paso": 3,
+      "captura": "par_12_editar",
+      "original": "evidencias/originales/parametros/par_12_editar.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-003_P03.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        917,
+        622,
+        1060,
+        658
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PAR-003",
+      "paso": 4,
+      "captura": "par_13_actualizado",
+      "original": "evidencias/originales/parametros/par_13_actualizado.png",
+      "anotada": "evidencias/anotadas/PAR/ADM-PAR-003_P04.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        800,
+        70
+      ],
+      "url": "/admin/parametros-calidad?parametro=8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-001",
+      "paso": 1,
+      "captura": "cfg_01_trabajadores",
+      "original": "evidencias/originales/config_pagos/cfg_01_trabajadores.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-001_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        12,
+        641,
+        239,
+        681
+      ],
+      "url": "/admin/configuracion-pagos?tab=trabajadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-001",
+      "paso": 2,
+      "captura": "cfg_02_panel",
+      "original": "evidencias/originales/config_pagos/cfg_02_panel.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-001_P02.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        344,
+        1046,
+        424
+      ],
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-001",
+      "paso": 3,
+      "captura": "cfg_02_panel",
+      "original": "evidencias/originales/config_pagos/cfg_02_panel.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-001_P03.png",
+      "objetivo": "configurar",
+      "rectangulo": [
+        1107,
+        426,
+        1261,
+        458
+      ],
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-001",
+      "paso": 4,
+      "captura": "cfg_03_modal_sueldo",
+      "original": "evidencias/originales/config_pagos/cfg_03_modal_sueldo.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-001_P04.png",
+      "objetivo": "sueldo",
+      "rectangulo": [
+        1005,
+        228,
+        1174,
+        270
+      ],
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-001",
+      "paso": 5,
+      "captura": "cfg_03_modal_sueldo",
+      "original": "evidencias/originales/config_pagos/cfg_03_modal_sueldo.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-001_P05.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        1232,
+        535,
+        1363,
+        571
+      ],
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-001",
+      "paso": 6,
+      "captura": "cfg_04_sueldo_guardado",
+      "original": "evidencias/originales/config_pagos/cfg_04_sueldo_guardado.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-001_P06.png",
+      "objetivo": "sueldo",
+      "rectangulo": [
+        981,
+        355,
+        1387,
+        533
+      ],
+      "url": "/admin/configuracion-pagos?tab=trabajadores&trabajador=513",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-002",
+      "paso": 1,
+      "captura": "cfg_05_proveedores",
+      "original": "evidencias/originales/config_pagos/cfg_05_proveedores.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-002_P01.png",
+      "objetivo": "tab",
+      "rectangulo": [
+        403,
+        200,
+        518,
+        244
+      ],
+      "url": "/admin/configuracion-pagos?tab=proveedores&trabajador=513",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-002",
+      "paso": 2,
+      "captura": "cfg_05_proveedores",
+      "original": "evidencias/originales/config_pagos/cfg_05_proveedores.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-002_P02.png",
+      "objetivo": "editar",
+      "rectangulo": [
+        536,
+        433,
+        768,
+        465
+      ],
+      "url": "/admin/configuracion-pagos?tab=proveedores&trabajador=513",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-002",
+      "paso": 3,
+      "captura": "cfg_07_precio",
+      "original": "evidencias/originales/config_pagos/cfg_07_precio.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-002_P03.png",
+      "objetivo": "precio",
+      "rectangulo": [
+        380,
+        332,
+        710,
+        374
+      ],
+      "url": "/admin/configuracion-pagos?tab=proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-002",
+      "paso": 4,
+      "captura": "cfg_07_precio",
+      "original": "evidencias/originales/config_pagos/cfg_07_precio.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-002_P04.png",
+      "objetivo": "descuento",
+      "rectangulo": [
+        380,
+        416,
+        1060,
+        458
+      ],
+      "url": "/admin/configuracion-pagos?tab=proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-002",
+      "paso": 5,
+      "captura": "cfg_07_precio",
+      "original": "evidencias/originales/config_pagos/cfg_07_precio.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-002_P05.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        882,
+        626,
+        1060,
+        662
+      ],
+      "url": "/admin/configuracion-pagos?tab=proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CFG-002",
+      "paso": 6,
+      "captura": "cfg_08_precio_guardado",
+      "original": "evidencias/originales/config_pagos/cfg_08_precio_guardado.png",
+      "anotada": "evidencias/anotadas/CFG/ADM-CFG-002_P06.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        800,
+        70
+      ],
+      "url": "/admin/configuracion-pagos?tab=proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-001",
+      "paso": 1,
+      "captura": "aco_01_listado",
+      "original": "evidencias/originales/acopio/aco_01_listado.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-001_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        12,
+        257,
+        239,
+        297
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-001",
+      "paso": 2,
+      "captura": "aco_01_listado",
+      "original": "evidencias/originales/acopio/aco_01_listado.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-001_P02.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        1237,
+        48,
+        1408,
+        88
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-001",
+      "paso": 3,
+      "captura": "aco_02_dni",
+      "original": "evidencias/originales/acopio/aco_02_dni.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-001_P03.png",
+      "objetivo": "resultados",
+      "rectangulo": [
+        520,
+        259,
+        920,
+        327
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-001",
+      "paso": 4,
+      "captura": "aco_03_datos",
+      "original": "evidencias/originales/acopio/aco_03_datos.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-001_P04.png",
+      "objetivo": "proveedor",
+      "rectangulo": [
+        520,
+        292,
+        920,
+        378
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-001",
+      "paso": 5,
+      "captura": "aco_03_datos",
+      "original": "evidencias/originales/acopio/aco_03_datos.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-001_P05.png",
+      "objetivo": "litros",
+      "rectangulo": [
+        520,
+        420,
+        920,
+        462
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-001",
+      "paso": 6,
+      "captura": "aco_03_datos",
+      "original": "evidencias/originales/acopio/aco_03_datos.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-001_P06.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        775,
+        696,
+        920,
+        732
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-001",
+      "paso": 7,
+      "captura": "aco_04_registrada",
+      "original": "evidencias/originales/acopio/aco_04_registrada.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-001_P07.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        284,
+        384,
+        1408,
+        441
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-002",
+      "paso": 1,
+      "captura": "aco_05_detalle",
+      "original": "evidencias/originales/acopio/aco_05_detalle.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-002_P01.png",
+      "objetivo": "titulo",
+      "rectangulo": [
+        408,
+        150,
+        536,
+        179
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-003",
+      "paso": 1,
+      "captura": "aco_05_detalle",
+      "original": "evidencias/originales/acopio/aco_05_detalle.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-003_P01.png",
+      "objetivo": "editar_litros",
+      "rectangulo": [
+        924,
+        151,
+        998,
+        179
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-003",
+      "paso": 2,
+      "captura": "aco_06_corregir",
+      "original": "evidencias/originales/acopio/aco_06_corregir.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-003_P02.png",
+      "objetivo": "litros",
+      "rectangulo": [
+        731,
+        349,
+        861,
+        391
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-003",
+      "paso": 3,
+      "captura": "aco_07_corregida",
+      "original": "evidencias/originales/acopio/aco_07_corregida.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-003_P03.png",
+      "objetivo": "aviso",
+      "rectangulo": [
+        408,
+        168,
+        1032,
+        205
+      ],
+      "url": "/admin/entregas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-004",
+      "paso": 1,
+      "captura": "aco_08_show",
+      "original": "evidencias/originales/acopio/aco_08_show.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-004_P01.png",
+      "objetivo": "editar",
+      "rectangulo": [
+        1306,
+        117,
+        1387,
+        145
+      ],
+      "url": "/admin/entregas/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-004",
+      "paso": 2,
+      "captura": "aco_09_editar",
+      "original": "evidencias/originales/acopio/aco_09_editar.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-004_P02.png",
+      "objetivo": "litros",
+      "rectangulo": [
+        520,
+        411,
+        712,
+        453
+      ],
+      "url": "/admin/entregas/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-004",
+      "paso": 3,
+      "captura": "aco_09_editar",
+      "original": "evidencias/originales/acopio/aco_09_editar.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-004_P03.png",
+      "objetivo": "motivo",
+      "rectangulo": [
+        520,
+        621,
+        920,
+        663
+      ],
+      "url": "/admin/entregas/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-004",
+      "paso": 4,
+      "captura": "aco_09_editar",
+      "original": "evidencias/originales/acopio/aco_09_editar.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-004_P04.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        777,
+        687,
+        920,
+        723
+      ],
+      "url": "/admin/entregas/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ACO-004",
+      "paso": 5,
+      "captura": "aco_10_editada",
+      "original": "evidencias/originales/acopio/aco_10_editada.png",
+      "anotada": "evidencias/anotadas/ACO/ADM-ACO-004_P05.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        760,
+        70
+      ],
+      "url": "/admin/entregas/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-001",
+      "paso": 1,
+      "captura": "cal_01_listado",
+      "original": "evidencias/originales/calidad/cal_01_listado.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-001_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        12,
+        514,
+        239,
+        554
+      ],
+      "url": "/admin/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-001",
+      "paso": 2,
+      "captura": "cal_01_listado",
+      "original": "evidencias/originales/calidad/cal_01_listado.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-001_P02.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        284,
+        432,
+        1408,
+        489
+      ],
+      "url": "/admin/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-001",
+      "paso": 3,
+      "captura": "cal_01_listado",
+      "original": "evidencias/originales/calidad/cal_01_listado.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-001_P03.png",
+      "objetivo": "ver",
+      "rectangulo": [
+        1352,
+        445,
+        1384,
+        477
+      ],
+      "url": "/admin/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-002",
+      "paso": 1,
+      "captura": "cal_02_detalle",
+      "original": "evidencias/originales/calidad/cal_02_detalle.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-002_P01.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        408,
+        626,
+        576,
+        666
+      ],
+      "url": "/admin/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-002",
+      "paso": 2,
+      "captura": "cal_03_formulario",
+      "original": "evidencias/originales/calidad/cal_03_formulario.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-002_P02.png",
+      "objetivo": "parametros",
+      "rectangulo": [
+        305,
+        492,
+        1387,
+        708
+      ],
+      "url": "/admin/entregas/1/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-002",
+      "paso": 3,
+      "captura": "cal_04_valores",
+      "original": "evidencias/originales/calidad/cal_04_valores.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-002_P03.png",
+      "objetivo": "parametros",
+      "rectangulo": [
+        305,
+        492,
+        1387,
+        708
+      ],
+      "url": "/admin/entregas/1/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-002",
+      "paso": 4,
+      "captura": "cal_04_valores",
+      "original": "evidencias/originales/calidad/cal_04_valores.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-002_P04.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        1251,
+        850,
+        1387,
+        886
+      ],
+      "url": "/admin/entregas/1/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-002",
+      "paso": 5,
+      "captura": "cal_05_borrador",
+      "original": "evidencias/originales/calidad/cal_05_borrador.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-002_P05.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        800,
+        70
+      ],
+      "url": "/admin/entregas/1/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-003",
+      "paso": 1,
+      "captura": "cal_10_antes_confirmar",
+      "original": "evidencias/originales/calidad/cal_10_antes_confirmar.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-003_P01.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        322,
+        1001,
+        471,
+        1037
+      ],
+      "url": "/admin/entregas/1/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-003",
+      "paso": 3,
+      "captura": "cal_11_confirmado",
+      "original": "evidencias/originales/calidad/cal_11_confirmado.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-003_P03.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        900,
+        70
+      ],
+      "url": "/admin/entregas/1/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAL-003",
+      "paso": 4,
+      "captura": "cal_12_listado_confirmado",
+      "original": "evidencias/originales/calidad/cal_12_listado_confirmado.png",
+      "anotada": "evidencias/anotadas/CAL/ADM-CAL-003_P04.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        284,
+        432,
+        1408,
+        489
+      ],
+      "url": "/admin/analisis-calidad",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-001",
+      "paso": 1,
+      "captura": "ppv_01_pantalla",
+      "original": "evidencias/originales/pagos_proveedores/ppv_01_pantalla.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-001_P01.png",
+      "objetivo": "semana",
+      "rectangulo": [
+        284,
+        261,
+        467,
+        301
+      ],
+      "url": "/admin/pagos/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-001",
+      "paso": 2,
+      "captura": "ppv_01_pantalla",
+      "original": "evidencias/originales/pagos_proveedores/ppv_01_pantalla.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-001_P02.png",
+      "objetivo": "total",
+      "rectangulo": [
+        649,
+        164,
+        746,
+        185
+      ],
+      "url": "/admin/pagos/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-001",
+      "paso": 3,
+      "captura": "ppv_02_comprobante",
+      "original": "evidencias/originales/pagos_proveedores/ppv_02_comprobante.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-001_P03.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        412,
+        1011,
+        488
+      ],
+      "url": "/admin/pagos/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-002",
+      "paso": 1,
+      "captura": "ppv_03_seleccion",
+      "original": "evidencias/originales/pagos_proveedores/ppv_03_seleccion.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-002_P01.png",
+      "objetivo": "check",
+      "rectangulo": [
+        301,
+        439,
+        317,
+        455
+      ],
+      "url": "/admin/pagos/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-002",
+      "paso": 2,
+      "captura": "ppv_03_seleccion",
+      "original": "evidencias/originales/pagos_proveedores/ppv_03_seleccion.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-002_P02.png",
+      "objetivo": "revisar",
+      "rectangulo": [
+        745,
+        326,
+        953,
+        359
+      ],
+      "url": "/admin/pagos/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-002",
+      "paso": 3,
+      "captura": "ppv_04_vista_previa",
+      "original": "evidencias/originales/pagos_proveedores/ppv_04_vista_previa.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-002_P03.png",
+      "objetivo": "imprimir",
+      "rectangulo": [
+        1134,
+        44,
+        1266,
+        88
+      ],
+      "url": "/admin/pagos/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-002",
+      "paso": 4,
+      "captura": "ppv_05_confirmar",
+      "original": "evidencias/originales/pagos_proveedores/ppv_05_confirmar.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-002_P04.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        1075,
+        819,
+        1316,
+        859
+      ],
+      "url": "/admin/pagos/proveedores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-002",
+      "paso": 5,
+      "captura": "ppv_06_pagado",
+      "original": "evidencias/originales/pagos_proveedores/ppv_06_pagado.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-002_P05.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        458,
+        1011,
+        534
+      ],
+      "url": "/admin/pagos/proveedores?semana=2026-10-22&estado=todos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-003",
+      "paso": 1,
+      "captura": "ppv_08_filtro_pagados",
+      "original": "evidencias/originales/pagos_proveedores/ppv_08_filtro_pagados.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-003_P01.png",
+      "objetivo": "estado",
+      "rectangulo": [
+        666,
+        261,
+        849,
+        301
+      ],
+      "url": "/admin/pagos/proveedores?estado=PAGADO",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-003",
+      "paso": 2,
+      "captura": "ppv_07_comprobante_impreso",
+      "original": "evidencias/originales/pagos_proveedores/ppv_07_comprobante_impreso.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-003_P02.png",
+      "objetivo": "imprimir",
+      "rectangulo": [
+        1312,
+        12,
+        1424,
+        48
+      ],
+      "url": "/admin/pagos/proveedores/comprobante/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PPV-003",
+      "paso": 3,
+      "captura": "ppv_09_historial",
+      "original": "evidencias/originales/pagos_proveedores/ppv_09_historial.png",
+      "anotada": "evidencias/anotadas/PPV/ADM-PPV-003_P03.png",
+      "objetivo": "modal",
+      "rectangulo": [
+        272,
+        219,
+        1168,
+        657
+      ],
+      "url": "/admin/proveedores?q=Prueba+Manual",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ASP-001",
+      "paso": 1,
+      "captura": "asi_01_pantalla",
+      "original": "evidencias/originales/asistencia/asi_01_pantalla.png",
+      "anotada": "evidencias/anotadas/ASP/ADM-ASP-001_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        12,
+        171,
+        239,
+        211
+      ],
+      "url": "/admin/asistencia",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ASP-001",
+      "paso": 2,
+      "captura": "asi_01_pantalla",
+      "original": "evidencias/originales/asistencia/asi_01_pantalla.png",
+      "anotada": "evidencias/anotadas/ASP/ADM-ASP-001_P02.png",
+      "objetivo": "resumen",
+      "rectangulo": [
+        300,
+        200,
+        418,
+        221
+      ],
+      "url": "/admin/asistencia",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ASP-001",
+      "paso": 3,
+      "captura": "asi_01_pantalla",
+      "original": "evidencias/originales/asistencia/asi_01_pantalla.png",
+      "anotada": "evidencias/anotadas/ASP/ADM-ASP-001_P03.png",
+      "objetivo": "filtros",
+      "rectangulo": [
+        284,
+        251,
+        1408,
+        315
+      ],
+      "url": "/admin/asistencia",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ASP-001",
+      "paso": 4,
+      "captura": "asi_01_pantalla",
+      "original": "evidencias/originales/asistencia/asi_01_pantalla.png",
+      "anotada": "evidencias/anotadas/ASP/ADM-ASP-001_P04.png",
+      "objetivo": "tabla",
+      "rectangulo": [
+        284,
+        335,
+        1408,
+        533
+      ],
+      "url": "/admin/asistencia",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ASP-004",
+      "paso": 1,
+      "captura": "ptr_01_pantalla",
+      "original": "evidencias/originales/pagos_trabajadores/ptr_01_pantalla.png",
+      "anotada": "evidencias/anotadas/ASP/ADM-ASP-004_P01.png",
+      "objetivo": "filtros",
+      "rectangulo": [
+        284,
+        142,
+        1028,
+        230
+      ],
+      "url": "/admin/pagos/trabajadores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-ASP-004",
+      "paso": 2,
+      "captura": "ptr_02_panel_sin_sueldo",
+      "original": "evidencias/originales/pagos_trabajadores/ptr_02_panel_sin_sueldo.png",
+      "anotada": "evidencias/anotadas/ASP/ADM-ASP-004_P02.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        714,
+        1140,
+        770
+      ],
+      "url": "/admin/pagos/trabajadores?trabajador=s8",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-001",
+      "paso": 1,
+      "captura": "ins_01_listado",
+      "original": "evidencias/originales/insumos/ins_01_listado.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-001_P01.png",
+      "objetivo": "nuevo",
+      "rectangulo": [
+        284,
+        150,
+        434,
+        190
+      ],
+      "url": "/admin/insumos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-001",
+      "paso": 2,
+      "captura": "ins_02_nuevo",
+      "original": "evidencias/originales/insumos/ins_02_nuevo.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-001_P02.png",
+      "objetivo": "unidad",
+      "rectangulo": [
+        728,
+        356,
+        1032,
+        398
+      ],
+      "url": "/admin/insumos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-001",
+      "paso": 3,
+      "captura": "ins_02_nuevo",
+      "original": "evidencias/originales/insumos/ins_02_nuevo.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-001_P03.png",
+      "objetivo": "minimo",
+      "rectangulo": [
+        408,
+        440,
+        672,
+        482
+      ],
+      "url": "/admin/insumos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-001",
+      "paso": 4,
+      "captura": "ins_02_nuevo",
+      "original": "evidencias/originales/insumos/ins_02_nuevo.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-001_P04.png",
+      "objetivo": "crear",
+      "rectangulo": [
+        912,
+        714,
+        1032,
+        750
+      ],
+      "url": "/admin/insumos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-001",
+      "paso": 5,
+      "captura": "ins_03_creado",
+      "original": "evidencias/originales/insumos/ins_03_creado.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-001_P05.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        1300,
+        70
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-002",
+      "paso": 1,
+      "captura": "ins_03_creado",
+      "original": "evidencias/originales/insumos/ins_03_creado.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-002_P01.png",
+      "objetivo": "agregar_presentacion",
+      "rectangulo": [
+        1095,
+        671,
+        1273,
+        703
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-002",
+      "paso": 2,
+      "captura": "ins_04_presentacion",
+      "original": "evidencias/originales/insumos/ins_04_presentacion.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-002_P02.png",
+      "objetivo": "cantidad",
+      "rectangulo": [
+        520,
+        408,
+        714,
+        450
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-002",
+      "paso": 3,
+      "captura": "ins_04_presentacion",
+      "original": "evidencias/originales/insumos/ins_04_presentacion.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-002_P03.png",
+      "objetivo": "equivalencia",
+      "rectangulo": [
+        532,
+        494,
+        908,
+        514
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-002",
+      "paso": 4,
+      "captura": "ins_05_presentacion_guardada",
+      "original": "evidencias/originales/insumos/ins_05_presentacion_guardada.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-002_P04.png",
+      "objetivo": "seccion",
+      "rectangulo": [
+        981,
+        488,
+        1387,
+        683
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-003",
+      "paso": 1,
+      "captura": "ins_10_antes_compra",
+      "original": "evidencias/originales/insumos/ins_10_antes_compra.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-003_P01.png",
+      "objetivo": "registrar_compra",
+      "rectangulo": [
+        911,
+        632,
+        943,
+        664
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-003",
+      "paso": 2,
+      "captura": "ins_11_compra_datos",
+      "original": "evidencias/originales/insumos/ins_11_compra_datos.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-003_P02.png",
+      "objetivo": "lineas",
+      "rectangulo": [
+        360,
+        136,
+        1080,
+        340
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-003",
+      "paso": 3,
+      "captura": "ins_11_compra_datos",
+      "original": "evidencias/originales/insumos/ins_11_compra_datos.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-003_P03.png",
+      "objetivo": "impacto",
+      "rectangulo": [
+        360,
+        360,
+        1080,
+        463
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-003",
+      "paso": 4,
+      "captura": "ins_11_compra_datos",
+      "original": "evidencias/originales/insumos/ins_11_compra_datos.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-003_P04.png",
+      "objetivo": "cabecera",
+      "rectangulo": [
+        377,
+        554,
+        712,
+        596
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-003",
+      "paso": 5,
+      "captura": "ins_11_compra_datos",
+      "original": "evidencias/originales/insumos/ins_11_compra_datos.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-003_P05.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        928,
+        912,
+        1080,
+        948
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-003",
+      "paso": 6,
+      "captura": "ins_12_compra_registrada",
+      "original": "evidencias/originales/insumos/ins_12_compra_registrada.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-003_P06.png",
+      "objetivo": "movimientos",
+      "rectangulo": [
+        981,
+        657,
+        1387,
+        764
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-005",
+      "paso": 1,
+      "captura": "ins_10_antes_compra",
+      "original": "evidencias/originales/insumos/ins_10_antes_compra.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-005_P01.png",
+      "objetivo": "ajustar",
+      "rectangulo": [
+        948,
+        632,
+        980,
+        664
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-005",
+      "paso": 2,
+      "captura": "ins_13_ajuste",
+      "original": "evidencias/originales/insumos/ins_13_ajuste.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-005_P02.png",
+      "objetivo": "cantidad",
+      "rectangulo": [
+        520,
+        416,
+        864,
+        458
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-005",
+      "paso": 3,
+      "captura": "ins_13_ajuste",
+      "original": "evidencias/originales/insumos/ins_13_ajuste.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-005_P03.png",
+      "objetivo": "registrar",
+      "rectangulo": [
+        787,
+        670,
+        920,
+        706
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-INS-005",
+      "paso": 4,
+      "captura": "ins_14_ajustado",
+      "original": "evidencias/originales/insumos/ins_14_ajustado.png",
+      "anotada": "evidencias/anotadas/INS/ADM-INS-005_P04.png",
+      "objetivo": "movimientos",
+      "rectangulo": [
+        981,
+        703,
+        1387,
+        865
+      ],
+      "url": "/admin/insumos?insumo=2",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-001",
+      "paso": 1,
+      "captura": "rec_01_listado",
+      "original": "evidencias/originales/recetas/rec_01_listado.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-001_P01.png",
+      "objetivo": "nueva",
+      "rectangulo": [
+        1265,
+        48,
+        1408,
+        88
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-001",
+      "paso": 2,
+      "captura": "rec_02_producto",
+      "original": "evidencias/originales/recetas/rec_02_producto.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-001_P02.png",
+      "objetivo": "nombre",
+      "rectangulo": [
+        730,
+        225,
+        1108,
+        267
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-001",
+      "paso": 3,
+      "captura": "rec_03_formula",
+      "original": "evidencias/originales/recetas/rec_03_formula.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-001_P03.png",
+      "objetivo": "ingredientes",
+      "rectangulo": [
+        332,
+        600,
+        1108,
+        718
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-001",
+      "paso": 4,
+      "captura": "rec_03_formula",
+      "original": "evidencias/originales/recetas/rec_03_formula.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-001_P04.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        975,
+        792,
+        1108,
+        832
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-001",
+      "paso": 5,
+      "captura": "rec_04_guardada",
+      "original": "evidencias/originales/recetas/rec_04_guardada.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-001_P05.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        244,
+        1407,
+        304
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-002",
+      "paso": 1,
+      "captura": "rec_05_ver",
+      "original": "evidencias/originales/recetas/rec_05_ver.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-002_P01.png",
+      "objetivo": "detalle",
+      "rectangulo": [
+        285,
+        305,
+        1407,
+        519
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-003",
+      "paso": 1,
+      "captura": "rec_05_ver",
+      "original": "evidencias/originales/recetas/rec_05_ver.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-003_P01.png",
+      "objetivo": "editar",
+      "rectangulo": [
+        1325,
+        258,
+        1357,
+        290
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-003",
+      "paso": 2,
+      "captura": "rec_06_editar",
+      "original": "evidencias/originales/recetas/rec_06_editar.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-003_P02.png",
+      "objetivo": "ingredientes",
+      "rectangulo": [
+        332,
+        611,
+        1108,
+        729
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-003",
+      "paso": 3,
+      "captura": "rec_06_editar",
+      "original": "evidencias/originales/recetas/rec_06_editar.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-003_P03.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        961,
+        792,
+        1108,
+        832
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-REC-003",
+      "paso": 4,
+      "captura": "rec_07_editada",
+      "original": "evidencias/originales/recetas/rec_07_editada.png",
+      "anotada": "evidencias/anotadas/REC/ADM-REC-003_P04.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        900,
+        70
+      ],
+      "url": "/admin/recetas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-001",
+      "paso": 1,
+      "captura": "pro_01_historial",
+      "original": "evidencias/originales/produccion/pro_01_historial.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-001_P01.png",
+      "objetivo": "nueva",
+      "rectangulo": [
+        1238,
+        247,
+        1387,
+        275
+      ],
+      "url": "/admin/produccion",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-001",
+      "paso": 2,
+      "captura": "pro_02_requerimientos",
+      "original": "evidencias/originales/produccion/pro_02_requerimientos.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-001_P02.png",
+      "objetivo": "cantidad",
+      "rectangulo": [
+        792,
+        275,
+        1032,
+        317
+      ],
+      "url": "/admin/produccion",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-001",
+      "paso": 3,
+      "captura": "pro_02_requerimientos",
+      "original": "evidencias/originales/produccion/pro_02_requerimientos.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-001_P03.png",
+      "objetivo": "recursos",
+      "rectangulo": [
+        408,
+        386,
+        1032,
+        542
+      ],
+      "url": "/admin/produccion",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-001",
+      "paso": 4,
+      "captura": "pro_02_requerimientos",
+      "original": "evidencias/originales/produccion/pro_02_requerimientos.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-001_P04.png",
+      "objetivo": "veredicto",
+      "rectangulo": [
+        408,
+        562,
+        1032,
+        608
+      ],
+      "url": "/admin/produccion",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-001",
+      "paso": 5,
+      "captura": "pro_02_requerimientos",
+      "original": "evidencias/originales/produccion/pro_02_requerimientos.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-001_P05.png",
+      "objetivo": "iniciar",
+      "rectangulo": [
+        883,
+        755,
+        1032,
+        791
+      ],
+      "url": "/admin/produccion",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-001",
+      "paso": 6,
+      "captura": "pro_03_iniciada",
+      "original": "evidencias/originales/produccion/pro_03_iniciada.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-001_P06.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        900,
+        70
+      ],
+      "url": "/admin/produccion/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-002",
+      "paso": 1,
+      "captura": "pro_03_iniciada",
+      "original": "evidencias/originales/produccion/pro_03_iniciada.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-002_P01.png",
+      "objetivo": "obtenido",
+      "rectangulo": [
+        523,
+        472,
+        720,
+        518
+      ],
+      "url": "/admin/produccion/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-002",
+      "paso": 2,
+      "captura": "pro_03_iniciada",
+      "original": "evidencias/originales/produccion/pro_03_iniciada.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-002_P02.png",
+      "objetivo": "finalizar",
+      "rectangulo": [
+        771,
+        810,
+        934,
+        846
+      ],
+      "url": "/admin/produccion/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-002",
+      "paso": 3,
+      "captura": "pro_04_finalizada",
+      "original": "evidencias/originales/produccion/pro_04_finalizada.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-002_P03.png",
+      "objetivo": "mensaje",
+      "rectangulo": [
+        284,
+        24,
+        1100,
+        70
+      ],
+      "url": "/admin/produccion/1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRD-003",
+      "paso": 1,
+      "captura": "pro_05_historial_final",
+      "original": "evidencias/originales/produccion/pro_05_historial_final.png",
+      "anotada": "evidencias/anotadas/PRD/ADM-PRD-003_P01.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        305,
+        442,
+        1387,
+        499
+      ],
+      "url": "/admin/produccion",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRO-001",
+      "paso": 1,
+      "captura": "prd_01_listado",
+      "original": "evidencias/originales/productos/prd_01_listado.png",
+      "anotada": "evidencias/anotadas/PRO/ADM-PRO-001_P01.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        292,
+        1407,
+        352
+      ],
+      "url": "/admin/productos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRO-001",
+      "paso": 2,
+      "captura": "prd_02_detalle",
+      "original": "evidencias/originales/productos/prd_02_detalle.png",
+      "anotada": "evidencias/anotadas/PRO/ADM-PRO-001_P02.png",
+      "objetivo": "detalle",
+      "rectangulo": [
+        285,
+        353,
+        1407,
+        638
+      ],
+      "url": "/admin/productos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRO-002",
+      "paso": 1,
+      "captura": "prd_02_detalle",
+      "original": "evidencias/originales/productos/prd_02_detalle.png",
+      "anotada": "evidencias/anotadas/PRO/ADM-PRO-002_P01.png",
+      "objetivo": "configurar",
+      "rectangulo": [
+        912,
+        480,
+        1072,
+        512
+      ],
+      "url": "/admin/productos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRO-002",
+      "paso": 2,
+      "captura": "prd_03_precios",
+      "original": "evidencias/originales/productos/prd_03_precios.png",
+      "anotada": "evidencias/anotadas/PRO/ADM-PRO-002_P02.png",
+      "objetivo": "formulario",
+      "rectangulo": [
+        862,
+        373,
+        1387,
+        641
+      ],
+      "url": "/admin/productos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRO-002",
+      "paso": 3,
+      "captura": "prd_03_precios",
+      "original": "evidencias/originales/productos/prd_03_precios.png",
+      "anotada": "evidencias/anotadas/PRO/ADM-PRO-002_P03.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        895,
+        609,
+        1017,
+        641
+      ],
+      "url": "/admin/productos",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRO-002",
+      "paso": 4,
+      "captura": "prd_04_guardados",
+      "original": "evidencias/originales/productos/prd_04_guardados.png",
+      "anotada": "evidencias/anotadas/PRO/ADM-PRO-002_P04.png",
+      "objetivo": "precios",
+      "rectangulo": [
+        862,
+        419,
+        1387,
+        660
+      ],
+      "url": "/admin/productos#producto-1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-001",
+      "paso": 1,
+      "captura": "ven_02_comprador",
+      "original": "evidencias/originales/ventas/ven_02_comprador.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-001_P01.png",
+      "objetivo": "cliente",
+      "rectangulo": [
+        444,
+        228,
+        640,
+        268
+      ],
+      "url": "/admin/ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-001",
+      "paso": 2,
+      "captura": "ven_02_comprador",
+      "original": "evidencias/originales/ventas/ven_02_comprador.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-001_P02.png",
+      "objetivo": "lista",
+      "rectangulo": [
+        284,
+        358,
+        924,
+        423
+      ],
+      "url": "/admin/ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-001",
+      "paso": 3,
+      "captura": "ven_03_producto",
+      "original": "evidencias/originales/ventas/ven_03_producto.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-001_P03.png",
+      "objetivo": "producto",
+      "rectangulo": [
+        284,
+        442,
+        924,
+        486
+      ],
+      "url": "/admin/ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-001",
+      "paso": 4,
+      "captura": "ven_03_producto",
+      "original": "evidencias/originales/ventas/ven_03_producto.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-001_P04.png",
+      "objetivo": "precio",
+      "rectangulo": [
+        284,
+        645,
+        924,
+        706
+      ],
+      "url": "/admin/ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-001",
+      "paso": 5,
+      "captura": "ven_03_producto",
+      "original": "evidencias/originales/ventas/ven_03_producto.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-001_P05.png",
+      "objetivo": "confirmar",
+      "rectangulo": [
+        1076,
+        617,
+        1388,
+        663
+      ],
+      "url": "/admin/ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-001",
+      "paso": 6,
+      "captura": "ven_04_registrada",
+      "original": "evidencias/originales/ventas/ven_04_registrada.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-001_P06.png",
+      "objetivo": "aviso",
+      "rectangulo": [
+        284,
+        196,
+        1408,
+        359
+      ],
+      "url": "/admin/ventas",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-002",
+      "paso": 1,
+      "captura": "ven_06_historial",
+      "original": "evidencias/originales/ventas/ven_06_historial.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-002_P01.png",
+      "objetivo": "tab",
+      "rectangulo": [
+        399,
+        127,
+        485,
+        171
+      ],
+      "url": "/admin/ventas?tab=historial",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-VEN-002",
+      "paso": 2,
+      "captura": "ven_06_historial",
+      "original": "evidencias/originales/ventas/ven_06_historial.png",
+      "anotada": "evidencias/anotadas/VEN/ADM-VEN-002_P02.png",
+      "objetivo": "ver",
+      "rectangulo": [
+        1346,
+        388,
+        1391,
+        417
+      ],
+      "url": "/admin/ventas?tab=historial",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-COM-001",
+      "paso": 1,
+      "captura": "com_01_listado",
+      "original": "evidencias/originales/compradores/com_01_listado.png",
+      "anotada": "evidencias/anotadas/COM/ADM-COM-001_P01.png",
+      "objetivo": "nuevo",
+      "rectangulo": [
+        1254,
+        65,
+        1387,
+        93
+      ],
+      "url": "/admin/compradores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-COM-001",
+      "paso": 2,
+      "captura": "com_02_modal",
+      "original": "evidencias/originales/compradores/com_02_modal.png",
+      "anotada": "evidencias/anotadas/COM/ADM-COM-001_P02.png",
+      "objetivo": "nombre",
+      "rectangulo": [
+        520,
+        348,
+        920,
+        390
+      ],
+      "url": "/admin/compradores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-COM-001",
+      "paso": 3,
+      "captura": "com_02_modal",
+      "original": "evidencias/originales/compradores/com_02_modal.png",
+      "anotada": "evidencias/anotadas/COM/ADM-COM-001_P03.png",
+      "objetivo": "guardar",
+      "rectangulo": [
+        760,
+        582,
+        920,
+        618
+      ],
+      "url": "/admin/compradores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-COM-001",
+      "paso": 4,
+      "captura": "com_03_registrado",
+      "original": "evidencias/originales/compradores/com_03_registrado.png",
+      "anotada": "evidencias/anotadas/COM/ADM-COM-001_P04.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        305,
+        226,
+        1387,
+        282
+      ],
+      "url": "/admin/compradores",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAJ-001",
+      "paso": 1,
+      "captura": "caj_01_pantalla",
+      "original": "evidencias/originales/caja/caj_01_pantalla.png",
+      "anotada": "evidencias/anotadas/CAJ/ADM-CAJ-001_P01.png",
+      "objetivo": "menu",
+      "rectangulo": [
+        12,
+        727,
+        239,
+        767
+      ],
+      "url": "/admin/caja",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAJ-001",
+      "paso": 2,
+      "captura": "caj_01_pantalla",
+      "original": "evidencias/originales/caja/caj_01_pantalla.png",
+      "anotada": "evidencias/anotadas/CAJ/ADM-CAJ-001_P02.png",
+      "objetivo": "saldo",
+      "rectangulo": [
+        284,
+        146,
+        662,
+        287
+      ],
+      "url": "/admin/caja",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAJ-001",
+      "paso": 3,
+      "captura": "caj_01_pantalla",
+      "original": "evidencias/originales/caja/caj_01_pantalla.png",
+      "anotada": "evidencias/anotadas/CAJ/ADM-CAJ-001_P03.png",
+      "objetivo": "tarjetas",
+      "rectangulo": [
+        693,
+        163,
+        892,
+        187
+      ],
+      "url": "/admin/caja",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAJ-001",
+      "paso": 4,
+      "captura": "caj_01_pantalla",
+      "original": "evidencias/originales/caja/caj_01_pantalla.png",
+      "anotada": "evidencias/anotadas/CAJ/ADM-CAJ-001_P04.png",
+      "objetivo": "tabla",
+      "rectangulo": [
+        285,
+        446,
+        1407,
+        506
+      ],
+      "url": "/admin/caja",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAJ-002",
+      "paso": 1,
+      "captura": "caj_03_salidas",
+      "original": "evidencias/originales/caja/caj_03_salidas.png",
+      "anotada": "evidencias/anotadas/CAJ/ADM-CAJ-002_P01.png",
+      "objetivo": "tipo",
+      "rectangulo": [
+        944,
+        353,
+        1120,
+        393
+      ],
+      "url": "/admin/caja?tipo=SALIDA",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAJ-002",
+      "paso": 2,
+      "captura": "caj_03_salidas",
+      "original": "evidencias/originales/caja/caj_03_salidas.png",
+      "anotada": "evidencias/anotadas/CAJ/ADM-CAJ-002_P02.png",
+      "objetivo": "categoria",
+      "rectangulo": [
+        1128,
+        353,
+        1328,
+        393
+      ],
+      "url": "/admin/caja?tipo=SALIDA",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-CAJ-003",
+      "paso": 1,
+      "captura": "caj_02_detalle",
+      "original": "evidencias/originales/caja/caj_02_detalle.png",
+      "anotada": "evidencias/anotadas/CAJ/ADM-CAJ-003_P01.png",
+      "objetivo": "fila",
+      "rectangulo": [
+        285,
+        629,
+        1407,
+        689
+      ],
+      "url": "/admin/caja?movimiento=1",
+      "estado": "Verificado en interfaz"
+    },
+    {
+      "procedimiento": "ADM-PRF-001",
+      "paso": 1,
+      "captura": "per_50_menu_perfil",
+      "original": "evidencias/originales/perfil/per_50_menu_perfil.png",
+      "anotada": "evidencias/anotadas/PER2/ADM-PRF-001_P01.png",
+      "objetivo": "mi_perfil",
+      "rectangulo": [
+        18,
+        725,
+        233,
+        765
+      ],
+      "url": "/admin/dashboard",
+      "estado": "Verificado en interfaz"
+    }
+  ]
+}

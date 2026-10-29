@@ -1,0 +1,11 @@
+{"salida": "evidencias/exploracion", "pasos": [
+ {"accion": "ir", "url": "/admin/parametros-calidad", "ms": 2000},
+ {"accion": "clic", "selector": "[data-fichas-filas] tr:has-text('Prueba Manual') >> nth=0"},
+ {"accion": "esperar", "ms": 1500},
+ {"accion": "clic", "selector": "[data-fichas-panel] button[data-modal-open^='modal-editar-parametro-']"},
+ {"accion": "esperar", "ms": 900},
+ {"accion": "escribir", "selector": "[data-modal].is-open textarea[name=descripcion]", "texto": "Parámetro ficticio del manual (editado)."},
+ {"accion": "clic", "selector": "[data-modal].is-open button[type=submit]"},
+ {"accion": "esperar", "ms": 3000},
+ {"accion": "captura", "nombre": "x_editar_param", "leer": ["body"]}
+]}

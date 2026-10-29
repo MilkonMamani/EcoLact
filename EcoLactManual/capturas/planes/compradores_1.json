@@ -1,0 +1,75 @@
+{
+ "descripcion": "Compradores: alta de un comprador FICTICIO y búsqueda. BD de prueba autorizada.",
+ "salida": "evidencias/originales/compradores",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/compradores",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "com_01_listado",
+   "medir": {
+    "menu": "#ecolact-sidebar a[href$='/admin/compradores']",
+    "nuevo": "[data-modal-open='modal-nuevo-comprador'] >> nth=0"
+   },
+   "leer": [
+    "body"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "[data-modal-open='modal-nuevo-comprador'] >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-nuevo-comprador [name=nombre]",
+   "texto": "Comprador Prueba Manual"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-nuevo-comprador [name=documento]",
+   "texto": "99000006"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-nuevo-comprador [name=telefono]",
+   "texto": "900000006"
+  },
+  {
+   "accion": "captura",
+   "nombre": "com_02_modal",
+   "medir": {
+    "nombre": "#modal-nuevo-comprador [name=nombre]",
+    "documento": "#modal-nuevo-comprador [name=documento]",
+    "guardar": "#modal-nuevo-comprador button[type=submit]"
+   }
+  },
+  {
+   "accion": "clic",
+   "selector": "#modal-nuevo-comprador button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "com_03_registrado",
+   "medir": {
+    "mensaje": "[role=alert]",
+    "fila": "tbody tr:has-text('Comprador Prueba Manual')"
+   },
+   "leer": [
+    "[role=alert]",
+    "tbody tr:has-text('Comprador Prueba Manual')"
+   ]
+  }
+ ]
+}

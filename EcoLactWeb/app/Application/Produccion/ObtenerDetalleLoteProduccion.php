@@ -3,8 +3,10 @@
 namespace App\Application\Produccion;
 
 use App\Domain\Produccion\InsumoRepository;
+use App\Domain\Produccion\LoteProduccion;
 use App\Domain\Produccion\LoteProduccionInsumoRepository;
 use App\Domain\Produccion\LoteProduccionRepository;
+use App\Domain\Produccion\PlanificacionProduccionRepository;
 use App\Domain\Produccion\ProduccionDetalleRepository;
 use App\Domain\Produccion\ProductoRepository;
 use App\Domain\Produccion\ProductoStockRepository;
@@ -18,6 +20,7 @@ final class ObtenerDetalleLoteProduccion
         private readonly InsumoRepository $insumos,
         private readonly ProductoRepository $productos,
         private readonly ProductoStockRepository $stock,
+        private readonly PlanificacionProduccionRepository $planificaciones,
     ) {}
 
     public function execute(int $loteId): ?LoteProduccionDetalleData
@@ -80,6 +83,39 @@ final class ObtenerDetalleLoteProduccion
             productos: $productos,
             insumosUtilizados: $insumosUtilizados,
             lecheUtilizada: round($lecheUtilizada, 4),
+            planificacion: $this->planificacionDe($lote),
         );
+    }
+
+    /**
+     * Los lotes iniciados junto a este (incluido él), para navegar entre ellos.
+     *
+     * @return array{codigo: string, lotes: list<array{id: int, codigo: string, estado: string, producto: string, actual: bool}>}|null
+     */
+    private function planificacionDe(LoteProduccion $lote): ?array
+    {
+        $planificacionId = $lote->planificacionProduccionId();
+        $planificacion = $planificacionId !== null ? $this->planificaciones->buscarPorId($planificacionId) : null;
+
+        if ($planificacion === null) {
+            return null;
+        }
+
+        $lotes = [];
+
+        foreach ($this->lotes->listarPorPlanificacion($planificacionId) as $hermano) {
+            $detalle = $this->produccionDetalles->listarPorLote((int) $hermano->id())[0] ?? null;
+            $producto = $detalle !== null ? $this->productos->buscarPorId($detalle->productoId()) : null;
+
+            $lotes[] = [
+                'id' => (int) $hermano->id(),
+                'codigo' => $hermano->codigo(),
+                'estado' => $hermano->estado(),
+                'producto' => $producto?->etiqueta() ?? 'Producto eliminado',
+                'actual' => $hermano->id() === $lote->id(),
+            ];
+        }
+
+        return ['codigo' => $planificacion->codigo(), 'lotes' => $lotes];
     }
 }

@@ -1,0 +1,453 @@
+{
+  "plan": "personal_1_acopiador.json",
+  "fecha": "2026-10-28T10:31:27",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "per_01_menu_nuevo",
+      "archivo": "evidencias/originales/personal/per_01_menu_nuevo.png",
+      "url": "/admin/dashboard",
+      "descripcion": "",
+      "objetivos": {
+        "nuevo_trabajador": [
+          43,
+          471,
+          239,
+          507
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:31:32"
+    },
+    {
+      "nombre": "per_02_tipos",
+      "archivo": "evidencias/originales/personal/per_02_tipos.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {
+        "tipo_acopiador": [
+          284,
+          227,
+          555,
+          321
+        ],
+        "tipos": [
+          284,
+          227,
+          1408,
+          321
+        ],
+        "ver_lista": [
+          1171,
+          80,
+          1408,
+          120
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:31:34"
+    },
+    {
+      "nombre": "per_03_info_personal",
+      "archivo": "evidencias/originales/personal/per_03_info_personal.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {
+        "seccion": [
+          285,
+          346,
+          1063,
+          704
+        ],
+        "nombres": [
+          312,
+          463,
+          663,
+          505
+        ],
+        "dni": [
+          312,
+          550,
+          663,
+          592
+        ],
+        "telefono": [
+          685,
+          550,
+          1036,
+          592
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:31:35"
+    },
+    {
+      "nombre": "per_04_zona",
+      "archivo": "evidencias/originales/personal/per_04_zona.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {
+        "zona": [
+          312,
+          637,
+          663,
+          679
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:31:36"
+    },
+    {
+      "nombre": "per_05_cuenta",
+      "archivo": "evidencias/originales/personal/per_05_cuenta.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {
+        "usuario": [
+          312,
+          821,
+          663,
+          863
+        ],
+        "clave": [
+          685,
+          821,
+          1036,
+          863
+        ],
+        "registrar": [
+          845,
+          905,
+          1037,
+          947
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:31:37"
+    },
+    {
+      "nombre": "per_06_registrado",
+      "archivo": "evidencias/originales/personal/per_06_registrado.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Acopiador registrado correctamente."
+      ],
+      "hora": "2026-10-28T10:31:40"
+    },
+    {
+      "nombre": "per_07_dni_duplicado",
+      "archivo": "evidencias/originales/personal/per_07_dni_duplicado.png",
+      "url": "/admin/trabajadores/nuevo?tipo=acopiador",
+      "descripcion": "",
+      "objetivos": {
+        "error": [
+          284,
+          24,
+          1408,
+          92
+        ]
+      },
+      "textos_visibles": [
+        "Revisa los siguientes campos:\n\nYa existe un acopiador registrado con ese DNI.",
+        "Información personal\n\nCompleta los datos del trabajador.\n\nNombres *\nApellidos *\nDNI *\n\nYa existe un acopiador registrado con ese DNI.\n\nTeléfono\nZona *\nSelecciona una zona\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nCuenta de acceso\n\nEste usuario podrá acceder al sistema con estas credenciales.\n\nUsuario *\nContraseña *\nCancelar\nRegistrar trabajador"
+      ],
+      "hora": "2026-10-28T10:31:44"
+    },
+    {
+      "nombre": "per_10_listado",
+      "archivo": "evidencias/originales/personal/per_10_listado.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "nuevo": [
+          769,
+          48,
+          936,
+          88
+        ],
+        "buscar": [
+          331,
+          160,
+          920,
+          204
+        ],
+        "filtros": [
+          284,
+          158,
+          936,
+          284
+        ],
+        "fila": [
+          285,
+          346,
+          1085,
+          398
+        ],
+        "switch": [
+          1019,
+          359,
+          1063,
+          385
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:31:48"
+    },
+    {
+      "nombre": "per_11_panel",
+      "archivo": "evidencias/originales/personal/per_11_panel.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "panel": [
+          960,
+          48,
+          1408,
+          824
+        ],
+        "pestanas": [
+          961,
+          163,
+          1407,
+          205
+        ],
+        "editar": [
+          1313,
+          503,
+          1387,
+          531
+        ],
+        "resumen": [
+          981,
+          712,
+          1387,
+          801
+        ]
+      },
+      "textos_visibles": [
+        "AP\nActivo\nAcopiador Prueba Manual\n\nDNI 99000001\n\nResumen\nEntregas\nZona\nAsistencia\nPagos\n\nCódigo QR\n\nInformación personal\nEditar\nNombres\nAcopiador\nApellidos\nPrueba Manual\nDocumento (DNI)\n99000001\nTeléfono\nNo registrado\nFecha de ingreso\n28/10/2026\nEstado\nActivo\nZONA ACTUAL\nZona Prueba Manual\nENTREGAS REGISTRADAS\n0\nLITROS ACOPIADOS\n0.00 L"
+      ],
+      "hora": "2026-10-28T10:31:50"
+    },
+    {
+      "nombre": "per_12_editar",
+      "archivo": "evidencias/originales/personal/per_12_editar.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "telefono": [
+          520,
+          454,
+          712,
+          496
+        ],
+        "guardar": [
+          777,
+          560,
+          920,
+          596
+        ]
+      },
+      "textos_visibles": [
+        "Editar información personal\nNombres *\nApellidos *\nTeléfono\n\nEl DNI es el identificador del acopiador y no se edita.\n\nCancelar\nGuardar cambios"
+      ],
+      "hora": "2026-10-28T10:31:52"
+    },
+    {
+      "nombre": "per_13_actualizado",
+      "archivo": "evidencias/originales/personal/per_13_actualizado.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Acopiador actualizado correctamente."
+      ],
+      "hora": "2026-10-28T10:31:55"
+    },
+    {
+      "nombre": "per_14_tab_zona",
+      "archivo": "evidencias/originales/personal/per_14_tab_zona.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "tab_zona": [
+          1150,
+          209,
+          1205,
+          250
+        ],
+        "contenido": [
+          981,
+          268,
+          1387,
+          488
+        ],
+        "editar_zona": [
+          1313,
+          268,
+          1387,
+          296
+        ]
+      },
+      "textos_visibles": [
+        "Zona actual\nEditar\n\nZona Prueba Manual\n\nHistorial de zonas\nZONA\tDESDE\tHASTA\tMOTIVO\nZona Prueba Manual\t28/10/2026\tActual\tRegistro inicial del acopiador."
+      ],
+      "hora": "2026-10-28T10:31:56"
+    },
+    {
+      "nombre": "per_15_modal_zona",
+      "archivo": "evidencias/originales/personal/per_15_modal_zona.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "zona": [
+          520,
+          370,
+          920,
+          412
+        ],
+        "motivo": [
+          520,
+          454,
+          920,
+          496
+        ],
+        "guardar": [
+          801,
+          560,
+          920,
+          596
+        ]
+      },
+      "textos_visibles": [
+        "Editar zona\nZona *\nSelecciona una opción\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nMotivo del cambio\n\nEl tramo actual se cierra hoy y se abre uno nuevo en el historial de zonas.\n\nCancelar\nGuardar zona"
+      ],
+      "hora": "2026-10-28T10:31:58"
+    },
+    {
+      "nombre": "per_20_antes_desactivar",
+      "archivo": "evidencias/originales/personal/per_20_antes_desactivar.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "switch": [
+          1019,
+          405,
+          1063,
+          431
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:32:00"
+    },
+    {
+      "nombre": "per_21_modal_desactivar",
+      "archivo": "evidencias/originales/personal/per_21_modal_desactivar.png",
+      "url": "/admin/acopiadores",
+      "descripcion": "",
+      "objetivos": {
+        "confirmar": [
+          802,
+          482,
+          920,
+          518
+        ]
+      },
+      "textos_visibles": [
+        "Desactivar acopiador\n\n¿Deseas desactivar a Acopiador Prueba Manual?\n\nEl acopiador dejará de estar disponible para registrar nuevas entregas. Su historial se conservará.\n\nCancelar\nSí, desactivar"
+      ],
+      "hora": "2026-10-28T10:32:01"
+    },
+    {
+      "nombre": "per_22_desactivado",
+      "archivo": "evidencias/originales/personal/per_22_desactivado.png",
+      "url": "/admin/acopiadores?acopiador=1",
+      "descripcion": "",
+      "objetivos": {
+        "switch": [
+          869,
+          405,
+          913,
+          431
+        ],
+        "fila": [
+          135,
+          392,
+          935,
+          444
+        ]
+      },
+      "textos_visibles": [
+        "Acopiador Prueba Manual\t99000001\t900000001\tZona Prueba Manual\t0",
+        "Acopiador actualizado correctamente."
+      ],
+      "hora": "2026-10-28T10:32:05"
+    },
+    {
+      "nombre": "per_23_modal_reactivar",
+      "archivo": "evidencias/originales/personal/per_23_modal_reactivar.png",
+      "url": "/admin/acopiadores?acopiador=1",
+      "descripcion": "",
+      "objetivos": {
+        "zona": [
+          520,
+          454,
+          920,
+          496
+        ],
+        "confirmar": [
+          827,
+          508,
+          920,
+          544
+        ]
+      },
+      "textos_visibles": [
+        "Reactivar acopiador\n\nSelecciona la zona a la que se reincorpora Acopiador Prueba Manual.\n\nZona *\nSelecciona una opción\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nCancelar\nReactivar"
+      ],
+      "hora": "2026-10-28T10:32:06"
+    },
+    {
+      "nombre": "per_24_reactivado",
+      "archivo": "evidencias/originales/personal/per_24_reactivado.png",
+      "url": "/admin/acopiadores?acopiador=1",
+      "descripcion": "",
+      "objetivos": {
+        "switch": [
+          869,
+          405,
+          913,
+          431
+        ],
+        "fila": [
+          135,
+          392,
+          935,
+          444
+        ]
+      },
+      "textos_visibles": [
+        "Acopiador Prueba Manual\t99000001\t900000001\tZona Prueba Manual\t0",
+        "Acopiador actualizado correctamente."
+      ],
+      "hora": "2026-10-28T10:32:10"
+    }
+  ],
+  "dialogos": []
+}

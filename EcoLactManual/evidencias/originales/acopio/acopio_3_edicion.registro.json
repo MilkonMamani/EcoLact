@@ -1,0 +1,81 @@
+{
+  "plan": "acopio_3_edicion.json",
+  "fecha": "2026-10-28T11:11:43",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "aco_08_show",
+      "archivo": "evidencias/originales/acopio/aco_08_show.png",
+      "url": "/admin/entregas/1",
+      "descripcion": "",
+      "objetivos": {
+        "editar": [
+          1306,
+          117,
+          1387,
+          145
+        ],
+        "tarjeta": [
+          284,
+          100,
+          1408,
+          619
+        ]
+      },
+      "textos_visibles": [
+        "← Volver a entregas\nEntrega #1\n\nDetalle de la entrega de leche\n\nPendiente Analisis\nEditar\nPROVEEDOR\nProveedor Prueba Manual\nDNI: 99000005\nZONA\nFaon\nACOPIADOR\n—\nFECHA Y HORA\n28/10/2026 16:09\nLITROS ENTREGADOS\n47.00 L\nMÉTODO DE IDENTIFICACIÓN\nDNI\nOBSERVACIÓN\nEntrega ficticia del manual.\nRegistro\nREGISTRADO POR\nadmin\nFECHA DE REGISTRO\n28/10/2026 16:09\nENTREGA ✓\n→\nANÁLISIS ○ Pendiente\nAnálisis de calidad\n\nResultado del análisis asociado a esta entrega.\n\n⏳ Esta entrega todavía no tiene un análisis de calidad asociado."
+      ],
+      "hora": "2026-10-28T11:11:51"
+    },
+    {
+      "nombre": "aco_09_editar",
+      "archivo": "evidencias/originales/acopio/aco_09_editar.png",
+      "url": "/admin/entregas/1",
+      "descripcion": "",
+      "objetivos": {
+        "litros": [
+          520,
+          411,
+          712,
+          453
+        ],
+        "motivo": [
+          520,
+          621,
+          920,
+          663
+        ],
+        "guardar": [
+          777,
+          687,
+          920,
+          723
+        ]
+      },
+      "textos_visibles": [
+        "Editar entrega\nID de proveedor\nID de zona\nID de acopiador\nFecha y hora\nLitros\nMétodo de identificación\nSelecciona una opción\nQR\nDNI\nObservación\nMotivo de modificación *\nCancelar\nGuardar cambios"
+      ],
+      "hora": "2026-10-28T11:11:53"
+    },
+    {
+      "nombre": "aco_10_editada",
+      "archivo": "evidencias/originales/acopio/aco_10_editada.png",
+      "url": "/admin/entregas/1",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          284,
+          24,
+          1408,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "Entrega actualizada correctamente.",
+        "Entrega actualizada correctamente.\n← Volver a entregas\nEntrega #1\n\nDetalle de la entrega de leche\n\nPendiente Analisis\nEditar\nPROVEEDOR\nProveedor Prueba Manual\nDNI: 99000005\nZONA\nFaon\nACOPIADOR\n—\nFECHA Y HORA\n28/10/2026 16:09\nLITROS ENTREGADOS\n46.00 L\nMÉTODO DE IDENTIFICACIÓN\nDNI\nOBSERVACIÓN\nEntrega ficticia del manual.\nRegistro\nREGISTRADO POR\nadmin\nFECHA DE REGISTRO\n28/10/2026 16:09\nENTREGA ✓\n→\nANÁLISIS ○ Pendiente\nAnálisis de calidad\n\nResultado del análisis asociado a esta entrega.\n\n⏳ Esta entrega todavía no tiene un análisis de calidad asociado."
+      ],
+      "hora": "2026-10-28T11:11:58"
+    }
+  ],
+  "dialogos": []
+}

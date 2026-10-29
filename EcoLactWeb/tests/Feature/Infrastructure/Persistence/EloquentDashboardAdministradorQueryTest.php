@@ -16,10 +16,11 @@ uses(TestCase::class, RefreshDatabase::class);
 
 /*
  * "Hoy" es el jueves 10/09/2026: semana calendario 07/09-13/09, mes 01/09-30/09.
- * Semanas de pago de proveedores (jueves a miércoles): la del 03/09 se paga hoy.
+ * Semanas de proveedores (jueves a miércoles) se pagan el miércoles de cierre:
+ * la del 03/09 se pagó ayer (09/09), la del 10/09 se paga el 16/09.
  */
 beforeEach(function () {
-    $this->travelTo(CarbonImmutable::parse('2026-09-10 12:00:00', config('app.timezone')));
+    $this->travelTo(CarbonImmutable::parse('2026-09-10 12:00:00', config('app.zona_horaria_negocio')));
 });
 
 function dashboard_admin(string $periodo): DashboardAdministradorData
@@ -33,8 +34,7 @@ it('devuelve ceros, bloques vacíos e intervalos sin datos inventados con la bas
     expect($data->acopio)->toBe(['litros' => 0.0, 'entregas' => 0, 'proveedores' => 0]);
     expect($data->produccion)->toBe(['total' => 0, 'porEstado' => []]);
     expect($data->ventas)->toBe(['importe' => 0.0, 'ventas' => 0, 'contado' => 0.0, 'descuentoPlanilla' => 0.0]);
-    expect($data->pagos['total'])->toBe(0.0);
-    expect($data->pagos['obligaciones'])->toBe(0);
+    expect($data->finanzas->totales)->toBe(['devengado' => 0.0, 'pendiente' => 0.0, 'programado' => 0.0, 'programadoPorPagar' => 0.0, 'pendienteReconocido' => 0.0, 'venceEnPeriodo' => 0.0]);
     expect($data->acopioPorZona)->toBe([]);
     expect($data->lotesRecientes)->toBe([]);
     expect($data->comunicados)->toBe(['publicados' => 0, 'recientes' => []]);
@@ -114,36 +114,34 @@ it('suma ventas de contado y descuento en planilla del período sin anuladas', f
     expect(dashboard_admin('semana')->ventas['importe'])->toBe(340.0);
 });
 
-it('asigna pagos pendientes por fecha programada y tipo de beneficiario', function () {
-    dashboard_obligacion_proveedor('2026-08-20', '1.00');   // se pagaba el 27/08: atrasado
-    dashboard_obligacion_proveedor('2026-08-27', '10.00');  // se paga el 03/09
-    dashboard_obligacion_proveedor('2026-09-03', '100.00'); // se paga hoy
+it('separa saldo pendiente al corte de pagos programados en el período por tipo de beneficiario', function () {
+    dashboard_obligacion_proveedor('2026-08-20', '1.00');    // se pagaba el 26/08: vencido
+    dashboard_obligacion_proveedor('2026-08-27', '10.00');   // se pagaba el 02/09: vencido
+    dashboard_obligacion_proveedor('2026-09-03', '100.00');  // se pagaba ayer: vencido
     dashboard_obligacion_proveedor('2026-09-03', '5000.00', 'PAGADO');
-    dashboard_obligacion_proveedor('2026-09-10', '1000.00'); // se paga el 17/09
-    dashboard_obligacion_proveedor('2026-09-24', '7.00');   // se paga el 01/10
+    dashboard_obligacion_proveedor('2026-09-10', '1000.00'); // semana en curso, se paga el 16/09
+    dashboard_obligacion_proveedor('2026-09-24', '7.00');    // aún no empieza: no es saldo
     dashboard_obligacion_trabajador('2026-08', '2026-09-01', '1200.00');
     dashboard_obligacion_trabajador('2026-07', '2026-08-01', '1300.00', 'PAGADO');
-    dashboard_obligacion_trabajador('2026-09', null, '400.00', 'EN_CURSO');
+    dashboard_obligacion_trabajador('2026-09', '2026-10-01', '400.00', 'EN_CURSO'); // proyección: no es saldo
     dashboard_obligacion_trabajador('2026-06', null, '50.00');
 
-    $hoy = dashboard_admin('hoy')->pagos;
-    $semana = dashboard_admin('semana')->pagos;
-    $mes = dashboard_admin('mes')->pagos;
+    $hoy = dashboard_admin('hoy')->finanzas;
+    $semana = dashboard_admin('semana')->finanzas;
+    $mes = dashboard_admin('mes')->finanzas;
 
-    expect($hoy['proveedores'])->toBe(['importe' => 100.0, 'obligaciones' => 1, 'semana' => '2026-09-03']);
-    expect($hoy['trabajadores'])->toBe(['importe' => 0.0, 'obligaciones' => 0, 'mes' => null]);
-    expect($hoy['atrasados'])->toBe(['importe' => 1211.0, 'obligaciones' => 3]);
-    expect($semana['proveedores']['importe'])->toBe(100.0);
-    expect($semana['proveedores']['semana'])->toBe('2026-09-03');
-    expect($mes['proveedores'])->toBe(['importe' => 1110.0, 'obligaciones' => 3, 'semana' => null]);
-    expect($mes['trabajadores'])->toBe(['importe' => 1200.0, 'obligaciones' => 1, 'mes' => '2026-08']);
-    expect($mes['atrasados'])->toBe(['importe' => 1.0, 'obligaciones' => 1]);
-    expect($mes['sinFecha'])->toBe(['importe' => 50.0, 'obligaciones' => 1]);
-
-    foreach ([$hoy, $semana, $mes] as $pagos) {
-        expect($pagos['total'])->toBe(round($pagos['proveedores']['importe'] + $pagos['trabajadores']['importe'], 2));
-        expect($pagos['obligaciones'])->toBe($pagos['proveedores']['obligaciones'] + $pagos['trabajadores']['obligaciones']);
+    foreach ([$hoy, $semana, $mes] as $finanzas) {
+        expect($finanzas->corte)->toBe('2026-09-10');
+        expect($finanzas->proveedores)->toMatchArray(['pendiente' => 1111.0, 'pendienteObligaciones' => 4, 'vencido' => 111.0, 'vencidas' => 3]);
+        expect($finanzas->trabajadores)->toMatchArray(['pendiente' => 1250.0, 'pendienteCerrado' => 1250.0, 'vencido' => 1200.0, 'vencidas' => 1]);
+        expect($finanzas->totales['pendiente'])->toBe(2361.0);
     }
+
+    expect($hoy->proveedores['programado'])->toBe(['importe' => 0.0, 'pagado' => 0.0, 'porPagar' => 0.0, 'obligaciones' => 0]);
+    expect($semana->proveedores['programado'])->toBe(['importe' => 5100.0, 'pagado' => 5000.0, 'porPagar' => 100.0, 'obligaciones' => 2]);
+    expect($mes->proveedores['programado'])->toBe(['importe' => 6117.0, 'pagado' => 5000.0, 'porPagar' => 1117.0, 'obligaciones' => 5]);
+    expect($mes->trabajadores['programado'])->toMatchArray(['importe' => 1200.0, 'porPagar' => 1200.0, 'obligaciones' => 1]);
+    expect($mes->totales['programado'])->toBe(7317.0);
 });
 
 it('cuenta lotes iniciados en el período con desglose coherente y todos sus productos', function () {

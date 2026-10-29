@@ -1,0 +1,33 @@
+sequenceDiagram
+  actor U as Usuario
+  participant A as App móvil
+  participant Q as Cola local
+  participant B as Laravel
+  U->>A: Ejecutar operación
+  A->>A: Comprobar conectividad y soporte local
+  alt Operación requiere conexión y no hay red
+    A-->>U: Solicitar conexión
+  else Operación admite cola local
+    A->>Q: Guardar datos, hora y clave local
+    A-->>U: Mostrar pendiente
+    Note over A,Q: Sincronizar al recuperar red o solicitarlo
+    Q->>B: Enviar operación pendiente
+    B->>B: Validar sesión, permisos y reglas
+    alt Operación aceptada
+      B->>B: Registrar datos y efectos relacionados
+      B-->>A: Resultado e identificador
+      A->>Q: Marcar SYNCED
+      A-->>U: Actualizar consultas
+    else Rechazo que requiere revisión
+      B-->>A: Error de permisos o validación
+      A->>Q: Marcar NEEDS_REVIEW
+      A-->>U: Mostrar motivo
+    else Fallo transitorio
+      A->>Q: PENDING o revisión al agotar intentos
+    end
+  else Operación en línea
+    A->>B: Solicitud autenticada
+    B->>B: Autorizar, validar y registrar
+    B-->>A: Resultado o error
+    A-->>U: Mostrar resultado
+  end

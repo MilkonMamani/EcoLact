@@ -1,0 +1,204 @@
+{
+ "descripcion": "Recetas: alta de la receta FICTICIA «Producto Prueba Manual» (crea su producto con stock 0), consulta y edición. BD de prueba autorizada.",
+ "salida": "evidencias/originales/recetas",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/recetas",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "rec_01_listado",
+   "medir": {
+    "menu": "#ecolact-sidebar a[href$='/admin/recetas']",
+    "nueva": "main button[data-receta-accion='crear'] >> nth=0"
+   },
+   "leer": [
+    "main"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "main button[data-receta-accion='crear'] >> nth=0"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1200
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "#modal-receta select[name=categoria_id]",
+   "etiqueta": "Yogures"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-receta [name=nombre_producto]",
+   "texto": "Producto Prueba Manual"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-receta [name=presentacion_cantidad]",
+   "texto": "1"
+  },
+  {
+   "accion": "seleccionar",
+   "selector": "#modal-receta select[name=presentacion_unidad]",
+   "etiqueta": "Litros (L)"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-receta [name=descripcion]",
+   "texto": "Producto ficticio del manual."
+  },
+  {
+   "accion": "esperar",
+   "ms": 600
+  },
+  {
+   "accion": "captura",
+   "nombre": "rec_02_producto",
+   "medir": {
+    "categoria": "#modal-receta select[name=categoria_id]",
+    "nombre": "#modal-receta [name=nombre_producto]",
+    "presentacion": "#modal-receta [name=presentacion_cantidad]",
+    "unidad": "#modal-receta select[name=presentacion_unidad]"
+   }
+  },
+  {
+   "accion": "js",
+   "codigo": "const pick=(n,t)=>{const el=document.querySelector(`#modal-receta [name='${n}']`); const o=[...el.options].find(o=>o.text.trim().startsWith(t)); el.value=o.value; el.dispatchEvent(new Event('change',{bubbles:true}));}; pick('ingredientes[0][insumo_id]','Leche');"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-receta [name='ingredientes[0][cantidad]']",
+   "texto": "1"
+  },
+  {
+   "accion": "clic",
+   "selector": "#modal-receta [data-agregar-ingrediente]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 600
+  },
+  {
+   "accion": "js",
+   "codigo": "const el=document.querySelector(\"#modal-receta [name='ingredientes[1][insumo_id]']\"); const o=[...el.options].find(o=>o.text.trim().startsWith('Insumo Prueba Manual')); el.value=o.value; el.dispatchEvent(new Event('change',{bubbles:true}));"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-receta [name='ingredientes[1][cantidad]']",
+   "texto": "50"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "captura",
+   "nombre": "rec_03_formula",
+   "pagina_completa": true,
+   "medir": {
+    "ingredientes": "#modal-receta [data-ingredientes]",
+    "agregar": "#modal-receta [data-agregar-ingrediente]",
+    "guardar": "#modal-receta [data-guardar]"
+   },
+   "leer": [
+    "#modal-receta [data-ingredientes]",
+    "#modal-receta [data-formula-producto]"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "#modal-receta [data-guardar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 3500
+  },
+  {
+   "accion": "captura",
+   "nombre": "rec_04_guardada",
+   "medir": {
+    "mensaje": "[role=alert]",
+    "fila": "tbody tr:has-text('Producto Prueba Manual') >> nth=0"
+   },
+   "leer": [
+    "[role=alert]",
+    "tbody tr:has-text('Producto Prueba Manual') >> nth=0"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "tbody tr:has-text('Producto Prueba Manual') button[data-toggle-row]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "captura",
+   "nombre": "rec_05_ver",
+   "medir": {
+    "ver": "tbody tr:has-text('Producto Prueba Manual') button[data-toggle-row]",
+    "editar": "tbody tr:has-text('Producto Prueba Manual') button[data-receta-accion='editar']",
+    "detalle": "tr[id^='receta-']:visible, [id^='receta-']:visible >> nth=0"
+   },
+   "leer": [
+    "main tbody"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "tbody tr:has-text('Producto Prueba Manual') button[data-receta-accion='editar']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 1200
+  },
+  {
+   "accion": "js",
+   "codigo": "const c=document.querySelector('#modal-receta [data-ingredientes]'); const s=[...c.querySelectorAll(\"select[name$='[insumo_id]']\")].find(s=>s.selectedOptions[0].text.includes('Insumo Prueba')); const n=s.name.replace('insumo_id','cantidad'); const el=c.querySelector(`[name='${n}']`); el.value='60'; el.dispatchEvent(new Event('input',{bubbles:true})); el.dispatchEvent(new Event('change',{bubbles:true}));"
+  },
+  {
+   "accion": "esperar",
+   "ms": 700
+  },
+  {
+   "accion": "captura",
+   "nombre": "rec_06_editar",
+   "pagina_completa": true,
+   "medir": {
+    "producto_fijo": "#modal-receta [data-producto-fijo]",
+    "ingredientes": "#modal-receta [data-ingredientes]",
+    "guardar": "#modal-receta [data-guardar]"
+   },
+   "leer": [
+    "#modal-receta [data-receta-titulo]",
+    "#modal-receta [data-nota-modo]",
+    "#modal-receta [data-ingredientes]"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "#modal-receta [data-guardar]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 3500
+  },
+  {
+   "accion": "captura",
+   "nombre": "rec_07_editada",
+   "medir": {
+    "mensaje": "[role=alert]"
+   },
+   "leer": [
+    "[role=alert]",
+    "main tbody"
+   ]
+  }
+ ]
+}

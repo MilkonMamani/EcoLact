@@ -1,0 +1,19 @@
+{
+  "plan": "explorar_compradores.json",
+  "fecha": "2026-10-28T12:04:19",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "x_compradores",
+      "archivo": "evidencias/exploracion/x_compradores.png",
+      "url": "/admin/compradores",
+      "descripcion": "",
+      "objetivos": {},
+      "textos_visibles": [
+        "Saltar al contenido\nEcoLact\nGestión integral\n\nDASHBOARD\n\nInicio\nAsistencia\n\nOPERACIÓN\n\nAcopio\nProveedores\nZonas\n\nPERSONAL\n\nTrabajadores\n\nCALIDAD\n\nCalidad\n\nCONFIGURACIÓN\n\nParámetros de calidad\nConfiguración de pagos\n\nFINANZAS\n\nCaja\nPagos\n\nPRODUCCIÓN\n\nRecetas\nProducción\n\nINVENTARIO\n\nInsumos\nProductos\n\nVENTAS\n\nVentas\nCompradores\n\nCOMUNICACIÓN\n\nComunicados\n\nADMINISTRACIÓN\n\nAuditoría\nA\nadmin\nAdministrador\nCompradores\n\nAgenda de clientes registrados que compran productos terminados.\n\n+ Nuevo comprador\nNOMBRE / RAZÓN SOCIAL\tDOCUMENTO / RUC\tTELÉFONO\tESTADO\nPepito\t74125896\t963258741\t\nActivo\nEcoLact · 2026 · Del campo a tu mesa"
+      ],
+      "hora": "2026-10-28T12:04:23"
+    }
+  ],
+  "dialogos": []
+}

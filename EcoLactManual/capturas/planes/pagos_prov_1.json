@@ -1,0 +1,23 @@
+{"descripcion": "Pagar a proveedores: revisión, vista previa, impresión y marca de pago en efectivo SOLO del Proveedor Prueba Manual (S/ 57.60 ficticios). Autorizado por el usuario.",
+ "salida": "evidencias/originales/pagos_proveedores", "conservar_texto": "Prueba Manual", "difuminar_textos": ["admin"],
+ "pasos": [
+  {"accion": "ir", "url": "/admin/pagos/proveedores", "ms": 3000},
+  {"accion": "captura", "nombre": "ppv_01_pantalla", "medir": {"semana": "#filtro-semana", "total": ":text(\"Total pendiente\")", "fila": "tr[data-fila]:has-text('Prueba Manual')"}, "leer": ["main"]},
+  {"accion": "clic", "selector": "tr[data-fila]:has-text('Prueba Manual') td:nth-child(2)"},
+  {"accion": "esperar", "ms": 2500},
+  {"accion": "captura", "nombre": "ppv_02_comprobante", "medir": {"fila": "tr[data-fila]:has-text('Prueba Manual')", "panel": "main aside, main [data-panel-comprobante]"}, "leer": ["main"]},
+  {"accion": "clic", "selector": "tr[data-fila]:has-text('Prueba Manual') input[type=checkbox]"},
+  {"accion": "esperar", "ms": 600},
+  {"accion": "captura", "nombre": "ppv_03_seleccion", "medir": {"check": "tr[data-fila]:has-text('Prueba Manual') input[type=checkbox]", "revisar": "[data-abrir-vista-previa]"}},
+  {"accion": "clic", "selector": "[data-abrir-vista-previa]"},
+  {"accion": "esperar", "ms": 3500},
+  {"accion": "captura", "nombre": "ppv_04_vista_previa", "medir": {"imprimir": "[data-imprimir]", "hoja": "[data-modal].is-open"}, "leer": ["[data-modal].is-open"]},
+  {"accion": "clic", "selector": "[data-imprimir]"},
+  {"accion": "esperar", "ms": 2500},
+  {"accion": "captura", "nombre": "ppv_05_confirmar", "medir": {"confirmar": "[data-conf-confirmar]", "volver": "[data-conf-volver]"}, "leer": ["[data-conf-confirmar] >> xpath=ancestor::*[3]"]},
+  {"accion": "clic", "selector": "[data-conf-confirmar]"},
+  {"accion": "esperar", "ms": 4000},
+  {"accion": "captura", "nombre": "ppv_06_pagado", "medir": {"mensaje": "[role=alert]", "fila": "tr[data-fila]:has-text('Prueba Manual')"}, "leer": ["[role=alert]", "tr[data-fila]:has-text('Prueba Manual')"]},
+  {"accion": "ir_atributo", "selector": "tr[data-fila]:has-text('Prueba Manual')", "atributo": "data-url-comprobante", "ms": 2500},
+  {"accion": "captura", "nombre": "ppv_07_comprobante_impreso", "pagina_completa": true, "leer": ["body"]}
+ ]}

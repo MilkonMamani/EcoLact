@@ -1,0 +1,288 @@
+{
+  "plan": "zonas_3_ruta_estado_eliminar.json",
+  "fecha": "2026-10-28T10:21:41",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "zon_40_antes_ruta",
+      "archivo": "evidencias/originales/zonas/zon_40_antes_ruta.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "nueva_ruta": [
+          1764,
+          576,
+          1865,
+          604
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:21:53"
+    },
+    {
+      "nombre": "zon_41_modal_ruta",
+      "archivo": "evidencias/originales/zonas/zon_41_modal_ruta.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "nombre": [
+          760,
+          464,
+          1160,
+          506
+        ],
+        "descripcion": [
+          760,
+          548,
+          1160,
+          606
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:21:55"
+    },
+    {
+      "nombre": "zon_42_ruta_datos",
+      "archivo": "evidencias/originales/zonas/zon_42_ruta_datos.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "nombre": [
+          760,
+          464,
+          1160,
+          506
+        ],
+        "crear": [
+          1062,
+          646,
+          1160,
+          682
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:21:57"
+    },
+    {
+      "nombre": "zon_43_ruta_creada",
+      "archivo": "evidencias/originales/zonas/zon_43_ruta_creada.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          286,
+          24,
+          1886,
+          70
+        ],
+        "rutas": [
+          1459,
+          692,
+          1865,
+          730
+        ],
+        "gestionar": [
+          1754,
+          702,
+          1853,
+          720
+        ]
+      },
+      "textos_visibles": [
+        "Ruta creada correctamente.",
+        "Ruta Prueba Manual\nGestionar ruta"
+      ],
+      "hora": "2026-10-28T10:22:02"
+    },
+    {
+      "nombre": "zon_50_menu_cerrado",
+      "archivo": "evidencias/originales/zonas/zon_50_menu_cerrado.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          1833,
+          288,
+          1865,
+          320
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:22:02"
+    },
+    {
+      "nombre": "zon_51_menu_desactivar",
+      "archivo": "evidencias/originales/zonas/zon_51_menu_desactivar.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "desactivar": [
+          1655,
+          331,
+          1859,
+          367
+        ],
+        "eliminar": [
+          1655,
+          367,
+          1859,
+          402
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:22:04"
+    },
+    {
+      "nombre": "zon_52_desactivada",
+      "archivo": "evidencias/originales/zonas/zon_52_desactivada.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          286,
+          24,
+          1886,
+          70
+        ],
+        "estado": [
+          1439,
+          95,
+          1885,
+          228
+        ]
+      },
+      "textos_visibles": [
+        "Zona desactivada correctamente.",
+        "Inactiva\nZona Prueba Manual\n\nZona ficticia para el manual de usuario (descripción editada)."
+      ],
+      "hora": "2026-10-28T10:22:08"
+    },
+    {
+      "nombre": "zon_53_menu_activar",
+      "archivo": "evidencias/originales/zonas/zon_53_menu_activar.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "activar": [
+          1655,
+          331,
+          1859,
+          367
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:22:09"
+    },
+    {
+      "nombre": "zon_54_activada",
+      "archivo": "evidencias/originales/zonas/zon_54_activada.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          286,
+          24,
+          1886,
+          70
+        ],
+        "estado": [
+          1439,
+          95,
+          1885,
+          228
+        ]
+      },
+      "textos_visibles": [
+        "Zona activada correctamente."
+      ],
+      "hora": "2026-10-28T10:22:14"
+    },
+    {
+      "nombre": "zon_60_menu_eliminar",
+      "archivo": "evidencias/originales/zonas/zon_60_menu_eliminar.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "eliminar": [
+          1655,
+          367,
+          1859,
+          402
+        ]
+      },
+      "textos_visibles": [],
+      "hora": "2026-10-28T10:22:15"
+    },
+    {
+      "nombre": "zon_61_eliminar_bloqueado",
+      "archivo": "evidencias/originales/zonas/zon_61_eliminar_bloqueado.png",
+      "url": "/admin/zonas?zona=7",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          286,
+          24,
+          1886,
+          70
+        ]
+      },
+      "textos_visibles": [
+        "No se puede eliminar la zona Zona Prueba Manual porque tiene 1 ruta(s). Puedes marcarla como inactiva en su lugar."
+      ],
+      "hora": "2026-10-28T10:22:20"
+    },
+    {
+      "nombre": "zon_62_eliminar_vacia",
+      "archivo": "evidencias/originales/zonas/zon_62_eliminar_vacia.png",
+      "url": "/admin/zonas?zona=8",
+      "descripcion": "",
+      "objetivos": {
+        "eliminar": [
+          1655,
+          347,
+          1859,
+          383
+        ],
+        "nombre": [
+          1525,
+          147,
+          1821,
+          170
+        ]
+      },
+      "textos_visibles": [
+        "Zona Prueba Eliminar"
+      ],
+      "hora": "2026-10-28T10:22:25"
+    },
+    {
+      "nombre": "zon_63_eliminada",
+      "archivo": "evidencias/originales/zonas/zon_63_eliminada.png",
+      "url": "/admin/zonas",
+      "descripcion": "",
+      "objetivos": {
+        "mensaje": [
+          286,
+          24,
+          1886,
+          70
+        ],
+        "leyenda": [
+          297,
+          391,
+          531,
+          572
+        ]
+      },
+      "textos_visibles": [
+        "Zona eliminada correctamente.",
+        "LEYENDA\nCollana 1\nCollana 2\nFaon\nYasin\nZona Prueba Manual\nPENDIENTE\nProveedor"
+      ],
+      "hora": "2026-10-28T10:22:30"
+    }
+  ],
+  "dialogos": [
+    "¿Eliminar la zona Zona Prueba Manual?\n\nEsta acción eliminará permanentemente la zona. Solo es posible si no tiene rutas, proveedores, acopiadores ni historial asociados.",
+    "¿Eliminar la zona Zona Prueba Eliminar?\n\nEsta acción eliminará permanentemente la zona. Solo es posible si no tiene rutas, proveedores, acopiadores ni historial asociados."
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "plan": "personal_3_listados.json",
+  "fecha": "2026-10-28T10:53:05",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "per_3ana_3_listado",
+      "archivo": "evidencias/originales/personal/per_3ana_3_listado.png",
+      "url": "/admin/analistas-calidad",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          402,
+          1085,
+          454
+        ],
+        "switch": [
+          1019,
+          414,
+          1063,
+          441
+        ],
+        "panel": [
+          960,
+          48,
+          1408,
+          877
+        ],
+        "menu": [
+          43,
+          547,
+          239,
+          583
+        ]
+      },
+      "textos_visibles": [
+        "Analistas de calidad",
+        "Resumen\nAnálisis\nAsistencia\nPagos"
+      ],
+      "hora": "2026-10-28T10:53:12"
+    },
+    {
+      "nombre": "per_3enc_3_listado",
+      "archivo": "evidencias/originales/personal/per_3enc_3_listado.png",
+      "url": "/admin/encargados-planta?encargado=2",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          454,
+          1085,
+          506
+        ],
+        "switch": [
+          1019,
+          467,
+          1063,
+          493
+        ],
+        "panel": [
+          960,
+          48,
+          1408,
+          894
+        ],
+        "menu": [
+          43,
+          585,
+          239,
+          621
+        ]
+      },
+      "textos_visibles": [
+        "Encargados de planta",
+        "Resumen\nProducción\nAsistencia\nPagos"
+      ],
+      "hora": "2026-10-28T10:53:17"
+    },
+    {
+      "nombre": "per_3ven_3_listado",
+      "archivo": "evidencias/originales/personal/per_3ven_3_listado.png",
+      "url": "/admin/personal-ventas?personal=2",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          454,
+          1085,
+          506
+        ],
+        "switch": [
+          1019,
+          467,
+          1063,
+          493
+        ],
+        "panel": [
+          960,
+          48,
+          1408,
+          900
+        ],
+        "menu": [
+          43,
+          623,
+          239,
+          659
+        ]
+      },
+      "textos_visibles": [
+        "Personal de ventas",
+        "Resumen\nVentas\nAsistencia\nPagos"
+      ],
+      "hora": "2026-10-28T10:53:22"
+    }
+  ],
+  "dialogos": []
+}

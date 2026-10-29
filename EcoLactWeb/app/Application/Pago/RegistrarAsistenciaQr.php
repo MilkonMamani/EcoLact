@@ -23,7 +23,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
  * motivo, para no perder trazabilidad.
  *
  * Solo funciona mientras la asistencia de hoy está abierta (antes de las
- * 07:00, VentanaAsistencia); desde el cierre se rechaza en el backend.
+ * 23:59, VentanaAsistencia); desde el cierre se rechaza en el backend.
  */
 final class RegistrarAsistenciaQr
 {

@@ -1,0 +1,6 @@
+{"salida": "evidencias/exploracion", "pasos": [
+  {"accion": "ir", "url": "/admin/trabajadores/nuevo?tipo=acopiador", "ms": 2000},
+  {"accion": "captura", "nombre": "x_nuevo_trabajador", "pagina_completa": true},
+  {"accion": "ir", "url": "/admin/acopiadores", "ms": 2500},
+  {"accion": "captura", "nombre": "x_acopiadores", "difuminar": [".fichas-tabla tbody td", ".fichas-panel-cuerpo dd", ".fichas-panel-head"]}
+]}

@@ -1,0 +1,66 @@
+{
+  "id": "VER",
+  "titulo": "Estado de verificación y observaciones",
+  "introduccion": "Este anexo resume qué procedimientos se comprobaron en la interfaz real (entorno de prueba, datos ficticios) y registra las observaciones encontradas durante la documentación. Se actualiza con cada capítulo nuevo.",
+  "secciones": [
+    {
+      "titulo": "Observaciones de la interfaz detectadas",
+      "tabla": {
+        "encabezados": [
+          "ID",
+          "Módulo",
+          "Observación",
+          "Efecto en el uso"
+        ],
+        "anchos": [
+          1.6,
+          2.2,
+          7.0,
+          5.2
+        ],
+        "filas": [
+          [
+            "OBS-01",
+            "Zonas",
+            "El editor de delimitación no funciona en una zona sin delimitación previa: al pulsar «Dibujar delimitación» no entra en modo dibujo y el navegador registra «Cannot read properties of undefined (reading 'addListener')». Reproducido en Chromium y Google Chrome.",
+            "No se puede dibujar el contorno de una zona nueva desde la interfaz (ADM-ZON-004)."
+          ],
+          [
+            "OBS-02",
+            "Zonas",
+            "La leyenda del mapa principal se dibuja por encima de la ventana «Editar zona» y tapa parte de la barra del editor de delimitación.",
+            "El botón «Dibujar delimitación» queda parcialmente cubierto."
+          ],
+          [
+            "OBS-03",
+            "Inicio",
+            "El título del panel de inicio se muestra como «Analitics Dashboard».",
+            "Errata de texto; sin efecto funcional. El manual cita el texto tal como aparece."
+          ]
+        ]
+      }
+    },
+    {
+      "titulo": "Datos ficticios creados durante la verificación",
+      "items": [
+        "«Zona Prueba Manual» (activa) con la ruta «Ruta Prueba Manual».",
+        "«Zona Prueba Eliminar»: creada y eliminada para comprobar la eliminación.",
+        "Intento de ingreso con el usuario inexistente «usuario.ficticio.manual».",
+        "«Acopiador Prueba Manual» (DNI sintético 99000001, usuario «acopiador.prueba.manual», contraseña aleatoria no registrada) en «Zona Prueba Manual»."
+      ]
+    },
+    {
+      "titulo": "Capítulos pendientes de elaborar",
+      "items": [
+        "Personal: comprobar en interfaz el alta de analistas, encargados de planta y personal de ventas.",
+        "Proveedores y su asignación a zona y ruta.",
+        "Rutas: proveedores de la ruta, orden de visita y apertura de recorridos.",
+        "Parámetros de calidad y Configuración de pagos.",
+        "Acopio (entregas) y Calidad (análisis).",
+        "Pagar a proveedores (incluida la liquidación imprimible) y Pagar a trabajadores; Asistencia.",
+        "Insumos, Recetas, Producción, Productos, Ventas, Compradores y Caja.",
+        "Comunicados, notificaciones y Mi perfil."
+      ]
+    }
+  ]
+}

@@ -75,3 +75,64 @@
     .config-calidad li { grid-template-columns: 1fr auto; }
     .config-calidad-regla { grid-column: 1 / -1; grid-row: 2; }
 }
+
+/* ------------------------------------------------------------ sueldos por rol */
+.config-pagos [hidden], [data-config-sueldo-rol] [hidden] { display: none !important; }
+
+.config-roles-kpis { display: grid; gap: .75rem; margin-top: 1.25rem; }
+.config-roles-kpis > div { display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: .75rem; padding: .85rem 1rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fff; transition: border-color .15s, box-shadow .15s; }
+.config-roles-kpis > div:hover { border-color: #d5dde3; box-shadow: 0 1px 3px rgb(16 24 40 / .06); }
+.config-roles-kpi-icono { grid-row: span 2; display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: .6rem; background: #f2f4f7; color: var(--fichas-muted); }
+.config-roles-kpis .is-ok .config-roles-kpi-icono { background: var(--fichas-green-soft); color: var(--fichas-green); }
+.config-roles-kpis .is-alerta .config-roles-kpi-icono { background: #fff6ed; color: #b54708; }
+.config-roles-kpis dt { color: var(--fichas-muted); font-size: .76rem; }
+.config-roles-kpis dd { color: var(--fichas-ink); font-size: 1.35rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
+
+.config-roles-personal { display: inline-grid; place-items: center; min-width: 1.75rem; height: 1.5rem; padding-inline: .45rem; border-radius: 999px; background: #f2f4f7; color: var(--fichas-ink); font-size: .78rem; font-weight: 600; }
+
+.config-roles-sobretitulo { color: var(--fichas-soft-text); font-size: .7rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.config-roles-sueldo { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .9rem 1rem; border-radius: .7rem; background: var(--fichas-green-soft); }
+.config-roles-sueldo p { color: var(--fichas-green); font-size: .8rem; font-weight: 500; }
+.config-roles-sueldo strong { color: var(--fichas-green); font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.config-roles-contador { padding: .1rem .5rem; border-radius: 999px; background: #f2f4f7; color: var(--fichas-muted); font-size: .72rem; font-weight: 600; }
+.config-roles-vacio { color: var(--fichas-muted); font-size: .82rem; }
+.config-roles-personas { display: grid; gap: .35rem; }
+.config-roles-personas li { display: flex; align-items: center; gap: .65rem; padding: .45rem .55rem; border-radius: .55rem; font-size: .85rem; transition: background-color .15s; }
+.config-roles-personas li:hover { background: #f7f9fa; }
+.config-roles-avatar { display: grid; flex-shrink: 0; place-items: center; width: 1.9rem; height: 1.9rem; border-radius: 999px; background: var(--fichas-green-soft); color: var(--fichas-green); font-size: .75rem; font-weight: 700; }
+
+.config-roles-historial { width: 100%; font-size: .82rem; border-collapse: collapse; }
+.config-roles-historial th { padding: 0 .5rem .45rem; color: var(--fichas-soft-text); font-size: .7rem; font-weight: 500; text-align: left; }
+.config-roles-historial th.is-num, .config-roles-historial td.is-num { text-align: right; font-variant-numeric: tabular-nums; }
+.config-roles-historial td { padding: .55rem .5rem; border-top: 1px solid #f0f2f4; vertical-align: top; }
+.config-roles-version { display: inline-block; padding: .1rem .5rem; border-radius: 999px; background: #f2f4f7; color: var(--fichas-muted); font-size: .72rem; font-weight: 600; }
+.config-roles-version.is-vigente { background: var(--fichas-green-soft); color: var(--fichas-green); }
+.config-roles-version.is-programado { background: #eff5fb; color: #2f6fb0; }
+
+.config-roles-aviso { display: flex; gap: .6rem; margin-bottom: 1.1rem; padding: .75rem .85rem; border: 1px solid #d1e9dd; border-radius: .6rem; background: var(--fichas-green-soft); color: #0b4a35; font-size: .8rem; line-height: 1.45; }
+.config-roles-aviso.is-conflicto { border-color: #fedf89; background: #fffaeb; color: #93370d; }
+.config-roles-anteriores { display: grid; gap: .25rem; margin-top: .5rem; }
+.config-roles-anteriores li { display: flex; justify-content: space-between; gap: .75rem; }
+.config-roles-anteriores .is-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.config-roles-fijo { display: flex; align-items: center; height: 2.6rem; margin-top: .35rem; padding-inline: .8rem; border: 1px dashed #d0d5dd; border-radius: .5rem; background: #f9fafb; color: var(--fichas-ink); font-weight: 600; }
+
+.config-roles-confirmacion { padding: 1rem 1.1rem; border: 1px solid var(--fichas-border); border-radius: .75rem; background: #fcfdfc; animation: config-roles-entrar .18s ease-out; }
+.config-roles-confirmacion-titulo { margin-bottom: .75rem; color: var(--fichas-ink); font-weight: 600; }
+.config-roles-confirmacion dl { display: grid; gap: .55rem; margin-bottom: .75rem; }
+.config-roles-confirmacion dl > div { display: flex; justify-content: space-between; gap: 1rem; font-size: .875rem; }
+.config-roles-confirmacion dt { color: var(--fichas-muted); }
+.config-roles-confirmacion dd { color: var(--fichas-ink); font-weight: 500; text-align: right; }
+.config-roles-confirmacion .is-num { font-variant-numeric: tabular-nums; }
+.config-roles-confirmacion .is-destacado { color: var(--fichas-green); font-weight: 700; }
+
+@keyframes config-roles-entrar { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .config-roles-confirmacion { animation: none; }
+}
+
+@media (min-width: 640px) {
+    .config-roles-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

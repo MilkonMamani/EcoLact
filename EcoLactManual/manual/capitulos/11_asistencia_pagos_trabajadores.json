@@ -1,0 +1,195 @@
+{
+  "id": "ASP",
+  "tipo": "modulo",
+  "titulo": "Asistencia y pagos a trabajadores",
+  "registro": "evidencias/originales/asistencia/asistencia_1.registro.json",
+  "introduccion": "La asistencia diaria del personal determina sus días trabajados, y el pago mensual se calcula con el sueldo configurado (capítulo 7) y esos días. El Administrador registra la asistencia escaneando el QR del trabajador mientras el registro está abierto, consulta y corrige jornadas, y registra la entrega del sueldo.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Dashboard › Asistencia · Finanzas › Pagos › Pagar a trabajadores"
+    ],
+    [
+      "Depende de",
+      "Trabajadores registrados (capítulo 4) y sueldos configurados (capítulo 7)."
+    ],
+    [
+      "Habilita",
+      "Pago mensual del personal y su egreso en Caja."
+    ],
+    [
+      "Reglas principales",
+      [
+        "La asistencia del día se registra por QR solo mientras está abierta; después de la hora de cierre (07:00 a. m. en el entorno de prueba), los trabajadores sin registro quedan con «Falta» automática.",
+        "Las correcciones piden un motivo.",
+        "El pago mensual se registra sobre la obligación del mes; los trabajadores sin sueldo aparecen como «Sin configurar»."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "asi_01_pantalla",
+    "pie": "«Asistencia de hoy», ya cerrada (nombres y DNI difuminados).",
+    "elementos": [
+      [
+        "Estado del registro",
+        "«Escanear QR» mientras la asistencia está abierta; «Cerrada a las … a. m.» después."
+      ],
+      [
+        "Resumen",
+        "Trabajadores, presentes, faltas y pendientes."
+      ],
+      [
+        "Filtros",
+        "«Buscar trabajador», «Rol» y «Fecha» (para consultar días anteriores)."
+      ],
+      [
+        "Tabla",
+        "Trabajador, rol, DNI, asistencia, hora, origen (por ejemplo «Automático») y menú de acciones."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-ASP-001",
+      "titulo": "Consultar la asistencia del personal",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar quién asistió en un día.",
+      "acceso": "Dashboard › Asistencia",
+      "requisitos": [
+        "Trabajadores registrados."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir Asistencia",
+          "instruccion": "Desde el menú lateral del Administrador, selecciona «Asistencia».",
+          "captura": "asi_01_pantalla",
+          "objetivo": "menu",
+          "pie": "Opción «Asistencia»."
+        },
+        {
+          "titulo": "Revisar el resumen",
+          "instruccion": "Consulta los totales de presentes, faltas y pendientes.",
+          "captura": "asi_01_pantalla",
+          "objetivo": "resumen",
+          "pie": "Resumen del día."
+        },
+        {
+          "titulo": "Filtrar",
+          "instruccion": "Busca por nombre o DNI, elige el «Rol» o cambia la «Fecha» y haz clic en «Filtrar».",
+          "captura": "asi_01_pantalla",
+          "objetivo": "filtros",
+          "pie": "Filtros de asistencia."
+        },
+        {
+          "titulo": "Revisar la tabla",
+          "instruccion": "Consulta el estado, la hora y el origen de cada registro.",
+          "captura": "asi_01_pantalla",
+          "objetivo": "tabla",
+          "pie": "Registros del día (origen «Automático» = falta asignada al cierre)."
+        }
+      ],
+      "resultado": "Conoces la asistencia del día o de la fecha consultada."
+    },
+    {
+      "codigo": "ADM-ASP-002",
+      "titulo": "Registrar asistencia por QR",
+      "estado": "Pendiente de comprobar",
+      "objetivo": "Marcar como presente a un trabajador escaneando su código QR.",
+      "acceso": "Dashboard › Asistencia › «Escanear QR»",
+      "requisitos": [
+        "Asistencia del día abierta (antes de la hora de cierre).",
+        "Cámara en el equipo y el QR del trabajador (su panel muestra el «Código QR»)."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el escáner",
+          "instruccion": "Haz clic en «Escanear QR» y apunta la cámara al código QR del trabajador."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica que el trabajador figure como presente con su hora."
+        }
+      ],
+      "resultado": "Pendiente de comprobar: en la verificación la asistencia ya estaba cerrada y no se contó con cámara ni QR físico.",
+      "errores": [
+        [
+          "No aparece «Escanear QR»",
+          "La asistencia del día ya está cerrada."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-ASP-003",
+      "titulo": "Registrar o corregir una asistencia manualmente",
+      "estado": "Pendiente de comprobar",
+      "objetivo": "Registrar como presente o corregir el estado de un día.",
+      "acceso": "Asistencia › menú «⋮» de la fila",
+      "requisitos": [
+        "Asistencia del día cerrada o día anterior.",
+        "Motivo de la corrección."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir las acciones",
+          "instruccion": "En la fila del trabajador, abre el menú «⋮»: «Ver detalle», «Editar asistencia» o «Registrar asistencia manual» (según el caso)."
+        },
+        {
+          "titulo": "Corregir",
+          "instruccion": "En «Corregir asistencia», elige el «Nuevo estado» (Presente o Falta), escribe el «Motivo» y guarda. En «Registrar asistencia manual», escribe una observación y haz clic en «Registrar como presente»."
+        }
+      ],
+      "resultado": "Pendiente de comprobar: las únicas filas disponibles eran de trabajadores reales y no se modificaron. Los trabajadores ficticios creados el mismo día aún no figuraban en la asistencia."
+    },
+    {
+      "codigo": "ADM-ASP-004",
+      "titulo": "Consultar los pagos a trabajadores",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar el estado del pago mensual de cada trabajador.",
+      "acceso": "Finanzas › Pagos › Pagar a trabajadores",
+      "requisitos": [
+        "Trabajadores registrados."
+      ],
+      "pasos": [
+        {
+          "titulo": "Filtrar el periodo",
+          "instruccion": "Usa el buscador y los filtros «Mes», «Rol» y «Estado» (En curso, Pendiente, Pagado, Sin configurar).",
+          "registro": "evidencias/originales/pagos_trabajadores/pagos_trab_1.registro.json",
+          "captura": "ptr_01_pantalla",
+          "objetivo": "filtros",
+          "pie": "Filtros de «Pagos a trabajadores»."
+        },
+        {
+          "titulo": "Revisar un trabajador",
+          "instruccion": "Haz clic en la fila del trabajador.",
+          "registro": "evidencias/originales/pagos_trabajadores/pagos_trab_1.registro.json",
+          "captura": "ptr_02_panel_sin_sueldo",
+          "objetivo": "fila",
+          "pie": "Trabajador sin sueldo: el panel indica «Pago no disponible … Configúrala desde: Configuración > Configuración de pagos»."
+        }
+      ],
+      "resultado": "La tabla muestra asistencias, faltas, sueldo mensual, valor por día, acumulado, total y estado de cada trabajador del periodo."
+    },
+    {
+      "codigo": "ADM-ASP-005",
+      "titulo": "Registrar el pago de un sueldo",
+      "estado": "Pendiente de comprobar",
+      "objetivo": "Registrar la entrega del sueldo mensual y emitir su comprobante.",
+      "acceso": "Pagar a trabajadores › panel del trabajador",
+      "requisitos": [
+        "Sueldo configurado.",
+        "Obligación del mes en estado «Pendiente»."
+      ],
+      "pasos": [
+        {
+          "titulo": "Revisar y ajustar",
+          "instruccion": "En el panel del trabajador, revisa el detalle; si corresponde, registra una bonificación o un descuento con su motivo (solo mientras el pago esté pendiente)."
+        },
+        {
+          "titulo": "Registrar el pago",
+          "instruccion": "Registra el pago e imprime el comprobante."
+        }
+      ],
+      "resultado": "Según el sistema: aparece «Pago registrado correctamente.», el estado pasa a «Pagado» y se registra el egreso en Caja. Pendiente de comprobar: en octubre de 2026 no había obligaciones pendientes (el mes estaba en curso) y el acopiador ficticio con sueldo no apareció en la lista (OBS-08)."
+    }
+  ]
+}

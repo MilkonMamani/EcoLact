@@ -1,0 +1,98 @@
+{
+  "plan": "caja_1.json",
+  "fecha": "2026-10-28T12:10:37",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "caj_01_pantalla",
+      "archivo": "evidencias/originales/caja/caj_01_pantalla.png",
+      "url": "/admin/caja",
+      "descripcion": "",
+      "objetivos": {
+        "menu": [
+          12,
+          727,
+          239,
+          767
+        ],
+        "saldo": [
+          284,
+          146,
+          662,
+          287
+        ],
+        "ojo": [
+          612,
+          166,
+          643,
+          197
+        ],
+        "tarjetas": [
+          693,
+          163,
+          892,
+          187
+        ],
+        "filtros": [
+          284,
+          353,
+          1408,
+          393
+        ],
+        "tabla": [
+          285,
+          446,
+          1407,
+          506
+        ]
+      },
+      "textos_visibles": [
+        "Finanzas\n›\nCaja\nCaja\n\nControl de ingresos y egresos de EcoLact.\n\nSaldo disponible\n\nS/ -50.60\n\nEntradas menos salidas registradas\n\nIngresos de hoy\n\nS/ 16.00\n\nSalidas de hoy\n\nS/ 66.60\n\nMovimientos de hoy\n\n4\n\nÚltimos movimientos\nBuscar por concepto, referencia o persona\nDesde\n–\nHasta\nTipo\nTodos los tipos\nEntradas\nSalidas\nCategoría\nTodas las categorías\nVentas\nProveedores\nTrabajadores\nInsumos\nFECHA Y HORA\nMOVIMIENTO / CONCEPTO\nREFERENCIA\nTIPO\nMONTO\nACCIÓN\n28 oct. 2026 · 17:06\nVenta de productos\nComprador Prueba Manual\nV-00002\nEntrada\n+ S/ 8.00\n28 oct. 2026 · 17:05\nVenta de productos\nComprador Prueba Manual\nV-00001\nEntrada\n+ S/ 8.00\n28 oct. 2026 · 16:54\nCompra de insumos\nBoleta B000-0001\nC-0001\nSalida\n- S/ 9.00\n28 oct. 2026 · 16:29\nPago a proveedor\nProveedor Prueba Manual\nLiquidación SEM-44\nSalida\n- S/ 57.60\n\nMostrando 1 a 4 de 4 movimientos\n\n«\n‹\n1\n›\n»"
+      ],
+      "hora": "2026-10-28T12:10:42"
+    },
+    {
+      "nombre": "caj_02_detalle",
+      "archivo": "evidencias/originales/caja/caj_02_detalle.png",
+      "url": "/admin/caja?movimiento=1",
+      "descripcion": "",
+      "objetivos": {
+        "fila": [
+          285,
+          629,
+          1407,
+          689
+        ]
+      },
+      "textos_visibles": [
+        "Finanzas\n›\nCaja\nCaja\n\nControl de ingresos y egresos de EcoLact.\n\nSaldo disponible\n\nS/ -50.60\n\nEntradas menos salidas registradas\n\nIngresos de hoy\n\nS/ 16.00\n\nSalidas de hoy\n\nS/ 66.60\n\nMovimientos de hoy\n\n4\n\nÚltimos movimientos\nBuscar por concepto, referencia o persona\nDesde\n–\nHasta\nTipo\nTodos los tipos\nEntradas\nSalidas\nCategoría\nTodas las categorías\nVentas\nProveedores\nTrabajadores\nInsumos\nFECHA Y HORA\nMOVIMIENTO / CONCEPTO\nREFERENCIA\nTIPO\nMONTO\nACCIÓN\n28 oct. 2026 · 17:06\nVenta de productos\nComprador Prueba Manual\nV-00002\nEntrada\n+ S/ 8.00\n28 oct. 2026 · 17:05\nVenta de productos\nComprador Prueba Manual\nV-00001\nEntrada\n+ S/ 8.00\n28 oct. 2026 · 16:54\nCompra de insumos\nBoleta B000-0001\nC-0001\nSalida\n- S/ 9.00\n28 oct. 2026 · 16:29\nPago a proveedor\nProveedor Prueba Manual\nLiquidación SEM-44\nSalida\n- S/ 57.60\n\nMostrando 1 a 4 de 4 movimientos\n\n«\n‹\n1\n›\n»\n\nDETALLE DEL MOVIMIENTO\n\nPago a proveedor\n\n- S/ 57.60\n\nTipo\nSalida\nCategoría\nProveedor\nSemana\nSemana 44 (22/10 – 28/10/2026)\nProveedor\nProveedor Prueba Manual\nReferencia\nLiquidación SEM-44\nLote de pago\nPP-20261028-162918-9E01\nMétodo de pago\nEfectivo\nRegistrado por\nAdministrador · admin\nFecha\n28/10/2026 · 16:29\n\nGenerado automáticamente desde Pagos. No se edita desde Caja."
+      ],
+      "hora": "2026-10-28T12:10:45"
+    },
+    {
+      "nombre": "caj_03_salidas",
+      "archivo": "evidencias/originales/caja/caj_03_salidas.png",
+      "url": "/admin/caja?tipo=SALIDA",
+      "descripcion": "",
+      "objetivos": {
+        "tipo": [
+          944,
+          353,
+          1120,
+          393
+        ],
+        "categoria": [
+          1128,
+          353,
+          1328,
+          393
+        ]
+      },
+      "textos_visibles": [
+        "Finanzas\n›\nCaja\nCaja\n\nControl de ingresos y egresos de EcoLact.\n\nSaldo disponible\n\nS/ -50.60\n\nEntradas menos salidas registradas\n\nIngresos de hoy\n\nS/ 16.00\n\nSalidas de hoy\n\nS/ 66.60\n\nMovimientos de hoy\n\n4\n\nÚltimos movimientos\nBuscar por concepto, referencia o persona\nDesde\n–\nHasta\nTipo\nTodos los tipos\nEntradas\nSalidas\nCategoría\nTodas las categorías\nVentas\nProveedores\nTrabajadores\nInsumos\nLimpiar\nFECHA Y HORA\nMOVIMIENTO / CONCEPTO\nREFERENCIA\nTIPO\nMONTO\nACCIÓN\n28 oct. 2026 · 16:54\nCompra de insumos\nBoleta B000-0001\nC-0001\nSalida\n- S/ 9.00\n28 oct. 2026 · 16:29\nPago a proveedor\nProveedor Prueba Manual\nLiquidación SEM-44\nSalida\n- S/ 57.60\n\nMostrando 1 a 2 de 2 movimientos\n\n«\n‹\n1\n›\n»"
+      ],
+      "hora": "2026-10-28T12:10:48"
+    }
+  ],
+  "dialogos": []
+}

@@ -7,8 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Valida el cambio de una configuración de pago (nueva vigencia). El tipo, el
- * trabajador, su rol y el cálculo no se cambian aquí.
+ * Valida el cambio de una configuración de pago (nueva vigencia). El tipo, el rol
+ * y el cálculo no se cambian aquí. Cambiar el sueldo de un rol exige un motivo,
+ * que queda en la configuración y en auditorías.
  */
 class UpdateConfiguracionPagoRequest extends FormRequest
 {
@@ -30,7 +31,7 @@ class UpdateConfiguracionPagoRequest extends FormRequest
             'precio_base_litro' => [Rule::requiredIf(! $esPersonal), 'nullable', 'numeric', 'gt:0', 'max:999999.9999', 'regex:/^\d+(\.\d{1,4})?$/'],
             'descuento_observada' => ['nullable', 'numeric', 'min:0', 'lt:precio_base_litro', 'regex:/^\d+(\.\d{1,4})?$/'],
             'fecha_inicio' => ['required', 'date'],
-            'observacion' => ['nullable', 'string', 'max:500'],
+            'observacion' => [Rule::requiredIf($esPersonal), 'nullable', 'string', 'max:500'],
         ];
     }
 
@@ -43,6 +44,7 @@ class UpdateConfiguracionPagoRequest extends FormRequest
             'monto_base.required' => 'Ingresa el sueldo mensual.',
             'monto_base.gt' => 'El sueldo mensual debe ser mayor que cero.',
             'monto_base.regex' => 'El sueldo mensual debe tener como máximo dos decimales.',
+            'monto_base.max' => 'El sueldo mensual es demasiado alto.',
             'precio_base_litro.required' => 'Ingresa el precio base por litro.',
             'precio_base_litro.gt' => 'El precio base por litro debe ser mayor que cero.',
             'precio_base_litro.regex' => 'El precio base por litro admite como máximo cuatro decimales.',
@@ -50,6 +52,7 @@ class UpdateConfiguracionPagoRequest extends FormRequest
             'descuento_observada.lt' => 'El descuento por litro debe ser menor que el precio base.',
             'descuento_observada.regex' => 'El descuento por litro admite como máximo cuatro decimales.',
             'fecha_inicio.required' => 'Indica la fecha de inicio de la nueva vigencia.',
+            'observacion.required' => 'Indica el motivo del cambio de sueldo.',
         ];
     }
 }

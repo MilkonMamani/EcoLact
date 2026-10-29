@@ -1,0 +1,55 @@
+{
+  "plan": "ventas_2.json",
+  "fecha": "2026-10-28T12:06:28",
+  "url_base": "http://127.0.0.1:8000",
+  "capturas": [
+    {
+      "nombre": "ven_04_registrada",
+      "archivo": "evidencias/originales/ventas/ven_04_registrada.png",
+      "url": "/admin/ventas",
+      "descripcion": "",
+      "objetivos": {
+        "aviso": [
+          284,
+          196,
+          1408,
+          359
+        ]
+      },
+      "textos_visibles": [
+        "Venta registrada correctamente\n\nCLIENTE\nComprador Prueba Manual\nPRODUCTO\nProducto Prueba Manual · 1 L · 1 unidad\nTOTAL\nS/ 8.00\nSTOCK\n1 → 0\nCAJA\n+ S/ 8.00\n\nVer boleta V-00002"
+      ],
+      "hora": "2026-10-28T12:06:40"
+    },
+    {
+      "nombre": "ven_06_historial",
+      "archivo": "evidencias/originales/ventas/ven_06_historial.png",
+      "url": "/admin/ventas?tab=historial",
+      "descripcion": "",
+      "objetivos": {
+        "tab": [
+          399,
+          127,
+          485,
+          171
+        ],
+        "fila": [
+          285,
+          376,
+          1407,
+          428
+        ],
+        "ver": [
+          1346,
+          388,
+          1391,
+          417
+        ]
+      },
+      "textos_visibles": [
+        "Historial de ventas\nBuscar cliente, producto o venta\nPeriodo\nHoy\nEsta semana\nEste mes\nPersonalizado\nPago\nTodos los pagos\nContado\nDescuento semanal\nEstado\nTodos los estados\nRegistrada\nAnulada\nVENTA\tFECHA\tCLIENTE\tPRODUCTO\tTOTAL\tPAGO\tESTADO\tACCIÓN\nV-00002\t28 oct. · 17:06\tComprador Prueba Manual\tProducto Prueba Manual 1 L\tS/ 8.00\tContado\tRegistrada\tVer\nV-00001\t28 oct. · 17:05\tComprador Prueba Manual\tProducto Prueba Manual 1 L\tS/ 8.00\tContado\tRegistrada\tVer\n\n2 ventas · S/ 16.00"
+      ],
+      "hora": "2026-10-28T12:06:44"
+    }
+  ]
+}

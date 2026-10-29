@@ -1,0 +1,157 @@
+{
+  "id": "VEN",
+  "tipo": "modulo",
+  "titulo": "Ventas",
+  "registro": "evidencias/originales/ventas/ventas_1.registro.json",
+  "introduccion": "Ventas / POS registra la venta de productos terminados al público general, a un comprador registrado o a un proveedor. Cada venta descuenta stock, registra el ingreso en Caja (o el descuento del pago semanal del proveedor) y genera su boleta.",
+  "ficha": [
+    [
+      "Ubicación en el menú",
+      "Ventas › Ventas"
+    ],
+    [
+      "Depende de",
+      "Productos con stock y precios (capítulo 15); compradores registrados (capítulo 17) si se vende a uno."
+    ],
+    [
+      "Habilita",
+      "Ingresos en Caja (capítulo 18)."
+    ],
+    [
+      "Reglas principales",
+      [
+        "El precio depende del tipo de cliente; el público paga precio mayorista desde la cantidad mínima configurada.",
+        "Público y compradores pagan al contado; a un proveedor se le puede vender al contado o con descuento de su pago semanal.",
+        "No se puede vender más que el stock disponible."
+      ]
+    ]
+  ],
+  "pantalla": {
+    "captura": "ven_01_pos",
+    "pie": "Ventas / POS, pestaña «Nueva venta».",
+    "elementos": [
+      [
+        "Pestañas",
+        "«Nueva venta» e «Historial»."
+      ],
+      [
+        "¿Quién compra?",
+        "Público general, Comprador registrado o Proveedor."
+      ],
+      [
+        "Producto y cantidad",
+        "Muestra el stock disponible y el precio aplicado."
+      ],
+      [
+        "Resumen de venta",
+        "Total, stock antes y después, forma de pago y «Confirmar venta»."
+      ]
+    ]
+  },
+  "procedimientos": [
+    {
+      "codigo": "ADM-VEN-001",
+      "titulo": "Registrar una venta",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Vender un producto y dejarla registrada.",
+      "acceso": "Ventas › Ventas › pestaña «Nueva venta»",
+      "requisitos": [
+        "Producto con stock y precios."
+      ],
+      "pasos": [
+        {
+          "titulo": "Elegir quién compra",
+          "instruccion": "En «¿Quién compra?», selecciona el tipo de cliente.",
+          "captura": "ven_02_comprador",
+          "objetivo": "cliente",
+          "pie": "Opción «Comprador registrado»."
+        },
+        {
+          "titulo": "Seleccionar el comprador",
+          "instruccion": "Busca por nombre, documento o RUC y elige al comprador de la lista (o usa «+ Nuevo comprador»).",
+          "captura": "ven_02_comprador",
+          "objetivo": "lista",
+          "pie": "Lista de compradores encontrados."
+        },
+        {
+          "titulo": "Seleccionar el producto",
+          "instruccion": "Elige el «Producto» y revisa el «Stock disponible».",
+          "captura": "ven_03_producto",
+          "objetivo": "producto",
+          "pie": "Producto seleccionado (stock disponible: 2 unidades)."
+        },
+        {
+          "titulo": "Indicar la cantidad",
+          "instruccion": "Escribe la «Cantidad». El sistema muestra el precio que corresponde al cliente.",
+          "captura": "ven_03_producto",
+          "objetivo": "precio",
+          "pie": "«Precio público S/ 8.00 c/u» y aviso del precio mayorista."
+        },
+        {
+          "titulo": "Confirmar",
+          "instruccion": "Revisa el «Resumen de venta» (total, stock después y forma de pago) y haz clic en «Confirmar venta».",
+          "captura": "ven_03_producto",
+          "objetivo": "confirmar",
+          "pie": "Resumen y botón «Confirmar venta»."
+        },
+        {
+          "titulo": "Comprobar",
+          "instruccion": "Verifica el aviso de la venta registrada.",
+          "registro": "evidencias/originales/ventas/ventas_2.registro.json",
+          "captura": "ven_04_registrada",
+          "objetivo": "aviso",
+          "pie": "«Venta registrada correctamente»: cliente, producto, total, stock (1 → 0), Caja (+ S/ 8.00) y «Ver boleta V-00002»."
+        }
+      ],
+      "resultado": "La venta queda «Registrada»: el stock baja y el ingreso se suma a Caja.",
+      "validaciones": [
+        [
+          "Cantidad",
+          "Mayor que 0 y no mayor al stock.",
+          "El sistema avisa si no hay stock suficiente."
+        ],
+        [
+          "Producto",
+          "Debe tener precio para el tipo de cliente.",
+          "Un producto sin precios no se puede vender."
+        ]
+      ]
+    },
+    {
+      "codigo": "ADM-VEN-002",
+      "titulo": "Consultar el historial y la boleta",
+      "estado": "Verificado en interfaz",
+      "objetivo": "Revisar ventas realizadas y su comprobante.",
+      "acceso": "Ventas › Ventas › pestaña «Historial»",
+      "requisitos": [
+        "Ventas registradas."
+      ],
+      "pasos": [
+        {
+          "titulo": "Abrir el historial",
+          "instruccion": "Haz clic en la pestaña «Historial» y usa los filtros «Periodo», «Pago» y «Estado».",
+          "registro": "evidencias/originales/ventas/ventas_2.registro.json",
+          "captura": "ven_06_historial",
+          "objetivo": "tab",
+          "pie": "Pestaña «Historial»."
+        },
+        {
+          "titulo": "Ver una venta",
+          "instruccion": "Haz clic en «Ver» en la fila de la venta.",
+          "registro": "evidencias/originales/ventas/ventas_2.registro.json",
+          "captura": "ven_06_historial",
+          "objetivo": "ver",
+          "pie": "Acción «Ver» de la venta V-00001."
+        },
+        {
+          "titulo": "Revisar el detalle",
+          "instruccion": "Consulta fecha, cliente, producto, cantidad, precio aplicado, total, forma de pago y estado. Usa «Ver boleta» para abrir o imprimir el comprobante en PDF.",
+          "registro": "evidencias/originales/ventas/ventas_3_detalle.registro.json",
+          "captura": "ven_07_detalle",
+          "pie": "Detalle de la venta V-00001 con «Ver boleta» (usuario difuminado)."
+        }
+      ],
+      "resultado": "El historial muestra el total de ventas del periodo filtrado (en el ejemplo, «2 ventas · S/ 16.00»)."
+    }
+  ]
+}

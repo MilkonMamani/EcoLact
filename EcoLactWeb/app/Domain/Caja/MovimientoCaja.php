@@ -23,7 +23,14 @@ final class MovimientoCaja
 
     public const REFERENCIA_PAGO_TRABAJADOR = 'PAGO_TRABAJADOR';
 
+    /** Histórico: salida de una compra registrada antes de Compras y gastos (referencia = compra). */
     public const REFERENCIA_COMPRA_INSUMOS = 'COMPRA_INSUMOS';
+
+    /** Cada pago de una compra o gasto (referencia = pagos_compra.id): uno por desembolso. */
+    public const REFERENCIA_PAGO_COMPRA = 'PAGO_COMPRA';
+
+    /** La caja tiene un único saldo inicial: siempre con referencia_id 1. */
+    public const REFERENCIA_SALDO_INICIAL = 'SALDO_INICIAL';
 
     /**
      * @param  array<string, string>  $detalle  datos extra del panel de detalle (etiqueta => valor)
@@ -45,7 +52,7 @@ final class MovimientoCaja
             throw new InvalidArgumentException('El monto de un movimiento de caja debe ser mayor a cero.');
         }
 
-        if (! in_array($referenciaTipo, [self::REFERENCIA_VENTA, self::REFERENCIA_PAGO_PROVEEDOR, self::REFERENCIA_PAGO_TRABAJADOR, self::REFERENCIA_COMPRA_INSUMOS], true)) {
+        if (! in_array($referenciaTipo, [self::REFERENCIA_VENTA, self::REFERENCIA_PAGO_PROVEEDOR, self::REFERENCIA_PAGO_TRABAJADOR, self::REFERENCIA_COMPRA_INSUMOS, self::REFERENCIA_PAGO_COMPRA, self::REFERENCIA_SALDO_INICIAL], true)) {
             throw new InvalidArgumentException('El origen del movimiento de caja no es válido.');
         }
     }

@@ -1,0 +1,62 @@
+[
+  {
+    "page": "index",
+    "status": 200,
+    "captures": 1,
+    "expected": 1
+  },
+  {
+    "page": "backend",
+    "status": 200,
+    "captures": 2,
+    "expected": 2
+  },
+  {
+    "page": "mobile",
+    "status": 200,
+    "captures": 2,
+    "expected": 2
+  },
+  {
+    "page": "offline-first",
+    "status": 200,
+    "captures": 2,
+    "expected": 2
+  },
+  {
+    "page": "sincronizacion",
+    "status": 200,
+    "captures": 2,
+    "expected": 2
+  },
+  {
+    "page": "dominio",
+    "status": 200,
+    "captures": 1,
+    "expected": 1
+  },
+  {
+    "page": "base-datos",
+    "status": 200,
+    "captures": 1,
+    "expected": 1
+  },
+  {
+    "page": "api",
+    "status": 200,
+    "captures": 2,
+    "expected": 2
+  },
+  {
+    "page": "seguridad",
+    "status": 200,
+    "captures": 2,
+    "expected": 2
+  },
+  {
+    "page": "integracion",
+    "status": 200,
+    "captures": 1,
+    "expected": 1
+  }
+]

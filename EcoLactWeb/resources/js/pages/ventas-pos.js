@@ -7,6 +7,8 @@
  *   mayorista → MAYORISTA; si no → PUBLICO), total, stock después, saldo semanal del proveedor y
  *   el resumen de la derecha. "Confirmar venta" se deshabilita si algo no cuadra; el backend
  *   (RegistrarVentaProducto) vuelve a calcularlo y validarlo todo.
+ * - El catálogo muestra solo la lista de precios de quien compra; un producto sin precio para
+ *   ese comprador queda "Precio no configurado" y no se puede elegir.
  * - Buscadores de comprador / proveedor y "+ Nuevo comprador" (fetch: queda seleccionado sin
  *   perder producto ni cantidad).
  * - Historial: filtros sin botón y detalle en panel lateral (fetch a la ruta show).
@@ -139,6 +141,11 @@ function crearBuscador(raiz, alCambiar) {
     return {
         valor: () => valor.value,
         nombre: () => raiz.querySelector('[data-vpos-buscador-nombre]').textContent,
+        limpiar() {
+            if (valor.value !== '') {
+                elegir(null);
+            }
+        },
         agregar(op) {
             opciones.push(op);
             opciones.sort((a, b) => a.nombre.localeCompare(b.nombre));
@@ -154,13 +161,16 @@ const form = pagina.querySelector('[data-vpos-form]');
 if (form) {
     const catalogo = JSON.parse(pagina.querySelector('[data-vpos-catalogo]').textContent);
     const $ = (selector) => form.querySelector(selector);
-    const campoProducto = $('[data-vpos-producto]');
     const campoCantidad = $('[data-vpos-cantidad]');
-    const confirmar = $('[data-vpos-confirmar]');
-    const resumen = $('[data-vpos-resumen]');
-    const r = (clave) => $(`[data-vpos-r="${clave}"]`);
+    const confirmar = form.querySelectorAll('[data-vpos-confirmar]');
+    const pagoDescuento = $('[data-vpos-pago][value="DESCUENTO_PLANILLA"]');
+    const pagoContado = $('[data-vpos-pago][value="CONTADO"]');
+    const r = (clave) => form.querySelector(`[data-vpos-r="${clave}"]`);
     const saldos = new Map();
     let enviando = false;
+    let intentado = false;
+    let avisoQuitado = '';
+    let clienteAnterior = null;
 
     const buscadores = {};
     form.querySelectorAll('[data-vpos-buscador]').forEach((raiz) => {
@@ -168,10 +178,10 @@ if (form) {
     });
 
     const cliente = () => form.querySelector('[data-vpos-cliente]:checked')?.value ?? 'PUBLICO';
-    const formaPago = () => (cliente() === 'PROVEEDOR' ? form.querySelector('[data-vpos-pago]:checked')?.value : 'CONTADO');
-    const producto = () => catalogo.find((p) => String(p.id) === campoProducto.value) ?? null;
+    const producto = () => catalogo.find((p) => String(p.id) === form.querySelector('[data-vpos-producto]:checked')?.value) ?? null;
+    const cantidadTexto = () => campoCantidad.value.trim();
     const cantidad = () => {
-        const valor = Number.parseFloat(campoCantidad.value);
+        const valor = Number.parseFloat(cantidadTexto());
         return Number.isFinite(valor) && valor > 0 ? valor : 0;
     };
 
@@ -216,6 +226,75 @@ if (form) {
         actualizar();
     }
 
+    function mostrarError(campo, mensaje) {
+        const el = form.querySelector(`[data-vpos-error="${campo}"]`);
+        el.textContent = mensaje ?? '';
+        el.hidden = ! mensaje;
+    }
+
+    /**
+     * Lista de precios de quien compra, sin los de las otras: el proveedor solo ve PROVEEDOR; público
+     * general y comprador registrado ven PUBLICO y el escalón MAYORISTA (lo decide la cantidad).
+     */
+    function tarifaDe(prod, esProveedor) {
+        return esProveedor
+            ? { base: prod.proveedor, mayorista: null, minimo: null }
+            : { base: prod.publico, mayorista: prod.mayorista, minimo: prod.minimoMayorista };
+    }
+
+    const etiquetasTarifa = JSON.parse($('[data-vpos-tarifa]').dataset.textos);
+    const destinatarios = { PUBLICO: 'el público general', COMPRADOR: 'compradores registrados', PROVEEDOR: 'proveedores' };
+
+    /**
+     * Tarjetas del catálogo con la tarifa de quien compra. Un producto sin precio para ese comprador
+     * (o sin stock) no se puede elegir; si estaba elegido se quita y se devuelve para avisarlo.
+     */
+    function pintarCatalogo(quien, cant) {
+        const esProveedor = quien === 'PROVEEDOR';
+        let sinTarifa = 0;
+        let quitado = null;
+
+        $('[data-vpos-tarifa-texto]').textContent = etiquetasTarifa[quien];
+
+        catalogo.forEach((prod) => {
+            const input = form.querySelector(`[data-vpos-producto][value="${prod.id}"]`);
+            const precio = form.querySelector(`[data-vpos-producto-precio="${prod.id}"]`);
+            const nota = form.querySelector(`[data-vpos-producto-nota="${prod.id}"]`);
+            const tarifa = tarifaDe(prod, esProveedor);
+            const configurado = tarifa.base !== null || tarifa.mayorista !== null;
+            const mayoristaAplica = tarifa.mayorista !== null && cant >= tarifa.minimo;
+
+            nota.classList.toggle('is-aplicado', mayoristaAplica);
+            if (! configurado) {
+                sinTarifa += 1;
+                precio.textContent = 'Precio no configurado';
+                nota.textContent = '';
+            } else if (tarifa.base !== null) {
+                precio.textContent = `${soles(tarifa.base)} c/u`;
+                nota.textContent = tarifa.mayorista !== null ? `Mayorista ${soles(tarifa.mayorista)} desde ${numero(tarifa.minimo)}` : '';
+            } else {
+                precio.textContent = `${soles(tarifa.mayorista)} c/u`;
+                nota.textContent = `Solo mayorista, desde ${unidades(tarifa.minimo)}`;
+            }
+            nota.hidden = nota.textContent === '';
+            precio.classList.toggle('is-sin-precio', ! configurado);
+
+            input.disabled = ! configurado || prod.stock <= 0;
+            if (input.disabled && input.checked) {
+                input.checked = false;
+                quitado = prod;
+            }
+        });
+
+        const aviso = $('[data-vpos-sin-tarifa]');
+        aviso.hidden = sinTarifa === 0;
+        $('[data-vpos-sin-tarifa-texto]').textContent = sinTarifa === 1
+            ? `1 producto no tiene precio para ${destinatarios[quien]}.`
+            : `${sinTarifa} productos no tienen precio para ${destinatarios[quien]}.`;
+
+        return quitado;
+    }
+
     function pintarPrecio(prod, esProveedor, cant, aplicado) {
         const caja = $('[data-vpos-precio]');
         caja.classList.toggle('is-mayorista', aplicado?.tipo === 'MAYORISTA');
@@ -232,7 +311,7 @@ if (form) {
             nota = `Desde ${unidades(prod.minimoMayorista)}.`;
         } else if (! esProveedor && prod.minimoMayorista !== null && prod.mayorista !== null) {
             const faltan = prod.minimoMayorista - cant;
-            nota = `ⓘ Precio mayorista desde ${unidades(prod.minimoMayorista)}. Faltan ${unidades(faltan)} para aplicarlo.`;
+            nota = `ⓘ Precio mayorista (${soles(prod.mayorista)}) desde ${unidades(prod.minimoMayorista)}. Faltan ${unidades(faltan)}.`;
         }
 
         caja.innerHTML = '<div class="vpos-precio-linea"><span class="vpos-precio-tipo"></span><span class="vpos-precio-monto"></span></div><p class="vpos-precio-nota"></p>';
@@ -245,54 +324,98 @@ if (form) {
     function actualizar() {
         const quien = cliente();
         const esProveedor = quien === 'PROVEEDOR';
-        const prod = producto();
+        const proveedorId = buscadores.proveedor?.valor() ?? '';
+        const compradorId = buscadores.comprador?.valor() ?? '';
         const cant = cantidad();
-        const pago = formaPago();
-        const aplicado = prod ? precioAplicable(prod, esProveedor, cant) : null;
-        const total = aplicado ? Math.round(cant * aplicado.precio * 100) / 100 : 0;
-        let motivo = '';
+
+        // Primero el catálogo: puede quitar un producto que ya no tiene precio para este comprador.
+        const quitado = pintarCatalogo(quien, cant);
+        if (quitado) {
+            avisoQuitado = `${quitado.nombre} no tiene precio para ${destinatarios[quien]}: se quitó de la venta.`;
+        }
+        const prod = producto();
+        if (prod) {
+            avisoQuitado = '';
+        }
 
         // Bloques según quién compra.
         form.querySelectorAll('[data-vpos-si-cliente]').forEach((bloque) => { bloque.hidden = bloque.dataset.vposSiCliente !== quien; });
-        $('[data-vpos-pago-fijo]').hidden = esProveedor;
-        if (! esProveedor) {
-            form.querySelector('[data-vpos-pago][value="CONTADO"]').checked = true;
-        }
 
-        // Producto: stock y aviso de mayorista.
-        const stock = $('[data-vpos-stock]');
-        const hint = $('[data-vpos-hint]');
-        stock.hidden = ! prod;
-        hint.hidden = true;
+        // Descuento semanal: solo con un proveedor válido seleccionado.
+        const descuentoHabilitado = esProveedor && proveedorId !== '';
+        pagoDescuento.disabled = ! descuentoHabilitado;
+        if (! descuentoHabilitado && pagoDescuento.checked) {
+            pagoContado.checked = true;
+        }
+        const requisito = $('[data-vpos-pago-requisito]');
+        requisito.hidden = descuentoHabilitado;
+        requisito.textContent = esProveedor ? 'Selecciona primero al proveedor.' : 'Disponible solo para ventas a un proveedor.';
+        const pago = form.querySelector('[data-vpos-pago]:checked')?.value ?? 'CONTADO';
+
+        const aplicado = prod ? precioAplicable(prod, esProveedor, cant) : null;
+        const total = aplicado ? Math.round(cant * aplicado.precio * 100) / 100 : 0;
+        // Solo de control: el backend rechaza la venta si la tarifa vigente ya no es esta.
+        $('[data-vpos-precio-mostrado]').value = aplicado ? String(aplicado.precio) : '';
+
+        // Cantidad: paso según la unidad de venta y tope de stock en el stepper.
+        campoCantidad.step = prod && ! prod.entero ? 'any' : '1';
+        campoCantidad.inputMode = campoCantidad.step === '1' ? 'numeric' : 'decimal';
         if (prod) {
-            stock.innerHTML = 'Stock disponible: <strong></strong>';
-            stock.querySelector('strong').textContent = unidades(prod.stock);
-
-            if (esProveedor && prod.proveedor !== null) {
-                hint.textContent = `ⓘ Precio proveedor ${soles(prod.proveedor)} c/u.`;
-                hint.hidden = cant > 0;
-            } else if (! esProveedor && prod.minimoMayorista !== null && prod.mayorista !== null) {
-                hint.textContent = `ⓘ Precio mayorista desde ${unidades(prod.minimoMayorista)}.`;
-                hint.hidden = cant > 0;
-            }
+            campoCantidad.max = String(prod.stock);
+        } else {
+            campoCantidad.removeAttribute('max');
         }
+        form.querySelector('[data-vpos-paso="-1"]').disabled = cant <= 1;
+        form.querySelector('[data-vpos-paso="1"]').disabled = !! prod && cant + 1 > prod.stock;
+
+        const stock = $('[data-vpos-stock]');
+        if (prod) {
+            const restante = prod.stock - cant;
+            stock.innerHTML = 'Disponible: <strong></strong>';
+            stock.querySelector('strong').textContent = unidades(prod.stock);
+            if (cant > 0 && restante >= 0) {
+                stock.append(` · quedarán ${numero(restante)}`);
+            }
+        } else {
+            stock.textContent = 'Elige un producto para ver el stock disponible.';
+        }
+
+        const hint = $('[data-vpos-hint]');
+        hint.textContent = prod && ! aplicado ? sinPrecio(prod, esProveedor) : avisoQuitado;
+        hint.hidden = hint.textContent === '';
 
         pintarPrecio(prod, esProveedor, cant, aplicado);
 
-        // Stock insuficiente.
-        const sinStock = $('[data-vpos-sin-stock]');
-        sinStock.hidden = ! (prod && cant > prod.stock);
-        if (! sinStock.hidden) {
-            sinStock.textContent = prod.stock > 0
-                ? `⚠ Stock insuficiente. Solo hay ${unidades(prod.stock)} disponibles.`
-                : '⚠ Stock insuficiente. No hay unidades disponibles de este producto.';
+        // Errores junto a cada control (los de "falta elegir" solo tras intentar confirmar).
+        let errorCliente = '';
+        if (quien === 'COMPRADOR' && compradorId === '') {
+            errorCliente = 'Selecciona el comprador registrado de la lista.';
+        } else if (esProveedor && proveedorId === '') {
+            errorCliente = 'Selecciona un proveedor válido de la lista.';
         }
 
+        let errorCantidad = '';
+        if (cantidadTexto() === '') {
+            errorCantidad = intentado ? 'Ingresa la cantidad.' : '';
+        } else if (cant <= 0) {
+            errorCantidad = 'La cantidad debe ser mayor que cero.';
+        } else if (prod && prod.entero && ! Number.isInteger(cant)) {
+            errorCantidad = 'Este producto se vende por unidades enteras.';
+        } else if (prod && cant > prod.stock) {
+            errorCantidad = prod.stock > 0
+                ? `Stock insuficiente: solo hay ${unidades(prod.stock)} disponibles.`
+                : 'No hay unidades disponibles de este producto.';
+        }
+
+        mostrarError('cliente', intentado ? errorCliente : '');
+        mostrarError('producto', intentado && ! prod ? 'Selecciona un producto.' : '');
+        mostrarError('cantidad', errorCantidad);
+        campoCantidad.closest('[data-vpos-stepper]').classList.toggle('is-error', errorCantidad !== '');
+
         // Saldo semanal del proveedor (descuento).
-        const proveedorId = buscadores.proveedor?.valor() ?? '';
         const bloqueSaldo = $('[data-vpos-saldo]');
         const errorSaldo = $('[data-vpos-saldo-error]');
-        const conDescuento = esProveedor && pago === 'DESCUENTO_PLANILLA' && proveedorId !== '';
+        const conDescuento = descuentoHabilitado && pago === 'DESCUENTO_PLANILLA';
         const saldo = conDescuento ? saldos.get(proveedorId) : null;
         bloqueSaldo.hidden = ! (saldo && typeof saldo.saldo === 'number');
         errorSaldo.hidden = true;
@@ -301,13 +424,15 @@ if (form) {
             cargarSaldo(proveedorId);
         }
 
+        let saldoInsuficiente = false;
         if (saldo && typeof saldo.saldo === 'number') {
             const despues = Math.round((saldo.saldo - total) * 100) / 100;
+            saldoInsuficiente = despues < 0;
             $('[data-vpos-saldo-disponible]').textContent = soles(saldo.saldo);
             $('[data-vpos-saldo-compra]').textContent = soles(total);
             $('[data-vpos-saldo-despues]').textContent = soles(despues);
-            $('[data-vpos-saldo-despues]').classList.toggle('is-negativo', despues < 0);
-            if (despues < 0) {
+            $('[data-vpos-saldo-despues]').classList.toggle('is-negativo', saldoInsuficiente);
+            if (saldoInsuficiente) {
                 errorSaldo.textContent = 'La compra supera el saldo estimado del pago semanal. Cobra al contado o reduce la cantidad.';
                 errorSaldo.hidden = false;
             }
@@ -317,63 +442,101 @@ if (form) {
         }
 
         // Por qué no se puede confirmar todavía (el primero que falte).
-        if (quien === 'COMPRADOR' && buscadores.comprador.valor() === '') {
-            motivo = 'Selecciona el comprador registrado.';
-        } else if (esProveedor && proveedorId === '') {
-            motivo = 'Selecciona el proveedor.';
+        let motivo = '';
+        if (errorCliente) {
+            motivo = errorCliente;
         } else if (! prod) {
             motivo = 'Selecciona un producto.';
         } else if (cant <= 0) {
-            motivo = 'Ingresa la cantidad.';
+            motivo = 'Ingresa una cantidad mayor que cero.';
+        } else if (errorCantidad) {
+            motivo = errorCantidad;
         } else if (! aplicado) {
             motivo = sinPrecio(prod, esProveedor);
-        } else if (cant > prod.stock) {
-            motivo = 'Stock insuficiente.';
         } else if (conDescuento && (! saldo || saldo.cargando)) {
             motivo = 'Consultando el saldo del proveedor...';
-        } else if (conDescuento && (typeof saldo.saldo !== 'number' || total > saldo.saldo)) {
+        } else if (conDescuento && (typeof saldo.saldo !== 'number' || saldoInsuficiente)) {
             motivo = 'El saldo semanal del proveedor no alcanza.';
         }
 
         // Resumen.
-        const conDatos = !! prod && cant > 0;
-        $('[data-vpos-resumen-vacio]').hidden = conDatos;
-        resumen.hidden = ! conDatos;
-        if (conDatos) {
-            const nombreCliente = { PUBLICO: 'Público general', COMPRADOR: buscadores.comprador?.nombre(), PROVEEDOR: buscadores.proveedor?.nombre() }[quien];
-            const tipos = { PROVEEDOR: 'Proveedor', MAYORISTA: 'Mayorista', PUBLICO: 'Público' };
-            const despues = prod.stock - cant;
+        const nombreCliente = { PUBLICO: 'Público general', COMPRADOR: buscadores.comprador?.nombre(), PROVEEDOR: buscadores.proveedor?.nombre() }[quien];
+        const tipos = { PROVEEDOR: 'proveedor', MAYORISTA: 'mayorista', PUBLICO: 'público' };
+        const despues = prod ? prod.stock - cant : null;
 
-            r('producto').textContent = prod.nombre;
-            r('cliente').textContent = nombreCliente || '';
-            r('cantidad').textContent = unidades(cant);
-            r('tipo').textContent = aplicado ? tipos[aplicado.tipo] : 'Sin precio';
-            r('tipo').classList.toggle('is-mayorista', aplicado?.tipo === 'MAYORISTA');
-            r('tipo').classList.toggle('is-error', ! aplicado);
-            r('unitario').textContent = aplicado ? soles(aplicado.precio) : '—';
-            r('total').textContent = soles(total);
-            r('stock').textContent = numero(prod.stock);
-            r('stockDespues').textContent = despues >= 0 ? numero(despues) : 'Insuficiente';
-            r('stockDespues').classList.toggle('is-error', despues < 0);
-            r('pago').textContent = pago === 'DESCUENTO_PLANILLA' ? 'Descuento semanal' : 'Contado';
-        }
+        r('cliente').textContent = nombreCliente || 'Sin seleccionar';
+        r('cliente').classList.toggle('is-pendiente', ! nombreCliente);
+        r('producto').textContent = prod ? prod.nombre : '—';
+        r('cantidad').textContent = cant > 0 ? unidades(cant) : '—';
+        r('unitario').textContent = aplicado ? soles(aplicado.precio) : (prod ? 'Sin precio' : '—');
+        r('unitario').classList.toggle('is-error', !! prod && ! aplicado);
+        r('tipo').textContent = aplicado ? tipos[aplicado.tipo] : '';
+        r('tipo').classList.toggle('is-mayorista', aplicado?.tipo === 'MAYORISTA');
+        r('total').textContent = soles(total);
+        r('totalBarra').textContent = soles(total);
+        r('stock').textContent = prod ? numero(prod.stock) : '—';
+        r('stockDespues').textContent = prod && cant > 0 ? (despues >= 0 ? numero(despues) : 'Insuficiente') : '—';
+        r('stockDespues').classList.toggle('is-error', despues !== null && despues < 0);
+        r('pago').textContent = pago === 'DESCUENTO_PLANILLA' ? 'Descuento semanal' : 'Contado · ingreso a Caja';
+
+        const conError = errorCantidad !== '' || (!! prod && ! aplicado) || saldoInsuficiente || !! saldo?.mensaje;
+        const estado = $('[data-vpos-estado]');
+        estado.textContent = motivo === '' ? 'Lista para confirmar' : (conError ? 'Revisar' : 'Incompleta');
+        estado.classList.toggle('is-lista', motivo === '');
+        estado.classList.toggle('is-error', motivo !== '' && conError);
 
         const motivoEl = $('[data-vpos-motivo]');
         motivoEl.textContent = motivo;
-        motivoEl.hidden = motivo === '' || ! conDatos;
-        confirmar.disabled = motivo !== '' || enviando;
+        motivoEl.hidden = motivo === '';
+        confirmar.forEach((boton) => { boton.disabled = motivo !== '' || enviando; });
+        clienteAnterior = quien;
     }
+
+    // Stepper − / + (enteros; el campo admite decimales si la unidad lo permite).
+    form.querySelectorAll('[data-vpos-paso]').forEach((boton) => {
+        boton.addEventListener('click', () => {
+            const prod = producto();
+            const siguiente = Math.floor(cantidad()) + Number(boton.dataset.vposPaso);
+            const tope = prod ? Math.floor(prod.stock) : Infinity;
+            campoCantidad.value = String(Math.max(1, Math.min(siguiente, tope)));
+            actualizar();
+        });
+    });
+
+    // Filtro del catálogo (solo se pinta con muchos productos).
+    const filtroProductos = $('[data-vpos-producto-filtro]');
+    filtroProductos?.addEventListener('input', () => {
+        const buscado = normalizar(filtroProductos.value.trim());
+        let visibles = 0;
+        form.querySelectorAll('[data-vpos-producto-item]').forEach((item) => {
+            const coincide = buscado === '' || item.dataset.texto.includes(buscado) || item.querySelector('input').checked;
+            item.hidden = ! coincide;
+            visibles += coincide ? 1 : 0;
+        });
+        $('[data-vpos-productos-vacio]').hidden = visibles > 0;
+    });
+
+    // Al cambiar de tipo de comprador se suelta al comprador/proveedor anterior: la venta no
+    // arrastra su identidad (el listener del radio corre antes que el 'change' del form).
+    form.querySelectorAll('[data-vpos-cliente]').forEach((radio) => {
+        radio.addEventListener('change', () => {
+            ({ COMPRADOR: buscadores.comprador, PROVEEDOR: buscadores.proveedor })[clienteAnterior]?.limpiar();
+            clienteAnterior = cliente();
+        });
+    });
 
     form.addEventListener('change', actualizar);
     campoCantidad.addEventListener('input', actualizar);
     form.addEventListener('submit', (evento) => {
+        intentado = true;
         actualizar();
-        if (confirmar.disabled) {
+        if (confirmar[0].disabled) {
             evento.preventDefault();
+            form.querySelector('.vpos-error-campo:not([hidden])')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
         enviando = true;
-        confirmar.disabled = true;
+        confirmar.forEach((boton) => { boton.disabled = true; });
     });
 
     // ------------------------------------------------ + Nuevo comprador
@@ -408,6 +571,7 @@ if (form) {
                 return;
             }
 
+            buscadores.proveedor?.limpiar();
             form.querySelector('[data-vpos-cliente][value="COMPRADOR"]').checked = true;
             buscadores.comprador.agregar(datos.data);
             formComprador.reset();

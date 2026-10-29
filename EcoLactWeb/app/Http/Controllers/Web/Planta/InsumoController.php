@@ -55,6 +55,7 @@ final class InsumoController extends Controller
         return view('planta.insumos.index', $inventario + [
             'tipos' => TipoInsumo::opciones(),
             'unidades' => UnidadMedida::opciones(),
+            'familiasUnidad' => UnidadMedida::familias(),
         ]);
     }
 

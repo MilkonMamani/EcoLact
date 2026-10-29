@@ -1,13 +1,14 @@
 <?php
 
 use App\Application\Pago\ActualizarConfiguracionPago;
-use App\Application\Pago\Contracts\SueldosTrabajadoresQuery;
+use App\Application\Pago\Contracts\SueldosPorRolQuery;
 use App\Application\Pago\GenerarPagosPendientes;
 use App\Application\Pago\ObtenerConfiguracionesPago;
 use App\Application\Pago\RegistrarConfiguracionPago;
 use App\Domain\Pago\PrecioLecheRepository;
 use App\Domain\Shared\Enums\TipoBeneficiarioPago;
 use App\Infrastructure\Persistence\Models\AnalistaCalidadModel;
+use App\Infrastructure\Persistence\Models\AuditoriaModel;
 use App\Infrastructure\Persistence\Models\ConfiguracionPagoModel;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
 use App\Infrastructure\Persistence\Models\PrecioLecheModel;
@@ -22,108 +23,145 @@ require_once __DIR__.'/../../../Support/PagosFixtures.php';
 uses(TestCase::class, RefreshDatabase::class);
 
 /**
- * @return array<string, array<string, mixed>> filas de la pestaña Trabajadores, por nombre
+ * @return array<string, array<string, mixed>> filas de la pestaña Trabajadores (una por rol), por etiqueta del rol
  */
-function filas_de_trabajadores(string $hoy = '2026-09-20'): array
+function filas_de_roles(string $hoy = '2026-09-20'): array
 {
-    return collect(app(ObtenerConfiguracionesPago::class)->execute(new DateTimeImmutable($hoy))['trabajadores'])
-        ->keyBy('nombre')->all();
+    return collect(app(ObtenerConfiguracionesPago::class)->execute(new DateTimeImmutable($hoy))['trabajadores']['roles'])
+        ->keyBy('rol')->all();
 }
 
-function configurar_sueldo(int $userId, float $sueldo, string $desde, int $adminId): void
+function configurar_sueldo_rol(string $rol, float $sueldo, string $desde, int $adminId, ?string $observacion = null): void
 {
-    app(RegistrarConfiguracionPago::class)->execute(TipoBeneficiarioPago::PERSONAL, $userId, $sueldo, false, new DateTimeImmutable($desde), null, $adminId);
+    app(RegistrarConfiguracionPago::class)->execute(TipoBeneficiarioPago::PERSONAL, fixture_rol($rol)->id, $sueldo, false, new DateTimeImmutable($desde), $observacion, $adminId);
+}
+
+function sueldo_del_rol(string $rol): ConfiguracionPagoModel
+{
+    return ConfiguracionPagoModel::where('rol_id', fixture_rol($rol)->id)->whereNull('user_id')->orderByDesc('fecha_inicio')->firstOrFail();
 }
 
 // --------------------------------------------------------------------------
-// Trabajadores: salen de Trabajadores (fichas reales), no de los roles
+// Trabajadores: un sueldo base por rol laboral
 // --------------------------------------------------------------------------
 
-it('lista los trabajadores registrados con su rol real; uno nuevo aparece sin configurar', function () {
+it('lista los roles laborales remunerables desde la base de datos, sin PROVEEDOR, con su personal activo', function () {
+    fixture_usuario('ADMINISTRADOR');
     pagos_personal('ACOPIADOR', 'Juan');
+    pagos_personal('ACOPIADOR', 'Pedro');
+    pagos_personal('ACOPIADOR', 'Inactivo', estado: 'INACTIVO');
     pagos_personal('CALIDAD', 'David');
-    pagos_personal('VENTAS', 'Ana');
-
-    $filas = filas_de_trabajadores();
-
-    expect(array_keys($filas))->toBe(['Ana Apellido', 'David Apellido', 'Juan Apellido'])
-        ->and($filas['Juan Apellido']['rol'])->toBe('Acopiador')
-        ->and($filas['David Apellido']['rol'])->toBe('Analista de calidad')
-        ->and($filas['Ana Apellido']['rol'])->toBe('Personal de ventas')
-        ->and($filas['Ana Apellido']['estado'])->toBe('SIN_CONFIGURAR')
-        ->and($filas['Ana Apellido']['sueldo'])->toBeNull();
-});
-
-it('un usuario con rol de ficha pero sin ficha real no aparece; el administrador aparece con su rol porque cobra sueldo', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    fixture_usuario('CALIDAD');
-    pagos_personal('CALIDAD', 'David');
-    fixture_rol('PROVEEDOR');
     fixture_usuario('PROVEEDOR');
 
-    $filas = filas_de_trabajadores();
+    $filas = filas_de_roles();
 
-    expect(array_keys($filas))->toEqualCanonicalizing(['David Apellido', $admin->username])
-        ->and($filas[$admin->username]['rol'])->toBe('Administrador');
+    expect(array_keys($filas))->toBe(['Acopiador', 'Administrador', 'Analista de calidad'])
+        ->and($filas['Acopiador']['personal'])->toBe(2)
+        ->and($filas['Administrador']['personal'])->toBe(1)
+        ->and($filas['Acopiador']['estado'])->toBe('SIN_CONFIGURAR')
+        ->and($filas['Acopiador']['sueldo'])->toBeNull();
 });
 
-it('un trabajador inactivo solo aparece si tuvo sueldo, y como Inactivo', function () {
+it('los indicadores cuentan roles laborales, configurados y pendientes', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    pagos_personal('VENTAS', 'Sin historial', estado: 'INACTIVO');
-    $conHistorial = pagos_personal('ACOPIADOR', 'Con historial');
-    configurar_sueldo($conHistorial->id, 1500, '2026-09-01', $admin->id);
-    $conHistorial->update(['estado' => 'INACTIVO']);
+    pagos_personal('ACOPIADOR');
+    pagos_personal('VENTAS');
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id);
+    configurar_sueldo_rol('VENTAS', 1800, '2026-11-01', $admin->id);
 
-    $filas = filas_de_trabajadores();
+    $resumen = app(ObtenerConfiguracionesPago::class)->execute(new DateTimeImmutable('2026-09-20'))['trabajadores']['resumen'];
 
-    expect($filas)->not->toHaveKey('Sin historial Apellido')
-        ->and($filas['Con historial Apellido']['estado'])->toBe('INACTIVO');
+    expect($resumen)->toBe(['roles' => 3, 'configurados' => 1, 'pendientes' => 2]);
 });
 
-it('configurar el sueldo guarda el sueldo del trabajador con su rol real y calcula el valor por día', function () {
+it('configurar el sueldo de un rol lo guarda una sola vez, sin trabajador, y calcula el valor diario', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    pagos_personal('ACOPIADOR', 'Juan');
+    pagos_personal('ACOPIADOR', 'Pedro');
 
-    configurar_sueldo($juan->id, 1500, '2026-09-01', $admin->id);
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id);
 
     $configuracion = ConfiguracionPagoModel::sole();
-    $fila = filas_de_trabajadores()['Juan Apellido'];
+    $fila = filas_de_roles()['Acopiador'];
 
-    expect($configuracion->user_id)->toBe($juan->id)
+    expect($configuracion->user_id)->toBeNull()
         ->and($configuracion->rol->nombre)->toBe('ACOPIADOR')
         ->and($configuracion->tipo_calculo)->toBe('SUELDO_FIJO')
         ->and($configuracion->periodicidad)->toBe('MENSUAL')
-        ->and($configuracion->aplica_calidad)->toBeFalse()
+        ->and($configuracion->creado_por_user_id)->toBe($admin->id)
         ->and($fila['estado'])->toBe('ACTIVO')
         ->and($fila['sueldo'])->toBe(1500.0)
         ->and($fila['valorDia'])->toBe(50.0)
         ->and($fila['vigenteDesde'])->toBe('2026-09-01');
 });
 
-it('el valor por día es el sueldo mensual entre 30, redondeado a céntimos', function () {
+it('el valor diario es el sueldo mensual entre 30, redondeado a céntimos solo para mostrarlo', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $david = pagos_personal('CALIDAD', 'David');
+    pagos_personal('CALIDAD');
 
-    configurar_sueldo($david->id, 1700, '2026-09-01', $admin->id);
+    configurar_sueldo_rol('CALIDAD', 2000, '2026-09-01', $admin->id);
 
-    expect(filas_de_trabajadores()['David Apellido']['valorDia'])->toBe(56.67);
+    expect(filas_de_roles()['Analista de calidad']['valorDia'])->toBe(66.67);
 });
 
-it('solo se configura el sueldo de un trabajador activo con rol remunerable', function (string $caso) {
+it('todos los trabajadores del rol heredan el mismo sueldo, también los que se registran después', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $usuario = match ($caso) {
-        'ficha inactiva' => pagos_personal('CALIDAD', 'Ana', estado: 'INACTIVO'),
-        'usuario sin ficha real' => fixture_usuario('ACOPIADOR'),
-        'proveedor' => fixture_usuario('PROVEEDOR'),
-    };
+    $yanil = pagos_personal('ACOPIADOR', 'Yanil');
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id);
+    $alicia = pagos_personal('ACOPIADOR', 'Alicia');
+    $lenin = pagos_personal('ACOPIADOR', 'Lenin');
 
-    expect(fn () => configurar_sueldo($usuario->id, 1000, '2026-09-01', $admin->id))
-        ->toThrow(DomainException::class, 'trabajador activo');
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'));
+
+    $obligaciones = ObligacionPagoModel::orderBy('user_id')->get();
+
+    expect($obligaciones->pluck('user_id')->all())->toBe([$yanil->id, $alicia->id, $lenin->id])
+        ->and($obligaciones->map(fn (ObligacionPagoModel $o): float => (float) $o->base_calculo['sueldo_base'])->unique()->all())->toBe([1500.0])
+        ->and($obligaciones->pluck('configuracion_pago_id')->unique()->all())->toBe([ConfiguracionPagoModel::sole()->id])
+        ->and(ConfiguracionPagoModel::count())->toBe(1);
+});
+
+it('un sueldo individual del modelo anterior ya no se usa: manda el sueldo del rol', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    pagos_sueldo_individual_anterior($juan, 2500, '2026-09-01', $admin);
+    $pedro = pagos_personal('VENTAS', 'Pedro');
+    pagos_sueldo_individual_anterior($pedro, 1800, '2026-09-01', $admin);
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id);
+
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'));
+
+    expect(ObligacionPagoModel::pluck('user_id')->all())->toBe([$juan->id])
+        ->and((float) ObligacionPagoModel::sole()->base_calculo['sueldo_base'])->toBe(1500.0)
+        ->and(filas_de_roles()['Personal de ventas']['estado'])->toBe('SIN_CONFIGURAR');
+});
+
+it('un sueldo individual del modelo anterior no se puede editar', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    $individual = pagos_sueldo_individual_anterior($juan, 1500, '2026-09-01', $admin);
+
+    expect(fn () => app(ActualizarConfiguracionPago::class)->execute($individual, 1600.0, false, new DateTimeImmutable('2026-10-01'), 'Aumento', $admin->id))
+        ->toThrow(DomainException::class, 'se configura por rol');
+
+    expect(ConfiguracionPagoModel::count())->toBe(1);
+});
+
+it('PROVEEDOR y los roles no remunerables no pueden tener sueldo', function (string $rol) {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    fixture_rol($rol);
+
+    if ($rol === 'VENTAS') {
+        RoleModel::where('nombre', 'VENTAS')->update(['es_remunerable' => false]);
+    }
+
+    expect(fn () => configurar_sueldo_rol($rol, 1000, '2026-09-01', $admin->id))
+        ->toThrow(DomainException::class, 'rol laboral remunerable');
 
     expect(ConfiguracionPagoModel::count())->toBe(0);
-})->with(['ficha inactiva', 'usuario sin ficha real', 'proveedor']);
+})->with(['PROVEEDOR', 'VENTAS']);
 
-it('un rol que deja de ser remunerable no genera pagos aunque su trabajador tenga sueldo', function () {
+it('un rol que deja de ser remunerable no genera pagos aunque tenga sueldo', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_personal('VENTAS');
     pagos_configurar('VENTAS', 1000, '2026-09-01', $admin);
@@ -134,62 +172,65 @@ it('un rol que deja de ser remunerable no genera pagos aunque su trabajador teng
     expect(ObligacionPagoModel::count())->toBe(0);
 });
 
-it('no permite dos sueldos activos del mismo trabajador con vigencias que se cruzan', function () {
+it('no permite dos sueldos activos del mismo rol con vigencias que se cruzan', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-    configurar_sueldo($juan->id, 1000, '2026-09-01', $admin->id);
+    configurar_sueldo_rol('ACOPIADOR', 1000, '2026-09-01', $admin->id);
 
-    expect(fn () => configurar_sueldo($juan->id, 1200, '2026-10-01', $admin->id))
-        ->toThrow(DomainException::class, 'Ya existe una configuración de pago para Juan Apellido');
+    expect(fn () => configurar_sueldo_rol('ACOPIADOR', 1200, '2026-10-01', $admin->id))
+        ->toThrow(DomainException::class, 'Ya existe una configuración de pago para el rol Acopiador');
 
     expect(ConfiguracionPagoModel::count())->toBe(1);
 });
 
-it('dos trabajadores del mismo rol pueden tener sueldos distintos con las mismas fechas', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-    $pedro = pagos_personal('ACOPIADOR', 'Pedro');
-
-    configurar_sueldo($juan->id, 1500, '2026-09-01', $admin->id);
-    configurar_sueldo($pedro->id, 1400, '2026-09-01', $admin->id);
-
-    $filas = filas_de_trabajadores();
-
-    expect($filas['Juan Apellido']['sueldo'])->toBe(1500.0)
-        ->and($filas['Pedro Apellido']['sueldo'])->toBe(1400.0);
-});
-
 it('rechaza un sueldo cero o negativo', function (float $sueldo) {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $ana = pagos_personal('VENTAS', 'Ana');
 
-    expect(fn () => configurar_sueldo($ana->id, $sueldo, '2026-09-01', $admin->id))
+    expect(fn () => configurar_sueldo_rol('VENTAS', $sueldo, '2026-09-01', $admin->id))
         ->toThrow(DomainException::class, 'mayor a cero');
+
+    expect(ConfiguracionPagoModel::count())->toBe(0);
 })->with([0.0, -50.0]);
+
+it('configurar un sueldo queda en auditorías con el rol, el valor, la vigencia, el responsable y el motivo', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id, 'Sueldo inicial.');
+    $original = sueldo_del_rol('ACOPIADOR');
+
+    app(ActualizarConfiguracionPago::class)->execute($original->id, 1650.0, false, new DateTimeImmutable('2026-11-01'), 'Aumento anual.', $admin->id);
+
+    $auditorias = AuditoriaModel::where('tabla_afectada', 'configuraciones_pago')->orderBy('id')->get();
+
+    expect($auditorias->pluck('accion')->all())->toBe(['CONFIGURAR_SUELDO_ROL', 'NUEVA_VIGENCIA_SUELDO_ROL'])
+        ->and($auditorias->pluck('user_id')->unique()->all())->toBe([$admin->id])
+        ->and($auditorias[0]->datos_nuevos)->toMatchArray(['rol' => 'ACOPIADOR', 'sueldo_mensual' => 1500, 'vigente_desde' => '2026-09-01'])
+        ->and($auditorias[1]->datos_anteriores)->toMatchArray(['rol' => 'ACOPIADOR', 'sueldo_mensual' => 1500, 'vigente_desde' => '2026-09-01'])
+        ->and($auditorias[1]->datos_nuevos)->toMatchArray(['rol' => 'ACOPIADOR', 'sueldo_mensual' => 1650, 'vigente_desde' => '2026-11-01'])
+        ->and($auditorias[1]->motivo)->toBe('Aumento anual.');
+});
 
 // --------------------------------------------------------------------------
 // Vigencias: cambiar un sueldo nunca reescribe el pasado
 // --------------------------------------------------------------------------
 
-it('cambiar un sueldo con una fecha posterior abre una nueva vigencia y deja el anterior en el historial', function () {
+it('cambiar el sueldo del rol con una fecha posterior abre una nueva versión y deja la anterior en el historial', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-    configurar_sueldo($juan->id, 1500, '2026-09-01', $admin->id);
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id);
     $original = ConfiguracionPagoModel::sole();
 
-    app(ActualizarConfiguracionPago::class)->execute($original->id, 1800.0, false, new DateTimeImmutable('2026-10-25'), 'Aumento.', $admin->id);
+    app(ActualizarConfiguracionPago::class)->execute($original->id, 1650.0, false, new DateTimeImmutable('2026-10-25'), 'Aumento.', $admin->id);
 
-    $detalle = app(SueldosTrabajadoresQuery::class)->detalle($juan->id, new DateTimeImmutable('2026-10-26'));
+    $detalle = app(SueldosPorRolQuery::class)->detalle(fixture_rol('ACOPIADOR')->id, new DateTimeImmutable('2026-10-26'));
 
     expect(ConfiguracionPagoModel::count())->toBe(2)
         ->and((float) $original->refresh()->monto_base)->toBe(1500.0)
         ->and($original->fecha_fin->format('Y-m-d'))->toBe('2026-10-24')
-        ->and($detalle['sueldo'])->toBe(1800.0)
+        ->and($detalle['sueldo'])->toBe(1650.0)
         ->and($detalle['vigenteDesde'])->toBe('2026-10-25')
-        ->and($detalle['historial'])->toBe([['sueldo' => 1500.0, 'desde' => '2026-09-01', 'hasta' => '2026-10-24']]);
+        ->and(array_map(fn (array $v): array => [$v['sueldo'], $v['desde'], $v['estado']], $detalle['historial']))
+        ->toBe([[1650.0, '2026-10-25', 'VIGENTE'], [1500.0, '2026-09-01', 'ANTERIOR']]);
 });
 
-it('cambiar un sueldo con pagos ya generados no toca el pago del periodo anterior', function () {
+it('un cambio de sueldo del rol no toca el pago ya generado del periodo anterior', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_personal('ACOPIADOR');
     pagos_configurar('ACOPIADOR', 1000, '2026-09-01', $admin);
@@ -204,10 +245,48 @@ it('cambiar un sueldo con pagos ya generados no toca el pago del periodo anterio
         ->and($original->fecha_fin->format('Y-m-d'))->toBe('2026-09-30')
         ->and((float) $original->monto_base)->toBe(1000.0)
         ->and($nueva->montoBase())->toBe(1100.0)
-        ->and($nueva->userId())->toBe($original->user_id)
-        ->and($nueva->fechaInicio()->format('Y-m-d'))->toBe('2026-10-01')
+        ->and($nueva->rolId())->toBe($original->rol_id)
+        ->and($nueva->userId())->toBeNull()
         ->and($nueva->fechaFin())->toBeNull()
-        ->and((float) ObligacionPagoModel::firstOrFail()->valor_dia)->toBe(round(1000 / 30, 2));
+        ->and((float) ObligacionPagoModel::firstOrFail()->valor_dia)->toBe(round(1000 / 30, 2))
+        ->and((float) ObligacionPagoModel::firstOrFail()->base_calculo['sueldo_base'])->toBe(1000.0);
+});
+
+it('un mes nuevo usa el nuevo sueldo del rol y el mes anterior conserva el suyo', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    pagos_configurar('ACOPIADOR', 1500, '2026-09-01', $admin);
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'));
+    app(ActualizarConfiguracionPago::class)->execute(ConfiguracionPagoModel::sole()->id, 1650.0, false, new DateTimeImmutable('2026-10-01'), 'Aumento.', $admin->id);
+    $nuevo = pagos_personal('ACOPIADOR', 'Nuevo', alta: '2026-10-01');
+
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-10-05'));
+
+    $deJuan = ObligacionPagoModel::where('user_id', $juan->id)->sole();
+    $delNuevo = ObligacionPagoModel::where('user_id', $nuevo->id)->sole();
+
+    expect($deJuan->periodo_inicio->format('Y-m-d'))->toBe('2026-09-01')
+        ->and((float) $deJuan->base_calculo['sueldo_base'])->toBe(1500.0)
+        ->and($delNuevo->periodo_inicio->format('Y-m-d'))->toBe('2026-10-01')
+        ->and((float) $delNuevo->base_calculo['sueldo_base'])->toBe(1650.0)
+        ->and((float) $delNuevo->valor_dia)->toBe(55.0);
+});
+
+it('un pago confirmado no cambia aunque luego cambie el sueldo del rol', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_personal('ACOPIADOR');
+    pagos_configurar('ACOPIADOR', 1000, '2026-09-01', $admin);
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'));
+    ObligacionPagoModel::query()->update(['estado' => 'PAGADO', 'acumulado' => 1000, 'monto_calculado' => 1000]);
+
+    app(ActualizarConfiguracionPago::class)->execute(ConfiguracionPagoModel::sole()->id, 2000.0, false, new DateTimeImmutable('2026-10-01'), 'Aumento.', $admin->id);
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-25'));
+
+    $pagada = ObligacionPagoModel::sole();
+
+    expect($pagada->estado)->toBe('PAGADO')
+        ->and((float) $pagada->monto_calculado)->toBe(1000.0)
+        ->and((float) $pagada->base_calculo['sueldo_base'])->toBe(1000.0);
 });
 
 it('rechaza la nueva vigencia si no es posterior a la de una configuración que ya generó pagos', function () {
@@ -227,11 +306,12 @@ it('con la misma fecha y sin pagos generados solo se corrige el mismo registro',
     pagos_configurar('ENCARGADO_PLANTA', 1300, '2026-10-01', $admin);
     $original = ConfiguracionPagoModel::firstOrFail();
 
-    app(ActualizarConfiguracionPago::class)->execute($original->id, 1350.0, false, new DateTimeImmutable('2026-10-01'), null, $admin->id);
+    app(ActualizarConfiguracionPago::class)->execute($original->id, 1350.0, false, new DateTimeImmutable('2026-10-01'), 'Error de digitación.', $admin->id);
 
     expect(ConfiguracionPagoModel::count())->toBe(1)
         ->and((float) $original->refresh()->monto_base)->toBe(1350.0)
-        ->and(ObligacionPagoModel::count())->toBe(0);
+        ->and(ObligacionPagoModel::count())->toBe(0)
+        ->and(AuditoriaModel::where('accion', 'CORREGIR_SUELDO_ROL')->sole()->datos_anteriores['sueldo_mensual'])->toEqual(1300);
 });
 
 it('adelantar una vigencia programada hasta cruzarse con la anterior es rechazado', function () {
@@ -250,40 +330,100 @@ it('adelantar una vigencia programada hasta cruzarse con la anterior es rechazad
 
 it('con varias vigencias muestra la vigente hoy, no la última registrada, y anuncia la próxima', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-    configurar_sueldo($juan->id, 1500, '2026-09-01', $admin->id);
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id);
     app(ActualizarConfiguracionPago::class)->execute(ConfiguracionPagoModel::sole()->id, 1800.0, false, new DateTimeImmutable('2026-11-01'), null, $admin->id);
 
-    $detalle = app(SueldosTrabajadoresQuery::class)->detalle($juan->id, new DateTimeImmutable('2026-09-20'));
+    $detalle = app(SueldosPorRolQuery::class)->detalle(fixture_rol('ACOPIADOR')->id, new DateTimeImmutable('2026-09-20'));
 
     expect($detalle['estado'])->toBe('ACTIVO')
         ->and($detalle['sueldo'])->toBe(1500.0)
         ->and($detalle['vigenteDesde'])->toBe('2026-09-01')
-        ->and($detalle['proxima'])->toBe(['sueldo' => 1800.0, 'desde' => '2026-11-01', 'hasta' => null]);
+        ->and($detalle['proxima'])->toMatchArray(['sueldo' => 1800.0, 'desde' => '2026-11-01', 'estado' => 'PROGRAMADO']);
 });
 
-it('la configuración general de proveedores no aparece como trabajador ni se ve afectada', function () {
+it('un sueldo con vigencia futura se muestra como programado', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    configurar_sueldo_rol('CALIDAD', 1100, '2026-11-01', $admin->id);
+
+    expect(filas_de_roles()['Analista de calidad']['estado'])->toBe('PROGRAMADO');
+});
+
+it('el detalle del rol lista su personal activo y, como referencia, los sueldos individuales anteriores', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $yanil = pagos_personal('ACOPIADOR', 'Yanil');
+    $alicia = pagos_personal('ACOPIADOR', 'Alicia');
+    pagos_sueldo_individual_anterior($yanil, 1500, '2026-09-01', $admin);
+    pagos_sueldo_individual_anterior($alicia, 1400, '2026-09-01', $admin);
+
+    $detalle = app(SueldosPorRolQuery::class)->detalle(fixture_rol('ACOPIADOR')->id, new DateTimeImmutable('2026-09-20'));
+
+    expect(array_column($detalle['trabajadores'], 'nombre'))->toBe(['Alicia Apellido', 'Yanil Apellido'])
+        ->and($detalle['sueldosIndividualesAnteriores'])->toBe([
+            ['nombre' => 'Alicia Apellido', 'sueldo' => 1400.0, 'desde' => '2026-09-01'],
+            ['nombre' => 'Yanil Apellido', 'sueldo' => 1500.0, 'desde' => '2026-09-01'],
+        ])
+        ->and($detalle['estado'])->toBe('SIN_CONFIGURAR');
+});
+
+it('la configuración general de proveedores no aparece como rol ni se ve afectada', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
     pagos_configurar('PROVEEDOR', null, '2026-09-01', $admin, precio: 1.70);
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-    configurar_sueldo($juan->id, 1500, '2026-09-01', $admin->id);
+    configurar_sueldo_rol('ACOPIADOR', 1500, '2026-09-01', $admin->id);
 
     $datos = app(ObtenerConfiguracionesPago::class)->execute(new DateTimeImmutable('2026-09-20'));
     $proveedor = ConfiguracionPagoModel::where('tipo_beneficiario', 'PROVEEDOR')->sole();
 
-    expect(collect($datos['trabajadores'])->pluck('configuracionId')->filter()->values()->all())->toBe([ConfiguracionPagoModel::where('user_id', $juan->id)->value('id')])
-        ->and($proveedor->user_id)->toBeNull()
+    expect(collect($datos['trabajadores']['roles'])->pluck('configuracionId')->filter()->values()->all())->toBe([sueldo_del_rol('ACOPIADOR')->id])
         ->and($proveedor->rol_id)->toBeNull()
         ->and($datos['proveedor']['configuracion']->id())->toBe($proveedor->id)
         ->and($datos['proveedor']['precioBase'])->toBe(1.7);
 });
 
-it('un sueldo con vigencia futura se muestra como programado', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    $david = pagos_personal('CALIDAD', 'David');
-    configurar_sueldo($david->id, 1100, '2026-11-01', $admin->id);
+// --------------------------------------------------------------------------
+// Consolidación: de sueldos individuales a un sueldo por rol (pagos:consolidar-sueldos-por-rol)
+// --------------------------------------------------------------------------
 
-    expect(filas_de_trabajadores()['David Apellido']['estado'])->toBe('PROGRAMADO');
+it('la consolidación propone el sueldo común de un rol, marca conflictos y en simulación no modifica nada', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $yanil = pagos_personal('ACOPIADOR', 'Yanil');
+    pagos_personal('ACOPIADOR', 'Alicia');
+    pagos_sueldo_individual_anterior($yanil, 1500, '2026-09-01', $admin);
+    $diana = pagos_personal('CALIDAD', 'Diana');
+    $david = pagos_personal('CALIDAD', 'David');
+    pagos_sueldo_individual_anterior($diana, 1800, '2026-09-01', $admin);
+    pagos_sueldo_individual_anterior($david, 1700, '2026-09-01', $admin);
+    $this->travelTo('2026-09-20');
+
+    $this->artisan('pagos:consolidar-sueldos-por-rol')->assertSuccessful();
+
+    expect(ConfiguracionPagoModel::whereNull('user_id')->count())->toBe(0);
+
+    $this->artisan('pagos:consolidar-sueldos-por-rol', ['--apply' => true, '--force' => true])->assertSuccessful();
+
+    $porRol = ConfiguracionPagoModel::whereNull('user_id')->get();
+
+    expect($porRol)->toHaveCount(1)
+        ->and($porRol[0]->rol->nombre)->toBe('ACOPIADOR')
+        ->and((float) $porRol[0]->monto_base)->toBe(1500.0)
+        ->and($porRol[0]->fecha_inicio->format('Y-m-d'))->toBe('2026-09-01')
+        ->and(ConfiguracionPagoModel::whereNotNull('user_id')->where('estado', 'ACTIVO')->count())->toBe(3)
+        ->and(filas_de_roles()['Analista de calidad']['estado'])->toBe('SIN_CONFIGURAR');
+
+    app(GenerarPagosPendientes::class)->execute(new DateTimeImmutable('2026-09-20'));
+
+    expect(ObligacionPagoModel::count())->toBe(2);
+});
+
+it('la consolidación no toca un rol que ya tiene sueldo por rol', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    $yanil = pagos_personal('ACOPIADOR', 'Yanil');
+    pagos_sueldo_individual_anterior($yanil, 1500, '2026-09-01', $admin);
+    configurar_sueldo_rol('ACOPIADOR', 1600, '2026-09-01', $admin->id);
+    $this->travelTo('2026-09-20');
+
+    $this->artisan('pagos:consolidar-sueldos-por-rol', ['--apply' => true, '--force' => true])->assertSuccessful();
+
+    expect(ConfiguracionPagoModel::whereNull('user_id')->pluck('monto_base')->map(fn ($m): float => (float) $m)->all())->toBe([1600.0]);
 });
 
 // --------------------------------------------------------------------------

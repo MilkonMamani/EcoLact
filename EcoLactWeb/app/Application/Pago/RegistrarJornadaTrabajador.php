@@ -15,7 +15,7 @@ use DomainException;
 
 /**
  * Marca PRESENTE a mano (p.ej. cuando el QR no se pudo escanear). Solo para
- * el día de hoy y antes del cierre de las 07:00 (VentanaAsistencia); un día
+ * el día de hoy y antes del cierre de las 23:59 (VentanaAsistencia); un día
  * cerrado es solo consulta, y el backend lo rechaza aunque llegue una
  * petición armada a mano. Las jornadas son hechos independientes del ciclo de nómina: no exige
  * que exista una obligación abierta (si la hay para el mes de la fecha, se

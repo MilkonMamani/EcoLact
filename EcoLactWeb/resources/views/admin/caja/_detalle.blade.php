@@ -4,10 +4,10 @@
 --}}
 @php
     /** @var \App\Application\Caja\MovimientoCajaFila $movimiento */
-    $iconos = ['VENTA' => 'shopping-cart', 'PROVEEDOR' => 'milk-jar', 'TRABAJADOR' => 'user', 'INSUMOS' => 'package'];
-    $enlaceOrigen = match ($movimiento->referenciaTipo) {
-        \App\Domain\Caja\MovimientoCaja::REFERENCIA_VENTA => ['Ver venta', route('admin.ventas.show', $movimiento->referenciaId)],
-        \App\Domain\Caja\MovimientoCaja::REFERENCIA_COMPRA_INSUMOS => ['Ver compra', route('admin.compras-insumo.show', $movimiento->referenciaId)],
+    $iconos = ['VENTA' => 'shopping-cart', 'PROVEEDOR' => 'milk-jar', 'TRABAJADOR' => 'user', 'INSUMOS' => 'package', 'GASTOS' => 'file-text', 'SALDO_INICIAL' => 'wallet'];
+    $enlaceOrigen = match (true) {
+        $movimiento->referenciaTipo === \App\Domain\Caja\MovimientoCaja::REFERENCIA_VENTA => ['Ver venta', route('admin.ventas.show', $movimiento->referenciaId)],
+        $movimiento->compraId !== null => ['Ver compra de origen', route('admin.compras.show', $movimiento->compraId)],
         default => null,
     };
 @endphp
@@ -36,11 +36,11 @@
         <div><dt>Fecha</dt><dd>{{ $movimiento->fecha->format('d/m/Y') }} · {{ $movimiento->fecha->format('H:i') }}</dd></div>
     </dl>
 
-    @if ($movimiento->imagenBoleta || $enlaceOrigen)
+    @if ($movimiento->comprobanteId || $enlaceOrigen)
         <div class="caja-detalle-acciones">
-            @if ($movimiento->imagenBoleta)
-                <a href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($movimiento->imagenBoleta) }}" target="_blank" rel="noopener" class="fichas-btn is-outline is-sm">
-                    <x-ui.icon name="file-text" class="h-4 w-4" /> Ver boleta
+            @if ($movimiento->comprobanteId)
+                <a href="{{ route('admin.compras.comprobantes.show', [$movimiento->compraId, $movimiento->comprobanteId]) }}" target="_blank" rel="noopener" class="fichas-btn is-outline is-sm">
+                    <x-ui.icon name="file-text" class="h-4 w-4" /> Ver comprobante
                 </a>
             @endif
             @if ($enlaceOrigen)
@@ -53,7 +53,8 @@
 
     <p class="caja-detalle-nota">Generado automáticamente desde {{ match ($movimiento->categoria->value) {
         'VENTA' => 'Ventas',
-        'INSUMOS' => 'Insumos',
+        'INSUMOS', 'GASTOS' => 'Compras y gastos',
+        'SALDO_INICIAL' => 'la apertura de caja',
         default => 'Pagos',
     } }}. No se edita desde Caja.</p>
 </div>

@@ -16,8 +16,14 @@ use InvalidArgumentException;
  * - mes: el mes calendario actual (no 30 días móviles).
  * - personalizado: rango explícito (solo lo usa la API).
  *
- * Todo se resuelve en la zona horaria configurada de la aplicación. Las
- * consultas reciben estos límites; ninguna vuelve a calcular fechas.
+ * Los días son los del negocio (config app.zona_horaria_negocio, America/Lima):
+ * desde/hasta están en esa zona. Las columnas DATETIME se guardan en la zona
+ * de la app (UTC), así que limitesSql() convierte el rango a esa zona y lo
+ * entrega semiabierto [desde, finExclusivo): el inicio incluido y el límite
+ * final excluido, para que dos períodos contiguos nunca compartan un registro.
+ * Las columnas DATE (jornadas, periodos de pago) usan limitesFecha().
+ *
+ * Las consultas reciben estos límites; ninguna vuelve a calcular fechas.
  */
 final readonly class DashboardPeriodo
 {
@@ -32,7 +38,7 @@ final readonly class DashboardPeriodo
 
     public static function resolver(string $periodo, ?string $desde = null, ?string $hasta = null): self
     {
-        $hoy = CarbonImmutable::now(config('app.timezone'));
+        $hoy = CarbonImmutable::now(self::zonaNegocio());
 
         [$inicio, $fin] = match ($periodo) {
             'hoy' => [$hoy, $hoy],
@@ -52,6 +58,17 @@ final readonly class DashboardPeriodo
         return new self($periodo, $inicio->startOfDay(), $fin->endOfDay(), $hoy);
     }
 
+    public static function zonaNegocio(): string
+    {
+        return config('app.zona_horaria_negocio', 'America/Lima');
+    }
+
+    /** Un valor DATETIME de la BD (zona de la app) expresado en la hora del negocio. */
+    public static function momentoLocal(string $fechaHora): CarbonImmutable
+    {
+        return CarbonImmutable::parse($fechaHora, config('app.timezone'))->setTimezone(self::zonaNegocio());
+    }
+
     /** El día actual (según "ahora" de este período), para bloques que siempre representan hoy. */
     public function hoy(): self
     {
@@ -60,13 +77,29 @@ final readonly class DashboardPeriodo
         return new self('hoy', $ahora->startOfDay(), $ahora->endOfDay(), $ahora);
     }
 
-    /** @return array{string, string} */
-    public function limitesSql(): array
+    /** Primer instante que ya NO pertenece al período (00:00 del día siguiente a hasta). */
+    public function finExclusivo(): CarbonImmutable
     {
-        return [$this->desde->toDateTimeString(), $this->hasta->toDateTimeString()];
+        return $this->hasta->startOfDay()->addDay();
     }
 
-    /** @return array{string, string} */
+    /**
+     * Límites semiabiertos [desde, finExclusivo) para columnas DATETIME, en la
+     * zona en que se guardan (la de la app).
+     *
+     * @return array{string, string}
+     */
+    public function limitesSql(): array
+    {
+        $zonaApp = config('app.timezone');
+
+        return [
+            $this->desde->setTimezone($zonaApp)->toDateTimeString(),
+            $this->finExclusivo()->setTimezone($zonaApp)->toDateTimeString(),
+        ];
+    }
+
+    /** @return array{string, string} días del negocio, ambos inclusive (columnas DATE) */
     public function limitesFecha(): array
     {
         return [$this->desde->toDateString(), $this->hasta->toDateString()];
@@ -74,7 +107,7 @@ final readonly class DashboardPeriodo
 
     public function ahora(): CarbonImmutable
     {
-        return $this->ahora ?? CarbonImmutable::now(config('app.timezone'));
+        return $this->ahora ?? CarbonImmutable::now(self::zonaNegocio());
     }
 
     /**
@@ -90,6 +123,16 @@ final readonly class DashboardPeriodo
         }
 
         return $hoy->lessThan($this->hasta->startOfDay()) ? $hoy : $this->hasta->startOfDay();
+    }
+
+    /**
+     * Fecha de corte de los saldos: el último día transcurrido del período
+     * (hoy, si el período sigue en curso). Un período enteramente futuro se
+     * corta hoy: todavía no puede haber saldos posteriores.
+     */
+    public function fechaCorte(): CarbonImmutable
+    {
+        return $this->ultimoDiaTranscurrido() ?? $this->ahora()->startOfDay();
     }
 
     public function etiqueta(): string
@@ -164,45 +207,29 @@ final readonly class DashboardPeriodo
     }
 
     /**
-     * Rango de periodo_inicio de las obligaciones semanales de proveedores
-     * cuya fecha de pago programada (el jueves siguiente a su semana de
-     * jueves a miércoles, ver PeriodoPago::fechaPagoProgramada) cae dentro
-     * del período. Null si en el período no hay ningún día de pago.
-     *
-     * @return array{string, string}|null
-     */
-    public function inicioSemanasProveedorPagaderas(): ?array
-    {
-        $desde = $this->semanaQuePagaEl($this->desde, redondearArriba: true);
-        $hasta = $this->semanaQuePagaEl($this->hasta, redondearArriba: false);
-
-        if ($desde->inicio > $hasta->inicio) {
-            return null;
-        }
-
-        return [$desde->inicio->format('Y-m-d'), $hasta->fin->format('Y-m-d')];
-    }
-
-    /** periodo_inicio mínimo cuyo pago aún no vencía al empezar el período. */
-    public function inicioSemanaProveedorVigente(): string
-    {
-        return $this->semanaQuePagaEl($this->desde, redondearArriba: true)->inicio->format('Y-m-d');
-    }
-
-    /**
-     * Semana (inicio Y-m-d) que admite la pantalla de pagos a proveedores
-     * cuando el período contiene exactamente un día de pago; null si
-     * contiene varios o ninguno.
+     * Semana de proveedores (inicio Y-m-d) cuya fecha de pago programada
+     * (PeriodoPago::fechaPagoProgramada, la misma regla con la que se guarda
+     * obligaciones_pago.fecha_pago_programada) cae dentro del período, cuando
+     * hay exactamente una; null si hay varias o ninguna. Solo sirve para el
+     * filtro del enlace a Pagar a proveedores: los importes salen de la
+     * columna fecha_pago_programada, nunca de esta traducción.
      */
     public function semanaProveedorUnica(): ?string
     {
-        $rango = $this->inicioSemanasProveedorPagaderas();
+        [$desde, $hasta] = $this->limitesFecha();
+        $semanas = [];
 
-        if ($rango === null) {
-            return null;
+        // Se parte de la semana anterior para no depender de si el pago cae al
+        // cierre de la semana o al día siguiente.
+        $semana = PeriodoPago::semanaQueContiene((new DateTimeImmutable($desde))->modify('-7 days'));
+
+        for (; $semana->fechaPagoProgramada()->format('Y-m-d') <= $hasta; $semana = $semana->siguiente()) {
+            if ($semana->fechaPagoProgramada()->format('Y-m-d') >= $desde) {
+                $semanas[] = $semana->clave();
+            }
         }
 
-        return (new DateTimeImmutable($rango[0]))->modify('+6 days')->format('Y-m-d') === $rango[1] ? $rango[0] : null;
+        return count($semanas) === 1 ? $semanas[0] : null;
     }
 
     /**
@@ -221,13 +248,5 @@ final readonly class DashboardPeriodo
         }
 
         return count($primeros) === 1 ? $primeros[0]->subMonth()->format('Y-m') : null;
-    }
-
-    private function semanaQuePagaEl(CarbonImmutable $fecha, bool $redondearArriba): PeriodoPago
-    {
-        $referencia = new DateTimeImmutable($fecha->subDays(7)->toDateString());
-        $semana = PeriodoPago::semanaQueContiene($referencia);
-
-        return $redondearArriba && $semana->inicio < $referencia ? $semana->siguiente() : $semana;
     }
 }

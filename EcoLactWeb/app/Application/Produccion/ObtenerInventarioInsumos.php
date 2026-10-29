@@ -10,7 +10,7 @@ use App\Domain\Produccion\InsumoRepository;
 
 /**
  * Datos de la pantalla "Insumos": catálogo con su stock actual, indicadores,
- * la fecha de la última compra de cada insumo y los últimos movimientos de
+ * la fecha de la última compra y del último movimiento de cada insumo, y los últimos movimientos de
  * cada uno (para verlos desplegados en la misma fila, sin cambiar de pantalla).
  *
  * @phpstan-type Kpis array{insumos: int, conStock: int, stockBajo: int, sinStock: int}
@@ -26,7 +26,7 @@ final class ObtenerInventarioInsumos
     ) {}
 
     /**
-     * @return array{insumos: list<Insumo>, kpis: Kpis, movimientos: array<int, list<InsumoMovimiento>>, ultimasCompras: array<int, \DateTimeImmutable>}
+     * @return array{insumos: list<Insumo>, kpis: Kpis, movimientos: array<int, list<InsumoMovimiento>>, ultimasCompras: array<int, \DateTimeImmutable>, ultimosMovimientos: array<int, \DateTimeImmutable>}
      */
     public function execute(?string $busqueda = null, ?string $nivel = null, ?string $tipo = null, bool $conMovimientos = true): array
     {
@@ -71,6 +71,7 @@ final class ObtenerInventarioInsumos
             'kpis' => $kpis,
             'movimientos' => $movimientos,
             'ultimasCompras' => $this->compras->ultimaCompraPorInsumo(),
+            'ultimosMovimientos' => $this->movimientos->ultimoMovimientoPorInsumo(),
         ];
     }
 }

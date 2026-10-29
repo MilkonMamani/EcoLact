@@ -12,6 +12,8 @@
         <meta name="author" content="Equipo CodeCraft">
       
       
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/desarrollo/git/">
+      
       
         <link rel="prev" href="../configuracion/">
       
@@ -27,7 +29,7 @@
     
     
       
-        <title>Git y convenciones - Informe EcoLact</title>
+        <title>Control de versiones con Git - Informe EcoLact</title>
       
     
     
@@ -50,6 +52,24 @@
       
     
     
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -68,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#git" class="md-skip">
+        <a href="#control-de-versiones-con-git" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Git y convenciones
+              Control de versiones con Git
             
           </span>
         </div>
@@ -156,18 +176,6 @@
 </div>
       
     
-    
-      <div class="md-header__source">
-        <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-      </div>
     
   </nav>
   
@@ -344,18 +352,6 @@
     </a>
     Informe EcoLact
   </label>
-  
-    <div class="md-nav__source">
-      <a href="https://github.com/MilkonMamani/EcoLact" title="Ir al repositorio" class="md-source" data-md-component="source">
-  <div class="md-source__icon md-icon">
-    
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
-  </div>
-  <div class="md-source__repository">
-    MilkonMamani/EcoLact
-  </div>
-</a>
-    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -639,6 +635,10 @@
       
         
       
+        
+      
+        
+      
     
     
     
@@ -756,6 +756,62 @@
   
   
     <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../flujos/produccion/" class="md-nav__link">
         
   
@@ -819,35 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Ventas y caja
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Liquidación y pagos
+    Ventas y compradores
   
 
     
@@ -875,7 +903,35 @@
   <span class="md-ellipsis">
     
   
-    Flujo financiero
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
   
 
     
@@ -935,6 +991,10 @@
       
         
           
+        
+      
+        
+      
         
       
         
@@ -1019,7 +1079,7 @@
   <span class="md-ellipsis">
     
   
-    Backend Laravel
+    Backend y Clean Architecture
   
 
     
@@ -1047,7 +1107,63 @@
   <span class="md-ellipsis">
     
   
-    Aplicación móvil
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
   
 
     
@@ -1103,7 +1219,7 @@
   <span class="md-ellipsis">
     
   
-    Base de datos
+    Persistencia y bases de datos
   
 
     
@@ -1159,7 +1275,7 @@
   <span class="md-ellipsis">
     
   
-    Seguridad
+    Autenticación y seguridad
   
 
     
@@ -1187,7 +1303,7 @@
   <span class="md-ellipsis">
     
   
-    Integración
+    Integración Web y Móvil
   
 
     
@@ -1334,7 +1450,7 @@
   <span class="md-ellipsis">
     
   
-    Backend
+    Configurar backend
   
 
     
@@ -1362,7 +1478,7 @@
   <span class="md-ellipsis">
     
   
-    App móvil
+    Configurar aplicación móvil
   
 
     
@@ -1448,6 +1564,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git y convenciones
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1464,6 +1598,69 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#procedimiento-propuesto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Procedimiento propuesto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comandos-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comandos principales
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convenciones-sugeridas-y-reglas-comprobadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones sugeridas y reglas comprobadas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comprobar-la-documentacion-antes-del-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comprobar la documentación antes del PR
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1691,6 +1888,58 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#procedimiento-propuesto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Procedimiento propuesto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comandos-principales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comandos principales
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convenciones-sugeridas-y-reglas-comprobadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convenciones sugeridas y reglas comprobadas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comprobar-la-documentacion-antes-del-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comprobar la documentación antes del PR
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1705,17 +1954,203 @@
                   
 
 
+
+<div class="ec-desarrollo">
+<div class="ec-dev-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2.6 10.59 8.38 4.8l1.69 1.7c-.24.85.15 1.78.93 2.23v5.54c-.6.34-1 .99-1 1.73a2 2 0 0 0 2 2 2 2 0 0 0 2-2c0-.74-.4-1.39-1-1.73V9.41l2.07 2.09c-.07.15-.07.32-.07.5a2 2 0 0 0 2 2 2 2 0 0 0 2-2 2 2 0 0 0-2-2c-.18 0-.35 0-.5.07L13.93 7.5a1.98 1.98 0 0 0-1.15-2.34c-.43-.16-.88-.2-1.28-.09L9.8 3.38l.79-.78c.78-.79 2.04-.79 2.82 0l7.99 7.99c.79.78.79 2.04 0 2.82l-7.99 7.99c-.78.79-2.04.79-2.82 0L2.6 13.41c-.79-.78-.79-2.04 0-2.82"/></svg></span> 7. Git y convenciones de desarrollo</p>
+</div>
+<div class="ec-dev-content">
+<p><span class="ec-dev-kicker">EcoLact / Guía de desarrollo</span></p>
+<h1 id="control-de-versiones-con-git">Control de versiones con Git</h1>
+<p>Git permite comprender y revisar la evolución de EcoLact. El flujo siguiente es una propuesta colaborativa; no implica que el repositorio exija ramas protegidas, aprobaciones o una convención de commits específica.</p>
+<div class="ec-dev-flow five">
+<div class="ec-dev-flow-item">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2m6.75 11.5c2.75 0 3.49-2.03 3.68-3.1.91-.29 1.57-1.14 1.57-2.15C18 7 17 6 15.75 6S13.5 7 13.5 8.25c0 .94.57 1.75 1.39 2.08C14.67 11 14 12 12 12c-1.38 0-2.34.35-3 .84V8.87c.87-.31 1.5-1.14 1.5-2.12 0-1.25-1-2.25-2.25-2.25S6 5.5 6 6.75c0 .98.63 1.81 1.5 2.12v6.26c-.87.31-1.5 1.14-1.5 2.12 0 1.25 1 2.25 2.25 2.25s2.25-1 2.25-2.25c0-.93-.56-1.75-1.37-2.07.28-.68 1.1-1.68 3.62-1.68m-4.5 3a.75.75 0 0 1 .75.75.75.75 0 0 1-.75.75.75.75 0 0 1-.75-.75.75.75 0 0 1 .75-.75m0-10.5a.75.75 0 0 1 .75.75.75.75 0 0 1-.75.75.75.75 0 0 1-.75-.75.75.75 0 0 1 .75-.75m7.5 1.5a.75.75 0 0 1 .75.75.75.75 0 0 1-.75.75.75.75 0 0 1-.75-.75.75.75 0 0 1 .75-.75"/></svg></span></p>
+<p>Clonar repositorio</p>
+</div>
+<div class="ec-dev-flow-item">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14c-3.36 0-4.46 1.35-4.82 2.24C9.25 16.7 10 17.76 10 19a3 3 0 0 1-3 3 3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V7.83A2.99 2.99 0 0 1 4 5a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83v5.29c.88-.65 2.16-1.12 4-1.12 2.67 0 3.56-1.34 3.85-2.23A3.01 3.01 0 0 1 14 7a3 3 0 0 1 3-3 3 3 0 0 1 3 3c0 1.34-.88 2.5-2.09 2.86C17.65 11.29 16.68 14 13 14m-6 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1M7 4a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m10 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span></p>
+<p>Crear rama</p>
+</div>
+<div class="ec-dev-flow-item">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-1.9l10-10V8l-6-6zm7 1.5L18.5 9H13zm7.1 9.5c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-2 1.8L12 20.9V23h2.1l6.1-6.1z"/></svg></span></p>
+<p>Realizar cambios</p>
+</div>
+<div class="ec-dev-flow-item">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 12a5 5 0 0 1-4 4.9V21h-2v-4.1a5 5 0 0 1 0-9.8V3h2v4.1a5 5 0 0 1 4 4.9m-5-3a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3"/></svg></span></p>
+<p>Registrar commits</p>
+</div>
+<div class="ec-dev-flow-item">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 3a3 3 0 0 1 3 3c0 1.31-.83 2.42-2 2.83v6.34c1.17.41 2 1.52 2 2.83a3 3 0 0 1-3 3 3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V8.83A2.99 2.99 0 0 1 3 6a3 3 0 0 1 3-3m0 2a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m0 12a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1m15 1a3 3 0 0 1-3 3 3 3 0 0 1-3-3c0-1.31.83-2.42 2-2.83V7h-2v3.25L10.75 6 15 1.75V5h2a2 2 0 0 1 2 2v8.17c1.17.41 2 1.52 2 2.83m-3-1a1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1 1 1 0 0 0-1-1"/></svg></span></p>
+<p>Pull Request</p>
+</div>
+</div>
+<h2 id="procedimiento-propuesto">Procedimiento propuesto</h2>
+<p>Clona únicamente si aún no tienes una copia. Desde la carpeta padre:</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">://</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">MilkonMamani</span><span class="p">/</span><span class="n">EcoLact</span><span class="p">.</span><span class="n">git</span>
+<span class="nb">cd </span><span class="n">EcoLact</span>
+</code></pre></div>
+</div>
+<p>Desde la raíz del repositorio, comprueba el estado y crea una rama para una tarea concreta. La rama parte de la revisión en la que estés situado.</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="n">status</span>
+<span class="n">git</span> <span class="k">switch</span> <span class="n">-c</span> <span class="n">feature</span><span class="p">/</span><span class="n">nueva-funcionalidad</span>
+</code></pre></div>
+</div>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> trabajas en una rama identificable. <strong>Comprobación:</strong> git status muestra la nueva rama. Si había cambios previos, revisa a quién pertenecen y no los incluyas automáticamente en tu tarea.</p>
+</div>
+<p>Implementa el cambio, actualiza la documentación afectada y ejecuta las comprobaciones pertinentes. Después revisa las diferencias antes de prepararlas:</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="nb">diff</span>
+<span class="n">git</span> <span class="n">status</span>
+<span class="n">git</span> <span class="n">add</span> <span class="p">.</span>
+<span class="n">git</span> <span class="nb">diff </span><span class="p">-</span><span class="n">-cached</span>
+<span class="n">git</span> <span class="n">commit</span> <span class="n">-m</span> <span class="s2">&quot;Descripción del cambio&quot;</span>
+</code></pre></div>
+</div>
+<p><strong>Qué hace:</strong> <code>git add .</code> prepara todos los cambios del directorio actual y sus descendientes, incluidas eliminaciones y archivos nuevos no ignorados. Si no todos pertenecen a la tarea, utiliza <code>git add ruta/del/archivo</code> en su lugar. <code>git diff --cached</code> permite revisar exactamente lo que entrará en el commit.</p>
+<div class="ec-dev-result">
+<p><strong>Resultado esperado:</strong> el commit contiene un cambio coherente y sin secretos. <strong>Comprobación:</strong> usa git status y git log --oneline -5; revisa los archivos incluidos, no solo el mensaje.</p>
+</div>
+<p>Cuando tengas permiso de escritura en el repositorio, publica la rama:</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="n">git</span> <span class="n">push</span> <span class="n">-u</span> <span class="n">origin</span> <span class="n">feature</span><span class="p">/</span><span class="n">nueva-funcionalidad</span>
+</code></pre></div>
+</div>
+<p>El comando envía commits y configura el seguimiento de la rama remota. Si no tienes acceso de escritura, usa un fork y su remoto propio. En GitHub crea un Pull Request hacia la rama acordada por el equipo; explica problema, cambio y comprobaciones. <strong>Resultado esperado:</strong> el diff es revisable; comprueba la rama destino antes de solicitar revisión.</p>
+<h2 id="comandos-principales">Comandos principales</h2>
+<div class="ec-dev-command-table">
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>¿Para qué sirve?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git clone URL</code></td>
+<td>Descargar una nueva copia y su historial.</td>
+</tr>
+<tr>
+<td><code>git status</code></td>
+<td>Ver rama y archivos modificados o preparados.</td>
+</tr>
+<tr>
+<td><code>git switch -c feature/nueva-funcionalidad</code></td>
+<td>Crear una rama desde la revisión actual y cambiar a ella.</td>
+</tr>
+<tr>
+<td><code>git diff</code></td>
+<td>Revisar cambios todavía no preparados.</td>
+</tr>
+<tr>
+<td><code>git add .</code></td>
+<td>Preparar todos los cambios bajo el directorio actual; revisarlos antes.</td>
+</tr>
+<tr>
+<td><code>git diff --cached</code></td>
+<td>Revisar el contenido del próximo commit.</td>
+</tr>
+<tr>
+<td><code>git commit -m "Descripción del cambio"</code></td>
+<td>Registrar los cambios preparados en el historial local.</td>
+</tr>
+<tr>
+<td><code>git push -u origin feature/nueva-funcionalidad</code></td>
+<td>Publicar la rama con permisos y establecer seguimiento.</td>
+</tr>
+<tr>
+<td><code>git log --oneline -5</code></td>
+<td>Consultar los cinco commits recientes de la rama.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="convenciones-sugeridas-y-reglas-comprobadas">Convenciones sugeridas y reglas comprobadas</h2>
+<div class="ec-dev-command-table">
+<table>
+<thead>
+<tr>
+<th>Ámbito</th>
+<th>Convención o evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ramas · propuesta</td>
+<td>feature/ para nuevas funciones, fix/ para correcciones y docs/ para documentación. Usa nombres breves con guiones.</td>
+</tr>
+<tr>
+<td>Commits · propuesta</td>
+<td>Describe una acción concreta y su propósito. Un commit debería agrupar cambios relacionados, sin imponer un formato que el repositorio no exige.</td>
+</tr>
+<tr>
+<td>Revisión · propuesta</td>
+<td>Revisa diff y staged; separa cambios ajenos y adjunta resultados reales de las comprobaciones.</td>
+</tr>
+<tr>
+<td>Configuración · existente</td>
+<td>EcoLactWeb/.gitignore excluye .env, vendor y node_modules. EcoLactMobile/.gitignore excluye local.properties y salidas build. Un archivo ya seguido no deja de estarlo solo por añadirlo a .gitignore.</td>
+</tr>
+<tr>
+<td>Kotlin · existente</td>
+<td>gradle.properties declara kotlin.code.style=official. Mantén las convenciones de los archivos vecinos.</td>
+</tr>
+<tr>
+<td>Backend · existente</td>
+<td>EcoLactWeb/AGENTS.md pide respetar la estructura y convenciones existentes. Estas pautas no acreditan una protección de ramas en GitHub.</td>
+</tr>
+<tr>
+<td>Documentación · propuesta</td>
+<td>Edita Markdown y recursos fuente; compila MkDocs. site/ contiene archivos seguidos en esta copia, así que revisa su diff y sigue el criterio del equipo para entregarlos.</td>
+</tr>
+<tr>
+<td>Pull Request · propuesta</td>
+<td>Explica el resultado para un revisor que no participó en el trabajo. Incluye capturas reales si cambió la interfaz y comunica limitaciones de prueba.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="comprobar-la-documentacion-antes-del-pr">Comprobar la documentación antes del PR</h2>
+<p>En un entorno Python con MkDocs, Material y las extensiones configuradas instalados, desde la raíz:</p>
+<div class="ec-dev-command">
+<div class="highlight"><pre><span></span><code><span class="nb">cd </span><span class="n">docs</span><span class="p">/</span><span class="n">informeEcoLact</span>
+<span class="n">python</span> <span class="n">-m</span> <span class="n">mkdocs</span> <span class="n">build</span> <span class="p">-</span><span class="n">-clean</span>
+</code></pre></div>
+</div>
+<p><strong>Resultado esperado:</strong> la construcción finaliza sin errores; abre las páginas afectadas y revisa enlaces, capturas y móvil. La compilación documental no sustituye las pruebas del backend o Android cuando se modifican sus funcionalidades.</p>
+</div>
+<div class="ec-dev-sources">
+<details>
+<summary>Fuentes verificables del repositorio</summary>
+<ul>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/.gitignore">EcoLactWeb/.gitignore</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/.gitignore">EcoLactMobile/.gitignore</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactMobile/gradle.properties">EcoLactMobile/gradle.properties</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/AGENTS.md">EcoLactWeb/AGENTS.md</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/EcoLactWeb/composer.json">EcoLactWeb/composer.json</a></li>
+<li><a href="https://github.com/MilkonMamani/EcoLact/blob/75901337489dbe3c61bf5e95357ea365790ab565/docs/informeEcoLact/mkdocs.yml">docs/informeEcoLact/mkdocs.yml</a></li>
+</ul>
+<p>Revisión de referencia: <code>75901337489d</code>. Los procedimientos se contrastaron con estas fuentes; los comandos de instalación, migración y compilación del producto no se ejecutaron para elaborar esta guía.</p>
+</details>
+</div>
+<div class="ec-dev-nav">
+<p><a href="../configuracion/">← Configuración del proyecto</a></p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
   
   
-
-
-<h1 id="git">git</h1>
-
-
-
-
-
-
 
 
 

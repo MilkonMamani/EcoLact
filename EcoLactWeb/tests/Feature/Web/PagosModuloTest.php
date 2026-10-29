@@ -1,5 +1,6 @@
 <?php
 
+use App\Application\Pago\ActualizarConfiguracionPago;
 use App\Application\Pago\GenerarPagosPendientes;
 use App\Infrastructure\Persistence\Models\ConfiguracionPagoModel;
 use App\Infrastructure\Persistence\Models\ObligacionPagoModel;
@@ -65,85 +66,96 @@ it('el menú del administrador tiene Configuración de pagos y el grupo Pagos, s
 // Configuración de pagos: pestañas Trabajadores / Proveedores
 // --------------------------------------------------------------------------
 
-it('la pantalla muestra solo las pestañas Trabajadores y Proveedores, sin KPIs, sin bloque explicativo ni botón genérico', function () {
+it('la pantalla muestra la cabecera, los indicadores por rol y las pestañas Trabajadores y Proveedores', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
 
     $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))
         ->assertOk()
-        ->assertSeeInOrder(['Configuración', 'Configuración de pagos', 'Define los valores base que EcoLact usa para calcular pagos.', 'Trabajadores', 'Proveedores'])
-        ->assertDontSee('Configuraciones activas')
-        ->assertDontSee('Pagos al personal')
-        ->assertDontSee('¿Cómo funciona?')
+        ->assertSeeInOrder(['Configuración', 'Configuración de pagos', 'Administra los sueldos base por rol y las condiciones económicas aplicables en EcoLact.', 'Trabajadores', 'Proveedores'])
+        ->assertSeeInOrder(['Roles laborales', 'Con sueldo configurado', 'Pendientes de configuración'])
         ->assertDontSee('Nueva configuración')
-        ->assertDontSee('Tipo de cálculo')
-        ->assertDontSee('Base salarial');
+        ->assertDontSee('Tipo de cálculo');
 });
 
-it('la pestaña Trabajadores lista los trabajadores registrados con sueldo, valor por día, vigencia y estado', function () {
+it('la pestaña Trabajadores lista roles, no trabajadores: personal asignado, sueldo, valor diario, vigencia y estado', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
+    pagos_personal('ACOPIADOR', 'Juan');
+    pagos_personal('ACOPIADOR', 'Pedro');
     pagos_personal('VENTAS', 'Ana');
-    pagos_configurar_trabajador($juan->id, 1500, '2026-09-01', $admin);
+    fixture_usuario('PROVEEDOR');
+    pagos_configurar('ACOPIADOR', 1500, '2026-09-01', $admin);
 
     $html = $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))
         ->assertOk()
-        ->assertSeeInOrder(['Trabajador', 'Rol', 'Sueldo mensual', 'Valor/día', 'Vigente desde', 'Estado'])
+        ->assertSeeInOrder(['Rol', 'Personal asignado', 'Sueldo mensual', 'Valor diario', 'Vigente desde', 'Estado'])
         ->getContent();
 
     preg_match('/<tbody data-fichas-filas>.*?<\/tbody>/s', $html, $filas);
 
     expect($filas[0])
-        ->toContain('Ana Apellido')->toContain('Personal de ventas')->toContain('Sin configurar')->toContain('Pendiente')
-        ->toContain('Juan Apellido')->toContain('Acopiador')->toContain('S/ 1,500.00')->toContain('S/ 50.00')->toContain('01/09/2026')->toContain('Activo')
-        ->not->toContain('Días')->not->toContain('Faltas')->not->toContain('Acumulado');
+        ->toContain('Acopiador')->toContain('S/ 1,500.00')->toContain('S/ 50.00')->toContain('01/09/2026')->toContain('Activo')
+        ->toContain('Personal de ventas')->toContain('Sin configurar')->toContain('Pendiente')
+        ->toContain('Configurar')
+        ->not->toContain('Juan Apellido')->not->toContain('Proveedor');
 });
 
-it('el panel de un trabajador muestra su sueldo y Editar configuración, sin asistencia ni pagos', function () {
+it('el panel de un rol muestra su sueldo, el personal que lo hereda y el historial real', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-    pagos_configurar_trabajador($juan->id, 1500, '2026-09-01', $admin);
+    pagos_personal('ACOPIADOR', 'Juan');
+    pagos_personal('ACOPIADOR', 'Pedro');
+    pagos_configurar('ACOPIADOR', 1400, '2026-08-01', $admin);
+    app(ActualizarConfiguracionPago::class)->execute(ConfiguracionPagoModel::sole()->id, 1500.0, false, new DateTimeImmutable('2026-09-01'), 'Aumento.', $admin->id);
 
-    $this->actingAs($admin)->get(route('admin.configuracion-pagos.trabajadores.panel', $juan->id))
+    $this->actingAs($admin)->get(route('admin.configuracion-pagos.roles.panel', fixture_rol('ACOPIADOR')->id))
         ->assertOk()
-        ->assertSeeInOrder(['Juan Apellido', 'Acopiador', 'Sueldo mensual', 'S/ 1,500.00', 'Valor diario', 'S/ 50.00', 'Vigente desde', '01/09/2026'])
-        ->assertSee('Editar configuración')
-        ->assertSee('Editar sueldo')
-        ->assertDontSee('Configurar sueldo')
-        ->assertDontSee('name="rol_id"', false)
-        ->assertDontSee('Proveedor')
-        ->assertDontSee('Asistencia')
-        ->assertDontSee('Pago realizado');
-});
-
-it('un trabajador nuevo sin sueldo muestra Sin configurar y Configurar sueldo', function () {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    $ana = pagos_personal('VENTAS', 'Ana');
-
-    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index', ['trabajador' => $ana->id]))
-        ->assertOk()
-        ->assertSee('Este trabajador todavía no tiene un sueldo definido.')
+        ->assertSeeInOrder(['Acopiador', '2 trabajadores activos', 'Información salarial', 'S/ 1,500.00', 'S/ 50.00', '01/09/2026'])
+        ->assertSeeInOrder(['Personal asociado a este rol', 'Juan Apellido', 'Pedro Apellido'])
+        ->assertSeeInOrder(['Historial de configuraciones', '01/09/2026', 'S/ 1,500.00', 'Vigente', '01/08/2026', 'S/ 1,400.00', 'Anterior'])
         ->assertSee('Configurar sueldo')
-        ->assertSee('name="user_id" value="'.$ana->id.'"', false)
-        ->assertDontSee('Editar configuración');
+        ->assertDontSee('name="user_id"', false);
 });
 
-it('configurar sueldo desde la pestaña guarda el sueldo del trabajador sin registrar dinero ni crear pagos', function () {
+it('un rol sin sueldo muestra Pendiente y el formulario crea la primera vigencia para ese rol', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $david = pagos_personal('CALIDAD', 'David');
+    pagos_personal('VENTAS', 'Ana');
+    $rol = fixture_rol('VENTAS');
+
+    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index', ['rol' => $rol->id]))
+        ->assertOk()
+        ->assertSee('Sin sueldo configurado')
+        ->assertSee('name="rol_id" value="'.$rol->id.'"', false)
+        ->assertSee('Guardar configuración');
+});
+
+it('con un sueldo vigente el formulario avisa que se crea una nueva versión salarial', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_configurar('ACOPIADOR', 1500, '2026-09-01', $admin);
+
+    $this->actingAs($admin)->get(route('admin.configuracion-pagos.index'))
+        ->assertOk()
+        ->assertSee('nueva versión salarial')
+        ->assertSee('Motivo del cambio')
+        ->assertSee(route('admin.configuracion-pagos.update', ConfiguracionPagoModel::sole()), false);
+});
+
+it('configurar el sueldo de un rol desde la pestaña no registra dinero ni crea pagos', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_personal('CALIDAD', 'David');
+    $rol = fixture_rol('CALIDAD');
 
     $this->actingAs($admin)->post(route('admin.configuracion-pagos.store'), [
         'tipo_beneficiario' => 'PERSONAL',
-        'user_id' => $david->id,
+        'rol_id' => $rol->id,
         'monto_base' => '1700.00',
         'fecha_inicio' => '2026-10-01',
         'observacion' => 'Sueldo vigente desde octubre.',
-    ])->assertRedirect(route('admin.configuracion-pagos.index', ['tab' => 'trabajadores', 'trabajador' => $david->id]))
+    ])->assertRedirect(route('admin.configuracion-pagos.index', ['tab' => 'trabajadores', 'rol' => $rol->id]))
         ->assertSessionHas('success');
 
     $configuracion = ConfiguracionPagoModel::sole();
 
-    expect($configuracion->user_id)->toBe($david->id)
-        ->and($configuracion->rol->nombre)->toBe('CALIDAD')
+    expect($configuracion->rol_id)->toBe($rol->id)
+        ->and($configuracion->user_id)->toBeNull()
         ->and((float) $configuracion->monto_base)->toBe(1700.0)
         ->and($configuracion->observacion)->toBe('Sueldo vigente desde octubre.')
         ->and($configuracion->creado_por_user_id)->toBe($admin->id)
@@ -151,23 +163,10 @@ it('configurar sueldo desde la pestaña guarda el sueldo del trabajador sin regi
         ->and(PagoModel::count())->toBe(0);
 });
 
-it('el rol no se puede elegir: se toma siempre del trabajador real', function () {
+it('valida sueldo, fecha de inicio y rol al configurar un sueldo', function (array $datos, string $campo) {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $david = pagos_personal('CALIDAD', 'David');
 
-    $this->actingAs($admin)->post(route('admin.configuracion-pagos.store'), [
-        'tipo_beneficiario' => 'PERSONAL', 'user_id' => $david->id, 'rol_id' => fixture_rol('ACOPIADOR')->id,
-        'monto_base' => '1700', 'fecha_inicio' => '2026-10-01',
-    ])->assertSessionHas('success');
-
-    expect(ConfiguracionPagoModel::sole()->rol->nombre)->toBe('CALIDAD');
-});
-
-it('valida sueldo, fecha de inicio y trabajador al configurar un sueldo', function (array $datos, string $campo) {
-    $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-
-    $base = ['tipo_beneficiario' => 'PERSONAL', 'user_id' => $juan->id, 'monto_base' => '1000', 'fecha_inicio' => '2026-10-01'];
+    $base = ['tipo_beneficiario' => 'PERSONAL', 'rol_id' => fixture_rol('ACOPIADOR')->id, 'monto_base' => '1000', 'fecha_inicio' => '2026-10-01'];
 
     $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))
         ->post(route('admin.configuracion-pagos.store'), array_merge($base, $datos))
@@ -182,29 +181,38 @@ it('valida sueldo, fecha de inicio y trabajador al configurar un sueldo', functi
     'sueldo no numérico' => [['monto_base' => 'mil'], 'monto_base'],
     'sin fecha de inicio' => [['fecha_inicio' => ''], 'fecha_inicio'],
     'fecha inválida' => [['fecha_inicio' => 'no-es-fecha'], 'fecha_inicio'],
-    'sin trabajador' => [['user_id' => ''], 'user_id'],
-    'trabajador inexistente' => [['user_id' => 9999], 'user_id'],
+    'sin rol' => [['rol_id' => ''], 'rol_id'],
+    'rol inexistente' => [['rol_id' => 9999], 'rol_id'],
 ]);
 
-it('no configura el sueldo de alguien que no es trabajador y lo informa', function () {
+it('no configura un sueldo para el rol PROVEEDOR y lo informa', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $proveedor = fixture_usuario('PROVEEDOR');
 
     $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))->post(route('admin.configuracion-pagos.store'), [
-        'tipo_beneficiario' => 'PERSONAL', 'user_id' => $proveedor->id, 'monto_base' => '1200', 'fecha_inicio' => '2026-10-01',
+        'tipo_beneficiario' => 'PERSONAL', 'rol_id' => fixture_rol('PROVEEDOR')->id, 'monto_base' => '1200', 'fecha_inicio' => '2026-10-01',
     ])->assertSessionHasErrors('configuracion');
 
     expect(ConfiguracionPagoModel::count())->toBe(0);
 });
 
-it('rechaza un segundo sueldo del mismo trabajador cuya vigencia se cruza', function () {
+it('rechaza un segundo sueldo del mismo rol cuya vigencia se cruza', function () {
     $admin = fixture_usuario('ADMINISTRADOR');
-    $juan = pagos_personal('ACOPIADOR', 'Juan');
-    pagos_configurar_trabajador($juan->id, 1000, '2026-09-01', $admin);
+    pagos_configurar('ACOPIADOR', 1000, '2026-09-01', $admin);
 
     $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))->post(route('admin.configuracion-pagos.store'), [
-        'tipo_beneficiario' => 'PERSONAL', 'user_id' => $juan->id, 'monto_base' => '1200', 'fecha_inicio' => '2026-10-01',
+        'tipo_beneficiario' => 'PERSONAL', 'rol_id' => fixture_rol('ACOPIADOR')->id, 'monto_base' => '1200', 'fecha_inicio' => '2026-10-01',
     ])->assertSessionHasErrors('configuracion');
+
+    expect(ConfiguracionPagoModel::count())->toBe(1);
+});
+
+it('cambiar el sueldo de un rol exige el motivo del cambio', function () {
+    $admin = fixture_usuario('ADMINISTRADOR');
+    pagos_configurar('ACOPIADOR', 1000, '2026-09-01', $admin);
+
+    $this->actingAs($admin)->from(route('admin.configuracion-pagos.index'))->patch(route('admin.configuracion-pagos.update', ConfiguracionPagoModel::sole()), [
+        'monto_base' => '1100', 'fecha_inicio' => '2026-10-01',
+    ])->assertSessionHasErrors('observacion');
 
     expect(ConfiguracionPagoModel::count())->toBe(1);
 });
@@ -215,8 +223,8 @@ it('editar un sueldo con pagos generados abre una nueva vigencia y no toca el pa
     $configuracion = ConfiguracionPagoModel::firstOrFail();
 
     $this->actingAs($admin)->patch(route('admin.configuracion-pagos.update', $configuracion), [
-        'monto_base' => '1100', 'fecha_inicio' => '2026-10-01',
-    ])->assertRedirect(route('admin.configuracion-pagos.index', ['tab' => 'trabajadores', 'trabajador' => $configuracion->user_id]))
+        'monto_base' => '1100', 'fecha_inicio' => '2026-10-01', 'observacion' => 'Aumento.',
+    ])->assertRedirect(route('admin.configuracion-pagos.index', ['tab' => 'trabajadores', 'rol' => $configuracion->rol_id]))
         ->assertSessionHas('success');
 
     expect(ConfiguracionPagoModel::count())->toBe(2)
@@ -298,7 +306,7 @@ it('solo el administrador puede ver o cambiar configuraciones y pagos', function
     $configuracion = ConfiguracionPagoModel::firstOrFail();
 
     $this->actingAs($usuario)->get(route('admin.configuracion-pagos.index'))->assertForbidden();
-    $this->actingAs($usuario)->get(route('admin.configuracion-pagos.trabajadores.panel', $obligacion->user_id))->assertForbidden();
+    $this->actingAs($usuario)->get(route('admin.configuracion-pagos.roles.panel', $obligacion->rol_id))->assertForbidden();
     $this->actingAs($usuario)->post(route('admin.configuracion-pagos.store'), [])->assertForbidden();
     $this->actingAs($usuario)->patch(route('admin.configuracion-pagos.update', $configuracion), [])->assertForbidden();
     $this->actingAs($usuario)->get(route('admin.pagos.index'))->assertForbidden();

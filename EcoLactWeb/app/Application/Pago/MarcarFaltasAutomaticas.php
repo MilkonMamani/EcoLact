@@ -16,15 +16,15 @@ use DomainException;
 use Illuminate\Database\UniqueConstraintViolationException;
 
 /**
- * Falta automática del cierre de las 07:00 (VentanaAsistencia). Para cada día
+ * Falta automática del cierre de las 23:59 (VentanaAsistencia). Para cada día
  * YA CERRADO del mes (desde el día 1 hasta el último día cerrado) y cada
  * trabajador cuyo rol marca asistencia, crea FALTA/AUTOMATICO (hora null) en
  * los días en que estaba vigente (dentro de alguno de sus periodos de
  * actividad) y no tiene jornada. Nunca toca días antes de su ingreso, días en
- * que estuvo inactivo ni el día de hoy antes de las 07:00 ("Pendiente").
+ * que estuvo inactivo ni el día de hoy antes de las 23:59 ("Pendiente").
  *
  * Idempotente: una jornada por trabajador y fecha (índice único
- * trabajador_id+fecha + existencia previa), así que correrla a las 07:00,
+ * trabajador_id+fecha + existencia previa), así que correrla a las 23:59,
  * 07:05 o al abrir una pantalla nunca duplica. Al recorrer todo el mes también
  * repara días que quedaron sin cerrar si el scheduler no corrió.
  */
@@ -40,7 +40,7 @@ final class MarcarFaltasAutomaticas
         private readonly VentanaAsistencia $ventana,
     ) {}
 
-    /** @param  DateTimeImmutable|null  $hasta  Último día a cerrar; por defecto el último día ya cerrado (hoy desde las 07:00). */
+    /** @param  DateTimeImmutable|null  $hasta  Último día a cerrar; por defecto el último día ya cerrado (hoy desde las 23:59). */
     public function execute(?DateTimeImmutable $hasta = null): ResultadoMarcarFaltas
     {
         $this->sincronizarTrabajadores->execute();
@@ -69,7 +69,7 @@ final class MarcarFaltasAutomaticas
         $hasta = ($hasta ?? $this->ventana->ultimoDiaCerrado())->setTime(0, 0);
         $ultimoCerrado = $this->ventana->ultimoDiaCerrado();
 
-        // Nunca cierra un día que todavía está abierto (hoy antes de las 07:00) ni uno futuro.
+        // Nunca cierra un día que todavía está abierto (hoy antes de las 23:59) ni uno futuro.
         if ($hasta > $ultimoCerrado) {
             $hasta = $ultimoCerrado;
         }

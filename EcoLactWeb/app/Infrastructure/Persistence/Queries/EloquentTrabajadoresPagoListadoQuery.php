@@ -37,8 +37,8 @@ use Illuminate\Support\Facades\DB;
  * acumulado. Trabajadores y jornadas se cargan por lote para toda la página
  * (contexto()), nunca con una consulta por fila.
  *
- * Todo trabajador vigente en el mes se ve: si no tiene un sueldo propio vigente
- * en Configuración de pagos (el sueldo es por trabajador, no por rol) y no hay
+ * Todo trabajador vigente en el mes se ve: si su rol no tiene sueldo vigente
+ * en Configuración de pagos (el sueldo es por rol y lo heredan todos) y no hay
  * obligación que pagar, aparece igual como fila SIN_SUELDO, con su asistencia
  * real y sin montos, en vez de desaparecer de la pantalla.
  *
@@ -243,26 +243,27 @@ final class EloquentTrabajadoresPagoListadoQuery implements TrabajadoresPagoList
     }
 
     /**
-     * Trabajadores vigentes en algún día del mes, de un rol remunerable, SIN un sueldo
-     * propio (configuraciones_pago.user_id) activo y vigente en algún día de ese mes, y
-     * sin obligación en ese mes. El sueldo es por trabajador: que un compañero del mismo
-     * rol tenga sueldo no oculta a quien todavía no lo tiene.
+     * Trabajadores vigentes en algún día del mes, de un rol remunerable cuyo ROL no tiene
+     * sueldo (configuraciones_pago por rol, user_id nulo) activo y vigente en algún día de
+     * ese mes, y sin obligación en ese mes. El sueldo es del rol y lo heredan todos sus
+     * trabajadores: las filas individuales antiguas no cuentan.
      */
     private function trabajadoresSinSueldo(string $periodo, ?string $busqueda, ?int $rolId): Builder
     {
         [$inicioMes, $finMes] = $this->rangoDelMes($periodo);
-        $usuariosConSueldo = ConfiguracionPagoModel::query()
+        $rolesConSueldo = ConfiguracionPagoModel::query()
             ->where('tipo_beneficiario', TipoBeneficiarioPago::PERSONAL->value)
             ->where('estado', 'ACTIVO')
-            ->whereNotNull('user_id')
+            ->whereNull('user_id')
+            ->whereNotNull('rol_id')
             ->whereDate('fecha_inicio', '<=', $finMes)
             ->where(fn (Builder $vigencia) => $vigencia->whereNull('fecha_fin')->orWhereDate('fecha_fin', '>=', $inicioMes))
-            ->select('user_id');
+            ->select('rol_id');
 
         return TrabajadorModel::query()
             ->with(['user.role', 'periodos'])
-            ->whereNotIn('user_id', $usuariosConSueldo)
             ->whereHas('user', fn (Builder $usuario) => $usuario
+                ->whereNotIn('role_id', $rolesConSueldo)
                 ->whereHas('role', fn (Builder $rol) => $rol->where('es_remunerable', true))
                 ->when($rolId !== null, fn (Builder $query) => $query->where('role_id', $rolId)))
             ->whereHas('periodos', fn (Builder $periodoActividad) => $periodoActividad

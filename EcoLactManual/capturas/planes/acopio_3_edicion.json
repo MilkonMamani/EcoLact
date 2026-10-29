@@ -1,0 +1,83 @@
+{
+ "descripcion": "Acopio: edición auditada de la entrega FICTICIA #1 (47→46 L) con el usuario registrador difuminado.",
+ "salida": "evidencias/originales/acopio",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/entregas/1",
+   "ms": 2500
+  },
+  {
+   "accion": "esperar",
+   "ms": 3000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_08_show",
+   "medir": {
+    "editar": "button[data-modal-open='modal-editar-entrega']",
+    "tarjeta": "main .card, main section >> nth=0"
+   },
+   "leer": [
+    "main"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "button[data-modal-open='modal-editar-entrega']"
+  },
+  {
+   "accion": "esperar",
+   "ms": 800
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-editar-entrega [name=litros]",
+   "texto": "46"
+  },
+  {
+   "accion": "escribir",
+   "selector": "#modal-editar-entrega [name=motivo_modificacion]",
+   "texto": "Corrección de prueba del manual."
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_09_editar",
+   "medir": {
+    "litros": "#modal-editar-entrega [name=litros]",
+    "motivo": "#modal-editar-entrega [name=motivo_modificacion]",
+    "guardar": "#modal-editar-entrega button[type=submit]"
+   },
+   "leer": [
+    "#modal-editar-entrega [data-modal-panel]"
+   ]
+  },
+  {
+   "accion": "clic",
+   "selector": "#modal-editar-entrega button[type=submit]"
+  },
+  {
+   "accion": "esperar",
+   "ms": 3000
+  },
+  {
+   "accion": "captura",
+   "nombre": "aco_10_editada",
+   "medir": {
+    "mensaje": "[role=alert]"
+   },
+   "leer": [
+    "[role=alert]",
+    "main"
+   ]
+  }
+ ],
+ "difuminar": [
+  "dt:has-text('Registrado por') + dd",
+  "dt:has-text('Registrado') + dd"
+ ],
+ "difuminar_textos": [
+  "admin"
+ ]
+}

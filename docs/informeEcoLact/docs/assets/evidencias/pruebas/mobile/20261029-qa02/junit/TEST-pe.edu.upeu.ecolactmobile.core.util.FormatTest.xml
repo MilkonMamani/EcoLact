@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.core.util.FormatTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:54.204Z" hostname="LAPTOP-CUGSMQ13" time="0.173">
+  <properties/>
+  <testcase name="formatRelativo_hoy_ayer_y_otros" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.041"/>
+  <testcase name="fechas_del_backend_en_hora_local" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.102"/>
+  <testcase name="formatDecimal_redondea_y_rellena" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.015"/>
+  <testcase name="formatCachedAt_devuelve_original_si_no_es_iso" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.004"/>
+  <testcase name="primerNombre_toma_la_primera_palabra" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.001"/>
+  <testcase name="semanas_iso" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.004"/>
+  <testcase name="initials_usa_nombre_y_apellido" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.005"/>
+  <testcase name="formatSoles_y_litros" classname="pe.edu.upeu.ecolactmobile.core.util.FormatTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

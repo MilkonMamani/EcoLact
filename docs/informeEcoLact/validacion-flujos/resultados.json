@@ -1,0 +1,1069 @@
+[
+  {
+    "page": "index",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../assets/images/flujos/portada-flujos.webp",
+        "ok": true
+      },
+      {
+        "src": "../assets/diagrams/flujos/index.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujos de EcoLact",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/index.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/index.mmd",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/",
+      "http://127.0.0.1:8766/site/flujos/integracion/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "acopio",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/acopio.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/acopio.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de acopio de leche",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/acopio.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/acopio.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "calidad",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/calidad.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/calidad.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de control de calidad",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/calidad.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/calidad.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "liquidacion-pagos",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/pagos.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/liquidacion-pagos.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Valorización, liquidación y pagos",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/liquidacion-pagos.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/liquidacion-pagos.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "consulta-proveedor",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/proveedor.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/consulta-proveedor.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Consulta del proveedor",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/consulta-proveedor.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/consulta-proveedor.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "produccion",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/produccion.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/produccion.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de producción",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/produccion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/produccion.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "insumos",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/insumos.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/insumos.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/flujos/boleta.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de insumos y compras",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/insumos.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/insumos.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "ventas-caja",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/ventas.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/ventas-caja.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de ventas y compradores",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/ventas-caja.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/ventas-caja.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "finanzas",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/finanzas.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/finanzas.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de caja y finanzas",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/finanzas.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/finanzas.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "personal-asistencia",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/asistencia.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/personal-asistencia.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Asistencia y personal",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/personal-asistencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/personal-asistencia.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "integracion",
+    "viewportName": "escritorio",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/integracion.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/integracion.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 688,
+    "viewport": 1440,
+    "overflow": false,
+    "spill": [],
+    "title": "Integración móvil y web",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/integracion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/integracion.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "index",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../assets/images/flujos/portada-flujos.webp",
+        "ok": true
+      },
+      {
+        "src": "../assets/diagrams/flujos/index.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujos de EcoLact",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/index.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/index.mmd",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/",
+      "http://127.0.0.1:8766/site/flujos/integracion/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "acopio",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/acopio.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/acopio.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de acopio de leche",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/acopio.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/acopio.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "calidad",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/calidad.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/calidad.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de control de calidad",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/calidad.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/calidad.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "liquidacion-pagos",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/pagos.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/liquidacion-pagos.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Valorización, liquidación y pagos",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/liquidacion-pagos.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/liquidacion-pagos.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "consulta-proveedor",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/proveedor.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/consulta-proveedor.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Consulta del proveedor",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/consulta-proveedor.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/consulta-proveedor.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "produccion",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/produccion.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/produccion.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de producción",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/produccion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/produccion.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "insumos",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/insumos.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/insumos.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/flujos/boleta.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de insumos y compras",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/insumos.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/insumos.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "ventas-caja",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/ventas.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/ventas-caja.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de ventas y compradores",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/ventas-caja.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/ventas-caja.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "finanzas",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/finanzas.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/finanzas.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de caja y finanzas",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/finanzas.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/finanzas.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "personal-asistencia",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/asistencia.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/personal-asistencia.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Asistencia y personal",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/personal-asistencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/personal-asistencia.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "integracion",
+    "viewportName": "tablet",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/integracion.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/integracion.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 736,
+    "viewport": 768,
+    "overflow": false,
+    "spill": [],
+    "title": "Integración móvil y web",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/integracion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/integracion.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "index",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../assets/images/flujos/portada-flujos.webp",
+        "ok": true
+      },
+      {
+        "src": "../assets/diagrams/flujos/index.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujos de EcoLact",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/index.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/index.mmd",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/",
+      "http://127.0.0.1:8766/site/flujos/integracion/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "acopio",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/acopio.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/acopio.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de acopio de leche",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/acopio.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/acopio.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "calidad",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/calidad.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/calidad.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de control de calidad",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/calidad.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/calidad.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "liquidacion-pagos",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/pagos.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/liquidacion-pagos.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Valorización, liquidación y pagos",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/liquidacion-pagos.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/liquidacion-pagos.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "consulta-proveedor",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/proveedor.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/consulta-proveedor.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Consulta del proveedor",
+    "icons": 1,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/consulta-proveedor.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/consulta-proveedor.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/calidad/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "produccion",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/produccion.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/produccion.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de producción",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/produccion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/produccion.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "insumos",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/insumos.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/insumos.svg",
+        "ok": true
+      },
+      {
+        "src": "../../assets/images/flujos/boleta.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de insumos y compras",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/insumos.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/insumos.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "ventas-caja",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/ventas.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/ventas-caja.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de ventas y compradores",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/ventas-caja.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/ventas-caja.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/produccion/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "finanzas",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/finanzas.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/finanzas.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Flujo de caja y finanzas",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/finanzas.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/finanzas.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/insumos/",
+      "http://127.0.0.1:8766/site/flujos/liquidacion-pagos/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "personal-asistencia",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/asistencia.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/personal-asistencia.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Asistencia y personal",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/personal-asistencia.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/personal-asistencia.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/finanzas/",
+      "http://127.0.0.1:8766/site/flujos/integracion/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "page": "integracion",
+    "viewportName": "movil",
+    "images": [
+      {
+        "src": "../../assets/images/flujos/integracion.webp",
+        "ok": true
+      },
+      {
+        "src": "../../assets/diagrams/flujos/integracion.svg",
+        "ok": true
+      }
+    ],
+    "scopeWidth": 358,
+    "viewport": 390,
+    "overflow": false,
+    "spill": [],
+    "title": "Integración móvil y web",
+    "icons": 3,
+    "links": [
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/integracion.svg",
+      "http://127.0.0.1:8766/site/assets/diagrams/flujos/integracion.mmd",
+      "http://127.0.0.1:8766/site/flujos/",
+      "http://127.0.0.1:8766/site/flujos/acopio/",
+      "http://127.0.0.1:8766/site/flujos/consulta-proveedor/",
+      "http://127.0.0.1:8766/site/flujos/ventas-caja/",
+      "http://127.0.0.1:8766/site/flujos/personal-asistencia/"
+    ],
+    "brokenLinks": [],
+    "errors": []
+  },
+  {
+    "regression": "Inicio",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/problema-solucion/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/actores-roles/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/modulos/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/reglas-negocio/",
+    "status": 200,
+    "brokenImages": []
+  },
+  {
+    "regression": "sistema/alcance/",
+    "status": 200,
+    "brokenImages": []
+  }
+]

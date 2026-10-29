@@ -1,0 +1,282 @@
+{
+  "nombre": "EcoLact — Mapa de flujo exclusivo del ADMINISTRADOR",
+  "version": "2.0",
+  "fecha_inspeccion": "2026-10-28",
+  "advertencia": "Este mapa reemplaza al mapa_objetivo.json original. Refleja las rutas y controladores REALES del prefijo /admin en EcoLactWeb. Solo incluye operaciones del rol ADMINISTRADOR. Ninguna etapa está basada en suposiciones.",
+  "fuente": "routes/web.php (lineas 109-352) + controladores Web/Admin/* + Web/Calidad/* + Web/Pago/* + Web/Produccion/* + Web/Comunicacion/* + Web/Liquidacion/*",
+  "unico_rol": "ADMINISTRADOR",
+  "mecanismo_autorizacion": "middleware role:ADMINISTRADOR + Gate::before() en AppServiceProvider",
+  "inicio": "Login exitoso como ADMINISTRADOR → redirect a /admin/dashboard",
+  "fin": "Pago a proveedor marcado como PAGADO y comprobante disponible; o pago a trabajador con comprobante imprimible",
+  "modulos": [
+    {
+      "id": "M01",
+      "nombre": "Dashboard",
+      "url": "/admin/dashboard",
+      "ruta_laravel": "admin.dashboard",
+      "descripcion": "KPIs de acopio (litros/proveedores), producción (lotes en proceso/finalizados), ventas y pagos pendientes. Filtrable por hoy/semana/mes/personalizado.",
+      "operaciones": ["ver-kpis", "filtrar-por-periodo"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M02",
+      "nombre": "Zonas",
+      "url": "/admin/zonas",
+      "ruta_laravel": "admin.zonas.index",
+      "descripcion": "Pantalla maestro-detalle con mapa GeoJSON. Permite crear, editar, activar/desactivar y eliminar zonas. Desde el panel de zona se gestionan sus rutas.",
+      "operaciones": ["listar", "crear", "editar", "activar", "desactivar", "eliminar", "asignar-proveedor", "mover-pin-proveedor"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M03",
+      "nombre": "Rutas",
+      "url": "Panel de Zonas (sin URL independiente de listado)",
+      "ruta_laravel": "admin.rutas.show / admin.rutas.panel",
+      "descripcion": "Gestión de rutas dentro de una zona. Permite crear rutas, agregar/quitar/reordenar proveedores, y abrir el recorrido operativo del dia asignando un acopiador.",
+      "operaciones": ["crear", "editar", "agregar-proveedor", "quitar-proveedor", "reordenar-proveedores", "abrir-recorrido"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M04",
+      "nombre": "Proveedores",
+      "url": "/admin/proveedores",
+      "ruta_laravel": "admin.proveedores.index",
+      "descripcion": "Registro y administración de proveedores. Crea usuario+credenciales en el mismo formulario. Sin eliminacion fisica: solo desactivar/reactivar.",
+      "operaciones": ["listar", "crear", "editar", "desactivar", "reactivar", "ver-pagos-historial", "ver-entregas", "ver-ventas"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M05",
+      "nombre": "Acopiadores",
+      "url": "/admin/acopiadores",
+      "ruta_laravel": "admin.acopiadores.index",
+      "descripcion": "Registro y administración de acopiadores. Siempre asociado a una zona. Sin eliminacion fisica.",
+      "operaciones": ["listar", "crear", "editar", "desactivar", "reactivar"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M06",
+      "nombre": "Personal (Encargados planta / Ventas / Analistas / Nuevo trabajador)",
+      "url": "/admin/encargados-planta · /admin/personal-ventas · /admin/analistas-calidad · /admin/trabajadores/nuevo",
+      "ruta_laravel": "admin.encargados-planta.index · admin.personal-ventas.index · admin.analistas-calidad.index · admin.trabajadores.create",
+      "descripcion": "El Administrador es el único que puede registrar y gestionar el personal de la plataforma. El formulario unificado 'Nuevo trabajador' permite elegir el tipo y enviar al alta correspondiente.",
+      "operaciones": ["listar-encargados-planta", "crear-encargado-planta", "editar-encargado-planta", "desactivar-encargado-planta", "reactivar-encargado-planta", "listar-personal-ventas", "crear-personal-ventas", "listar-analistas", "crear-analista"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M07",
+      "nombre": "Asistencia y Jornadas",
+      "url": "/admin/asistencia · /admin/trabajadores/{id}/jornadas",
+      "ruta_laravel": "admin.asistencia.index · admin.trabajadores.jornadas.index",
+      "descripcion": "Control de asistencia diaria del personal. El Admin puede ver, registrar y corregir jornadas manualmente.",
+      "operaciones": ["ver-asistencia-diaria", "ver-jornadas-trabajador", "registrar-jornada", "corregir-jornada"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M08",
+      "nombre": "Entregas (Acopio)",
+      "url": "/admin/entregas",
+      "ruta_laravel": "admin.entregas.index",
+      "descripcion": "Listado global de entregas de todas las zonas. El Admin puede registrar entregas de forma administrativa (sin restriccion de asistencia), editar, corregir litros (inline) y anular.",
+      "operaciones": ["listar", "ver-detalle", "crear-administrativo", "editar", "corregir-litros-inline", "anular"],
+      "dependencias": ["proveedores activos", "zonas activas"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M09",
+      "nombre": "Calidad — Parámetros y Reglas",
+      "url": "/admin/parametros-calidad · /admin/reglas-calidad",
+      "ruta_laravel": "admin.parametros-calidad.index · admin.reglas-calidad.index",
+      "descripcion": "Configuracion de QUE se mide (parametros) y con que limites se evalua (reglas). El codigo del parametro es inmutable.",
+      "operaciones": ["listar-parametros", "crear-parametro", "editar-parametro", "listar-reglas", "crear-regla", "editar-regla"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M10",
+      "nombre": "Calidad — Análisis",
+      "url": "/admin/analisis-calidad",
+      "ruta_laravel": "admin.analisis-calidad.index",
+      "descripcion": "Listado de entregas con estado de analisis. El Admin puede registrar y finalizar analisis (igual que CALIDAD), pero los analisis CONFIRMADOS son inmutables.",
+      "operaciones": ["listar", "ver-detalle", "registrar-analisis", "escanear-ticket-ocr", "finalizar-confirmar"],
+      "nota": "El estado CONFIRMADO es inmutable incluso para ADMINISTRADOR (excepcion explicita en AppServiceProvider/Gate::before).",
+      "dependencias": ["entregas registradas", "parametros-calidad activos"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M11",
+      "nombre": "Insumos",
+      "url": "/admin/insumos",
+      "ruta_laravel": "admin.insumos.index",
+      "descripcion": "Catalogo e inventario de insumos. El flujo es: crear ficha → agregar presentaciones → registrar compras (que suben stock).",
+      "operaciones": ["listar", "crear-ficha", "editar-ficha", "agregar-presentacion", "editar-presentacion", "ajustar-stock"],
+      "dependencias_salida": ["produccion (descuenta insumos)", "caja (compras de insumo generan movimiento)"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M12",
+      "nombre": "Compras de insumo",
+      "url": "Panel de Insumos (formulario lateral)",
+      "ruta_laravel": "admin.compras-insumo.store",
+      "descripcion": "Registrar compra de insumo (manual o desde OCR de boleta). Incrementa stock del insumo y genera movimiento de egreso en Caja.",
+      "operaciones": ["escanear-boleta-ocr", "previsualizar-compra", "registrar-compra", "ver-compra"],
+      "dependencias": ["insumos con presentacion registrada"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M13",
+      "nombre": "Producción",
+      "url": "/admin/produccion",
+      "ruta_laravel": "admin.produccion.index",
+      "descripcion": "Historial de lotes + modal de nueva produccion. Flujo: calcular requerimientos → iniciar (descuenta insumos) → finalizar (registra stock de producto terminado).",
+      "operaciones": ["listar-lotes", "calcular-requerimientos", "iniciar-produccion", "ver-detalle-lote", "finalizar-lote"],
+      "dependencias": ["recetas activas", "stock de insumos suficiente"],
+      "dependencias_salida": ["stock de productos terminados"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M14",
+      "nombre": "Recetas",
+      "url": "/admin/recetas",
+      "ruta_laravel": "admin.recetas.index",
+      "descripcion": "Configuracion de que insumos (incluida la leche) y en que cantidad lleva cada producto. Se versionan. Solo una version puede estar ACTIVA.",
+      "operaciones": ["listar", "crear", "editar", "crear-version", "activar", "desactivar", "crear-categoria"],
+      "dependencias": ["insumos registrados"],
+      "dependencias_salida": ["produccion"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M15",
+      "nombre": "Productos terminados y precios",
+      "url": "/admin/productos",
+      "ruta_laravel": "admin.productos.index",
+      "descripcion": "Listado de productos terminados. El Admin es el unico que puede configurar precios por tipo de cliente (ProductoPrecioPolicy exclusiva).",
+      "operaciones": ["listar-productos", "configurar-precio-por-tipo-cliente", "eliminar-precio"],
+      "dependencias": ["recetas activas (nacen de produccion)"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M16",
+      "nombre": "Stock general",
+      "url": "/admin/stock",
+      "ruta_laravel": "admin.stock.index",
+      "descripcion": "Vista consolidada de stock de productos e insumos. Permite ajuste manual.",
+      "operaciones": ["ver-stock", "ajustar-stock"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M17",
+      "nombre": "Compradores y Ventas",
+      "url": "/admin/compradores · /admin/ventas",
+      "ruta_laravel": "admin.compradores.index · admin.ventas.index",
+      "descripcion": "El Admin puede registrar compradores y ventas (igual que VENTAS). La venta descuenta stock e ingresa a Caja.",
+      "operaciones": ["listar-compradores", "crear-comprador", "listar-ventas", "crear-venta", "ver-venta", "imprimir-boleta-pdf"],
+      "dependencias": ["stock de productos disponible"],
+      "dependencias_salida": ["caja (movimiento de ingreso)"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M18",
+      "nombre": "Configuración de pagos",
+      "url": "/admin/configuracion-pagos",
+      "ruta_laravel": "admin.configuracion-pagos.index",
+      "descripcion": "Define los valores base para los pagos. Dos pestanas: Trabajadores (sueldo mensual por persona) y Proveedores (precio por litro + descuento por calidad OBSERVADA). Solo define reglas versionadas: NO registra pagos.",
+      "operaciones": ["ver-configuraciones", "crear-configuracion-proveedor", "crear-configuracion-trabajador", "editar-configuracion"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M19",
+      "nombre": "Pagos a proveedores",
+      "url": "/admin/pagos/proveedores",
+      "ruta_laravel": "admin.pagos.proveedores.index",
+      "descripcion": "Flujo de pago semanal en efectivo. El Admin elige a quien pagar, previsualiza comprobantes y confirma la impresion para marcar como PAGADO.",
+      "operaciones": ["listar-pendientes-por-semana", "previsualizar-comprobantes", "confirmar-y-marcar-pagados", "ver-comprobante-individual"],
+      "dependencias": ["configuracion de pagos para proveedores", "entregas con calidad evaluada"],
+      "dependencias_salida": ["liquidaciones (se genera al pagar)"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M20",
+      "nombre": "Pagos a trabajadores",
+      "url": "/admin/pagos/trabajadores",
+      "ruta_laravel": "admin.pagos.trabajadores.index",
+      "descripcion": "Revision y pago del sueldo mensual del personal. Permite ajustar bonificacion/descuento mientras este PENDIENTE. Al pagar genera comprobante.",
+      "operaciones": ["listar-sueldos-del-mes", "ver-panel-trabajador", "ajustar-bonificacion-descuento", "confirmar-pago", "imprimir-comprobante"],
+      "dependencias": ["configuracion de sueldos por trabajador", "jornadas del periodo"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M21",
+      "nombre": "Liquidaciones",
+      "url": "/admin/liquidaciones/{id}/imprimir",
+      "ruta_laravel": "admin.liquidaciones.imprimir",
+      "descripcion": "Solo hay una ruta: imprimir la hoja de liquidacion del proveedor. No hay pantalla de listado propia para el Admin. Se accede desde el flujo de Pagos a Proveedores.",
+      "operaciones": ["imprimir-liquidacion"],
+      "nota": "No existe pantalla de listado de liquidaciones para el Administrador. El acceso es desde Pagos > Proveedores.",
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M22",
+      "nombre": "Pagos generales",
+      "url": "/admin/pagos",
+      "ruta_laravel": "admin.pagos.index",
+      "descripcion": "Vista general de todas las obligaciones de pago (proveedores + trabajadores). Permite generar pagos pendientes, registrar pago individual y ver comprobante.",
+      "operaciones": ["listar-pagos", "generar-pagos-pendientes", "registrar-pago-individual", "ver-comprobante"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M23",
+      "nombre": "Finanzas / Caja",
+      "url": "/admin/caja",
+      "ruta_laravel": "admin.caja.index",
+      "descripcion": "SOLO LECTURA. Muestra saldo, totales del dia e historial de movimientos de caja. Los movimientos nacen en Ventas, Pagos e Insumos.",
+      "operaciones": ["ver-saldo", "ver-historial-movimientos", "ver-detalle-movimiento"],
+      "nota": "No se crean ni editan movimientos desde esta pantalla.",
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M24",
+      "nombre": "Comunicados",
+      "url": "/admin/comunicados",
+      "ruta_laravel": "admin.comunicados.index",
+      "descripcion": "El Admin puede crear, editar y publicar comunicados. Un comunicado en BORRADOR puede editarse; una vez PUBLICADO es inmutable.",
+      "operaciones": ["listar", "crear", "editar-borrador", "publicar"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M25",
+      "nombre": "Notificaciones",
+      "url": "/notificaciones",
+      "ruta_laravel": "notificaciones.index",
+      "descripcion": "Notificaciones propias del Administrador. Compartido con otros roles (mismo controller).",
+      "operaciones": ["listar", "marcar-como-leida"],
+      "estado": "Implementado/no probado UI"
+    },
+    {
+      "id": "M26",
+      "nombre": "Mi Perfil",
+      "url": "/admin/mi-perfil",
+      "ruta_laravel": "admin.administrador.show",
+      "descripcion": "Vista del perfil propio del Administrador autenticado. Sin panel de listado (el Admin no puede verse en un listado de usuarios).",
+      "operaciones": ["ver-perfil-propio"],
+      "estado": "Implementado/no probado UI"
+    }
+  ],
+  "flujo_paralelo_caja": "Los movimientos de caja se generan automaticamente desde: (1) Ventas → ingreso, (2) Pagos a proveedores y trabajadores → egreso, (3) Compras de insumo → egreso. La pantalla Caja es de solo lectura y consolida estos movimientos.",
+  "capitulos_propuestos_manual": [
+    "Cap. 1 — Acceso y configuración inicial del sistema",
+    "Cap. 2 — Gestión de zonas y rutas de acopio",
+    "Cap. 3 — Registro y administración de personas (proveedores, acopiadores y personal)",
+    "Cap. 4 — Gestión de acopio y entregas",
+    "Cap. 5 — Control de calidad",
+    "Cap. 6 — Gestión de insumos y compras",
+    "Cap. 7 — Producción y recetas",
+    "Cap. 8 — Productos terminados, precios y ventas",
+    "Cap. 9 — Asistencia y jornadas del personal",
+    "Cap. 10 — Configuración de pagos y liquidaciones",
+    "Cap. 11 — Pagos a proveedores",
+    "Cap. 12 — Pagos a trabajadores",
+    "Cap. 13 — Finanzas y caja (lectura)",
+    "Cap. 14 — Comunicados",
+    "Cap. 15 — Notificaciones y perfil"
+  ]
+}

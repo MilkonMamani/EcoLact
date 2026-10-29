@@ -1,0 +1,77 @@
+[
+  {
+    "file": "EcoLactWeb/tests/Feature/Web/ProduccionModalYInsumosTest.php",
+    "current_sha256": "3ee0ea9925ec1470633ed11ff67e2a7ba8af062e25f885083c21805adc93c7e0",
+    "modified_at": "2026-10-29T01:31:06.727915-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Providers/AppServiceProvider.php",
+    "current_sha256": "fa063cb761a770b9080e4733827c23a48d72dd94849c317b210c3bcdfe08ebcf",
+    "modified_at": "2026-10-29T01:30:03.448263-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Infrastructure/Mantenimiento/LimpiadorDatosProduccion.php",
+    "current_sha256": "98deb009404ed15e40a5b8ce6372445afaac1b03664ef496cd29f216147e8f96",
+    "modified_at": "2026-10-29T01:30:01.117665-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Infrastructure/Persistence/Models/LoteProduccionModel.php",
+    "current_sha256": "44691afc66e6ac176102f9ea946825fbe0845d2d4716bc614fcad72b63d133b2",
+    "modified_at": "2026-10-29T01:30:01.438778-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Infrastructure/Persistence/Repositories/EloquentLoteProduccionRepository.php",
+    "current_sha256": "904192eec90f18532a9f1085ad66c714b8a0574a030705e652e268dc335bedd0",
+    "modified_at": "2026-10-29T01:30:02.677264-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Http/Controllers/Web/Planta/ProduccionController.php",
+    "current_sha256": "638c043868f3d3b87f362cdf9374392b7a018a9a77a7315d252650a5cb59b3ce",
+    "modified_at": "2026-10-29T01:30:00.548701-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Http/Controllers/Web/Produccion/ProduccionController.php",
+    "current_sha256": "dee9d3aacb9093593cdb5158c29de3c4a3609adb3c50a49617a2cd3d20fbc6b5",
+    "modified_at": "2026-10-29T01:32:46.099250-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Domain/Produccion/LoteProduccion.php",
+    "current_sha256": "ba5a11b2494d53385f21f66f49df52112a47261927eb47bf85eb88d3a6cbf68a",
+    "modified_at": "2026-10-29T01:29:59.600424-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Domain/Produccion/LoteProduccionRepository.php",
+    "current_sha256": "c4e17dd240c31391c59e4060647897fba7d56120407036e1e963d85228dc1725",
+    "modified_at": "2026-10-29T01:29:59.610593-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Application/Produccion/CalcularRequerimientosProduccion.php",
+    "current_sha256": "283d3fd4437e1f61d7e02ac58c9b22519713be8aabd9a369261dcdca5d8dca27",
+    "modified_at": "2026-10-29T01:29:58.479049-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Application/Produccion/FinalizarProduccion.php",
+    "current_sha256": "59d784560bc32cc1049b2e147c52881eab544b346fb6dbd18a44a1b2dae4faa7",
+    "modified_at": "2026-10-29T01:29:58.562234-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Application/Produccion/IniciarProduccion.php",
+    "current_sha256": "6243acaed8b77bfb43a88d82a340df8b911fa455001b9058e93902b73d4f2c68",
+    "modified_at": "2026-10-29T01:25:43.301544-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Application/Produccion/LoteProduccionDetalleData.php",
+    "current_sha256": "4b2fd983977b271b6ca67bd75c3a670abe0114fc783a1aa219c79218a47d1175",
+    "modified_at": "2026-10-29T01:29:58.661196-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Application/Produccion/ObtenerDetalleLoteProduccion.php",
+    "current_sha256": "5ae565b0b420da684e6de41e4868298fd0f335e92c427a152f9e2f00a0ad8d87",
+    "modified_at": "2026-10-29T01:29:58.752495-05:00"
+  },
+  {
+    "file": "EcoLactWeb/app/Application/Produccion/RequerimientosProduccion.php",
+    "current_sha256": "1b9050b4477aa921a62e396ceb9b09fea99b9200d31599cfef3236386b0d886d",
+    "modified_at": "2026-10-29T01:29:58.943600-05:00"
+  }
+]

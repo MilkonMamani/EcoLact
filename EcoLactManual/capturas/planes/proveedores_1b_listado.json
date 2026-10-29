@@ -1,0 +1,30 @@
+{
+ "descripcion": "Recaptura del listado de proveedores con panel de un registro real difuminado (solo lectura).",
+ "salida": "evidencias/originales/proveedores",
+ "conservar_texto": "Prueba Manual",
+ "pasos": [
+  {
+   "accion": "ir",
+   "url": "/admin/proveedores",
+   "ms": 2500
+  },
+  {
+   "accion": "captura",
+   "nombre": "pro_01_listado",
+   "medir": {
+    "menu": "#ecolact-sidebar a[href$='/admin/proveedores']",
+    "nuevo": "button[data-modal-open='modal-nuevo-proveedor']",
+    "buscar": "input[name=q]",
+    "filtros": "[data-fichas-filtros]",
+    "panel": "[data-fichas-panel]"
+   },
+   "leer": [
+    "main h1",
+    "[data-fichas-tabla] thead"
+   ],
+   "difuminar": [
+    "[data-fichas-panel] [data-fichas-contenido]"
+   ]
+  }
+ ]
+}
