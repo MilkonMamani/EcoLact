@@ -1,0 +1,15 @@
+
+------------------------------------------------------------
+Gradle 9.1.0
+------------------------------------------------------------
+
+Build time:    2025-09-18 13:05:56 UTC
+Revision:      e45a8dbf2470c2e2474ccc25be9f49331406a07e
+
+Kotlin:        2.2.0
+Groovy:        4.0.28
+Ant:           Apache Ant(TM) version 1.10.15 compiled on August 25 2024
+Launcher JVM:  17.0.17 (Eclipse Adoptium 17.0.17+10)
+Daemon JVM:    Compatible with Java 21, Azul Zulu, nativeImageCapable=false (from gradle/gradle-daemon-jvm.properties)
+OS:            Windows 11 10.0 amd64
+

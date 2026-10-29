@@ -1,0 +1,11 @@
+flowchart TB
+  P[Producto] -->|tiene versiones de| R[Receta]
+  R -->|define ingredientes mediante| RD[Detalle de receta]
+  RD -->|referencia| I[Insumo]
+  L[Lote de producción] -->|guarda consumos en| LI[LoteProduccionInsumo]
+  LI -->|referencia| I
+  L -->|planifica y obtiene mediante| PD[ProduccionDetalle]
+  PD -->|referencia| P
+  PD -. conserva receta y versión utilizadas .-> R
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

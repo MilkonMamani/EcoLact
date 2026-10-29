@@ -1,0 +1,35 @@
+flowchart TB
+  subgraph ADM[Administrador]
+    A([Inicio]) --> B[Registrar proveedores y zonas]
+    B --> C[Organizar ruta y asignar recorrido]
+  end
+  subgraph PRO[Proveedor]
+    P[Presentar QR o DNI y entrega]
+  end
+  subgraph ACO[Acopiador]
+    C --> D[Iniciar recorrido propio]
+    D --> E[Identificar proveedor]
+    P --> E
+    E --> F{¿Entregó leche?}
+    F -->|Sí| G[Registrar litros]
+    F -->|No| H[Marcar NO_ENTREGO]
+  end
+  subgraph SIS[EcoLact]
+    G --> I{¿Datos y permisos válidos?}
+    I -->|No| X[Mostrar error y corregir]
+    X --> G
+    I -->|Sí| J[Guardar entrega e ingreso de leche]
+    J --> K[Sincronizar pago pendiente]
+    K --> L[Parada RECOLECTADO y notificación]
+  end
+  H --> M[Actualizar recorrido]
+  L --> M
+  M --> N{¿Continuar visitas?}
+  N -->|Sí| E
+  N -->|No| O[Acopiador · Finalizar recorrido]
+  O --> Z([Fin · Historial consultable])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class F,I,N decision;
+  class A,Z terminal;

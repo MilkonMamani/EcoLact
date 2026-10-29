@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadMuestreoSyncTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:55.505Z" hostname="LAPTOP-CUGSMQ13" time="0.123">
+  <properties/>
+  <testcase name="aleatorio_offline_bloqueado_sin_llamar_al_servidor" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadMuestreoSyncTest" time="0.01"/>
+  <testcase name="inicio_cuenta_solo_muestras_de_5_entregas_2_seleccionadas" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadMuestreoSyncTest" time="0.031"/>
+  <testcase name="reconexion_envia_en_orden_conflicto_ocr_remoto_a_revision_y_analisis_con_hora_real" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadMuestreoSyncTest" time="0.061"/>
+  <testcase name="aleatorio_online_lo_decide_el_servidor_y_se_confirma_con_su_firma" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadMuestreoSyncTest" time="0.02"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

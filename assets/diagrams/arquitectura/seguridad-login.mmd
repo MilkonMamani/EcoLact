@@ -1,0 +1,24 @@
+sequenceDiagram
+  actor U as Usuario
+  participant A as App / Ktor
+  participant B as Laravel / Sanctum
+  participant D as Base central
+  participant L as SQLite local
+  U->>A: Introducir credenciales
+  A->>B: POST /api/v1/login
+  B->>B: Límite de intentos y Hash::check
+  B->>B: Verificar acceso de la cuenta
+  alt Acceso válido
+    B->>D: Crear token personal
+    B-->>A: data: token y usuario
+    A->>L: SessionManager.save
+    A->>B: Solicitud con Authorization Bearer
+    B->>B: auth:sanctum, rol, estado y Policy
+    B-->>A: Resultado o rechazo
+  else Credenciales o acceso inválidos
+    B-->>A: Error de validación o acceso
+  end
+  U->>A: Cerrar sesión
+  A->>B: POST /api/v1/logout
+  B->>D: Eliminar token actual si la petición llega autorizada
+  A->>L: Limpiar sesión local incluso si falla la red

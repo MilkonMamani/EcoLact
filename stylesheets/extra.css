@@ -1,0 +1,328 @@
+
+/* =========================================
+   ECOLACT - ESTILOS GENERALES
+   ========================================= */
+
+:root {
+  --ecolact-green: #20865e;
+  --ecolact-green-dark: #12523d;
+  --ecolact-gold: #a77a48;
+  --ecolact-soft: #edf7f1;
+}
+
+/* =========================================
+   NAVBAR CENTRADO
+   ========================================= */
+
+@media screen and (min-width: 76.25em) {
+  .md-tabs__list {
+    display: flex;
+    justify-content: center;
+    gap: 45px;
+  }
+
+  .md-tabs__item {
+    flex-shrink: 0;
+  }
+}
+
+/* =========================================
+   PORTADA PRINCIPAL
+   ========================================= */
+
+.ecolact-hero {
+  padding: 60px 42px;
+  margin: 0 0 40px;
+  border-radius: 18px;
+
+  background: linear-gradient(
+    135deg,
+    #11182d 0%,
+    #174b43 60%,
+    #20865e 100%
+  );
+
+  color: #ffffff;
+}
+
+.ecolact-hero h1 {
+  font-size: 3.2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+  margin: 16px 0;
+}
+
+.ecolact-hero h3 {
+  color: #f5ead6;
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.ecolact-hero p {
+  color: #eef5f1;
+  max-width: 680px;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.hero-label {
+  display: inline-block;
+  padding: 7px 13px;
+  border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 30px;
+  color: #e4c69f;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+}
+
+/* =========================================
+   ETIQUETAS TECNOLOGICAS
+   ========================================= */
+
+.hero-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.hero-tech span {
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 7px 13px;
+  font-size: 0.65rem;
+}
+
+/* =========================================
+   BOTONES PORTADA
+   ========================================= */
+
+.ecolact-hero .md-button {
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.6);
+  border-radius: 8px;
+  margin: 4px 8px 4px 0;
+  transition: 0.2s ease;
+}
+
+.ecolact-hero .md-button--primary {
+  background: #ffffff;
+  color: #12523d;
+  border-color: #ffffff;
+}
+
+.ecolact-hero .md-button:hover {
+  background: #a77a48;
+  border-color: #a77a48;
+  color: #ffffff;
+}
+
+/* =========================================
+   CARDS DE NAVEGACION
+   ========================================= */
+
+.md-typeset .grid.cards > ul > li {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 12px;
+  padding: 24px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-4px);
+  border-color: var(--ecolact-green);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.ecolact-icon {
+  color: var(--ecolact-green);
+}
+
+.md-typeset .grid.cards a {
+  color: var(--ecolact-green);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* =========================================
+   TITULOS Y DIVISIONES
+   ========================================= */
+
+.md-typeset h2 {
+  font-weight: 700;
+  margin-top: 42px;
+  margin-bottom: 20px;
+}
+
+.md-typeset hr {
+  margin: 40px 0;
+  border-color: var(--md-default-fg-color--lightest);
+}
+
+/* =========================================
+   NOTA DEL FLUJO
+   ========================================= */
+
+.ecolact-note {
+  background: var(--md-code-bg-color);
+  border-left: 4px solid var(--ecolact-green);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 20px;
+  margin: 20px 0;
+}
+
+.ecolact-note p {
+  margin: 8px 0;
+}
+
+/* =========================================
+   DIAGRAMAS MERMAID
+   ========================================= */
+
+.md-typeset .mermaid {
+  text-align: center;
+  padding: 20px 10px;
+  margin: 24px 0;
+  border-radius: 12px;
+  border: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* =========================================
+   PIE DE LA PORTADA
+   ========================================= */
+
+.ecolact-footer {
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  text-align: center;
+}
+
+.ecolact-footer p {
+  margin: 8px 0;
+}
+
+/* =========================================
+   MODO OSCURO
+   ========================================= */
+
+[data-md-color-scheme="slate"] .ecolact-icon,
+[data-md-color-scheme="slate"] .md-typeset .grid.cards a {
+  color: #75d4a3;
+}
+
+[data-md-color-scheme="slate"]
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: #75d4a3;
+}
+
+/* =========================================
+   DISPOSITIVOS MOVILES
+   ========================================= */
+
+@media screen and (max-width: 600px) {
+
+  .ecolact-hero {
+    padding: 35px 22px;
+    border-radius: 12px;
+  }
+
+  .ecolact-hero h1 {
+    font-size: 2.3rem;
+  }
+
+  .ecolact-hero h3 {
+    font-size: 1rem;
+  }
+
+  .hero-tech {
+    gap: 7px;
+  }
+
+  .ecolact-hero .md-button {
+    display: block;
+    text-align: center;
+    margin: 10px 0;
+  }
+
+/* ======================================
+   ECOLACT - MEJORAS DE LA PORTADA
+   ====================================== */
+
+/* Ampliar el contenido de Inicio */
+body:has(.ecolact-hero) .md-main__inner {
+  max-width: 1500px;
+}
+
+/* Dejar más espacio para las cards */
+body:has(.ecolact-hero) .md-content__inner {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tres cards por fila en escritorio */
+@media screen and (min-width: 960px) {
+  body:has(.ecolact-hero)
+  .md-typeset .grid.cards > ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Dos columnas en tablets */
+@media screen and (min-width: 600px)
+and (max-width: 959px) {
+  body:has(.ecolact-hero)
+  .md-typeset .grid.cards > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Una columna en móvil */
+@media screen and (max-width: 599px) {
+  body:has(.ecolact-hero)
+  .md-typeset .grid.cards > ul {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Estilo más compacto */
+body:has(.ecolact-hero)
+.md-typeset .grid.cards > ul > li {
+  padding: 18px;
+  border-radius: 12px;
+}
+
+/* Iconos */
+.ecolact-icon {
+  color: #20865e;
+}
+
+/* Transiciones */
+.md-typeset .grid.cards > ul > li {
+  transition: transform .2s ease,
+              box-shadow .2s ease;
+}
+
+
+/* Imágenes de las cards */
+body:has(.ecolact-hero)
+.md-typeset .grid.cards img {
+  width: 100%;
+  height: 155px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+}

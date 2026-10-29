@@ -1,0 +1,13 @@
+flowchart TB
+  H[Solicitud Web o API] --> R[Form Request: validar formato]
+  R --> C[Controller: Gate y actor autenticado]
+  C --> U[RegistrarEntrega: reglas y coordinación]
+  U --> D[Entidad Entrega: invariantes]
+  U --> T[TransactionManager: unidad transaccional]
+  T --> E[EloquentEntregaRepository: persistir]
+  E --> DB[(Base central)]
+  T --> I[Ingreso de leche, pendiente y notificación]
+  DB --> O[Entidad resultante]
+  O --> S[Controller: respuesta HTML o JSON]
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

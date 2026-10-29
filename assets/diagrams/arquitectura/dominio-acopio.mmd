@@ -1,0 +1,12 @@
+flowchart TB
+  P[Proveedor] -->|realiza| E[Entrega]
+  A[Acopiador] -->|registra cuando corresponde| E
+  E -->|puede tener un análisis| C[Análisis de calidad]
+  E -->|referenciada por| V[Valorización de entrega]
+  C -. referencia opcional .-> V
+  P -->|titular de| L[Liquidación]
+  L -->|contiene| D[Detalle de liquidación]
+  D -->|referencia| V
+  L -->|referenciada por| PA[Pago de proveedor]
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

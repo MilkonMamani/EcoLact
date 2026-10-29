@@ -1,0 +1,24 @@
+flowchart TB
+  A([Inicio · Proveedor]) --> B[Acceder al portal o app]
+  B --> C{¿Sesión y acceso válidos?}
+  C -->|No| D[Resolver acceso]
+  D --> B
+  C -->|Sí| E[Inicio y resumen personal]
+  E --> F[Entregas y detalles]
+  E --> G[Calidad y análisis]
+  E --> H[Liquidaciones y pagos]
+  E --> I[Compras de productos]
+  E --> J[QR personal]
+  E --> K[Comunicados y notificaciones]
+  F --> L[Consultar detalle propio]
+  G --> L
+  H --> L
+  I --> L
+  J --> M([Fin · Identificación disponible])
+  K --> N([Fin · Información consultada])
+  L --> N
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class C decision;
+  class A,M,N terminal;

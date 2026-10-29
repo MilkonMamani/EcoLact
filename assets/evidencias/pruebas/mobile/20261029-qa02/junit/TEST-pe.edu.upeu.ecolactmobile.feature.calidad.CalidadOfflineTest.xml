@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:55.660Z" hostname="LAPTOP-CUGSMQ13" time="0.098">
+  <properties/>
+  <testcase name="conflicto_al_sincronizar_se_muestra_y_no_queda_como_pendiente" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest" time="0.031"/>
+  <testcase name="caso5_seleccion_offline_se_guarda_en_la_cola_y_aparece_en_pendientes" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest" time="0.015"/>
+  <testcase name="migracion_v1_a_v2_crea_la_tabla_de_capturas_en_instalaciones_existentes" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest" time="0.01"/>
+  <testcase name="el_sorteo_aleatorio_nunca_se_hace_en_el_telefono" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest" time="0.005"/>
+  <testcase name="caso8_foto_offline_queda_pendiente_de_ocr_y_el_ocr_remoto_solo_la_pasa_a_revision" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest" time="0.009"/>
+  <testcase name="caso5_analisis_offline_guarda_hora_real_de_foto_y_analisis_y_sale_de_pendientes" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadOfflineTest" time="0.026"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModelTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:54.014Z" hostname="LAPTOP-CUGSMQ13" time="0.184">
+  <properties/>
+  <testcase name="offline_sin_copia_local_muestra_error_explicativo" classname="pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModelTest" time="0.148"/>
+  <testcase name="offline_con_copia_local_muestra_datos_marcados_como_guardados" classname="pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModelTest" time="0.007"/>
+  <testcase name="con_copia_local_un_fallo_de_red_no_tapa_los_datos" classname="pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModelTest" time="0.023"/>
+  <testcase name="la_ui_cambia_cuando_cambia_sqlite_y_al_reconectar_se_refresca_sola" classname="pe.edu.upeu.ecolactmobile.core.ui.state.LocalFirstViewModelTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

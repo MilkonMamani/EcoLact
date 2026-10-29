@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadModelsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:55.494Z" hostname="LAPTOP-CUGSMQ13" time="0.005">
+  <properties/>
+  <testcase name="entregaMuestreadaRequest_tiene_las_claves_exactas_del_backend" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadModelsTest" time="0.003"/>
+  <testcase name="entregaMuestreada_decodifica_acopiador_id_null" classname="pe.edu.upeu.ecolactmobile.feature.calidad.CalidadModelsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

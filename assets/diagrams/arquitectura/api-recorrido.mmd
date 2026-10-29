@@ -1,0 +1,13 @@
+flowchart TB
+  A[Aplicación KMP] --> K[Ktor Client]
+  K --> API[API REST: /api/v1]
+  API --> M[Middleware: sesión, estado y rol]
+  M --> R[Form Request y autorización Gate]
+  R --> C[Controller]
+  C --> U[Use Case]
+  U --> RE[Contrato Repository]
+  RE --> E[Adaptador Eloquent]
+  E --> DB[(Persistencia central)]
+  C -. respuesta JSON y estado HTTP .-> K
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

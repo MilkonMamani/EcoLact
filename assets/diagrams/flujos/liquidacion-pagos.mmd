@@ -1,0 +1,25 @@
+flowchart TB
+  A([Inicio · Entrega o análisis confirmado]) --> B[Agrupar proveedor y semana]
+  B --> C{¿Configuración y precio?}
+  C -->|No| D[Omitir entregas sin configuración suficiente]
+  D --> Z([Fin · Completar configuración])
+  C -->|Sí| E[Obtener peor resultado confirmado]
+  E --> F{¿RECHAZADA?}
+  F -->|Sí| G[NO_PAGABLE · Importe cero]
+  G --> H[Trasladar compras a siguiente semana pagable]
+  H --> Y([Fin · Visible, no se paga])
+  F -->|No| I[Precio por entrega y ajuste de calidad]
+  I --> J[Restar compras de planilla]
+  J --> K{¿Neto positivo?}
+  K -->|No| L[No generar pendiente pagable]
+  K -->|Sí| M[PENDIENTE · Revisión administrativa]
+  M --> N{¿Fecha habilitada y monto exacto?}
+  N -->|No| M
+  N -->|Sí| O[Registrar pago y comprobante]
+  O --> P[PAGADO y salida de caja]
+  P --> Q([Fin · Pago preservado])
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class C,F,K,N decision;
+  class A,Z,Y,Q terminal;

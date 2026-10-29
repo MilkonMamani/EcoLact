@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:56.150Z" hostname="LAPTOP-CUGSMQ13" time="0.121">
+  <properties/>
+  <testcase name="efectivoOfflinePersisteYSeReconciliaSinDuplicar" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.038"/>
+  <testcase name="asistenciaAnteriorNoAutorizaYDescuentoOfflineNoSeEncola" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.007"/>
+  <testcase name="cuentaDiferenteNoEnviaNiConsumeLaOperacion" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.007"/>
+  <testcase name="reservasLocalesImpidenVenderMasDelStockConocido" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.011"/>
+  <testcase name="stockRechazadoQuedaVisibleYNoSeReintentaComoExito" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.015"/>
+  <testcase name="ventaRechazadaNoGeneraBoleta" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.008"/>
+  <testcase name="timeoutReutilizaLaMismaClaveYFecha" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.014"/>
+  <testcase name="ventaPendienteNoTieneBoletaYTrasSincronizarSeDescargaElPdf" classname="pe.edu.upeu.ecolactmobile.feature.ventas.VentasSyncTest" time="0.02"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

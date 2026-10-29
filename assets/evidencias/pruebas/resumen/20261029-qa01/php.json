@@ -1,0 +1,10 @@
+{
+  "command": "php -v",
+  "cwd": "C:\\CICLO VI\\EcoLact\\EcoLactWeb",
+  "started": "2026-10-29T01:16:09.373785-05:00",
+  "ended": "2026-10-29T01:16:09.451255-05:00",
+  "duration_seconds": 0.077,
+  "exit_code": 0,
+  "log": "php.log",
+  "sha256": "4d65b8048b02afb594aeb208d78af3eecaa98a48c35c0d4622f94d0eaca80095"
+}

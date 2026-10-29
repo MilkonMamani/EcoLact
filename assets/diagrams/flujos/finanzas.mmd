@@ -1,0 +1,21 @@
+flowchart TB
+  A([Inicio · Confirmar operación]) --> B{¿Qué operación mueve dinero?}
+  B --> C[Venta al contado]
+  B --> D[Compra de insumos con total positivo]
+  B --> E[Pago al proveedor]
+  B --> F[Pago al trabajador]
+  C -->|ENTRADA · VENTA| G[Caja EcoLact]
+  D -->|SALIDA · INSUMOS| G
+  E -->|SALIDA · PROVEEDOR| G
+  F -->|SALIDA · TRABAJADOR| G
+  G --> H[Concepto, fecha, importe y referencia]
+  H --> I[Administrador · Historial y detalle]
+  I --> J[Saldo: entradas menos salidas]
+  J --> Z([Fin · Seguimiento financiero])
+  X[Venta de planilla] -. Sin entrada inmediata .-> Y[Descuento del pago semanal]
+  W[Compra sin total conocido] -. Sin salida inventada .-> V[Solo inventario]
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class B decision;
+  class A,Z terminal;

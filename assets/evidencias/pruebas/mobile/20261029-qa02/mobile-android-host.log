@@ -1,0 +1,73 @@
+Calculating task graph as configuration cache cannot be reused because a build logic input of type 'IsTerminalSmartValueSource' has changed.
+
+> Configure project :shared
+w: Native task 'iosSimulatorArm64Test' is disabled
+Task 'iosSimulatorArm64Test' for target 'ios_simulator_arm64' cannot run on the current host (windows-x86_64).
+Reason: simulator tests require macOS
+Solution: To suppress this warning, add 'kotlin.native.ignoreDisabledTargets=true' to gradle.properties.
+
+
+> Task :shared:copyNonXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :shared:androidPreBuild UP-TO-DATE
+> Task :shared:kmpPartiallyResolvedDependenciesChecker
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:generateAndroidHostTestAssets UP-TO-DATE
+> Task :shared:generateAndroidMainAssets UP-TO-DATE
+> Task :shared:convertXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :shared:convertXmlValueResourcesForCommonMain NO-SOURCE
+> Task :shared:preAndroidMainBuild UP-TO-DATE
+> Task :shared:preAndroidHostTestBuild UP-TO-DATE
+> Task :shared:prepareComposeResourcesTaskForAndroidMain NO-SOURCE
+> Task :shared:generateResourceAccessorsForAndroidMain NO-SOURCE
+> Task :shared:generateAndroidMainEmptyResourceFiles
+> Task :shared:writeAndroidMainAarMetadata
+> Task :shared:generateAndroidHostTestResources
+> Task :shared:convertXmlValueResourcesForAndroidHostTest NO-SOURCE
+> Task :shared:copyNonXmlValueResourcesForAndroidHostTest NO-SOURCE
+> Task :shared:prepareComposeResourcesTaskForAndroidHostTest NO-SOURCE
+> Task :shared:generateResourceAccessorsForAndroidHostTest NO-SOURCE
+> Task :shared:convertXmlValueResourcesForCommonTest NO-SOURCE
+> Task :shared:copyNonXmlValueResourcesForCommonMain
+> Task :shared:copyNonXmlValueResourcesForCommonTest NO-SOURCE
+> Task :shared:prepareComposeResourcesTaskForCommonTest NO-SOURCE
+> Task :shared:prepareComposeResourcesTaskForCommonMain
+> Task :shared:copyAndroidMainComposeResourcesToAndroidAssets
+> Task :shared:checkAndroidHostTestAarMetadata
+> Task :shared:androidJar
+> Task :shared:generateResourceAccessorsForCommonTest NO-SOURCE
+> Task :shared:processAndroidHostTestJavaRes NO-SOURCE
+> Task :shared:generateExpectResourceCollectorsForCommonMain
+> Task :shared:generateComposeResClass
+> Task :shared:generateResourceAccessorsForCommonMain
+> Task :shared:generateActualResourceCollectorsForAndroidMain
+> Task :shared:mergeAndroidMainAssets
+> Task :shared:packageAndroidMainResources
+> Task :shared:compileAndroidMainLibraryResources
+> Task :shared:mapAndroidHostTestSourceSetPaths
+> Task :shared:mergeAndroidHostTestAssets
+> Task :shared:processAndroidMainManifest
+> Task :shared:parseAndroidMainLocalResources
+> Task :shared:generateAndroidMainRFile
+> Task :shared:processAndroidHostTestManifest
+> Task :shared:generateCommonMainEcoLactDatabaseInterface
+> Task :shared:mergeAndroidHostTestResources
+> Task :shared:processAndroidHostTestResources
+> Task :shared:packageAndroidHostTestForUnitTest
+> Task :shared:generateAndroidHostTestConfig
+> Task :shared:compileAndroidMain
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt:7:1 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. Consider using the '-Xexpect-actual-classes' flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.android.kt:35:1 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. Consider using the '-Xexpect-actual-classes' flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.kt:5:1 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. Consider using the '-Xexpect-actual-classes' flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.kt:6:1 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. Consider using the '-Xexpect-actual-classes' flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+
+> Task :shared:processAndroidMainJavaRes
+> Task :shared:bundleAndroidMainClassesToCompileJar
+> Task :shared:bundleAndroidMainClassesToRuntimeJar
+> Task :shared:compileAndroidHostTest
+> Task :shared:testAndroidHostTest
+
+[Incubating] Problems report is available at: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 1m 30s
+33 actionable tasks: 33 executed
+Configuration cache entry stored.

@@ -1,0 +1,127 @@
+/* Sistema: estilos compartidos, aislados de Inicio, navbar y demás secciones. */
+.md-typeset .ec-sistema {
+  --ec-blue: #1559c4;
+  --ec-heading: #092b78;
+  --ec-border: #e4ecf6;
+  color: #202b40;
+  background: #fff;
+  border: 1px solid var(--ec-border);
+  border-radius: 9px;
+  box-shadow: 0 2px 9px #153b6c08;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+.ec-sistema *, .ec-sistema *::before, .ec-sistema *::after { box-sizing: border-box; }
+.ec-sistema .ec-content { padding: 20px 22px 22px; }
+.ec-sistema .ec-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 22px;
+  border-radius: 8px 8px 0 0;
+  background: var(--ec-blue);
+  color: #fff;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.ec-sistema .ec-icon { width: 26px; height: 26px; flex: 0 0 26px; vertical-align: middle; }
+.md-typeset .ec-sistema h1, .md-typeset .ec-sistema h2 {
+  color: var(--ec-heading);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.md-typeset .ec-sistema h1 { margin: 0 0 7px; font-size: 28px; }
+.md-typeset .ec-sistema h2 { margin: 22px 0 7px; font-size: 22px; }
+.md-typeset .ec-sistema p { margin: 0 0 13px; }
+.md-typeset .ec-sistema ul { margin: 5px 0 0; padding-left: 19px; }
+.md-typeset .ec-sistema li { margin: 0; padding: 0; line-height: 1.5; }
+.md-typeset .ec-sistema figure { margin: 0; min-width: 0; }
+.ec-sistema img { display: block; width: 100%; object-fit: cover; border-radius: 7px; }
+.ec-sistema a:focus-visible, .ec-sistema [tabindex]:focus-visible { outline: 3px solid #2176dc; outline-offset: 3px; }
+/* Visión general: introducción, cuatro indicadores y cinco accesos (3 + 2). */
+.ec-sistema .ec-overview { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+.md-typeset .ec-sistema .ec-overview h1 { font-size: 36px; margin-bottom: 3px; }
+.md-typeset .ec-sistema .ec-overview h2 { margin: 0 0 12px; font-size: 24px; }
+.ec-sistema .ec-overview img { aspect-ratio: 16 / 9; max-height: 240px; }
+.ec-sistema .ec-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 18px 0 24px; }
+.ec-sistema .ec-fact { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 16px 8px; border-radius: 7px; background: #eef6ff; text-align: center; }
+.ec-sistema .ec-fact .ec-icon { width: 32px; height: 32px; color: #065dff; }
+.ec-sistema .ec-fact strong { font-size: 13px; color: var(--ec-heading); line-height: 1.25; }
+.ec-sistema .ec-fact small { font-size: 12px; line-height: 1.3; }
+.ec-sistema .ec-link-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 17px; }
+.ec-sistema .ec-link-card { display: flex; align-items: flex-start; gap: 11px; padding: 17px 13px; border: 1px solid #edf0f5; border-radius: 9px; box-shadow: 0 2px 8px #122f6010; text-decoration: none; }
+.ec-sistema .ec-link-card:hover { border-color: #94b8ea; background: #f8fbff; }
+.ec-sistema .ec-link-card > .ec-icon { color: #065dff; width: 32px; height: 32px; flex-basis: 32px; }
+.ec-sistema .ec-link-card > span { display: flex; flex-direction: column; gap: 6px; }
+.ec-sistema .ec-link-card strong { font-size: 14px; line-height: 1.25; color: var(--ec-heading); }
+.ec-sistema .ec-link-card small { font-size: 12px; line-height: 1.4; color: #354053; }
+.ec-sistema .ec-more { font-size: 13px; font-weight: 700; color: #007b60; }
+/* Problema y solución: pares de texto e imagen y bandas de listas. */
+.ec-sistema .ec-story + .ec-story { margin-top: 26px; }
+.ec-sistema .ec-story-heading { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 22px; align-items: start; margin-bottom: 15px; }
+.md-typeset .ec-sistema .ec-story-heading h2 { margin-top: 0; font-size: 28px; }
+.ec-sistema .ec-story-heading img { aspect-ratio: 2 / 1; max-height: 150px; }
+.ec-sistema .ec-callout { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: 8px; }
+.ec-sistema .ec-callout > div { min-width: 0; }
+.md-typeset .ec-sistema .ec-callout h2 { margin: 0 0 4px; font-size: 18px; color: var(--ec-tone); }
+.ec-sistema .ec-callout > .ec-icon { color: var(--ec-tone); }
+.ec-sistema .ec-callout p { margin: 0; }
+.ec-sistema .ec-blue { --ec-tone: #0754d4; background: #eaf4ff; }
+.ec-sistema .ec-red { --ec-tone: #d0192b; background: #ffedef; }
+.ec-sistema .ec-green { --ec-tone: #087a46; background: #ecfaf1; }
+/* Seis módulos: dos columnas, sin alturas de texto fijas. */
+.ec-sistema .ec-module-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; margin-top: 17px; }
+.ec-sistema .ec-module-card { display: grid; grid-template-columns: minmax(0, 1fr) 24%; gap: 12px; padding: 13px; border-radius: 8px; background: var(--module-bg); }
+.ec-sistema .ec-module-card > div { min-width: 0; }
+.md-typeset .ec-sistema .ec-module-card h2 { display: flex; align-items: center; gap: 9px; font-size: 16px; margin: 0 0 8px; color: var(--module-tone); }
+.ec-sistema .ec-module-icon { display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; border-radius: 6px; color: #fff; background: var(--module-tone); }
+.ec-sistema .ec-module-icon .ec-icon { width: 24px; height: 24px; }
+.ec-sistema .ec-module-card ul { font-size: 13px; }
+.ec-sistema .ec-module-card img { height: 100%; min-height: 125px; object-position: center; }
+.ec-sistema .ec-mod-acopio { --module-bg: #ecfaf0; --module-tone: #087d42; }
+.ec-sistema .ec-mod-calidad { --module-bg: #edf5ff; --module-tone: #0756d6; }
+.ec-sistema .ec-mod-produccion { --module-bg: #fff5e8; --module-tone: #b95100; }
+.ec-sistema .ec-mod-insumos { --module-bg: #f5edff; --module-tone: #8030d0; }
+.ec-sistema .ec-mod-ventas { --module-bg: #ffefed; --module-tone: #cf1828; }
+.ec-sistema .ec-mod-admin { --module-bg: #eafbfd; --module-tone: #007d97; }
+/* Tablas y decisiones: tipografía compacta y desplazamiento local accesible. */
+.md-typeset .ec-sistema .ec-subheading { font-size: 17px; margin: 15px 0 7px; color: #0754c9; }
+.ec-sistema .ec-table-wrap { width: 100%; overflow-x: auto; border: 1px solid #dce2eb; border-radius: 6px; }
+.md-typeset .ec-sistema .ec-table { width: 100%; display: table; border: 0; border-collapse: collapse; margin: 0; font-size: 12px; background: #fff; box-shadow: none; }
+.md-typeset .ec-sistema .ec-table th, .md-typeset .ec-sistema .ec-table td { padding: 7px 9px; border: 1px solid #e3e7ee; line-height: 1.4; vertical-align: top; }
+.md-typeset .ec-sistema .ec-table th { min-width: 0; background: #f1f3f7; color: #202b40; font-weight: 700; }
+.ec-sistema .ec-table td:first-child { white-space: nowrap; }
+.ec-sistema .ec-table td:nth-child(2) { width: 23%; }
+.md-typeset .ec-sistema .mermaid { padding: 8px; margin: 8px 0 0; border: 0; background: #fbfdff; border-radius: 6px; overflow-x: auto; }
+.ec-sistema .ec-diagram-scroll { overflow-x: auto; }
+.md-typeset .ec-sistema .ec-diagram-note { font-size: 12px; margin: 0; color: #40516b; }
+/* Alcance: dos paneles y una única franja inferior. */
+.ec-sistema .ec-scope-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 16px 0; }
+.ec-sistema .ec-scope-panel { padding: 16px; border-radius: 8px; }
+.md-typeset .ec-sistema .ec-scope-panel h2, .md-typeset .ec-sistema .ec-future h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 7px; font-size: 19px; color: var(--ec-tone); }
+.ec-sistema .ec-scope-panel li { font-size: 13px; margin-bottom: 3px; }
+.ec-sistema .ec-future { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); align-items: center; gap: 18px; padding: 15px; border-radius: 8px; }
+.ec-sistema .ec-future p, .ec-sistema .ec-future li { font-size: 12px; }
+.ec-sistema .ec-future p { margin-bottom: 5px; }
+.ec-sistema .ec-future img { aspect-ratio: 3 / 2; }
+/* Los puntos de quiebre conservan las columnas de escritorio. */
+@media (max-width: 900px) {
+  .ec-sistema .ec-link-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ec-sistema .ec-module-card { grid-template-columns: minmax(0, 1fr) 23%; gap: 8px; }
+}
+@media (max-width: 600px) {
+  .ec-sistema .ec-content { padding: 16px; }
+  .ec-sistema .ec-banner { padding: 12px 16px; font-size: 18px; }
+  .ec-sistema .ec-overview, .ec-sistema .ec-story-heading, .ec-sistema .ec-module-grid,
+  .ec-sistema .ec-scope-grid, .ec-sistema .ec-future, .ec-sistema .ec-link-grid { grid-template-columns: 1fr; }
+  .ec-sistema .ec-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ec-sistema .ec-module-card { grid-template-columns: minmax(0, 1fr) 27%; }
+  .ec-sistema .ec-overview img, .ec-sistema .ec-future img { aspect-ratio: 16 / 9; }
+  .ec-sistema .ec-callout { padding: 13px; gap: 9px; }
+  .ec-sistema .ec-table { min-width: 480px; }
+  .md-typeset .ec-sistema .ec-diagram-scroll .mermaid { min-width: 760px; }
+  .ec-sistema .ec-story-heading img { aspect-ratio: 16 / 9; max-height: none; }
+}

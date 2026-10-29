@@ -1,0 +1,19 @@
+flowchart TB
+  W[Web: navegador y Blade] --> WC[Controlador Web]
+  A[App KMP: Compose y estado] --> R[Repository móvil]
+  R --> Q[(SQLite: caché y pendientes)]
+  R --> K[Ktor: envío en línea]
+  Q --> S[SyncManager: envío diferido]
+  S --> API[API REST: controlador móvil]
+  K --> API
+  WC --> U[Application: casos de uso compartidos]
+  API --> U
+  U --> D[Domain: entidades y contratos]
+  U --> E[Repositorios de infraestructura]
+  E -. implementan contratos .-> D
+  E --> DB[(Persistencia central)]
+  DB --> C[Consultas del backend]
+  C --> W
+  C --> Q
+  classDef default fill:#eaf3ff,stroke:#79a4df,color:#103b86,rx:7,ry:7;
+

@@ -1,0 +1,10 @@
+{
+  "command": "php artisan test --colors=never --filter=EntregaAlimentaLecheTest|SincronizacionAutomaticaTest|CalidadNoBloqueaProduccionTest|IniciarProduccionTest|CajaTest|AcopiadorMovilApiTest|RoleMiddlewareTest \"--log-junit=C:\\CICLO VI\\EcoLact\\docs\\informeEcoLact\\docs\\assets\\evidencias\\pruebas\\integracion\\20261029-qa02\\integracion.xml\"",
+  "cwd": "C:\\CICLO VI\\EcoLact\\EcoLactWeb",
+  "started": "2026-10-29T01:18:12.856761-05:00",
+  "ended": "2026-10-29T01:18:19.149437-05:00",
+  "duration_seconds": 6.293,
+  "exit_code": 2,
+  "log": "integracion.log",
+  "sha256": "f81779f43c8d1343305f1206367e83cfb8836d600f805c7b5ed68c23e951c16c"
+}

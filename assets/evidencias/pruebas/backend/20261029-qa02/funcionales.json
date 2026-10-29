@@ -1,0 +1,12 @@
+{
+  "command": "php artisan test --colors=never --testsuite=Feature \"--log-junit=C:\\CICLO VI\\EcoLact\\docs\\informeEcoLact\\docs\\assets\\evidencias\\pruebas\\backend\\20261029-qa02\\funcionales.xml\"",
+  "cwd": "C:\\CICLO VI\\EcoLact\\EcoLactWeb",
+  "started": "2026-10-29T01:16:50.239417-05:00",
+  "ended": "2026-10-29T01:20:54.615393-05:00",
+  "duration_seconds": 244.376,
+  "exit_code": 2,
+  "log": "funcionales.log",
+  "sha256": "45e7c0f8266199048bac9c4fde97e68f0edcb5ece6fd52db3b084e026a3109d6",
+  "original_sha256": "76589c9cedf1f6ac038865c4a0ba550b28ed810ecb21bcf0fb843a65b95e4b73",
+  "redaction": "Secretos redactados; salida restante completa. Hash sha256 corresponde a copia publicable."
+}

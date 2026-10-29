@@ -1,0 +1,10 @@
+{
+  "command": "cmd /c gradlew.bat :shared:testAndroidHostTest --console=plain --rerun-tasks",
+  "cwd": "C:\\CICLO VI\\EcoLact\\EcoLactMobile",
+  "started": "2026-10-29T01:16:26.155711-05:00",
+  "ended": "2026-10-29T01:17:56.834364-05:00",
+  "duration_seconds": 90.679,
+  "exit_code": 0,
+  "log": "mobile-android-host.log",
+  "sha256": "143d337b3fc2be9fc5430550aed10bdefc4cb752d137102274333f7bb0cbdb44"
+}

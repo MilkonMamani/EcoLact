@@ -1,0 +1,84 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Móvil · Android Host</title>
+<style>body{font:16px/1.5 system-ui;margin:0;background:#eff4fb;color:#1d344e}main{max-width:1120px;margin:30px auto;background:white;padding:32px;border-radius:12px}h1,h2{color:#103b86}.label{color:#1759c2;font-weight:bold}.cards{display:flex;gap:12px;flex-wrap:wrap}.card{background:#edf4ff;padding:18px;min-width:135px;border-radius:8px}.card b{display:block;font-size:30px}.bad{background:#fff0f1;color:#9f2430}.ok{background:#e8f5ed;color:#146c43}pre{background:#15253c;color:white;white-space:pre-wrap;overflow-wrap:anywhere;padding:20px;border-radius:8px;font-size:13px}code{overflow-wrap:anywhere}li{margin:12px 0}small{color:#536173}</style>
+<main><div class="label">ECOLACT · EVIDENCIA DE EJECUCIÓN · 20261029-qa02</div><h1>Móvil · Android Host</h1>
+<p>Reporte visual generado a partir de una ejecución real. Fuente primaria: log y JUnit; no es una terminal simulada.</p>
+<p><b>Inicio:</b> 2026-10-29T01:16:26.155711-05:00<br><b>Fin:</b> 2026-10-29T01:17:56.834364-05:00<br><b>Código de salida:</b> 0 · <b>Duración del proceso:</b> 90.679 s</p>
+<div class="cards"><div class="card"><b>93</b>Ejecutadas</div><div class="card ok"><b>93</b>Aprobadas</div><div class="card "><b>0</b>Fallidas / errores</div><div class="card"><b>0</b>Omitidas</div></div>
+<h2>Comando real</h2><pre>cmd /c gradlew.bat :shared:testAndroidHostTest --console=plain --rerun-tasks</pre><p><small>SHA-256 del log: 143d337b3fc2be9fc5430550aed10bdefc4cb752d137102274333f7bb0cbdb44</small></p>
+<p><a href="mobile-android-host.log">Descargar log completo (copia publicable)</a> · <a href="mobile-android-host.json">Metadatos</a></p><p><small>Los secretos detectados se sustituyen por [REDACTADO]. El hash mostrado corresponde a esta copia; los metadatos conservan el hash original cuando hubo redacción.</small></p>
+<h2>Interpretación del alcance</h2><p>Los casos ejecutados aprobaron. Este resultado no acredita dispositivos físicos, iOS ni un flujo completo contra producción.</p>
+
+<h2>Salida completa del proceso</h2><pre>Calculating task graph as configuration cache cannot be reused because a build logic input of type &#x27;IsTerminalSmartValueSource&#x27; has changed.
+
+&gt; Configure project :shared
+w: Native task &#x27;iosSimulatorArm64Test&#x27; is disabled
+Task &#x27;iosSimulatorArm64Test&#x27; for target &#x27;ios_simulator_arm64&#x27; cannot run on the current host (windows-x86_64).
+Reason: simulator tests require macOS
+Solution: To suppress this warning, add &#x27;kotlin.native.ignoreDisabledTargets=true&#x27; to gradle.properties.
+
+
+&gt; Task :shared:copyNonXmlValueResourcesForAndroidMain NO-SOURCE
+&gt; Task :shared:androidPreBuild UP-TO-DATE
+&gt; Task :shared:kmpPartiallyResolvedDependenciesChecker
+&gt; Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+&gt; Task :shared:generateAndroidHostTestAssets UP-TO-DATE
+&gt; Task :shared:generateAndroidMainAssets UP-TO-DATE
+&gt; Task :shared:convertXmlValueResourcesForAndroidMain NO-SOURCE
+&gt; Task :shared:convertXmlValueResourcesForCommonMain NO-SOURCE
+&gt; Task :shared:preAndroidMainBuild UP-TO-DATE
+&gt; Task :shared:preAndroidHostTestBuild UP-TO-DATE
+&gt; Task :shared:prepareComposeResourcesTaskForAndroidMain NO-SOURCE
+&gt; Task :shared:generateResourceAccessorsForAndroidMain NO-SOURCE
+&gt; Task :shared:generateAndroidMainEmptyResourceFiles
+&gt; Task :shared:writeAndroidMainAarMetadata
+&gt; Task :shared:generateAndroidHostTestResources
+&gt; Task :shared:convertXmlValueResourcesForAndroidHostTest NO-SOURCE
+&gt; Task :shared:copyNonXmlValueResourcesForAndroidHostTest NO-SOURCE
+&gt; Task :shared:prepareComposeResourcesTaskForAndroidHostTest NO-SOURCE
+&gt; Task :shared:generateResourceAccessorsForAndroidHostTest NO-SOURCE
+&gt; Task :shared:convertXmlValueResourcesForCommonTest NO-SOURCE
+&gt; Task :shared:copyNonXmlValueResourcesForCommonMain
+&gt; Task :shared:copyNonXmlValueResourcesForCommonTest NO-SOURCE
+&gt; Task :shared:prepareComposeResourcesTaskForCommonTest NO-SOURCE
+&gt; Task :shared:prepareComposeResourcesTaskForCommonMain
+&gt; Task :shared:copyAndroidMainComposeResourcesToAndroidAssets
+&gt; Task :shared:checkAndroidHostTestAarMetadata
+&gt; Task :shared:androidJar
+&gt; Task :shared:generateResourceAccessorsForCommonTest NO-SOURCE
+&gt; Task :shared:processAndroidHostTestJavaRes NO-SOURCE
+&gt; Task :shared:generateExpectResourceCollectorsForCommonMain
+&gt; Task :shared:generateComposeResClass
+&gt; Task :shared:generateResourceAccessorsForCommonMain
+&gt; Task :shared:generateActualResourceCollectorsForAndroidMain
+&gt; Task :shared:mergeAndroidMainAssets
+&gt; Task :shared:packageAndroidMainResources
+&gt; Task :shared:compileAndroidMainLibraryResources
+&gt; Task :shared:mapAndroidHostTestSourceSetPaths
+&gt; Task :shared:mergeAndroidHostTestAssets
+&gt; Task :shared:processAndroidMainManifest
+&gt; Task :shared:parseAndroidMainLocalResources
+&gt; Task :shared:generateAndroidMainRFile
+&gt; Task :shared:processAndroidHostTestManifest
+&gt; Task :shared:generateCommonMainEcoLactDatabaseInterface
+&gt; Task :shared:mergeAndroidHostTestResources
+&gt; Task :shared:processAndroidHostTestResources
+&gt; Task :shared:packageAndroidHostTestForUnitTest
+&gt; Task :shared:generateAndroidHostTestConfig
+&gt; Task :shared:compileAndroidMain
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.android.kt:7:1 &#x27;expect&#x27;/&#x27;actual&#x27; classes (including interfaces, objects, annotations, enums, and &#x27;actual&#x27; typealiases) are in Beta. Consider using the &#x27;-Xexpect-actual-classes&#x27; flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/androidMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.android.kt:35:1 &#x27;expect&#x27;/&#x27;actual&#x27; classes (including interfaces, objects, annotations, enums, and &#x27;actual&#x27; typealiases) are in Beta. Consider using the &#x27;-Xexpect-actual-classes&#x27; flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/database/DatabaseDriverFactory.kt:5:1 &#x27;expect&#x27;/&#x27;actual&#x27; classes (including interfaces, objects, annotations, enums, and &#x27;actual&#x27; typealiases) are in Beta. Consider using the &#x27;-Xexpect-actual-classes&#x27; flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+w: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/shared/src/commonMain/kotlin/pe/edu/upeu/ecolactmobile/core/sync/ConnectivityObserver.kt:6:1 &#x27;expect&#x27;/&#x27;actual&#x27; classes (including interfaces, objects, annotations, enums, and &#x27;actual&#x27; typealiases) are in Beta. Consider using the &#x27;-Xexpect-actual-classes&#x27; flag to suppress this warning. Also see: https://youtrack.jetbrains.com/issue/KT-61573
+
+&gt; Task :shared:processAndroidMainJavaRes
+&gt; Task :shared:bundleAndroidMainClassesToCompileJar
+&gt; Task :shared:bundleAndroidMainClassesToRuntimeJar
+&gt; Task :shared:compileAndroidHostTest
+&gt; Task :shared:testAndroidHostTest
+
+[Incubating] Problems report is available at: file:///C:/CICLO%20VI/EcoLact/EcoLactMobile/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 1m 30s
+33 actionable tasks: 33 executed
+Configuration cache entry stored.
+</pre></main></html>

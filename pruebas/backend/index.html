@@ -1,0 +1,2600 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentación técnica del sistema EcoLact">
+      
+      
+        <meta name="author" content="Equipo CodeCraft">
+      
+      
+        <link rel="canonical" href="https://MilkonMamani.github.io/EcoLact/pruebas/backend/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../mobile/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Validación de Laravel y reglas del negocio - Informe EcoLact</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/sistema.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/actores.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/modulos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/reglas-negocio.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/flujos.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/arquitectura.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/desarrollo.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/pruebas.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#validacion-de-laravel-y-reglas-del-negocio" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../.." title="Informe EcoLact" class="md-header__button md-logo" aria-label="Informe EcoLact" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Informe EcoLact
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Validación de Laravel y reglas del negocio
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../sistema/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Sistema
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../flujos/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Flujos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../arquitectura/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Arquitectura
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../desarrollo/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Desarrollo
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Pruebas
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Informe EcoLact" class="md-nav__button md-logo" aria-label="Informe EcoLact" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Informe EcoLact
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../sistema/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sistema
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sistema
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sistema/problema-solucion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problema y solución
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sistema/actores-roles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actores y roles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sistema/modulos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Módulos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sistema/reglas-negocio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reglas de negocio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sistema/alcance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Alcance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../flujos/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flujos
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Flujos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/acopio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acopio de leche
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/calidad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control de calidad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/liquidacion-pagos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Valorización y pagos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/consulta-proveedor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Consulta del proveedor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/produccion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Producción
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/insumos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Insumos y compras
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/ventas-caja/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ventas y compradores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/finanzas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caja y finanzas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/personal-asistencia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asistencia y personal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../flujos/integracion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integración móvil y web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../arquitectura/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Arquitectura
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend y Clean Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/mobile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    KMP y MVVM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/offline-first/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura Offline-first
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/sincronizacion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sincronización de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/dominio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modelo de dominio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/base-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Persistencia y bases de datos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API REST
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/seguridad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autenticación y seguridad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../arquitectura/integracion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integración Web y Móvil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../desarrollo/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desarrollo
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Desarrollo
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desarrollo/repositorio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estructura del repositorio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desarrollo/backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar backend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desarrollo/mobile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configurar aplicación móvil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desarrollo/base-datos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Base de datos y seeders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desarrollo/configuracion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables de entorno
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../desarrollo/git/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git y convenciones
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pruebas
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Pruebas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#procedimiento-de-ejecucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Procedimiento de ejecución
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clasificacion-funcional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clasificación funcional
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pruebas-relevantes-objetivo-condicion-procedimiento-y-resultado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas relevantes: objetivo, condición, procedimiento y resultado
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fallos-y-errores-conservados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fallos y errores conservados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-del-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias del backend
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias del backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pruebas-unitarias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas unitarias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pruebas-funcionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas funcionales
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mobile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    App móvil
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../integracion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../evidencias/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evidencias
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#procedimiento-de-ejecucion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Procedimiento de ejecución
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#clasificacion-funcional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clasificación funcional
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pruebas-relevantes-objetivo-condicion-procedimiento-y-resultado" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas relevantes: objetivo, condición, procedimiento y resultado
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fallos-y-errores-conservados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fallos y errores conservados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#evidencias-del-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evidencias del backend
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Evidencias del backend">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pruebas-unitarias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas unitarias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pruebas-funcionales" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pruebas funcionales
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusión
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<div class="ec-pruebas">
+<div class="ec-test-banner">
+<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2h1v14a4 4 0 0 0 4 4 4 4 0 0 0 4-4V4h1V2zm4 14c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m2-4c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1m1-5h-4V4h4z"/></svg></span> 2. Pruebas del backend</p>
+</div>
+<div class="ec-test-content">
+<p><span class="ec-test-kicker">EcoLact / 6. Pruebas / Ejecución verificable</span></p>
+<h1 id="validacion-de-laravel-y-reglas-del-negocio">Validación de Laravel y reglas del negocio</h1>
+<p>Se inspeccionaron <code>EcoLactWeb/tests/Unit</code> (13 archivos <code>*Test.php</code>), <code>tests/Feature</code> (260 archivos <code>*Test.php</code>), <code>phpunit.xml</code> y las dependencias instaladas. Los siete archivos prioritarios solicitados existen; sus rutas reales aparecen debajo. Los archivos pueden contener varias funciones y datasets: no equivalen al número de casos ejecutados.</p>
+<div class="ec-test-summary">
+<div class="ec-test-card ec-test-"><strong>1928</strong>Ejecutadas</div>
+<div class="ec-test-card ec-test-passed"><strong>1906</strong>Aprobadas</div>
+<div class="ec-test-card ec-test-failed"><strong>22</strong>Fallidas / errores</div>
+<div class="ec-test-card ec-test-skipped"><strong>1</strong>Omitidas</div>
+<div class="ec-test-card ec-test-"><strong>238.854 s</strong>Tiempo de casos</div>
+</div>
+<h2 id="procedimiento-de-ejecucion">Procedimiento de ejecución</h2>
+<p>Primero se ejecutó <code>RegistrarEntregaTest.php</code>: 6 casos aprobados. A continuación se ejecutaron las suites Unit y Feature. Ambas cubren las suites declaradas en <code>phpunit.xml</code>; no se añadió una ejecución general redundante. El intento inicial con <code>--no-interaction</code> terminó con salida 2 antes de descubrir casos; el runner lo rechazó y se retiró únicamente ese argumento, conservando el log.</p>
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">-v</span>
+<span class="n">composer</span> <span class="p">-</span><span class="n">-version</span>
+<span class="n">composer</span> <span class="n">show</span> <span class="p">-</span><span class="n">-direct</span>
+<span class="n">php</span> <span class="n">artisan</span> <span class="n">test</span> <span class="p">-</span><span class="n">-colors</span><span class="p">=</span><span class="n">never</span> <span class="p">-</span><span class="n">-testsuite</span><span class="p">=</span><span class="n">Unit</span> <span class="p">-</span><span class="n">-log-junit</span><span class="p">=&lt;</span><span class="n">ruta-unitarias</span><span class="p">.</span><span class="n">xml</span><span class="p">&gt;</span>
+<span class="n">php</span> <span class="n">artisan</span> <span class="n">test</span> <span class="p">-</span><span class="n">-colors</span><span class="p">=</span><span class="n">never</span> <span class="p">-</span><span class="n">-testsuite</span><span class="p">=</span><span class="n">Feature</span> <span class="p">-</span><span class="n">-log-junit</span><span class="p">=&lt;</span><span class="n">ruta-funcionales</span><span class="p">.</span><span class="n">xml</span><span class="p">&gt;</span>
+</code></pre></div>
+<p>Los argumentos de los procesos y el entorno aislado se registran en los metadatos. Para reproducir desde la raíz del repositorio con un identificador nuevo, se puede usar <code>python docs/informeEcoLact/scripts/ejecutar_evidencias.py &lt;nuevo-id&gt; backend unitarias</code> y después <code>backend funcionales</code>. El script aplica el aislamiento antes de iniciar Artisan. Las representaciones de argumentos en los reportes no incluyen las variables de entorno; no deben pegarse aisladamente en otra consola. No se modificaron reglas de negocio, pruebas PHP ni archivos Kotlin para cambiar los resultados.</p>
+<h2 id="clasificacion-funcional">Clasificación funcional</h2>
+<div class="ec-test-table">
+<table>
+<thead>
+<tr>
+<th>Grupo</th>
+<th>Casos descubiertos</th>
+<th>Aprobadas</th>
+<th>Fallidas</th>
+<th>Errores</th>
+<th>Omitidas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Control de calidad</td>
+<td>201</td>
+<td>201</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Producción e inventario</td>
+<td>310</td>
+<td>309</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Transversal y otras comprobaciones</td>
+<td>301</td>
+<td>298</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Registro de entregas</td>
+<td>93</td>
+<td>91</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Pagos y liquidaciones</td>
+<td>362</td>
+<td>361</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Proveedores y acopiadores</td>
+<td>228</td>
+<td>216</td>
+<td>0</td>
+<td>12</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Zonas y recorridos</td>
+<td>156</td>
+<td>154</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Ventas y caja</td>
+<td>81</td>
+<td>81</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Autenticación y roles</td>
+<td>114</td>
+<td>114</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>API REST</td>
+<td>83</td>
+<td>81</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>La clasificación asigna cada caso una sola vez: API y autenticación tienen prioridad, seguidas por palabras de la clase. Las categorías agrupan resultados, no representan cobertura de todos los requisitos de cada módulo. El inventario exhaustivo está en <a href="../../assets/evidencias/pruebas/resumen/20261029-qa02/casos.csv">casos CSV</a>.</p>
+<h2 id="pruebas-relevantes-objetivo-condicion-procedimiento-y-resultado">Pruebas relevantes: objetivo, condición, procedimiento y resultado</h2>
+<div class="ec-test-table">
+<table>
+<thead>
+<tr>
+<th>Grupo</th>
+<th>Prueba o suite</th>
+<th>Objetivo y condición</th>
+<th>Procedimiento</th>
+<th>Resultado real</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Registro de entregas</td>
+<td><code>tests/Feature/Application/Acopio/RegistrarEntregaTest.php</code></td>
+<td>Registrar entrega válida, identidad DNI/QR, zona y estado</td>
+<td>Crear proveedor y acopiador, ejecutar RegistrarEntrega y comprobar entidad y notificación.</td>
+<td>6 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit</a></td>
+</tr>
+<tr>
+<td>Control de calidad</td>
+<td><code>tests/Feature/Application/Calidad/CalidadNoBloqueaProduccionTest.php</code></td>
+<td>Mantener independencia de calidad y producción</td>
+<td>Registrar leche sin análisis, producir y comprobar stock tras analizar.</td>
+<td>4 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit</a></td>
+</tr>
+<tr>
+<td>Pagos</td>
+<td><code>tests/Feature/Application/Pago/SincronizacionAutomaticaTest.php</code></td>
+<td>Generar y recalcular pagos pendientes sin duplicados</td>
+<td>Registrar entregas, confirmar análisis y repetir sincronización; verificar transacción y saldos.</td>
+<td>8 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit</a></td>
+</tr>
+<tr>
+<td>Liquidaciones</td>
+<td><code>tests/Feature/Application/Liquidacion/GenerarLiquidacionTest.php</code></td>
+<td>Aplicar precio semanal y evitar duplicación</td>
+<td>Configurar precio e incidencias, generar liquidación y verificar importe y estado.</td>
+<td>5 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit</a></td>
+</tr>
+<tr>
+<td>API REST</td>
+<td><code>tests/Feature/Http/Api/AcopiadorMovilApiTest.php</code></td>
+<td>Fechas offline, autorización e idempotencia</td>
+<td>Enviar peticiones internas Laravel y comparar respuestas y filas SQLite.</td>
+<td>10 aprobadas · 2 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit</a></td>
+</tr>
+<tr>
+<td>Autenticación</td>
+<td><code>tests/Feature/Auth/RoleMiddlewareTest.php</code></td>
+<td>Permitir rol correcto y denegar acceso indebido</td>
+<td>Ejecutar middleware con usuario correcto, incorrecto y sin autenticación.</td>
+<td>4 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit</a></td>
+</tr>
+<tr>
+<td>Ventas y caja</td>
+<td><code>tests/Feature/Web/CajaTest.php</code></td>
+<td>Saldo, movimientos únicos y atomicidad</td>
+<td>Registrar eventos financieros y consultar caja; provocar fallo para verificar reversión.</td>
+<td>8 aprobadas · 0 fallidas · 0 errores · 0 omitidas</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Un caso aprobado respalda las condiciones y aserciones que ese test ejecutó; no verifica automáticamente todas las combinaciones, el navegador ni MySQL. Los casos fallidos no sostienen el comportamiento esperado.</p>
+<h2 id="fallos-y-errores-conservados">Fallos y errores conservados</h2>
+<div class="ec-test-table">
+<table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Tipo</th>
+<th>Mensaje real</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EntregaAlimentaLecheTest · it no se puede anular una entrega que ya forma parte de un pago realizado</td>
+<td>error</td>
+<td>it no se puede anular una entrega que ya forma parte de un pago realizadoDomainException: El pago semanal estará disponible desde el miércoles 04/11/2026.</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AcopiadorMovilApiTest · it conserva la hora real del acopio offline y distingue la hora de llegada</td>
+<td>fallida</td>
+<td>it conserva la hora real del acopio offline y distingue la hora de llegadaExpected response status code [201] but received 403.</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+</tr>
+<tr>
+<td>AcopiadorMovilApiTest · it acepta la hora del teléfono en UTC sin correrla por la zona horaria</td>
+<td>fallida</td>
+<td>it acepta la hora del teléfono en UTC sin correrla por la zona horariaExpected response status code [201] but received 403.</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+</tr>
+<tr>
+<td>EloquentProductosListadoQueryTest · it calcula los KPIs y arma las filas con stock, receta y última producción</td>
+<td>error</td>
+<td>it calcula los KPIs y arma las filas con stock, receta y última producciónErrorException: Undefined property: App\Application\Produccion\ProductosListadoData::$kpis</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>EloquentZonasListadoQueryTest · it calcula los KPIs y arma las filas con conteo de proveedores y acopiadores</td>
+<td>error</td>
+<td>it calcula los KPIs y arma las filas con conteo de proveedores y acopiadoresArgumentCountError: Too few arguments to function App\Infrastructure\Persistence\Queries\EloquentZonasListadoQuery::__construct(), 0 passed in C:\CICLO VI\EcoLact\EcoLactWeb\tests\Feature\Infrastructure\Persistence\Queries\EloquentZonasListadoQueryTest.php on line 25 and exactly 1 expected</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>EloquentZonasListadoQueryTest · it filtra por nombre y por estado</td>
+<td>error</td>
+<td>it filtra por nombre y por estadoArgumentCountError: Too few arguments to function App\Infrastructure\Persistence\Queries\EloquentZonasListadoQuery::__construct(), 0 passed in C:\CICLO VI\EcoLact\EcoLactWeb\tests\Feature\Infrastructure\Persistence\Queries\EloquentZonasListadoQueryTest.php on line 43 and exactly 1 expected</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>AcopioViewTest · it los enlaces de paginación conservan búsqueda y filtros</td>
+<td>fallida</td>
+<td>it los enlaces de paginación conservan búsqueda y filtrosFailed asserting that &#x27;&lt;!DOCTYPE html&gt;</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+</tr>
+<tr>
+<td>DashboardViewTest · it muestra el encabezado del resumen con el rango aplicado y el filtro activo</td>
+<td>fallida</td>
+<td>it muestra el encabezado del resumen con el rango aplicado y el filtro activoFailed asserting that two strings are identical.</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>LoginViewTest · it muestra el login independiente con controles accesibles y CSRF</td>
+<td>fallida</td>
+<td>it muestra el login independiente con controles accesibles y CSRFFailed asserting that &#x27;&lt;!DOCTYPE html&gt;\n</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+</tr>
+<tr>
+<td>PagoSemanalTodosYPagadosTest · it la fila de un pagado tiene el checkbox deshabilitado y las de pendientes no</td>
+<td>fallida</td>
+<td>it la fila de un pagado tiene el checkbox deshabilitado y las de pendientes noFailed asserting that &#x27;&lt;tr data-fila data-id=&quot;2&quot; data-pendiente=&quot;0&quot; data-estado=&quot;PENDIENTE&quot;\n</td>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it el historial del proveedor devuelve exclusivamente sus pagos</td>
+<td>error</td>
+<td>it el historial del proveedor devuelve exclusivamente sus pagosIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it nunca aparecen pagos de otros proveedores, ni siquiera manipulando el request</td>
+<td>error</td>
+<td>it nunca aparecen pagos de otros proveedores, ni siquiera manipulando el requestIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it Semana Todos abarca todas las semanas del proveedor y las semanas del combo no se repiten</td>
+<td>error</td>
+<td>it Semana Todos abarca todas las semanas del proveedor y las semanas del combo no se repitenIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it una semana específica solo devuelve los registros de esa semana, incluido el periodo parcial</td>
+<td>error</td>
+<td>it una semana específica solo devuelve los registros de esa semana, incluido el periodo parcialIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it filtra por estado y combina semana con estado</td>
+<td>error</td>
+<td>it filtra por estado y combina semana con estadoIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it muestra la base de cálculo, el periodo real, el monto y el estado de cada fila</td>
+<td>error</td>
+<td>it muestra la base de cálculo, el periodo real, el monto y el estado de cada filaIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it un pago histórico usa el snapshot: ni la lista ni el detalle se recalculan con precios de hoy</td>
+<td>error</td>
+<td>it un pago histórico usa el snapshot: ni la lista ni el detalle se recalculan con precios de hoyIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it el detalle de un pago pendiente muestra el comprobante con los datos del proveedor</td>
+<td>error</td>
+<td>it el detalle de un pago pendiente muestra el comprobante con los datos del proveedorIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it con filtros que no coinciden muestra "No se encontraron pagos" y no el vacío general</td>
+<td>error</td>
+<td>it con filtros que no coinciden muestra &quot;No se encontraron pagos&quot; y no el vacío generalIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it abrir el recurso del modal directamente en el navegador lleva al detalle del proveedor, no a otra pantalla</td>
+<td>error</td>
+<td>it abrir el recurso del modal directamente en el navegador lleva al detalle del proveedor, no a otra pantallaIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it solo el administrador consulta el historial de pagos de un proveedor</td>
+<td>error</td>
+<td>it solo el administrador consulta el historial de pagos de un proveedorIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ProveedorPagosModalTest · it el panel del proveedor abre "Ver pagos" en un modal sin enlazar al módulo de pagos</td>
+<td>error</td>
+<td>it el panel del proveedor abre &quot;Ver pagos&quot; en un modal sin enlazar al módulo de pagosIlluminate\Database\UniqueConstraintViolationException: SQLSTATE[23000]: Integrity constraint violation: 19 UNIQUE constraint failed: obligaciones_pago.proveedor_id, obligaciones_pago.semana_proveedor (Connection: sqlite, Database: :memory:, SQL: insert into &quot;obligaciones_pago&quot; (&quot;tipo_beneficiario&quot;, &quot;proveedor_id&quot;, &quot;beneficiario_nombre&quot;, &quot;periodo_inicio&quot;, &quot;periodo_fin&quot;, &quot;periodicidad&quot;, &quot;concepto&quot;, &quot;base_calculo&quot;, &quot;monto_calculado&quot;, &quot;estado&quot;, &quot;clave_unicidad&quot;, &quot;fecha_pago_programada&quot;, &quot;updated_at&quot;, &quot;created_at&quot;) values (PROVEEDOR, 1, Milkon Mamani, 2026-09-10 00:00:00, 2026-09-16 00:00:00, SEMANAL, Pago semanal a proveedor, {&quot;litros_pagables&quot;:20,&quot;precio_base_litro&quot;:1.7,&quot;subtotal&quot;:34}, 34, PENDIENTE, modal-1-2026-09-10-2026-09-16, 2026-09-16 00:00:00, 2026-09-20 10:00:00, 2026-09-20 10:00:00))</td>
+<td></td>
+</tr>
+<tr>
+<td><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.xml">JUnit y traza</a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de la selección de integración:</strong> los dos casos de <code>AcopiadorMovilApiTest</code> calculan el evento con <code>now()-&gt;subHours(2)</code> y <code>subMinutes(90)</code>, mientras el fixture registra asistencia de hoy. La ejecución ocurrió cerca de la 01:18 en Lima; esos eventos corresponden al día anterior. <code>RequiereAsistencia</code> valida el día del evento. Esto es consistente con el HTTP 403 observado y apunta a dependencia del reloj en el escenario; no demuestra un defecto en conversión UTC. Se recomienda fijar fecha/hora y asistencia coherentes en una revisión posterior del test.</p>
+<p>En <code>EntregaAlimentaLecheTest</code>, la preparación intenta pagar una obligación semanal antes de su fecha programada. <code>RegistrarPagoObligacion</code> lanza la excepción con fecha <strong>04/11/2026</strong>, antes de llegar a la comprobación de anulación. El objetivo de ese caso permanece sin validar en esta ejecución.</p>
+<p>Los otros <strong>15 errores</strong> son discrepancias concretas entre fixtures y contratos actuales: 12 casos de <code>ProveedorPagosModalTest</code> intentan crear dos obligaciones del mismo proveedor en la misma semana y chocan con la restricción única <code>(proveedor_id, semana_proveedor)</code>; 2 casos de <code>EloquentZonasListadoQueryTest</code> construyen la consulta sin el argumento <code>Reloj</code> obligatorio; 1 caso de <code>EloquentProductosListadoQueryTest</code> consulta <code>kpis</code>, propiedad que el DTO actual no contiene. Los tests no alcanzan sus comprobaciones finales.</p>
+<p>Los <strong>4 fallos de vistas</strong> restantes corresponden a texto de paginación esperado en acopio, diferencia de título/rango en dashboard, texto de bienvenida esperado en login y <code>data-pendiente="1"</code> esperado en una fila de pagos que devuelve <code>0</code>. Se requiere revisar cada expectativa frente al comportamiento deseado; no se cambiaron textos, contratos ni reglas para ocultarlos.</p>
+<h2 id="evidencias-del-backend">Evidencias del backend</h2>
+<div class="ec-test-evidence">
+<h3 id="pruebas-unitarias">Pruebas unitarias</h3>
+<p><strong>2026-10-29T01:16:45.389033-05:00 · salida 0 · 2.436 s de proceso.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">artisan</span> <span class="n">test</span> <span class="p">-</span><span class="n">-colors</span><span class="p">=</span><span class="n">never</span> <span class="p">-</span><span class="n">-testsuite</span><span class="p">=</span><span class="n">Unit</span> <span class="s2">&quot;--log-junit=C:\CICLO VI\EcoLact\docs\informeEcoLact\docs\assets\evidencias\pruebas\backend\20261029-qa02\unitarias.xml&quot;</span>
+</code></pre></div>
+<p>86 aprobadas · 0 fallidas · 0 errores · 0 omitidas.</p>
+<p><img alt="Reporte visual de Pruebas unitarias" src="../../assets/images/pruebas/backend/20261029-qa02-unitarias.png" /></p>
+<p><em>Reporte visual generado a partir de una ejecución real. Es una captura del reporte HTML; no es una captura directa de la terminal. La imagen resume; el log conserva toda la salida.</em></p>
+<p><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/unitarias.log">Log completo</a> · <a href="../../assets/evidencias/pruebas/backend/20261029-qa02/unitarias.json">Comando, fecha, duración y salida</a> · <a href="../../assets/evidencias/pruebas/backend/20261029-qa02/unitarias.html">Reporte HTML completo</a></p>
+</div>
+<div class="ec-test-evidence">
+<h3 id="pruebas-funcionales">Pruebas funcionales</h3>
+<p><strong>2026-10-29T01:16:50.239417-05:00 · salida 2 · 244.376 s de proceso.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">php</span> <span class="n">artisan</span> <span class="n">test</span> <span class="p">-</span><span class="n">-colors</span><span class="p">=</span><span class="n">never</span> <span class="p">-</span><span class="n">-testsuite</span><span class="p">=</span><span class="n">Feature</span> <span class="s2">&quot;--log-junit=C:\CICLO VI\EcoLact\docs\informeEcoLact\docs\assets\evidencias\pruebas\backend\20261029-qa02\funcionales.xml&quot;</span>
+</code></pre></div>
+<p>1820 aprobadas · 6 fallidas · 16 errores · 1 omitidas.</p>
+<p><img alt="Reporte visual de Pruebas funcionales" src="../../assets/images/pruebas/backend/20261029-qa02-funcionales.png" /></p>
+<p><em>Reporte visual generado a partir de una ejecución real. Es una captura del reporte HTML; no es una captura directa de la terminal. La imagen resume; el log conserva toda la salida.</em></p>
+<p><a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.log">Log completo</a> · <a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.json">Comando, fecha, duración y salida</a> · <a href="../../assets/evidencias/pruebas/backend/20261029-qa02/funcionales.html">Reporte HTML completo</a></p>
+</div>
+<h2 id="conclusion">Conclusión</h2>
+<p>La suite unitaria aprobó sus 86 casos. Feature obtuvo 1820 aprobadas · 6 fallidas · 16 errores · 1 omitidas. Los resultados respaldan los casos aprobados bajo SQLite y muestran condiciones pendientes de corrección o revisión. No permiten afirmar que todo el backend esté validado. La equivalencia del esquema MySQL sigue omitida por seguridad.</p>
+<div class="ec-test-conclusion">
+<p>Consulta la <a href="../">estrategia</a>, el <a href="./">backend</a>, la <a href="../mobile/">app móvil</a>, la <a href="../integracion/">integración</a> y el <a href="../evidencias/">archivo de evidencias</a>.</p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.indexes", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

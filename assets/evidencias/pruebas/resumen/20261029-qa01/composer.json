@@ -1,0 +1,10 @@
+{
+  "command": "cmd /c composer --version",
+  "cwd": "C:\\CICLO VI\\EcoLact\\EcoLactWeb",
+  "started": "2026-10-29T01:16:09.548601-05:00",
+  "ended": "2026-10-29T01:16:09.807003-05:00",
+  "duration_seconds": 0.258,
+  "exit_code": 0,
+  "log": "composer.log",
+  "sha256": "e3ee86817cd40b2e0e55090d18960ee9cdd736c822e52fdbb190f38b568e4af5"
+}

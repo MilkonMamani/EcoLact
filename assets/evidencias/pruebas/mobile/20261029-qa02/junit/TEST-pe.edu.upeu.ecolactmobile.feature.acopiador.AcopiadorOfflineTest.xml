@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:54.400Z" hostname="LAPTOP-CUGSMQ13" time="1.092">
+  <properties/>
+  <testcase name="caso2_y_3_offline_queda_pendiente_y_sigue_visible_al_reabrir_la_app" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.699"/>
+  <testcase name="caso1_online_qr_20_litros_queda_sincronizada" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.179"/>
+  <testcase name="filas_encoladas_por_la_version_anterior_siguen_visibles_y_se_envian" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.028"/>
+  <testcase name="las_filas_viejas_con_fecha_hora_conservan_su_hora_como_evento" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.007"/>
+  <testcase name="regla_10_minutos_cuenta_desde_el_acopio_y_no_desde_la_sincronizacion" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.027"/>
+  <testcase name="caso5_qr_offline_cacheado_funciona_y_no_cacheado_da_mensaje_claro" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.016"/>
+  <testcase name="recorrido_offline_acopio_y_no_entrego_se_ven_al_instante_y_no_se_pisan" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.041"/>
+  <testcase name="la_hora_del_evento_lleva_el_desfase_de_peru_y_no_se_corre_a_utc" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.004"/>
+  <testcase name="caso4_al_volver_internet_pasa_a_sincronizada_sin_duplicarse" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.03"/>
+  <testcase name="caso7_fuera_de_zona_se_bloquea_offline_y_si_el_servidor_rechaza_queda_en_error_sin_borrarse" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.018"/>
+  <testcase name="caso6_dni_offline_busca_en_la_copia_local" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.007"/>
+  <testcase name="caso8_la_hora_del_acopio_se_captura_una_vez_y_no_cambia_al_sincronizar_ni_al_reintentar" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.022"/>
+  <testcase name="caso9_y_10_el_detalle_refleja_el_muestreo_no_pendiente_de_analisis" classname="pe.edu.upeu.ecolactmobile.feature.acopiador.AcopiadorOfflineTest" time="0.009"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+]]></system-err>
+</testsuite>

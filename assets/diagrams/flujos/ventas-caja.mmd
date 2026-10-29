@@ -1,0 +1,23 @@
+flowchart TB
+  A([Inicio · Ventas]) --> B[Identificar comprador]
+  B --> C[Seleccionar producto y cantidad]
+  C --> D{¿Stock suficiente y producto activo?}
+  D -->|No| E[Mostrar error y revisar]
+  E --> C
+  D -->|Sí| F[Determinar tarifa aplicable]
+  F --> G{¿Forma de pago?}
+  G -->|Contado| H[Registrar venta]
+  G -->|Descuento de planilla| I{¿Proveedor con saldo suficiente?}
+  I -->|No| E
+  I -->|Sí| H
+  H --> J[Descontar stock y habilitar comprobante]
+  J --> K{¿Contado?}
+  K -->|Sí| L[Entrada de caja · VENTA]
+  K -->|No| M[Descuento en pago semanal]
+  L --> Z([Fin · Venta REGISTRADA])
+  M --> Z
+  classDef default fill:#eaf3ff,stroke:#7ca5df,color:#123d91,rx:7,ry:7;
+  classDef decision fill:#fff3df,stroke:#dca34d,color:#754c0c;
+  classDef terminal fill:#e6f7ed,stroke:#72b692,color:#145d3b;
+  class D,G,I,K decision;
+  class A,Z terminal;

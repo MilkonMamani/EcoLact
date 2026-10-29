@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-29T06:17:55.771Z" hostname="LAPTOP-CUGSMQ13" time="0.049">
+  <properties/>
+  <testcase name="produccion_request_envia_producto_y_cantidad_sin_insumos" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.01"/>
+  <testcase name="una_linea_sin_presentacion_no_se_puede_confirmar" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.007"/>
+  <testcase name="si_falta_sal_se_bloquea_y_se_informa_cuanto_falta" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.005"/>
+  <testcase name="la_boleta_dice_2_sacos_y_la_presentacion_configurada_da_50000_g" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.011"/>
+  <testcase name="finalizar_envia_lo_obtenido_por_id_de_detalle" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.002"/>
+  <testcase name="con_stock_suficiente_se_puede_iniciar" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.0"/>
+  <testcase name="formatos_de_cantidad" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.001"/>
+  <testcase name="producto_sin_precios_queda_sin_configurar" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.008"/>
+  <testcase name="la_leche_es_del_sistema_y_no_se_compra" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.002"/>
+  <testcase name="precios_del_administrador_se_leen_tal_cual" classname="pe.edu.upeu.ecolactmobile.feature.planta.PlantaModelsTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
